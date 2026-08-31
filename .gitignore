@@ -1,0 +1,11 @@
+# OS
+.DS_Store
+.DS_Store?
+._*
+
+# Shopify CLI
+theme/.shopify
+
+# Node (au cas où des tooling/scripts sont ajoutés plus tard)
+node_modules
+*.zip

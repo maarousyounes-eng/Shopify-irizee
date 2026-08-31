@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boutique Shopify — Suivi des tâches · Atelier Irizée</title>
+<style>
+  :root{
+    --page-bg:#F4F4F5; --card:#ffffff; --border:#E4E4E7; --border-soft:#F0F0F1;
+    --ink:#0A0A0B; --muted:#6B6B72; --muted-soft:#A0A0A8;
+    --accent:#2B6EE8; --accent-soft:#EBF2FF;
+    --done:#16A34A; --done-soft:#ECFDF5;
+    --doing:#F59E0B; --doing-soft:#FFFBEB;
+    --todo:#6B6B72; --todo-soft:#F4F4F5;
+    --high:#E8444A; --high-soft:#FEF2F2;
+    --mid:#F59E0B; --mid-soft:#FFFBEB;
+    --low:#A0A0A8; --low-soft:#F4F4F5;
+    --radius-lg:16px; --radius-md:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--page-bg);color:var(--ink);padding:12px}
+  .shell{max-width:1100px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px}
+
+  header{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border-soft)}
+  .wordmark{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-soft)}
+  h1{font-size:22px;font-weight:700;margin-top:6px}
+  h1 span{color:var(--accent)}
+  .sub{color:var(--muted);font-size:13px;margin-top:4px}
+
+  .stats{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 20px;min-width:120px}
+  .stat .n{font-size:26px;font-weight:600}
+  .stat .l{font-size:12px;color:var(--muted);margin-top:2px}
+  .stat.n-doing .n{color:var(--doing)}
+  .stat.n-done .n{color:var(--done)}
+  .progress-wrap{flex:1;min-width:220px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 20px;display:flex;flex-direction:column;justify-content:center}
+  .bar{height:8px;background:var(--border-soft);border-radius:99px;overflow:hidden;margin-top:8px}
+  .bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+  .filters label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted-soft);margin-left:6px}
+  select{padding:7px 10px;border-radius:10px;border:1px solid var(--border);background:var(--card);font-size:13px;color:var(--ink);cursor:pointer}
+  select:focus{outline:none;border-color:var(--accent)}
+  .reset{padding:7px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:13px;cursor:pointer;font-weight:600}
+  .reset:hover{border-color:var(--accent);color:var(--accent)}
+
+  .phase{margin-bottom:22px}
+  .phase h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+  .phase h2 .count{font-size:11px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted-soft)}
+  .task{background:var(--card);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:8px;box-shadow:0 1px 2px rgba(0,0,0,.03);transition:opacity .2s,box-shadow .2s}
+  .task:hover{box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .task.done-task{opacity:.5}
+  .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .id{font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:var(--muted);background:var(--page-bg);padding:3px 8px;border-radius:99px}
+  .title{flex:1;font-size:14px;font-weight:500;min-width:200px}
+  .badge{font-size:11px;padding:3px 9px;border-radius:99px;font-weight:600}
+  .b-haute{background:var(--high-soft);color:var(--high)}
+  .b-moyenne{background:var(--mid-soft);color:#B45309}
+  .b-basse{background:var(--low-soft);color:var(--low)}
+  .b-effort{background:var(--page-bg);color:var(--muted)}
+  .b-qui{background:var(--accent-soft);color:var(--accent)}
+  .status{border:none;font-size:12px;font-weight:700;padding:6px 14px;border-radius:99px;cursor:pointer;min-width:90px;transition:transform .1s}
+  .status:active{transform:scale(.95)}
+  .s-todo{background:var(--todo-soft);color:var(--todo)}
+  .s-doing{background:var(--doing-soft);color:#92610B}
+  .s-done{background:var(--done-soft);color:var(--done)}
+  .note-toggle{background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted-soft);padding:4px}
+  .note-toggle.has-note{color:var(--accent);font-weight:700}
+  .note-area{display:none;margin-top:10px}
+  .note-area.open{display:block}
+  textarea{width:100%;min-height:60px;border:1px solid var(--border);border-radius:var(--radius-md);padding:8px 10px;font-size:13px;font-family:inherit;resize:vertical;background:var(--page-bg)}
+  textarea:focus{outline:none;border-color:var(--accent)}
+  .module-tag{font-size:11px;color:var(--muted-soft);font-style:italic}
+  footer{text-align:center;color:var(--muted-soft);font-size:12px;margin-top:30px}
+
+  .ideas{margin-top:36px;padding-top:24px;border-top:1px solid var(--border-soft)}
+  .ideas h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:4px}
+  .ideas .sub{margin-bottom:14px}
+  .idea-add{display:flex;gap:8px;margin-bottom:14px}
+  .idea-add input{flex:1;padding:10px 12px;border-radius:var(--radius-md);border:1px solid var(--border);font-size:13px;font-family:inherit;background:var(--card)}
+  .idea-add input:focus{outline:none;border-color:var(--accent)}
+  .idea-add button{padding:10px 16px;border-radius:var(--radius-md);border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer}
+  .idea-add button:hover{background:#2258bf}
+  .idea{background:var(--card);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .idea.mine{border-left:3px solid var(--accent)}
+  .idea .txt{flex:1;font-size:13px}
+  .idea .src{font-size:10px;font-weight:600;color:var(--muted);background:var(--page-bg);padding:2px 8px;border-radius:99px;flex-shrink:0}
+  .idea.mine .src{color:var(--accent);background:var(--accent-soft)}
+  .idea .del{background:none;border:none;color:var(--muted-soft);cursor:pointer;font-size:14px;padding:2px 6px}
+  .idea .del:hover{color:var(--high)}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <div class="wordmark">Irizée</div>
+  <h1>Boutique Shopify <span>· Suivi</span></h1>
+  <div class="sub">27 tâches · 5 phases · 5 modules — clique sur un statut pour le faire avancer</div>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="n" id="st-total">27</div><div class="l">Tâches totales</div></div>
+  <div class="stat"><div class="n" id="st-todo">27</div><div class="l">À faire</div></div>
+  <div class="stat n-doing"><div class="n" id="st-doing">0</div><div class="l">En cours</div></div>
+  <div class="stat n-done"><div class="n" id="st-done">0</div><div class="l">Terminé</div></div>
+  <div class="progress-wrap">
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted)"><span>Avancement</span><strong id="st-pct" style="color:var(--ink)">0%</strong></div>
+    <div class="bar"><i id="bar" style="width:0%"></i></div>
+  </div>
+</div>
+
+<div class="filters">
+  <label>Phase</label>
+  <select id="f-phase"><option value="">Toutes</option><option>Phase 0</option><option>Phase 1</option><option>Phase 2</option><option>Phase 3</option><option>Phase 4</option></select>
+  <label>Statut</label>
+  <select id="f-status"><option value="">Tous</option><option value="todo">À faire</option><option value="doing">En cours</option><option value="done">Terminé</option></select>
+  <label>Priorité</label>
+  <select id="f-prio"><option value="">Toutes</option><option>Haute</option><option>Moyenne</option><option>Basse</option></select>
+  <label>Qui</label>
+  <select id="f-qui"><option value="">Tous</option><option>Toi</option><option>Dev</option></select>
+  <label>Module</label>
+  <select id="f-module"><option value="">Tous</option><option>Setup</option><option>Produits</option><option>Thème</option><option>SEO/Perf</option><option>Lancement</option></select>
+  <button class="reset" id="f-reset">Réinitialiser</button>
+</div>
+
+<div id="board"></div>
+
+<div class="ideas">
+  <h2>Idées à explorer</h2>
+  <div class="sub" style="color:var(--muted);font-size:13px">Zone libre — pas encore des tâches, juste des pistes à trier plus tard. Clique ✕ pour retirer une idée.</div>
+  <div class="idea-add">
+    <input type="text" id="idea-input" placeholder="Ajouter une idée…">
+    <button id="idea-add-btn">Ajouter</button>
+  </div>
+  <div id="idea-list"></div>
+</div>
+
+<footer>Boutique Shopify · Atelier Irizée — les statuts et notes sont sauvegardés dans ce navigateur</footer>
+</div>
+
+<script>
+const TASKS = [
+  {id:"SH-01", t:"Vérifier config du compte Shopify existant (devise EUR, taxes, zones de livraison)", ph:"Phase 0", phl:"Phase 0 — Cadrage & compte", mod:"Setup", p:"Haute", e:"S", q:"Toi"},
+  {id:"SH-02", t:"Réserver le nom de domaine", ph:"Phase 0", phl:"Phase 0 — Cadrage & compte", mod:"Setup", p:"Moyenne", e:"S", q:"Toi"},
+  {id:"SH-03", t:"Définir l'arborescence du site (pages, collections, nav)", ph:"Phase 0", phl:"Phase 0 — Cadrage & compte", mod:"Setup", p:"Haute", e:"S", q:"Toi"},
+  {id:"SH-04", t:"Setup Shopify CLI + dépôt git du thème", ph:"Phase 0", phl:"Phase 0 — Cadrage & compte", mod:"Setup", p:"Haute", e:"S", q:"Dev"},
+  {id:"SH-05", t:"Choisir la base de départ du thème (Dawn vierge vs from scratch)", ph:"Phase 0", phl:"Phase 0 — Cadrage & compte", mod:"Setup", p:"Haute", e:"S", q:"Dev"},
+  {id:"SH-06", t:"Shooting photos produits (packshot + lifestyle) — bloquant pour la mise en ligne", ph:"Phase 1", phl:"Phase 1 — Produits", mod:"Produits", p:"Haute", e:"L", q:"Toi"},
+  {id:"SH-07", t:"Rédiger les fiches produits (textes, ingrédients, usage)", ph:"Phase 1", phl:"Phase 1 — Produits", mod:"Produits", p:"Haute", e:"L", q:"Toi"},
+  {id:"SH-08", t:"Structurer collections & catégories dans Shopify", ph:"Phase 1", phl:"Phase 1 — Produits", mod:"Produits", p:"Haute", e:"M", q:"Toi"},
+  {id:"SH-09", t:"Importer les produits dans Shopify (fiches + placeholders en attendant les photos)", ph:"Phase 1", phl:"Phase 1 — Produits", mod:"Produits", p:"Haute", e:"M", q:"Toi"},
+  {id:"SH-10", t:"Architecture du thème (sections, templates, blocks réutilisables)", ph:"Phase 2", phl:"Phase 2 — Dev du thème", mod:"Thème", p:"Haute", e:"M", q:"Dev"},
+  {id:"SH-11", t:"Dev header & footer", ph:"Phase 2", phl:"Phase 2 — Dev du thème", mod:"Thème", p:"Haute", e:"M", q:"Dev"},
+  {id:"SH-12", t:"Dev page d'accueil (hero, mise en avant produits, réassurance, UGC)", ph:"Phase 2", phl:"Phase 2 — Dev du thème", mod:"Thème", p:"Haute", e:"L", q:"Dev"},
+  {id:"SH-13", t:"Dev template fiche produit", ph:"Phase 2", phl:"Phase 2 — Dev du thème", mod:"Thème", p:"Haute", e:"L", q:"Dev"},
+  {id:"SH-14", t:"Dev template collection / liste produits", ph:"Phase 2", phl:"Phase 2 — Dev du thème", mod:"Thème", p:"Haute", e:"M", q:"Dev"},
+  {id:"SH-15", t:"Dev pages statiques (À propos, Contact, FAQ, CGV, Livraison, Retours)", ph:"Phase 2", phl:"Phase 2 — Dev du thème", mod:"Thème", p:"Moyenne", e:"M", q:"Dev"},
+  {id:"SH-16", t:"Appliquer la charte visuelle (couleurs, typo, logo) dans le thème", ph:"Phase 2", phl:"Phase 2 — Dev du thème", mod:"Thème", p:"Haute", e:"S", q:"Dev"},
+  {id:"SH-17", t:"Vérifier le rendu mobile/responsive", ph:"Phase 2", phl:"Phase 2 — Dev du thème", mod:"Thème", p:"Haute", e:"S", q:"Dev"},
+  {id:"SH-18", t:"Meta titles & descriptions par page/produit", ph:"Phase 3", phl:"Phase 3 — SEO & Perf", mod:"SEO/Perf", p:"Haute", e:"M", q:"Toi"},
+  {id:"SH-19", t:"Alt text images + optimisation du poids", ph:"Phase 3", phl:"Phase 3 — SEO & Perf", mod:"SEO/Perf", p:"Haute", e:"S", q:"Toi"},
+  {id:"SH-20", t:"Données structurées produits (JSON-LD)", ph:"Phase 3", phl:"Phase 3 — SEO & Perf", mod:"SEO/Perf", p:"Moyenne", e:"S", q:"Dev"},
+  {id:"SH-21", t:"Sitemap & indexation Google Search Console", ph:"Phase 3", phl:"Phase 3 — SEO & Perf", mod:"SEO/Perf", p:"Haute", e:"S", q:"Toi"},
+  {id:"SH-22", t:"Audit perf du thème custom (Lighthouse/PageSpeed)", ph:"Phase 3", phl:"Phase 3 — SEO & Perf", mod:"SEO/Perf", p:"Haute", e:"S", q:"Dev"},
+  {id:"SH-23", t:"Config paiements (Shopify Payments, Apple Pay, CB)", ph:"Phase 4", phl:"Phase 4 — Tests & lancement", mod:"Lancement", p:"Haute", e:"S", q:"Toi"},
+  {id:"SH-24", t:"Config analytics (GA4, Meta Pixel)", ph:"Phase 4", phl:"Phase 4 — Tests & lancement", mod:"Lancement", p:"Haute", e:"S", q:"Toi"},
+  {id:"SH-25", t:"Tester une commande complète (mode test)", ph:"Phase 4", phl:"Phase 4 — Tests & lancement", mod:"Lancement", p:"Haute", e:"S", q:"Toi"},
+  {id:"SH-26", t:"Checklist légale (mentions, CGV, RGPD, cookies)", ph:"Phase 4", phl:"Phase 4 — Tests & lancement", mod:"Lancement", p:"Haute", e:"S", q:"Toi"},
+  {id:"SH-27", t:"Lancement : DNS + redirections", ph:"Phase 4", phl:"Phase 4 — Tests & lancement", mod:"Lancement", p:"Haute", e:"M", q:"Toi"}
+];
+
+const STATUSES = ["todo","doing","done"];
+const SLABEL = {todo:"À faire", doing:"En cours", done:"Terminé"};
+const KEY = "shopify-suivi-v2";
+
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e) { state = {}; }
+TASKS.forEach(t => { if(!state[t.id]) state[t.id] = {s:"todo", note:""}; });
+
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+function render(){
+  const fp = document.getElementById("f-phase").value;
+  const fs = document.getElementById("f-status").value;
+  const fr = document.getElementById("f-prio").value;
+  const fq = document.getElementById("f-qui").value;
+  const fm = document.getElementById("f-module").value;
+
+  const board = document.getElementById("board");
+  board.innerHTML = "";
+  const phases = [...new Set(TASKS.map(t=>t.phl))];
+
+  phases.forEach(phl => {
+    const tasks = TASKS.filter(t =>
+      t.phl===phl &&
+      (!fp || t.ph===fp) &&
+      (!fs || state[t.id].s===fs) &&
+      (!fr || t.p===fr) &&
+      (!fq || t.q===fq) &&
+      (!fm || t.mod===fm)
+    );
+    if(!tasks.length) return;
+
+    const sec = document.createElement("div");
+    sec.className = "phase";
+    const doneN = tasks.filter(t=>state[t.id].s==="done").length;
+    sec.innerHTML = `<h2>${phl} <span class="count">${doneN}/${tasks.length} terminées</span></h2>`;
+
+    tasks.forEach(t => {
+      const st = state[t.id];
+      const div = document.createElement("div");
+      div.className = "task" + (st.s==="done" ? " done-task" : "");
+      div.innerHTML = `
+        <div class="row">
+          <span class="id">${t.id}</span>
+          <span class="title">${t.t} <span class="module-tag">· ${t.mod}</span></span>
+          <span class="badge b-${t.p.toLowerCase()}">${t.p}</span>
+          <span class="badge b-effort">Effort ${t.e}</span>
+          <span class="badge b-qui">${t.q}</span>
+          <button class="status s-${st.s}" data-id="${t.id}">${SLABEL[st.s]}</button>
+          <button class="note-toggle ${st.note?'has-note':''}" data-note="${t.id}">📝${st.note?' ●':''}</button>
+        </div>
+        <div class="note-area" id="na-${t.id}">
+          <textarea placeholder="Notes pour ${t.id}…" data-ta="${t.id}">${st.note||""}</textarea>
+        </div>`;
+      sec.appendChild(div);
+    });
+    board.appendChild(sec);
+  });
+
+  const c = {todo:0,doing:0,done:0};
+  TASKS.forEach(t=>c[state[t.id].s]++);
+  document.getElementById("st-todo").textContent = c.todo;
+  document.getElementById("st-doing").textContent = c.doing;
+  document.getElementById("st-done").textContent = c.done;
+  const pct = Math.round(c.done/TASKS.length*100);
+  document.getElementById("st-pct").textContent = pct+"%";
+  document.getElementById("bar").style.width = pct+"%";
+}
+
+document.getElementById("board").addEventListener("click", e => {
+  const sBtn = e.target.closest(".status");
+  if(sBtn){
+    const id = sBtn.dataset.id;
+    const cur = STATUSES.indexOf(state[id].s);
+    state[id].s = STATUSES[(cur+1)%3];
+    save(); render();
+    return;
+  }
+  const nBtn = e.target.closest(".note-toggle");
+  if(nBtn){
+    document.getElementById("na-"+nBtn.dataset.note).classList.toggle("open");
+  }
+});
+
+document.getElementById("board").addEventListener("input", e => {
+  if(e.target.dataset.ta){
+    state[e.target.dataset.ta].note = e.target.value;
+    save();
+    const btn = document.querySelector(`[data-note="${e.target.dataset.ta}"]`);
+    btn.classList.toggle("has-note", !!e.target.value);
+  }
+});
+
+["f-phase","f-status","f-prio","f-qui","f-module"].forEach(id =>
+  document.getElementById(id).addEventListener("change", render));
+document.getElementById("f-reset").addEventListener("click", () => {
+  ["f-phase","f-status","f-prio","f-qui","f-module"].forEach(id => document.getElementById(id).value = "");
+  render();
+});
+
+render();
+
+// --- Idées libres ---
+const IDEAS_KEY = "shopify-idees-v1";
+const DEFAULT_IDEAS = [
+  {t:"Coffret découverte / bundle pour faciliter le premier achat", src:"Claude"},
+  {t:"Échantillon offert automatiquement à la première commande", src:"Claude"},
+  {t:"Section home reliée aux vidéos UGC produites via le Portail UGC de Brand OS", src:"Claude"},
+  {t:"Liste d'attente pré-lancement avec réduction early-bird", src:"Claude"},
+  {t:"Quiz produit (recommandation personnalisée selon type de peau)", src:"Claude"},
+  {t:"Programme de parrainage (filleul/parrain)", src:"Claude"},
+  {t:"Blog éditorial routine skincare — feed le SEO de contenu à moyen terme", src:"Claude"},
+  {t:"Abonnement réachat automatique sur les produits consommables", src:"Claude"}
+];
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+let ideas;
+try { ideas = JSON.parse(localStorage.getItem(IDEAS_KEY)); } catch(e) { ideas = null; }
+if(!Array.isArray(ideas)) ideas = DEFAULT_IDEAS.map(i => ({...i, id: uid()}));
+
+function saveIdeas(){ try{ localStorage.setItem(IDEAS_KEY, JSON.stringify(ideas)); }catch(e){} }
+
+function renderIdeas(){
+  const list = document.getElementById("idea-list");
+  list.innerHTML = "";
+  ideas.forEach(idea => {
+    const div = document.createElement("div");
+    div.className = "idea" + (idea.src === "Toi" ? " mine" : "");
+    div.innerHTML = `
+      <span class="txt">${idea.t}</span>
+      <span class="src">${idea.src}</span>
+      <button class="del" data-id="${idea.id}">✕</button>`;
+    list.appendChild(div);
+  });
+}
+
+document.getElementById("idea-add-btn").addEventListener("click", addIdea);
+document.getElementById("idea-input").addEventListener("keydown", e => {
+  if(e.key === "Enter") addIdea();
+});
+function addIdea(){
+  const input = document.getElementById("idea-input");
+  const val = input.value.trim();
+  if(!val) return;
+  ideas.push({id: uid(), t: val, src: "Toi"});
+  input.value = "";
+  saveIdeas(); renderIdeas();
+}
+document.getElementById("idea-list").addEventListener("click", e => {
+  const btn = e.target.closest(".del");
+  if(!btn) return;
+  ideas = ideas.filter(i => i.id !== btn.dataset.id);
+  saveIdeas(); renderIdeas();
+});
+
+renderIdeas();
+</script>
+</body>
+</html>
