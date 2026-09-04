@@ -1,686 +1,596 @@
-<link rel="stylesheet" href="{{ 'component-list-menu.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'component-search.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'component-menu-drawer.css' | asset_url }}" media="print" onload="this.media='all'">
-<link
-  rel="stylesheet"
-  href="{{ 'component-cart-notification.css' | asset_url }}"
-  media="print"
-  onload="this.media='all'"
->
+{% assign is_overlay = section.settings.overlay_on_image %}
 
-{%- if settings.predictive_search_enabled -%}
-  <link rel="stylesheet" href="{{ 'component-price.css' | asset_url }}" media="print" onload="this.media='all'">
-{%- endif -%}
+{% comment %} Logo affiché en haut de page (sur l'image, si superposé) {% endcomment %}
+{% assign top_logo_white = false %}
+{% if is_overlay and section.settings.logo_color == 'white' %}
+  {% assign top_logo_white = true %}
+{% endif %}
+{% assign top_logo_image = section.settings.logo %}
+{% assign top_logo_fallback = 'irizee-logo.png' %}
+{% if top_logo_white %}
+  {% assign top_logo_image = section.settings.logo_white %}
+  {% assign top_logo_fallback = 'irizee-logo-white.png' %}
+{% endif %}
 
-{%- if section.settings.menu_type_desktop == 'mega' -%}
-  <link rel="stylesheet" href="{{ 'component-mega-menu.css' | asset_url }}" media="print" onload="this.media='all'">
-{%- endif -%}
+{% comment %} Logo affiché une fois scrollé (fond flouté clair) {% endcomment %}
+{% assign scrolled_logo_white = false %}
+{% if section.settings.scrolled_logo_color == 'white' %}
+  {% assign scrolled_logo_white = true %}
+{% endif %}
+{% assign scrolled_logo_image = section.settings.logo %}
+{% assign scrolled_logo_fallback = 'irizee-logo.png' %}
+{% if scrolled_logo_white %}
+  {% assign scrolled_logo_image = section.settings.logo_white %}
+  {% assign scrolled_logo_fallback = 'irizee-logo-white.png' %}
+{% endif %}
 
-<style>
-  header-drawer {
-    justify-self: start;
-    margin-left: -1.2rem;
+{% style %}
+  {{ section.settings.menu_font | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} .header {
+    --menu-font-family: {{ section.settings.menu_font.family }}, {{ section.settings.menu_font.fallback_families }};
+    --menu-font-weight: {{ section.settings.menu_font.weight }};
+    --menu-font-style: {{ section.settings.menu_font.style }};
+    --menu-font-size: {{ section.settings.menu_font_size }}px;
+    --menu-letter-spacing: {{ section.settings.menu_letter_spacing }}px;
+    --header-blur: {{ section.settings.blur_intensity }}px;
+    --menu-item-gap: {{ section.settings.menu_item_gap }}px;
+    --header-column-gap: {{ section.settings.header_column_gap }}px;
+    --header-padding-desktop: {{ section.settings.header_padding_desktop }}px;
+    --header-padding-mobile: {{ section.settings.header_padding_mobile }}px;
   }
 
-  {%- if section.settings.sticky_header_type == 'reduce-logo-size' -%}
-    .scrolled-past-header .header__heading-logo-wrapper {
-      width: 75%;
-    }
-  {%- endif -%}
+{% endstyle %}
 
-  {%- if section.settings.menu_type_desktop != "drawer" -%}
-    @media screen and (min-width: 990px) {
-      header-drawer {
-        display: none;
+<header class="header{% if is_overlay %} header--overlay header--overlay-{{ section.settings.overlay_text_color }}{% if section.settings.enable_blur %} header--blur{% endif %}{% endif %}">
+  <details class="header__mobile-nav">
+    <summary class="header__hamburger" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </summary>
+    <nav class="header__mobile-menu header__menu--{{ section.settings.menu_text_transform }}">
+      {% for link in section.settings.menu.links %}
+        {{ link.title | link_to: link.url }}
+      {% endfor %}
+    </nav>
+  </details>
+
+  <nav class="header__menu header__menu--left header__menu--{{ section.settings.menu_text_transform }}">
+    {% for link in section.settings.menu.links %}
+      {{ link.title | link_to: link.url }}
+    {% endfor %}
+  </nav>
+
+  <a href="{{ routes.root_url }}" class="header__logo-link" aria-label="{{ shop.name }}">
+    {% if top_logo_image %}
+      {{
+        top_logo_image
+        | image_url: width: 220
+        | image_tag: class: 'header__logo header__logo--top', alt: shop.name, width: 110, height: 35, loading: 'eager'
+      }}
+    {% else %}
+      <img
+        src="{{ top_logo_fallback | asset_url }}"
+        alt="{{ shop.name }}"
+        class="header__logo header__logo--top"
+        width="110"
+        height="35"
+        loading="eager"
+      >
+    {% endif %}
+
+    {% if is_overlay %}
+      {% if scrolled_logo_image %}
+        {{
+          scrolled_logo_image
+          | image_url: width: 220
+          | image_tag: class: 'header__logo header__logo--scrolled', alt: shop.name, width: 110, height: 35, loading: 'lazy'
+        }}
+      {% else %}
+        <img
+          src="{{ scrolled_logo_fallback | asset_url }}"
+          alt="{{ shop.name }}"
+          class="header__logo header__logo--scrolled"
+          width="110"
+          height="35"
+          loading="lazy"
+        >
+      {% endif %}
+    {% endif %}
+  </a>
+
+  <div class="header__icons">
+    <a href="{{ routes.search_url }}" aria-label="Rechercher">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">
+        <circle cx="8.75" cy="8.75" r="5.75" stroke="currentColor" stroke-width="var(--icon-stroke-width)" />
+        <path stroke="currentColor" stroke-linecap="round" stroke-width="var(--icon-stroke-width)" d="m17 17-4.2-4.2" />
+      </svg>
+    </a>
+
+    {% if shop.customer_accounts_enabled %}
+      <shopify-account class="header__account-native" menu="{{ section.settings.customer_account_menu }}">
+        {{ 'icon-account.svg' | inline_asset_content }}
+      </shopify-account>
+      <a href="{{ routes.account_url }}" class="header__account-mobile" aria-label="Compte">
+        {{ 'icon-account.svg' | inline_asset_content }}
+      </a>
+    {% endif %}
+
+    <a href="{{ routes.cart_url }}">
+      {% if cart.item_count > 0 %}
+        <sup>{{ cart.item_count }}</sup>
+      {% endif %}
+
+      {{ 'icon-cart.svg' | inline_asset_content }}
+    </a>
+  </div>
+</header>
+
+{% if is_overlay %}
+  <script>
+    (function () {
+      var header = document.querySelector('.header--overlay');
+      if (!header) return;
+      var threshold = 80;
+      var hideOnScrollDown = {{ section.settings.hide_on_scroll | json }};
+      var lastScrollY = window.scrollY;
+      var ticking = false;
+
+      function updateHeader() {
+        var currentScrollY = window.scrollY;
+
+        if (currentScrollY > threshold) {
+          header.classList.add('header--scrolled');
+        } else {
+          header.classList.remove('header--scrolled');
+        }
+
+        if (hideOnScrollDown) {
+          if (currentScrollY > lastScrollY && currentScrollY > threshold) {
+            header.classList.add('header--hidden');
+          } else {
+            header.classList.remove('header--hidden');
+          }
+        }
+
+        lastScrollY = currentScrollY;
+        ticking = false;
       }
-    }
-  {%- endif -%}
 
-  .menu-drawer-container {
-    display: flex;
-  }
+      function onScroll() {
+        if (!ticking) {
+          window.requestAnimationFrame(updateHeader);
+          ticking = true;
+        }
+      }
 
-  .list-menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      updateHeader();
+    })();
+  </script>
+{% endif %}
 
-  .list-menu--inline {
-    display: inline-flex;
-    flex-wrap: wrap;
-  }
-
-  summary.list-menu__item {
-    padding-right: 2.7rem;
-  }
-
-  .list-menu__item {
-    display: flex;
+{% stylesheet %}
+  .header {
+    height: 8.2rem;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    line-height: calc(1 + 0.3 / var(--font-body-scale));
+    column-gap: var(--header-column-gap, 16px);
+    padding: 0 var(--header-padding-desktop, var(--page-margin));
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    transition: background-color 0.3s ease, backdrop-filter 0.3s ease, color 0.3s ease, transform 0.3s ease;
   }
 
-  .list-menu__item--link {
-    text-decoration: none;
-    padding-bottom: 1rem;
-    padding-top: 1rem;
-    line-height: calc(1 + 0.8 / var(--font-body-scale));
+  .header--overlay {
+    /* position:sticky ne fonctionne pas ici : la marge négative qui fait
+       chevaucher le header sur le hero réduit aussi son propre conteneur à
+       ~0px, ce qui lui retire tout espace où "coller". position:fixed
+       contourne le problème (le header sort complètement du flux, donc le
+       hero démarre naturellement en haut sans qu'on ait besoin de marge
+       négative). */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    background: transparent;
   }
 
-  @media screen and (min-width: 750px) {
-    .list-menu__item--link {
-      padding-bottom: 0.5rem;
-      padding-top: 0.5rem;
-    }
+  .header--overlay-white {
+    color: #fff;
   }
 
-  shopify-account.header__icon {
-    --shopify-account-font-heading: var(--font-heading-family);
-    --shopify-account-font-heading-weight: var(--font-heading-weight);
-    --shopify-account-font-body: var(--font-body-family);
-    --shopify-account-font-body-weight: var(--font-body-weight);
-    --shopify-account-radius-base: var(--popup-corner-radius);
-    --shopify-account-radius-button: var(--buttons-radius);
-    --shopify-account-radius-button-small: var(--buttons-radius);
-    --shopify-account-radius-input: var(--inputs-radius);
-    --shopify-account-color-background: rgb(var(--color-background));
-    --shopify-account-color-text: rgb(var(--color-foreground));
-    --shopify-account-color-accent: rgb(var(--color-button));
-    --shopify-account-color-accent-text: rgb(var(--color-button-text));
-    --shopify-account-dialog-position-top: var(--account-dialog-top, var(--header-height, 0px));
+  .header--overlay-black {
+    color: #1a1a1a;
   }
 
-  shopify-account.header__icon:not(:defined) {
+  /* État "scrollé" : une fois qu'on quitte le hero, le header passe d'un
+     fond transparent à un fond flouté/translucide, texte repassé en couleur
+     normale du site — transition douce plutôt qu'un changement brusque. */
+  .header--overlay.header--scrolled {
+    background: color-mix(in srgb, var(--color-background) 75%, transparent);
+    color: var(--color-foreground);
+  }
+
+  .header--overlay.header--scrolled.header--blur {
+    backdrop-filter: blur(var(--header-blur));
+    -webkit-backdrop-filter: blur(var(--header-blur));
+  }
+
+  /* Se cache en scrollant vers le bas, réapparaît dès qu'on remonte. */
+  .header--hidden {
+    transform: translateY(-100%);
+  }
+
+  .header .header__logo-link {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 4.4rem;
-    height: 4.4rem;
-  }
-</style>
-
-{%- style -%}
-  .header {
-    padding: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px 3rem {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px 3rem;
   }
 
-  .section-header {
-    position: sticky; /* This is for fixing a Safari z-index issue. PR #2147 */
-    margin-bottom: {{ section.settings.margin_bottom | times: 0.75 | round: 0 }}px;
+  .header__menu--left {
+    justify-self: start;
   }
 
-  @media screen and (min-width: 750px) {
-    .section-header {
-      margin-bottom: {{ section.settings.margin_bottom }}px;
+  .header__icons {
+    justify-self: end;
+  }
+
+  .header .header__logo {
+    width: 110px;
+    height: auto;
+    /* Alignement optique : les points du logo (i, z) tirent son centre
+       géométrique vers le haut par rapport au corps des lettres — on
+       recale sur le centre visuel réel plutôt que sur la boîte englobante. */
+    transform: translateY(-0.56rem);
+  }
+
+  /* Deux logos superposables (couleur "en haut" / couleur "scrollé") — un
+     seul visible à la fois, basculé par la classe .header--scrolled. */
+  .header__logo--scrolled {
+    display: none;
+  }
+
+  .header--scrolled .header__logo--top {
+    display: none;
+  }
+
+  .header--scrolled .header__logo--scrolled {
+    display: block;
+  }
+
+  .header a {
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header .header__menu a,
+  .header .header__mobile-menu a {
+    font-family: var(--menu-font-family);
+    font-weight: var(--menu-font-weight);
+    font-style: var(--menu-font-style);
+  }
+
+  .header .header__menu a {
+    font-size: var(--menu-font-size);
+    letter-spacing: var(--menu-letter-spacing);
+  }
+
+  .header__menu--uppercase a {
+    text-transform: uppercase;
+  }
+
+  .header__menu--lowercase a {
+    text-transform: lowercase;
+  }
+
+  .header__menu--capitalize a {
+    text-transform: capitalize;
+  }
+
+  .header__menu--none a {
+    text-transform: none;
+  }
+
+  .header a sup {
+    position: absolute;
+    left: 100%;
+    overflow: hidden;
+    max-width: var(--page-margin);
+  }
+
+  .header svg {
+    width: 1.8rem;
+    height: 1.8rem;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+  }
+
+  .header__menu,
+  .header__icons {
+    display: flex;
+    align-items: center;
+    gap: 2.4rem;
+  }
+
+  .header__menu {
+    gap: var(--menu-item-gap, 24px);
+  }
+
+  /* Lien compte simplifié, affiché uniquement sous 750px (voir media query) —
+     le composant natif Shopify a une taille interne fixe qui ne correspond
+     pas aux icônes recherche/panier une fois réduite, donc pas de bricolage
+     dessus : sur mobile on affiche notre propre icône à la bonne taille à la
+     place, en lien direct vers la page compte. */
+  .header .header__account-mobile {
+    display: none;
+  }
+
+  .header__icons a {
+    flex-shrink: 0;
+  }
+
+  /* Shopify injecte parfois un élément vide (shopify-store) entre les icônes,
+     ce qui casse le gap flex — on le retire du flux. */
+  .header__icons shopify-store:empty {
+    display: none;
+  }
+
+  /* Mobile hamburger — caché par défaut, affiché sous 750px */
+  .header__mobile-nav {
+    display: none;
+    justify-self: start;
+  }
+
+  .header__hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .header__hamburger::-webkit-details-marker {
+    display: none;
+  }
+
+  .header__hamburger span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+  }
+
+  .header__mobile-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    padding: 2.4rem var(--page-margin) 3.2rem;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    border-top: 1px solid color-mix(in srgb, var(--color-foreground) 10%, transparent);
+  }
+
+  .header__mobile-menu a {
+    font-size: 1.6rem;
+    justify-content: flex-start;
+  }
+
+  @media (max-width: 749px) {
+    .header__menu--left {
+      display: none;
     }
-  }
 
-  @media screen and (min-width: 990px) {
+    .header__mobile-nav {
+      display: block;
+    }
+
     .header {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
+      column-gap: 0.8rem;
+      padding: 0 var(--header-padding-mobile, 16px);
+    }
+
+    .header .header__logo {
+      width: 84px;
+    }
+
+    .header__icons {
+      gap: 1.4rem;
+    }
+
+    .header .header__account-native {
+      display: none;
+    }
+
+    .header .header__account-mobile {
+      display: flex;
     }
   }
-{%- endstyle -%}
-
-<script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
-
-{%- liquid
-  for block in section.blocks
-    if block.type == '@app'
-      assign has_app_block = true
-    endif
-  endfor
--%}
-
-{% liquid
-  assign header_tag = 'div'
-
-  if section.settings.sticky_header_type != 'none'
-    assign header_tag = 'sticky-header'
-  endif
-%}
-
-<{{ header_tag }}
-  {% if header_tag == 'sticky-header' %}
-    data-sticky-type="{{ section.settings.sticky_header_type }}"
-  {% endif %}
-  class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}"
->
-  {%- liquid
-    assign social_links = false
-    if settings.social_twitter_link != blank or settings.social_facebook_link != blank or settings.social_pinterest_link != blank or settings.social_instagram_link != blank or settings.social_youtube_link != blank or settings.social_vimeo_link != blank or settings.social_tiktok_link != blank or settings.social_tumblr_link != blank or settings.social_snapchat_link != blank
-      assign social_links = true
-    endif
-
-    assign country_selector = false
-    if section.settings.enable_country_selector and localization.available_countries.size > 1
-      assign country_selector = true
-    endif
-
-    assign language_selector = false
-    if section.settings.enable_language_selector and localization.available_languages.size > 1
-      assign language_selector = true
-    endif
-  -%}
-  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if country_selector or language_selector %} header--has-localizations{% endif %}">
-    {%- liquid
-      assign render_search_left = false
-      if section.settings.logo_position == 'top-center' or section.settings.menu == blank or shop.customer_accounts_enabled
-        assign render_search_left = true
-      endif
-
-      if section.settings.menu != blank
-        render 'header-drawer', show_country_selector: country_selector, show_language_selector: language_selector, show_social_links: social_links
-      endif
-
-      if render_search_left
-        render 'header-search', input_id: 'Search-In-Modal-1'
-      endif
-    -%}
-
-    {%- if section.settings.logo_position != 'middle-center' -%}
-      {%- if request.page_type == 'index' -%}
-        <h1 class="header__heading">
-      {%- endif -%}
-      <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
-        {%- if settings.logo != blank -%}
-          <div class="header__heading-logo-wrapper">
-            {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
-            {%- assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio -%}
-            {% capture sizes %}(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px{% endcapture %}
-            {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
-            {{
-              settings.logo
-              | image_url: width: 600
-              | image_tag:
-                class: 'header__heading-logo motion-reduce',
-                widths: widths,
-                height: logo_height,
-                width: settings.logo_width,
-                alt: logo_alt,
-                sizes: sizes,
-                preload: true
-            }}
-          </div>
-        {%- else -%}
-          <span class="h2">{{ shop.name }}</span>
-        {%- endif -%}
-      </a>
-      {%- if request.page_type == 'index' -%}
-        </h1>
-      {%- endif -%}
-    {%- endif -%}
-
-    {%- liquid
-      if section.settings.menu != blank
-        if section.settings.menu_type_desktop == 'dropdown'
-          render 'header-dropdown-menu'
-        elsif section.settings.menu_type_desktop != 'drawer'
-          render 'header-mega-menu'
-        endif
-      endif
-    %}
-
-    {%- if section.settings.logo_position == 'middle-center' -%}
-      {%- if request.page_type == 'index' -%}
-        <h1 class="header__heading">
-      {%- endif -%}
-      <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
-        {%- if settings.logo != blank -%}
-          <div class="header__heading-logo-wrapper">
-            {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
-            {%- assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio -%}
-            {% capture sizes %}(min-width: 750px) {{ settings.logo_width }}px, 50vw{% endcapture %}
-            {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
-            {{
-              settings.logo
-              | image_url: width: 600
-              | image_tag:
-                class: 'header__heading-logo',
-                widths: widths,
-                height: logo_height,
-                width: settings.logo_width,
-                alt: logo_alt,
-                sizes: sizes,
-                preload: true
-            }}
-          </div>
-        {%- else -%}
-          <span class="h2">{{ shop.name }}</span>
-        {%- endif -%}
-      </a>
-      {%- if request.page_type == 'index' -%}
-        </h1>
-      {%- endif -%}
-    {%- endif -%}
-
-    <div class="header__icons{% if section.settings.enable_country_selector or section.settings.enable_language_selector %} header__icons--localization header-localization{% endif %}">
-      <div class="desktop-localization-wrapper">
-        {%- if section.settings.enable_country_selector and localization.available_countries.size > 1 -%}
-          <localization-form class="small-hide medium-hide" data-prevent-hide>
-            {%- form 'localization', id: 'HeaderCountryForm', class: 'localization-form' -%}
-              <div>
-                <h2 class="visually-hidden" id="HeaderCountryLabel">{{ 'localization.country_label' | t }}</h2>
-                {%- render 'country-localization', localPosition: 'HeaderCountry' -%}
-              </div>
-            {%- endform -%}
-          </localization-form>
-        {% endif %}
-
-        {%- if section.settings.enable_language_selector and localization.available_languages.size > 1 -%}
-          <localization-form class="small-hide medium-hide" data-prevent-hide>
-            {%- form 'localization', id: 'HeaderLanguageForm', class: 'localization-form' -%}
-              <div>
-                <h2 class="visually-hidden" id="HeaderLanguageLabel">{{ 'localization.language_label' | t }}</h2>
-                {%- render 'language-localization', localPosition: 'HeaderLanguage' -%}
-              </div>
-            {%- endform -%}
-          </localization-form>
-        {%- endif -%}
-      </div>
-      {% render 'header-search', input_id: 'Search-In-Modal' %}
-
-      {%- if shop.customer_accounts_enabled -%}
-        <shopify-account
-          menu="{{ settings.customer_account_menu | default: 'customer-account-main-menu' }}"
-          class="header__icon header__icon--account link focus-inset"
-        >
-          <span slot="signed-out-avatar" class="svg-wrapper">{{ 'icon-account.svg' | inline_asset_content }}</span>
-          <span slot="signed-out-avatar" class="visually-hidden">{{ 'customer.log_in' | t }}</span>
-        </shopify-account>
-      {%- endif -%}
-
-      {%- for block in section.blocks -%}
-        {%- case block.type -%}
-          {%- when '@app' -%}
-            {% render block %}
-        {%- endcase -%}
-      {%- endfor -%}
-
-      <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
-        {% if cart == empty %}
-          <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
-        {% else %}
-          <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
-        {% endif %}
-        <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
-        {%- if cart != empty -%}
-          <div class="cart-count-bubble">
-            {%- if cart.item_count < 100 -%}
-              <span aria-hidden="true">{{ cart.item_count }}</span>
-            {%- endif -%}
-            <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
-          </div>
-        {%- endif -%}
-      </a>
-    </div>
-  </header>
-</{{ header_tag }}>
-
-{%- if settings.cart_type == 'notification' -%}
-  {%- render 'cart-notification',
-    color_scheme: section.settings.color_scheme,
-    desktop_menu_type: section.settings.menu_type_desktop
-  -%}
-{%- endif -%}
-
-{% javascript %}
-  class StickyHeader extends HTMLElement {
-    constructor() {
-      super();
-      this.setHeaderHeight = this.setHeaderHeight.bind(this);
-    }
-
-    connectedCallback() {
-      this.header = document.querySelector('.section-header');
-      this.mobileMediaQuery = window.matchMedia('(max-width: 990px)');
-      this.headerIsAlwaysSticky =
-        this.getAttribute('data-sticky-type') === 'always' ||
-        this.getAttribute('data-sticky-type') === 'reduce-logo-size';
-      this.headerBounds = {};
-
-      this.setHeaderHeight();
-
-      this.mobileMediaQuery.addEventListener('change', this.setHeaderHeight);
-
-      if (this.headerIsAlwaysSticky) {
-        this.header.classList.add('shopify-section-header-sticky');
-      }
-
-      this.currentScrollTop = 0;
-      this.preventReveal = false;
-      this.predictiveSearches = this.querySelectorAll('predictive-search');
-
-      this.onScrollHandler = this.onScroll.bind(this);
-      this.hideHeaderOnScrollUp = () => (this.preventReveal = true);
-
-      this.addEventListener('preventHeaderReveal', this.hideHeaderOnScrollUp);
-      window.addEventListener('scroll', this.onScrollHandler, false);
-
-      this.createObserver();
-    }
-
-    setHeaderHeight() {
-      document.documentElement.style.setProperty('--header-height', `${this.header.offsetHeight}px`);
-    }
-
-    disconnectedCallback() {
-      this.mobileMediaQuery.removeEventListener('change', this.setHeaderHeight);
-      this.removeEventListener('preventHeaderReveal', this.hideHeaderOnScrollUp);
-      window.removeEventListener('scroll', this.onScrollHandler);
-    }
-
-    createObserver() {
-      let observer = new IntersectionObserver((entries, observer) => {
-        this.headerBounds = entries[0].intersectionRect;
-        observer.disconnect();
-      });
-
-      observer.observe(this.header);
-    }
-
-    onScroll() {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-      if ([...this.predictiveSearches].some((predictiveSearch) => predictiveSearch.isOpen)) return;
-
-      if (scrollTop > this.currentScrollTop && scrollTop > this.headerBounds.bottom) {
-        this.header.classList.add('scrolled-past-header');
-        if (this.preventHide) return;
-        requestAnimationFrame(this.hide.bind(this));
-      } else if (scrollTop < this.currentScrollTop && scrollTop > this.headerBounds.bottom) {
-        this.header.classList.add('scrolled-past-header');
-        if (!this.preventReveal) {
-          requestAnimationFrame(this.reveal.bind(this));
-        } else {
-          window.clearTimeout(this.isScrolling);
-
-          this.isScrolling = setTimeout(() => {
-            this.preventReveal = false;
-          }, 66);
-
-          requestAnimationFrame(this.hide.bind(this));
-        }
-      } else if (scrollTop <= this.headerBounds.top) {
-        this.header.classList.remove('scrolled-past-header');
-        requestAnimationFrame(this.reset.bind(this));
-      }
-
-      this.currentScrollTop = scrollTop;
-    }
-
-    hide() {
-      if (this.headerIsAlwaysSticky) return;
-      this.header.classList.add('shopify-section-header-hidden', 'shopify-section-header-sticky');
-      this.closeMenuDisclosure();
-      this.closeSearchModal();
-    }
-
-    reveal() {
-      if (this.headerIsAlwaysSticky) return;
-      this.header.classList.add('shopify-section-header-sticky', 'animate');
-      this.header.classList.remove('shopify-section-header-hidden');
-    }
-
-    reset() {
-      if (this.headerIsAlwaysSticky) return;
-      this.header.classList.remove('shopify-section-header-hidden', 'shopify-section-header-sticky', 'animate');
-    }
-
-    closeMenuDisclosure() {
-      this.disclosures = this.disclosures || this.header.querySelectorAll('header-menu');
-      this.disclosures.forEach((disclosure) => disclosure.close());
-    }
-
-    closeSearchModal() {
-      this.searchModals = this.searchModals || this.header.querySelectorAll('details-modal');
-      this.searchModals.forEach((searchModal) => searchModal.close(false));
-    }
-  }
-
-  // The account `open` event is composed but does not bubble, so listen during capture.
-  // Anchor the dialog to the bottom of the account button itself. The header group can be
-  // much taller than the button's row (for example, a top-left logo pushes the menu to a
-  // second row), so anchoring to the section bottom drops the dialog too low.
-  document.addEventListener(
-    'open',
-    (event) => {
-      if (!(event.target instanceof HTMLElement) || !event.target.matches('shopify-account')) return;
-
-      const bottom = Math.max(0, Math.round(event.target.getBoundingClientRect().bottom));
-      event.target.style.setProperty('--account-dialog-top', `${bottom}px`);
-    },
-    true
-  );
-
-  customElements.define('sticky-header', StickyHeader);
-{% endjavascript %}
-
-<script type="application/ld+json">
-  {
-    "@context": "http://schema.org",
-    "@type": "Organization",
-    "name": {{ shop.name | json }},
-    {% if settings.logo %}
-      "logo": {{ settings.logo | image_url: width: 500 | prepend: "https:" | json }},
-    {% endif %}
-    "sameAs": [
-      {{ settings.social_twitter_link | json }},
-      {{ settings.social_facebook_link | json }},
-      {{ settings.social_pinterest_link | json }},
-      {{ settings.social_instagram_link | json }},
-      {{ settings.social_tiktok_link | json }},
-      {{ settings.social_tumblr_link | json }},
-      {{ settings.social_snapchat_link | json }},
-      {{ settings.social_youtube_link | json }},
-      {{ settings.social_vimeo_link | json }}
-    ],
-    "url": {{ request.origin | append: page.url | json }}
-  }
-</script>
-
-{%- if request.page_type == 'index' -%}
-  {% assign potential_action_target = request.origin | append: routes.search_url | append: '?q={search_term_string}' %}
-  <script type="application/ld+json">
-    {
-      "@context": "http://schema.org",
-      "@type": "WebSite",
-      "name": {{ shop.name | json }},
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {{ potential_action_target | json }},
-        "query-input": "required name=search_term_string"
-      },
-      "url": {{ request.origin | append: page.url | json }}
-    }
-  </script>
-{%- endif -%}
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:sections.header.name",
-  "class": "section-header",
-  "max_blocks": 3,
+  "name": "t:general.header",
   "settings": [
     {
-      "type": "select",
-      "id": "logo_position",
-      "options": [
-        {
-          "value": "top-left",
-          "label": "t:sections.header.settings.logo_position.options__2.label"
-        },
-        {
-          "value": "top-center",
-          "label": "t:sections.header.settings.logo_position.options__3.label"
-        },
-        {
-          "value": "middle-left",
-          "label": "t:sections.header.settings.logo_position.options__1.label"
-        },
-        {
-          "value": "middle-center",
-          "label": "t:sections.header.settings.logo_position.options__4.label"
-        }
-      ],
-      "default": "middle-left",
-      "label": "t:sections.header.settings.logo_position.label",
-      "info": "t:sections.header.settings.logo_help.content"
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_white",
+      "label": "Logo (version blanche, si superposé sur une image)"
+    },
+    {
+      "type": "checkbox",
+      "id": "overlay_on_image",
+      "label": "Superposer le header sur la section suivante",
+      "default": false
     },
     {
       "type": "select",
-      "id": "mobile_logo_position",
+      "id": "logo_color",
+      "label": "Couleur du logo quand superposé",
       "options": [
-        {
-          "value": "center",
-          "label": "t:sections.header.settings.mobile_logo_position.options__1.label"
-        },
-        {
-          "value": "left",
-          "label": "t:sections.header.settings.mobile_logo_position.options__2.label"
-        }
+        { "value": "white", "label": "Blanc" },
+        { "value": "black", "label": "Noir" }
       ],
-      "default": "center",
-      "label": "t:sections.header.settings.mobile_logo_position.label"
+      "default": "white"
+    },
+    {
+      "type": "select",
+      "id": "scrolled_logo_color",
+      "label": "Couleur du logo une fois scrollé",
+      "options": [
+        { "value": "white", "label": "Blanc" },
+        { "value": "black", "label": "Noir" }
+      ],
+      "default": "black"
+    },
+    {
+      "type": "select",
+      "id": "overlay_text_color",
+      "label": "Couleur du menu et des icônes quand superposé",
+      "options": [
+        { "value": "white", "label": "Blanc" },
+        { "value": "black", "label": "Noir" }
+      ],
+      "default": "white"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_blur",
+      "label": "Effet de flou (verre dépoli) une fois scrollé",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "blur_intensity",
+      "label": "Intensité du flou",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_scroll",
+      "label": "Cacher le header en scrollant vers le bas",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Typographie du menu"
+    },
+    {
+      "type": "font_picker",
+      "id": "menu_font",
+      "label": "Police du menu",
+      "default": "work_sans_n7"
+    },
+    {
+      "type": "range",
+      "id": "menu_font_size",
+      "label": "Taille du texte",
+      "min": 10,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "menu_letter_spacing",
+      "label": "Espacement des lettres",
+      "min": -1,
+      "max": 4,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "menu_item_gap",
+      "label": "Espace entre les liens du menu",
+      "min": 8,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "header_column_gap",
+      "label": "Espace entre menu / logo / icônes",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "header_padding_desktop",
+      "label": "Marge horizontale (bords) — desktop",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "header_padding_mobile",
+      "label": "Marge horizontale (bords) — mobile",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "menu_text_transform",
+      "label": "Casse du texte",
+      "options": [
+        { "value": "none", "label": "Normal" },
+        { "value": "uppercase", "label": "Majuscules" },
+        { "value": "lowercase", "label": "Minuscules" },
+        { "value": "capitalize", "label": "Première lettre en majuscule" }
+      ],
+      "default": "uppercase"
     },
     {
       "type": "link_list",
       "id": "menu",
-      "default": "main-menu",
-      "label": "t:sections.header.settings.menu.label"
+      "label": "t:labels.menu"
     },
     {
-      "type": "select",
-      "id": "menu_type_desktop",
-      "options": [
-        {
-          "value": "dropdown",
-          "label": "t:sections.header.settings.menu_type_desktop.options__1.label"
-        },
-        {
-          "value": "mega",
-          "label": "t:sections.header.settings.menu_type_desktop.options__2.label"
-        },
-        {
-          "value": "drawer",
-          "label": "t:sections.header.settings.menu_type_desktop.options__3.label"
-        }
-      ],
-      "default": "dropdown",
-      "label": "t:sections.header.settings.menu_type_desktop.label"
-    },
-    {
-      "type": "select",
-      "id": "sticky_header_type",
-      "options": [
-        {
-          "value": "none",
-          "label": "t:sections.header.settings.sticky_header_type.options__1.label"
-        },
-        {
-          "value": "on-scroll-up",
-          "label": "t:sections.header.settings.sticky_header_type.options__2.label"
-        },
-        {
-          "value": "always",
-          "label": "t:sections.header.settings.sticky_header_type.options__3.label"
-        },
-        {
-          "value": "reduce-logo-size",
-          "label": "t:sections.header.settings.sticky_header_type.options__4.label"
-        }
-      ],
-      "default": "on-scroll-up",
-      "label": "t:sections.header.settings.sticky_header_type.label"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_line_separator",
-      "default": true,
-      "label": "t:sections.header.settings.show_line_separator.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.header.settings.header__1.content"
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:sections.all.colors.label",
-      "default": "scheme-1"
-    },
-    {
-      "type": "color_scheme",
-      "id": "menu_color_scheme",
-      "label": "t:sections.header.settings.menu_color_scheme.label",
-      "default": "scheme-1"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.header.settings.header__utilities.content"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_country_selector",
-      "default": true,
-      "label": "t:sections.header.settings.enable_country_selector.label",
-      "info": "t:sections.header.settings.enable_country_selector.info"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_language_selector",
-      "default": true,
-      "label": "t:sections.header.settings.enable_language_selector.label",
-      "info": "t:sections.header.settings.enable_language_selector.info"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:sections.header.settings.customer_account_menu.content"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.all.spacing"
-    },
-    {
-      "type": "range",
-      "id": "margin_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.header.settings.margin_bottom.label",
-      "default": 0
-    },
-    {
-      "type": "header",
-      "content": "t:sections.all.padding.section_padding_heading"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 36,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_top",
-      "default": 20
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 36,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_bottom",
-      "default": 20
-    }
-  ],
-  "blocks": [
-    {
-      "type": "@app"
+      "type": "link_list",
+      "id": "customer_account_menu",
+      "label": "t:labels.customer_account_menu",
+      "default": "customer-account-main-menu"
     }
   ]
 }

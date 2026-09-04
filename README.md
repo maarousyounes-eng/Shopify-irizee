@@ -41,6 +41,12 @@ pistes en vrac sans les transformer tout de suite en tâches.
 Voir [`docs/sitemap.md`](docs/sitemap.md) pour l'arborescence des pages,
 collections et navigation.
 
+## Journal de développement
+
+Voir [`docs/journal.md`](docs/journal.md) — log daté des décisions prises et
+de ce qui a été fait pendant le dev. À compléter au fil de l'eau (une entrée
+par session ou par décision qui vaut la peine d'être expliquée).
+
 ## Checklists
 
 - [`docs/seo-perf-checklist.md`](docs/seo-perf-checklist.md) — points à

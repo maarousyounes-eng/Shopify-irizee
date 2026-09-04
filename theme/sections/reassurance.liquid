@@ -1,0 +1,318 @@
+{% style %}
+  {{ section.settings.title_font | font_face: font_display: 'swap' }}
+  {{ section.settings.title_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+  {{ section.settings.text_font | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} {
+    --rs-bg: {{ section.settings.background_color }};
+    --rs-text: {{ section.settings.text_color }};
+    --rs-icon: {{ section.settings.icon_color }};
+    --rs-padding: {{ section.settings.padding_desktop }}px;
+    --rs-gap: {{ section.settings.item_gap }}px;
+    --rs-icon-size: {{ section.settings.icon_size }}px;
+
+    --rs-title-family: {{ section.settings.title_font.family }}, {{ section.settings.title_font.fallback_families }};
+    --rs-title-size: {{ section.settings.title_size }}px;
+
+    --rs-text-family: {{ section.settings.text_font.family }}, {{ section.settings.text_font.fallback_families }};
+    --rs-text-size: {{ section.settings.text_size }}px;
+  }
+
+  /* Réglages mobiles : indépendants des valeurs ordinateur ci-dessus */
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --rs-padding: {{ section.settings.padding_mobile }}px;
+      --rs-gap: {{ section.settings.item_gap_mobile }}px;
+      --rs-icon-size: {{ section.settings.icon_size_mobile }}px;
+      --rs-title-size: {{ section.settings.title_size_mobile }}px;
+      --rs-text-size: {{ section.settings.text_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="reassurance full-width">
+  <div
+    class="reassurance__list reassurance__list--{{ section.settings.layout }} reassurance__list--mobile-{{ section.settings.mobile_layout }}{% if section.settings.show_separators %} reassurance__list--separated{% endif %}"
+  >
+    {% for block in section.blocks %}
+      <div class="reassurance__item" {{ block.shopify_attributes }}>
+        {% if block.settings.image != blank %}
+          {{ block.settings.image | image_url: width: 160 | image_tag: loading: 'lazy', widths: '80, 120, 160', class: 'reassurance__custom-icon' }}
+        {% elsif block.settings.icon != 'none' %}
+          <span class="reassurance__icon">
+            {% case block.settings.icon %}
+              {% when 'leaf' %}
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M20 4c0 9-5.5 13-11 13a5 5 0 0 1-5-5C4 6.5 12.5 4 20 4Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                  <path d="M4 20c2-6 6-9.5 12-12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+              {% when 'france' %}
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 2.5 20 7v10l-8 4.5L4 17V7l8-4.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                  <path d="M9 9.5v5M12 9.5v5M15 9.5v5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+              {% when 'truck' %}
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                  <circle cx="7" cy="18" r="1.8" stroke="currentColor" stroke-width="1.4"/>
+                  <circle cx="17.5" cy="18" r="1.8" stroke="currentColor" stroke-width="1.4"/>
+                </svg>
+              {% when 'rabbit' %}
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 10c-1.5-2.5-2-5-1-6.5S11 3 11.5 6l.5 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                  <path d="M14 10c1.5-2.5 2-5 1-6.5S12 3 11.5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                  <path d="M7 15.5A4.5 4.5 0 0 1 11.5 11h1A4.5 4.5 0 0 1 17 15.5V19a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                </svg>
+              {% when 'recycle' %}
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="m8 6 2.5-3.5L13 6M6.5 9 4 12.5 6 16M17.5 9 20 12.5 18 16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M8 20h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                  <path d="m6 17 2 3-2 0M18 17l-2 3 2 0" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                </svg>
+              {% when 'shield' %}
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 3l7 2.5V12c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V5.5L12 3Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                  <path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              {% when 'drop' %}
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 3s6 6.2 6 10a6 6 0 0 1-12 0c0-3.8 6-10 6-10Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                </svg>
+              {% when 'star' %}
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.7l5.9-.8L12 3.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                </svg>
+              {% when 'flask' %}
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M10 3h4M10.5 3v6L5.5 18a2 2 0 0 0 1.8 3h9.4a2 2 0 0 0 1.8-3l-5-9V3" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                  <path d="M8 15h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+            {% endcase %}
+          </span>
+        {% endif %}
+
+        <div class="reassurance__body">
+          {% if block.settings.title != blank %}
+            <p class="reassurance__title">{{ block.settings.title }}</p>
+          {% endif %}
+          {% if block.settings.text != blank %}
+            <p class="reassurance__text">{{ block.settings.text }}</p>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .reassurance {
+    padding: var(--rs-padding) var(--page-margin);
+    background-color: var(--rs-bg);
+    color: var(--rs-text);
+  }
+
+  .reassurance__list {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: var(--rs-gap);
+    max-width: var(--page-width);
+    margin: 0 auto;
+  }
+
+  .reassurance__item {
+    flex: 1 1 0;
+    display: flex;
+    gap: 1.2rem;
+    min-width: 0;
+  }
+
+  /* Icône au-dessus du texte, tout centré */
+  .reassurance__list--stacked .reassurance__item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Icône à gauche du texte */
+  .reassurance__list--inline .reassurance__item {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+  }
+
+  .reassurance__list--separated .reassurance__item + .reassurance__item {
+    border-left: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+    padding-left: var(--rs-gap);
+  }
+
+  .reassurance__icon {
+    flex-shrink: 0;
+    display: flex;
+    color: var(--rs-icon);
+  }
+
+  .reassurance__icon svg {
+    width: var(--rs-icon-size);
+    height: var(--rs-icon-size);
+  }
+
+  .reassurance__custom-icon {
+    flex-shrink: 0;
+    width: var(--rs-icon-size);
+    height: var(--rs-icon-size);
+    object-fit: contain;
+  }
+
+  .reassurance__title {
+    font-family: var(--rs-title-family);
+    font-size: var(--rs-title-size);
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .reassurance__text {
+    font-family: var(--rs-text-family);
+    font-size: var(--rs-text-size);
+    line-height: 1.5;
+    margin-top: 0.4rem;
+    opacity: 0.75;
+  }
+
+  @media (max-width: 749px) {
+    /* Deux colonnes */
+    .reassurance__list--mobile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .reassurance__list--mobile-grid.reassurance__list--separated .reassurance__item + .reassurance__item {
+      border-left: 0;
+      padding-left: 0;
+    }
+
+    /* Empilé sur une colonne */
+    .reassurance__list--mobile-stack {
+      flex-direction: column;
+    }
+
+    .reassurance__list--mobile-stack.reassurance__list--separated .reassurance__item + .reassurance__item {
+      border-left: 0;
+      padding-left: 0;
+      border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+      padding-top: var(--rs-gap);
+    }
+
+    /* Défilement horizontal */
+    .reassurance__list--mobile-scroll {
+      overflow-x: auto;
+      justify-content: flex-start;
+      scroll-snap-type: x proximity;
+      scrollbar-width: none;
+    }
+
+    .reassurance__list--mobile-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .reassurance__list--mobile-scroll .reassurance__item {
+      flex: 0 0 auto;
+      width: 62vw;
+      scroll-snap-align: start;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Bandeau de réassurance",
+  "settings": [
+    { "type": "header", "content": "Mise en page" },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Disposition (ordinateur)",
+      "options": [
+        { "value": "stacked", "label": "Icône au-dessus du texte, centré" },
+        { "value": "inline", "label": "Icône à gauche du texte" }
+      ],
+      "default": "stacked"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Disposition (mobile)",
+      "options": [
+        { "value": "grid", "label": "Deux colonnes" },
+        { "value": "stack", "label": "Empilé" },
+        { "value": "scroll", "label": "Défilement horizontal" }
+      ],
+      "default": "grid"
+    },
+    { "type": "checkbox", "id": "show_separators", "label": "Afficher des séparateurs entre les éléments", "default": false },
+    { "type": "range", "id": "item_gap", "label": "Espace entre les éléments — ordinateur", "min": 8, "max": 96, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "item_gap_mobile", "label": "Espace entre les éléments — mobile", "min": 8, "max": 64, "step": 4, "unit": "px", "default": 20 },
+    { "type": "range", "id": "padding_desktop", "label": "Marges verticales — ordinateur", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_mobile", "label": "Marges verticales — mobile", "min": 0, "max": 96, "step": 4, "unit": "px", "default": 28 },
+
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "background_color", "label": "Fond", "default": "#FFFFFF" },
+    { "type": "color", "id": "text_color", "label": "Texte", "default": "#1A1A1A" },
+    { "type": "color", "id": "icon_color", "label": "Icônes", "default": "#214975" },
+
+    { "type": "header", "content": "Icônes" },
+    { "type": "range", "id": "icon_size", "label": "Taille — ordinateur", "min": 16, "max": 72, "step": 2, "unit": "px", "default": 32 },
+    { "type": "range", "id": "icon_size_mobile", "label": "Taille — mobile", "min": 14, "max": 56, "step": 2, "unit": "px", "default": 26 },
+
+    { "type": "header", "content": "Typographie — Titre" },
+    { "type": "font_picker", "id": "title_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "title_size", "label": "Taille — ordinateur", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 14 },
+    { "type": "range", "id": "title_size_mobile", "label": "Taille — mobile", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 13 },
+
+    { "type": "header", "content": "Typographie — Texte" },
+    { "type": "font_picker", "id": "text_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "text_size", "label": "Taille — ordinateur", "min": 9, "max": 24, "step": 1, "unit": "px", "default": 13 },
+    { "type": "range", "id": "text_size_mobile", "label": "Taille — mobile", "min": 9, "max": 20, "step": 1, "unit": "px", "default": 12 }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Élément",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "options": [
+            { "value": "leaf", "label": "Feuille — naturel" },
+            { "value": "france", "label": "Hexagone — fabriqué en France" },
+            { "value": "truck", "label": "Camion — livraison" },
+            { "value": "rabbit", "label": "Lapin — non testé sur les animaux" },
+            { "value": "recycle", "label": "Recyclage — éco-responsable" },
+            { "value": "shield", "label": "Bouclier — testé dermatologiquement" },
+            { "value": "drop", "label": "Goutte — hydratation" },
+            { "value": "flask", "label": "Flacon — formulation" },
+            { "value": "star", "label": "Étoile — avis clients" },
+            { "value": "none", "label": "Aucune" }
+          ],
+          "default": "leaf"
+        },
+        { "type": "image_picker", "id": "image", "label": "Icône personnalisée (remplace l'icône ci-dessus)" },
+        { "type": "text", "id": "title", "label": "Titre", "default": "Formules naturelles" },
+        { "type": "text", "id": "text", "label": "Texte (optionnel)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bandeau de réassurance",
+      "blocks": [
+        { "type": "item", "settings": { "icon": "leaf", "title": "Formules naturelles", "text": "Des ingrédients choisis, sans compromis." } },
+        { "type": "item", "settings": { "icon": "france", "title": "Fabriqué en France", "text": "Produit dans nos ateliers partenaires." } },
+        { "type": "item", "settings": { "icon": "rabbit", "title": "Non testé sur les animaux", "text": "Aucune formule testée sur les animaux." } },
+        { "type": "item", "settings": { "icon": "truck", "title": "Livraison offerte", "text": "Dès 49 € d'achat en France." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

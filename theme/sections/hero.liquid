@@ -1,0 +1,264 @@
+<div class="hero hero--{{ section.settings.text_color }} hero--v-{{ section.settings.position_vertical | default: 'bottom' }} full-width">
+  {% if section.settings.image != blank %}
+    {{
+      section.settings.image
+      | image_url: width: 2000
+      | image_tag: class: 'hero__image', loading: 'eager', sizes: '100vw', widths: '750, 1100, 1500, 2000'
+    }}
+  {% endif %}
+
+  {% if section.settings.show_overlay %}
+    <div class="hero__overlay hero__overlay--{{ section.settings.text_color }}" style="--overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+  {% endif %}
+
+  <div class="hero__content hero__content--h-{{ section.settings.position_horizontal | default: 'right' }}">
+    {% if section.settings.eyebrow != blank %}
+      <p class="hero__eyebrow">{{ section.settings.eyebrow }}</p>
+    {% endif %}
+
+    {% if section.settings.heading != blank %}
+      <h1 class="hero__heading">{{ section.settings.heading }}</h1>
+    {% endif %}
+
+    {% if section.settings.button_label != blank %}
+      <a href="{{ section.settings.button_link | default: '#' }}" class="hero__button">
+        {{ section.settings.button_label }}
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .hero {
+    position: relative;
+    min-height: 88vh;
+    display: flex;
+    align-items: flex-end;
+    background-color: var(--color-accent-soft);
+    color: #fff;
+    overflow: hidden;
+    margin: 1.2rem 1.2rem 0;
+    border-radius: 2.4rem;
+  }
+
+  .hero--black {
+    color: #1a1a1a;
+  }
+
+  .hero__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Position verticale : contrôle où le bloc de contenu se pose dans le hero */
+  .hero--v-top {
+    align-items: flex-start;
+  }
+
+  .hero--v-center {
+    align-items: center;
+  }
+
+  .hero--v-bottom {
+    align-items: flex-end;
+  }
+
+  /* Voile derrière le texte pour garantir la lisibilité quelle que soit
+     l'image — sombre si texte blanc, clair si texte noir. */
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero__overlay--white {
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, var(--overlay-opacity)) 0%,
+      rgba(0, 0, 0, 0) 60%
+    );
+  }
+
+  .hero__overlay--black {
+    background: linear-gradient(
+      to top,
+      rgba(255, 255, 255, var(--overlay-opacity)) 0%,
+      rgba(255, 255, 255, 0) 60%
+    );
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 3rem var(--page-margin) 4rem;
+  }
+
+  .hero__content--h-left {
+    text-align: left;
+  }
+
+  .hero__content--h-center {
+    text-align: center;
+  }
+
+  .hero__content--h-right {
+    text-align: right;
+  }
+
+  .hero__eyebrow {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  .hero__heading {
+    font-size: clamp(2rem, 3.2vw, 2.8rem);
+    line-height: 1.2;
+    font-weight: 600;
+    max-width: 34ch;
+  }
+
+  .hero__content--h-right .hero__heading {
+    margin-left: auto;
+  }
+
+  .hero__content--h-center .hero__heading {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero__button {
+    margin-top: 1.6rem;
+    display: inline-block;
+    padding: 0.9rem 1.8rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    color: inherit;
+    text-decoration: none;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .hero--white .hero__button:hover {
+    background-color: #fff;
+    color: #1a1a1a;
+  }
+
+  .hero--black .hero__button:hover {
+    background-color: #1a1a1a;
+    color: #fff;
+  }
+
+  @media (max-width: 749px) {
+    .hero {
+      min-height: 70vh;
+    }
+
+    .hero__content {
+      padding: 2.4rem 2rem 3.2rem;
+    }
+
+    .hero__heading {
+      max-width: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "text_color",
+      "label": "Couleur du texte",
+      "options": [
+        { "value": "white", "label": "Blanc" },
+        { "value": "black", "label": "Noir" }
+      ],
+      "default": "white"
+    },
+    {
+      "type": "select",
+      "id": "position_vertical",
+      "label": "Position verticale du texte",
+      "options": [
+        { "value": "top", "label": "Haut" },
+        { "value": "center", "label": "Centre" },
+        { "value": "bottom", "label": "Bas" }
+      ],
+      "default": "bottom"
+    },
+    {
+      "type": "select",
+      "id": "position_horizontal",
+      "label": "Position horizontale du texte",
+      "options": [
+        { "value": "left", "label": "Gauche" },
+        { "value": "center", "label": "Centre" },
+        { "value": "right", "label": "Droite" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Ajouter un voile derrière le texte (lisibilité)",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Intensité du voile",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 35
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Soins naturels"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Des soins naturels pensés pour votre peau"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Découvrir"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
+}
+{% endschema %}

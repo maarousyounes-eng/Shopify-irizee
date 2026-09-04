@@ -1,75 +1,217 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "image_banner": {
-      "type": "image-banner",
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "image": "shopify://shop_images/Gemini_Generated_Image_acy37iacy37iacy3.jpg",
+        "text_color": "black",
+        "position_vertical": "bottom",
+        "position_horizontal": "left",
+        "show_overlay": true,
+        "overlay_opacity": 10,
+        "eyebrow": "Soins naturels",
+        "heading": "Des soins naturels pensés pour votre peau",
+        "button_label": "Découvrir",
+        "button_link": "shopify://collections/all"
+      }
+    },
+    "featured_products": {
+      "type": "featured-products",
       "blocks": {
-        "heading": {
-          "type": "heading",
+        "product_Wamkke": {
+          "type": "product",
           "settings": {
-            "heading": "Browse our latest products",
-            "heading_size": "h0"
+            "product": "masque",
+            "badge_text": "Best",
+            "category_label": "Masque"
           }
         },
-        "button": {
-          "type": "buttons",
+        "product_C3EFeh": {
+          "type": "product",
           "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
+            "product": "masque",
+            "badge_text": "",
+            "category_label": ""
+          }
+        },
+        "product_nLALKQ": {
+          "type": "product",
+          "settings": {
+            "product": "masque",
+            "badge_text": "",
+            "category_label": ""
+          }
+        },
+        "product_FWzcgW": {
+          "type": "product",
+          "settings": {
+            "product": "masque",
+            "badge_text": "",
+            "category_label": ""
+          }
+        },
+        "p1": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "badge_text": "",
+            "category_label": ""
+          }
+        },
+        "p2": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "badge_text": "",
+            "category_label": ""
+          }
+        },
+        "p3": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "badge_text": "",
+            "category_label": ""
+          }
+        },
+        "p4": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "badge_text": "",
+            "category_label": ""
           }
         }
       },
       "block_order": [
-        "heading",
-        "button"
+        "product_Wamkke",
+        "product_C3EFeh",
+        "product_nLALKQ",
+        "product_FWzcgW",
+        "p1",
+        "p2",
+        "p3",
+        "p4"
       ],
       "settings": {
-        "image_overlay_opacity": 40,
-        "image_height": "large",
-        "desktop_content_position": "bottom-center",
-        "show_text_box": false,
-        "image_behavior": "none",
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
+        "heading": "Sélection de rentrée",
+        "source": "manual",
+        "collection": "",
+        "products_count": 3,
+        "card_background": "#e8e6e5",
+        "blend_white_bg": true,
+        "image_inset": 14,
+        "buy_label": "Acheter",
+        "button_label": "Tout voir",
+        "button_link": "",
+        "heading_font": "work_sans_n4",
+        "heading_size": 34,
+        "heading_size_mobile": 26,
+        "category_font": "work_sans_n4",
+        "category_size": 45,
+        "category_size_mobile": 28,
+        "name_font": "work_sans_n4",
+        "name_size": 19,
+        "name_size_mobile": 14,
+        "subtitle_font": "work_sans_n4",
+        "subtitle_size": 14,
+        "subtitle_size_mobile": 13,
+        "badge_font": "work_sans_n4",
+        "badge_size": 11,
+        "badge_size_mobile": 11,
+        "badge_nudge": 0,
+        "buy_font": "work_sans_n4",
+        "buy_size": 14,
+        "buy_size_mobile": 13,
+        "cta_font": "work_sans_n4",
+        "cta_size": 12,
+        "cta_size_mobile": 12
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
+    "skin_diagnostic_PYwfF7": {
+      "type": "skin-diagnostic",
+      "blocks": {
+        "step_mCzT9M": {
+          "type": "step",
+          "settings": {
+            "title": "Prenez ou importez une photo",
+            "text": "Depuis votre téléphone ou votre ordinateur, en quelques secondes."
+          }
+        },
+        "step_n34NAF": {
+          "type": "step",
+          "settings": {
+            "title": "L'analyse examine votre peau",
+            "text": "Hydratation, éclat, imperfections, zones sensibles."
+          }
+        },
+        "step_WEmUG7": {
+          "type": "step",
+          "settings": {
+            "title": "Recevez votre routine",
+            "text": "Une sélection de soins adaptés à ce que révèle votre peau."
+          }
+        }
+      },
+      "block_order": [
+        "step_mCzT9M",
+        "step_n34NAF",
+        "step_WEmUG7"
+      ],
+      "name": "Diagnostic de peau",
       "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "full_width": false,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
-        "columns_mobile": "2",
-        "padding_top": 44,
-        "padding_bottom": 36
+        "eyebrow": "Diagnostic de peau",
+        "heading": "Votre peau analysée en une photo",
+        "text": "<p>Prenez une photo ou importez-en une. Notre analyse identifie les besoins réels de votre peau — hydratation, éclat, imperfections — et vous oriente vers les soins qui lui correspondent.</p>",
+        "show_step_numbers": true,
+        "button_label": "Analyser ma peau",
+        "button_link": "",
+        "button_new_tab": false,
+        "button_style": "filled",
+        "image": "shopify://shop_images/Hero.png",
+        "image_position": "left",
+        "image_ratio": "4 / 5",
+        "image_ratio_mobile": "1 / 1",
+        "text_alignment": "left",
+        "corner_radius": 24,
+        "padding_desktop": 80,
+        "padding_mobile": 48,
+        "column_gap": 56,
+        "column_gap_mobile": 28,
+        "background_color": "#E8E6E5",
+        "text_color": "#1A1A1A",
+        "button_background": "#214975",
+        "button_text_color": "#FFFFFF",
+        "eyebrow_font": "work_sans_n4",
+        "eyebrow_size": 12,
+        "eyebrow_size_mobile": 11,
+        "heading_font": "work_sans_n4",
+        "heading_size": 40,
+        "heading_size_mobile": 28,
+        "text_font": "work_sans_n4",
+        "text_size": 16,
+        "text_size_mobile": 15,
+        "step_font": "work_sans_n4",
+        "step_size": 15,
+        "step_size_mobile": 14,
+        "button_font": "work_sans_n4",
+        "button_size": 13,
+        "button_size_mobile": 12
       }
     }
   },
   "order": [
-    "image_banner",
-    "featured_collection"
+    "hero",
+    "featured_products",
+    "skin_diagnostic_PYwfF7"
   ]
 }

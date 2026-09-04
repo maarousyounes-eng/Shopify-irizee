@@ -1,0 +1,172 @@
+{% style %}
+  {{ section.settings.eyebrow_font | font_face: font_display: 'swap' }}
+  {{ section.settings.heading_font | font_face: font_display: 'swap' }}
+  {{ section.settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} {
+    --rv-bg: {{ section.settings.background_color }};
+    --rv-text: {{ section.settings.text_color }};
+    --rv-padding: {{ section.settings.padding_desktop }}px;
+    --rv-heading-gap: {{ section.settings.heading_gap }}px;
+
+    --rv-eyebrow-family: {{ section.settings.eyebrow_font.family }}, {{ section.settings.eyebrow_font.fallback_families }};
+    --rv-eyebrow-size: {{ section.settings.eyebrow_size }}px;
+
+    --rv-heading-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+    --rv-heading-size: {{ section.settings.heading_size }}px;
+  }
+
+  /* Réglages mobiles : indépendants des valeurs ordinateur ci-dessus */
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --rv-padding: {{ section.settings.padding_mobile }}px;
+      --rv-heading-gap: {{ section.settings.heading_gap_mobile }}px;
+      --rv-eyebrow-size: {{ section.settings.eyebrow_size_mobile }}px;
+      --rv-heading-size: {{ section.settings.heading_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="reviews full-width">
+  <div class="reviews__inner reviews__inner--align-{{ section.settings.text_alignment }}">
+    {% if section.settings.eyebrow != blank or section.settings.heading != blank %}
+      <div class="reviews__header">
+        {% if section.settings.eyebrow != blank %}
+          <p class="reviews__eyebrow">{{ section.settings.eyebrow }}</p>
+        {% endif %}
+        {% if section.settings.heading != blank %}
+          <h2 class="reviews__heading">{{ section.settings.heading }}</h2>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <div class="reviews__widget">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'code' %}
+              <div class="reviews__embed" {{ block.shopify_attributes }}>
+                {{ block.settings.code }}
+              </div>
+            {% else %}
+              <div class="reviews__app" {{ block.shopify_attributes }}>
+                {% render block %}
+              </div>
+          {% endcase %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="reviews__empty">
+        Ajoutez ici le bloc de votre application d'avis, ou un bloc « Code d'intégration ».
+      </p>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .reviews {
+    padding: var(--rv-padding) var(--page-margin);
+    background-color: var(--rv-bg);
+    color: var(--rv-text);
+  }
+
+  .reviews__inner {
+    max-width: var(--page-width);
+    margin: 0 auto;
+  }
+
+  .reviews__inner--align-center {
+    text-align: center;
+  }
+
+  .reviews__header {
+    margin-bottom: var(--rv-heading-gap);
+  }
+
+  .reviews__eyebrow {
+    font-family: var(--rv-eyebrow-family);
+    font-size: var(--rv-eyebrow-size);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+  }
+
+  .reviews__heading {
+    font-family: var(--rv-heading-family);
+    font-size: var(--rv-heading-size);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .reviews__empty {
+    padding: 3.2rem;
+    border: 1px dashed color-mix(in srgb, currentColor 25%, transparent);
+    border-radius: 1.2rem;
+    text-align: center;
+    font-size: 1.4rem;
+    opacity: 0.6;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Avis clients",
+  "settings": [
+    { "type": "header", "content": "Contenu" },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Avis clients" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Ce qu'elles en disent" },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Alignement du titre",
+      "options": [
+        { "value": "left", "label": "Gauche" },
+        { "value": "center", "label": "Centré" }
+      ],
+      "default": "center"
+    },
+
+    { "type": "header", "content": "Mise en page" },
+    { "type": "range", "id": "padding_desktop", "label": "Marges verticales — ordinateur", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 72 },
+    { "type": "range", "id": "padding_mobile", "label": "Marges verticales — mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 44 },
+    { "type": "range", "id": "heading_gap", "label": "Espace sous le titre — ordinateur", "min": 0, "max": 96, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "heading_gap_mobile", "label": "Espace sous le titre — mobile", "min": 0, "max": 64, "step": 4, "unit": "px", "default": 24 },
+
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "background_color", "label": "Fond", "default": "#FFFFFF" },
+    { "type": "color", "id": "text_color", "label": "Texte", "default": "#1A1A1A" },
+
+    { "type": "header", "content": "Typographie — Sur-titre" },
+    { "type": "font_picker", "id": "eyebrow_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "eyebrow_size", "label": "Taille — ordinateur", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "eyebrow_size_mobile", "label": "Taille — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 11 },
+
+    { "type": "header", "content": "Typographie — Titre" },
+    { "type": "font_picker", "id": "heading_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "heading_size", "label": "Taille — ordinateur", "min": 16, "max": 72, "step": 1, "unit": "px", "default": 36 },
+    { "type": "range", "id": "heading_size_mobile", "label": "Taille — mobile", "min": 14, "max": 48, "step": 1, "unit": "px", "default": 26 }
+  ],
+  "blocks": [
+    { "type": "@app" },
+    {
+      "type": "code",
+      "name": "Code d'intégration",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "code",
+          "label": "Code fourni par l'application d'avis",
+          "info": "À utiliser si votre application ne propose pas de bloc à glisser directement."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Avis clients" }
+  ]
+}
+{% endschema %}

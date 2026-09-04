@@ -1,0 +1,624 @@
+{% style %}
+  {{ section.settings.heading_font | font_face: font_display: 'swap' }}
+  {{ section.settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+  {{ section.settings.category_font | font_face: font_display: 'swap' }}
+  {{ section.settings.category_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+  {{ section.settings.name_font | font_face: font_display: 'swap' }}
+  {{ section.settings.name_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+  {{ section.settings.subtitle_font | font_face: font_display: 'swap' }}
+  {{ section.settings.badge_font | font_face: font_display: 'swap' }}
+  {{ section.settings.buy_font | font_face: font_display: 'swap' }}
+  {{ section.settings.cta_font | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} {
+    --card-bg: {{ section.settings.card_background | default: '#E8E6E5' }};
+    --card-image-inset: {{ section.settings.image_inset }}%;
+    --badge-nudge: {{ section.settings.badge_nudge }}px;
+
+    --fp-heading-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+    --fp-heading-size: {{ section.settings.heading_size }}px;
+
+    --fp-category-family: {{ section.settings.category_font.family }}, {{ section.settings.category_font.fallback_families }};
+    --fp-category-size: {{ section.settings.category_size }}px;
+
+    --fp-name-family: {{ section.settings.name_font.family }}, {{ section.settings.name_font.fallback_families }};
+    --fp-name-size: {{ section.settings.name_size }}px;
+
+    --fp-subtitle-family: {{ section.settings.subtitle_font.family }}, {{ section.settings.subtitle_font.fallback_families }};
+    --fp-subtitle-size: {{ section.settings.subtitle_size }}px;
+
+    --fp-badge-family: {{ section.settings.badge_font.family }}, {{ section.settings.badge_font.fallback_families }};
+    --fp-badge-size: {{ section.settings.badge_size }}px;
+
+    --fp-buy-family: {{ section.settings.buy_font.family }}, {{ section.settings.buy_font.fallback_families }};
+    --fp-buy-size: {{ section.settings.buy_size }}px;
+
+    --fp-cta-family: {{ section.settings.cta_font.family }}, {{ section.settings.cta_font.fallback_families }};
+    --fp-cta-size: {{ section.settings.cta_size }}px;
+  }
+
+  /* Tailles mobiles : totalement indépendantes des tailles desktop ci-dessus */
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --fp-heading-size: {{ section.settings.heading_size_mobile }}px;
+      --fp-category-size: {{ section.settings.category_size_mobile }}px;
+      --fp-name-size: {{ section.settings.name_size_mobile }}px;
+      --fp-subtitle-size: {{ section.settings.subtitle_size_mobile }}px;
+      --fp-badge-size: {{ section.settings.badge_size_mobile }}px;
+      --fp-buy-size: {{ section.settings.buy_size_mobile }}px;
+      --fp-cta-size: {{ section.settings.cta_size_mobile }}px;
+    }
+  }
+
+  {% if section.settings.blend_white_bg %}
+    #shopify-section-{{ section.id }} .product-card__image--primary {
+      mix-blend-mode: multiply;
+    }
+  {% endif %}
+{% endstyle %}
+
+<div class="featured-products full-width">
+  <div class="featured-products__inner">
+    {% if section.settings.heading != blank %}
+      <h2 class="featured-products__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="featured-products__carousel">
+      <div class="featured-products__grid" data-products-row>
+      {% if section.settings.source == 'collection' %}
+        {% assign products = section.settings.collection.products | default: empty %}
+        {% for product in products limit: section.settings.products_count %}
+          {% assign badge_text = '' %}
+          {% if product.tags contains 'bestseller' %}
+            {% assign badge_text = 'Best-seller' %}
+          {% elsif product.tags contains 'limited' %}
+            {% assign badge_text = 'Édition limitée' %}
+          {% elsif product.tags contains 'new' %}
+            {% assign badge_text = 'Nouveau' %}
+          {% endif %}
+          {% render 'product-card', product: product, badge_text: badge_text, buy_label: section.settings.buy_label %}
+        {% else %}
+          <p class="featured-products__empty">Choisis une collection dans les réglages de cette section.</p>
+        {% endfor %}
+      {% else %}
+        {% for block in section.blocks %}
+          {% if block.settings.product != blank %}
+            {% render 'product-card', product: block.settings.product, badge_text: block.settings.badge_text, category_label: block.settings.category_label, buy_label: section.settings.buy_label %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      </div>
+
+      <button class="featured-products__arrow" type="button" data-products-next aria-label="Voir les produits suivants" hidden>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+    </div>
+
+    {% if section.settings.button_label != blank %}
+      <div class="featured-products__cta">
+        <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="featured-products__button">
+          {{ section.settings.button_label }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  (function () {
+    var root = document.getElementById('shopify-section-{{ section.id }}');
+    if (!root) return;
+
+    // Flèche de défilement : visible seulement s'il y a plus de produits que la largeur disponible
+    var row = root.querySelector('[data-products-row]');
+    var next = root.querySelector('[data-products-next]');
+
+    if (row && next) {
+      var updateArrow = function () {
+        var overflows = row.scrollWidth - row.clientWidth > 8;
+        var atEnd = row.scrollLeft + row.clientWidth >= row.scrollWidth - 8;
+        next.hidden = !overflows || atEnd;
+      };
+
+      next.addEventListener('click', function () {
+        var card = row.querySelector('.product-card');
+        var step = card ? card.getBoundingClientRect().width + 32 : row.clientWidth * 0.8;
+        row.scrollBy({ left: step, behavior: 'smooth' });
+      });
+
+      row.addEventListener('scroll', updateArrow, { passive: true });
+      window.addEventListener('resize', updateArrow);
+      updateArrow();
+    }
+
+    root.querySelectorAll('[data-swipe-media]').forEach(function (media) {
+      var startX = 0;
+      var startY = 0;
+      var tracking = false;
+
+      media.addEventListener('touchstart', function (e) {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        tracking = true;
+      }, { passive: true });
+
+      media.addEventListener('touchend', function (e) {
+        if (!tracking) return;
+        tracking = false;
+
+        var dx = e.changedTouches[0].clientX - startX;
+        var dy = e.changedTouches[0].clientY - startY;
+
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+          media.closest('.product-card').classList.toggle('product-card--swiped');
+        }
+      }, { passive: true });
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .featured-products {
+    padding: 5rem var(--page-margin);
+  }
+
+  .featured-products__heading {
+    font-family: var(--fp-heading-family);
+    font-size: var(--fp-heading-size);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    margin-bottom: 3.2rem;
+  }
+
+  .featured-products__carousel {
+    position: relative;
+  }
+
+  .featured-products__arrow {
+    position: absolute;
+    top: 50%;
+    right: -1.6rem;
+    transform: translateY(-50%);
+    z-index: 4;
+    width: 4.4rem;
+    height: 4.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 50%;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+
+  .featured-products__arrow:hover {
+    transform: translateY(-50%) scale(1.06);
+  }
+
+  .featured-products__arrow svg {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .featured-products__grid {
+    display: flex;
+    gap: 3.2rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    justify-content: safe center;
+    padding-bottom: 0.4rem;
+    scrollbar-width: none;
+  }
+
+  .featured-products__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .featured-products__empty {
+    color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
+    font-size: 1.4rem;
+  }
+
+  /* ---------- Carte produit ---------- */
+
+  .product-card {
+    position: relative;
+    display: block;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    width: 78vw;
+    max-width: 34rem;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    background: var(--card-bg, var(--color-background));
+    /* Confine la fusion des photos au fond de la carte (et pas à la page) */
+    isolation: isolate;
+    border-radius: 1.2rem;
+    aspect-ratio: 449 / 575;
+    transition: transform 0.25s ease;
+  }
+
+  @media (min-width: 750px) {
+    .product-card {
+      width: 40vw;
+      max-width: 45rem;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .product-card {
+      width: 30vw;
+      max-width: 45rem;
+    }
+  }
+
+  /* Pas de z-index ici : un contexte d'empilement empêcherait la fusion du fond blanc */
+  .product-card__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .product-card__media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Photo packshot : produit entier visible, avec de la marge autour (jamais recadré) */
+  .product-card__image--primary {
+    object-fit: contain;
+    padding: var(--card-image-inset, 14%) var(--card-image-inset, 14%) calc(var(--card-image-inset, 14%) + 4%);
+  }
+
+  /* Photo lifestyle au survol : plein cadre, bord à bord */
+  .product-card__image--secondary {
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .product-card__content {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.6rem 1.2rem;
+  }
+
+  .product-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+  }
+
+  .product-card__type {
+    font-family: var(--fp-category-family);
+    font-size: var(--fp-category-size);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: color-mix(in srgb, var(--color-foreground) 70%, transparent);
+  }
+
+  .product-card__badge {
+    flex-shrink: 0;
+    background: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+    color: var(--color-background);
+    font-family: var(--fp-badge-family);
+    font-size: var(--fp-badge-size);
+    font-weight: 600;
+    transform: translateY(var(--badge-nudge, 0px));
+    padding: 0.4rem 1.1rem;
+    border-radius: 999px;
+    line-height: 1.4;
+  }
+
+  .product-card__bottom {
+    position: relative;
+  }
+
+  .product-card__info {
+    transition: opacity 0.25s ease;
+  }
+
+  .product-card__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.8rem;
+  }
+
+  .product-card__title {
+    font-family: var(--fp-name-family);
+    font-size: var(--fp-name-size);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+  }
+
+  .product-card__price {
+    font-family: var(--fp-name-family);
+    font-size: var(--fp-name-size);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .product-card__subtitle {
+    font-family: var(--fp-subtitle-family);
+    font-size: var(--fp-subtitle-size);
+    color: color-mix(in srgb, var(--color-foreground) 65%, transparent);
+    margin-top: 0.4rem;
+  }
+
+  /* Bouton d'achat : caché par défaut, apparaît au survol par-dessus les infos */
+  .product-card__buy {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    border-radius: 999px;
+    padding: 1.4rem 2rem;
+    font-family: var(--fp-buy-family);
+    font-size: var(--fp-buy-size);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(0.6rem);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+
+  /* Bulle "swipe" : apparaît au survol, en bas à droite de la carte */
+  .product-card__swipe {
+    position: absolute;
+    right: 1.6rem;
+    bottom: 9rem;
+    z-index: 3;
+    width: 9rem;
+    height: 9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(6px);
+    color: color-mix(in srgb, var(--color-foreground) 70%, transparent);
+    font-size: 1.3rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+
+  /* ---------- États : survol (souris) et swipe (tactile) ---------- */
+
+  .product-card--swiped .product-card__image--secondary {
+    opacity: 1;
+  }
+
+  .product-card--swiped .product-card__info {
+    opacity: 0;
+  }
+
+  .product-card--swiped .product-card__buy {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (hover: hover) {
+    .product-card--has-secondary:hover {
+      transform: scale(1.02);
+    }
+
+    .product-card--has-secondary:hover .product-card__image--secondary {
+      opacity: 1;
+    }
+
+    .product-card--has-secondary:hover .product-card__info {
+      opacity: 0;
+    }
+
+    .product-card--has-secondary:hover .product-card__buy {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .product-card--has-secondary:hover .product-card__swipe {
+      opacity: 1;
+    }
+  }
+
+  /* ---------- Bouton "Tout voir" ---------- */
+
+  .featured-products__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 3.2rem;
+  }
+
+  .featured-products__button {
+    display: inline-block;
+    padding: 1.1rem 2.4rem;
+    border: 1px solid var(--color-foreground);
+    border-radius: 999px;
+    color: var(--color-foreground);
+    text-decoration: none;
+    font-family: var(--fp-cta-family);
+    font-size: var(--fp-cta-size);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .featured-products__button:hover {
+    background-color: var(--color-foreground);
+    color: var(--color-background);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Produits phares",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Sélection de rentrée"
+    },
+    {
+      "type": "select",
+      "id": "source",
+      "label": "Source des produits",
+      "options": [
+        { "value": "manual", "label": "Sélection manuelle (blocs produit)" },
+        { "value": "collection", "label": "Automatique (depuis une collection)" }
+      ],
+      "default": "manual"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection (mode automatique)"
+    },
+    {
+      "type": "range",
+      "id": "products_count",
+      "label": "Nombre de produits (mode automatique)",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Couleur de fond des cartes",
+      "info": "Gris clair de référence : #E8E6E5.",
+      "default": "#E8E6E5"
+    },
+    {
+      "type": "checkbox",
+      "id": "blend_white_bg",
+      "label": "Fondre le fond blanc des photos produit",
+      "info": "À activer si vos packshots sont sur fond blanc : le blanc disparaît dans la couleur de la carte.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "image_inset",
+      "label": "Marge autour du produit",
+      "min": 4,
+      "max": 26,
+      "step": 1,
+      "unit": "%",
+      "default": 14
+    },
+    {
+      "type": "text",
+      "id": "buy_label",
+      "label": "Texte du bouton d'achat au survol",
+      "info": "Affiché au survol d'une carte, suivi du nom du produit et du prix.",
+      "default": "Acheter"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Texte du bouton",
+      "default": "Tout voir"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Lien du bouton"
+    },
+
+    { "type": "header", "content": "Typographie — Titre de section" },
+    { "type": "font_picker", "id": "heading_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "heading_size", "label": "Taille — ordinateur", "min": 16, "max": 72, "step": 1, "unit": "px", "default": 40 },
+    { "type": "range", "id": "heading_size_mobile", "label": "Taille — mobile", "min": 14, "max": 48, "step": 1, "unit": "px", "default": 26 },
+
+    { "type": "header", "content": "Typographie — Catégorie (gros texte)" },
+    { "type": "font_picker", "id": "category_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "category_size", "label": "Taille — ordinateur", "min": 16, "max": 72, "step": 1, "unit": "px", "default": 40 },
+    { "type": "range", "id": "category_size_mobile", "label": "Taille — mobile", "min": 14, "max": 48, "step": 1, "unit": "px", "default": 28 },
+
+    { "type": "header", "content": "Typographie — Nom du produit et prix" },
+    { "type": "font_picker", "id": "name_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "name_size", "label": "Taille — ordinateur", "min": 10, "max": 32, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "name_size_mobile", "label": "Taille — mobile", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 14 },
+
+    { "type": "header", "content": "Typographie — Sous-titre" },
+    { "type": "font_picker", "id": "subtitle_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "subtitle_size", "label": "Taille — ordinateur", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 14 },
+    { "type": "range", "id": "subtitle_size_mobile", "label": "Taille — mobile", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 13 },
+
+    { "type": "header", "content": "Typographie — Badge" },
+    { "type": "font_picker", "id": "badge_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "badge_size", "label": "Taille — ordinateur", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 11 },
+    { "type": "range", "id": "badge_size_mobile", "label": "Taille — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 11 },
+    { "type": "range", "id": "badge_nudge", "label": "Ajustement vertical du badge", "info": "Pour aligner finement le badge sur les lettres de la catégorie selon la police choisie.", "min": -20, "max": 20, "step": 1, "unit": "px", "default": 0 },
+
+    { "type": "header", "content": "Typographie — Bouton d'achat (au survol)" },
+    { "type": "font_picker", "id": "buy_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "buy_size", "label": "Taille — ordinateur", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 14 },
+    { "type": "range", "id": "buy_size_mobile", "label": "Taille — mobile", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 13 },
+
+    { "type": "header", "content": "Typographie — Bouton \"Tout voir\"" },
+    { "type": "font_picker", "id": "cta_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "cta_size", "label": "Taille — ordinateur", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "cta_size_mobile", "label": "Taille — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 12 }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Produit",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Produit"
+        },
+        {
+          "type": "text",
+          "id": "badge_text",
+          "label": "Badge (optionnel)",
+          "info": "Ex : Best-seller, Édition limitée. Laisser vide pour ne rien afficher."
+        },
+        {
+          "type": "text",
+          "id": "category_label",
+          "label": "Catégorie affichée en grand (optionnel)",
+          "info": "Ex : Masque, Sérum, Baume. Vide = utilise le champ \"Type\" du produit s'il existe."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Produits phares",
+      "blocks": [
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" }
+      ]
+    }
+  ]
+}
+{% endschema %}
