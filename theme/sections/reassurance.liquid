@@ -1,0 +1,280 @@
+{% style %}
+  {{ section.settings.title_font | font_face: font_display: 'swap' }}
+  {{ section.settings.title_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+  {{ section.settings.text_font | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} {
+    --rs-bg: {{ section.settings.background_color }};
+    --rs-text: {{ section.settings.text_color }};
+    --rs-line: {{ section.settings.line_color }};
+    --rs-fill: {{ section.settings.hover_color }};
+    --rs-icon: {{ section.settings.icon_color }};
+    --rs-columns: {{ section.settings.columns }};
+    --rs-cell-padding: {{ section.settings.cell_padding }}px;
+    --rs-icon-size: {{ section.settings.icon_size }}px;
+
+    --rs-kicker-size: {{ section.settings.kicker_size }}px;
+    --rs-title-family: {{ section.settings.title_font.family }}, {{ section.settings.title_font.fallback_families }};
+    --rs-title-size: {{ section.settings.title_size }}px;
+    --rs-text-family: {{ section.settings.text_font.family }}, {{ section.settings.text_font.fallback_families }};
+    --rs-text-size: {{ section.settings.text_size }}px;
+  }
+
+  /* Réglages mobiles : indépendants des valeurs ordinateur ci-dessus */
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --rs-columns: {{ section.settings.columns_mobile }};
+      --rs-cell-padding: {{ section.settings.cell_padding_mobile }}px;
+      --rs-icon-size: {{ section.settings.icon_size_mobile }}px;
+      --rs-kicker-size: {{ section.settings.kicker_size_mobile }}px;
+      --rs-title-size: {{ section.settings.title_size_mobile }}px;
+      --rs-text-size: {{ section.settings.text_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="reassurance full-width">
+  <div class="reassurance__grid">
+    {% for block in section.blocks %}
+      <div class="reassurance__cell" {{ block.shopify_attributes }}>
+        <div class="reassurance__cell-inner">
+          {% if section.settings.show_numbers %}
+            <span class="reassurance__kicker">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          {% endif %}
+
+          {% if block.settings.icon != 'none' %}
+            <span class="reassurance__icon">
+              {% case block.settings.icon %}
+                {% when 'truck' %}
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                    <circle cx="7" cy="18" r="1.8" stroke="currentColor" stroke-width="1.4"/>
+                    <circle cx="17.5" cy="18" r="1.8" stroke="currentColor" stroke-width="1.4"/>
+                  </svg>
+                {% when 'split' %}
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="2.5" y="5.5" width="19" height="13" rx="2.5" stroke="currentColor" stroke-width="1.4"/>
+                    <path d="M2.5 10h19" stroke="currentColor" stroke-width="1.4"/>
+                    <path d="M6 14.5h3M11.5 14.5h1.5M15 14.5h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                  </svg>
+                {% when 'return' %}
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M4 11a8 8 0 1 1 2.3 5.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    <path d="M4 6v5h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                {% when 'france' %}
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 2.5 20 7v10l-8 4.5L4 17V7l8-4.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                    <path d="M9 9.5v5M12 9.5v5M15 9.5v5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                  </svg>
+                {% when 'rabbit' %}
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M9 10c-1.5-2.5-2-5-1-6.5S11 3 11.5 6l.5 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    <path d="M14 10c1.5-2.5 2-5 1-6.5S12 3 11.5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    <path d="M7 15.5A4.5 4.5 0 0 1 11.5 11h1A4.5 4.5 0 0 1 17 15.5V19a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                  </svg>
+                {% when 'leaf' %}
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M20 4c0 9-5.5 13-11 13a5 5 0 0 1-5-5C4 6.5 12.5 4 20 4Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                    <path d="M4 20c2-6 6-9.5 12-12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                  </svg>
+                {% when 'shield' %}
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 3l7 2.5V12c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V5.5L12 3Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                    <path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                {% when 'recycle' %}
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="m8 6 2.5-3.5L13 6M6.5 9 4 12.5 6 16M17.5 9 20 12.5 18 16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 20h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                  </svg>
+              {% endcase %}
+            </span>
+          {% endif %}
+
+          {% if block.settings.title != blank %}
+            <p class="reassurance__title">{{ block.settings.title }}</p>
+          {% endif %}
+          {% if block.settings.text != blank %}
+            <p class="reassurance__text">{{ block.settings.text }}</p>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .reassurance {
+    background-color: var(--rs-bg);
+    color: var(--rs-text);
+  }
+
+  /* Les filets sont dessinés par le fond de la grille visible dans les
+     interstices d'1px : fonctionne quel que soit le nombre de colonnes,
+     sans filet en trop sur les bords. */
+  .reassurance__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--rs-columns), minmax(0, 1fr));
+    gap: 1px;
+    background: var(--rs-line);
+    border-top: 1px solid var(--rs-line);
+    border-bottom: 1px solid var(--rs-line);
+  }
+
+  /* Chaque case : le fond monte depuis le bas au survol */
+  .reassurance__cell {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--rs-bg);
+  }
+
+  .reassurance__cell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--rs-fill);
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .reassurance__cell-inner {
+    padding: var(--rs-cell-padding);
+  }
+
+  @media (hover: hover) {
+    .reassurance__cell:hover::before {
+      transform: none;
+    }
+  }
+
+  .reassurance__kicker {
+    display: block;
+    font-family: var(--rs-text-family);
+    font-size: var(--rs-kicker-size);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0.5;
+  }
+
+  .reassurance__icon {
+    display: block;
+    margin-top: 1.4rem;
+    color: var(--rs-icon);
+  }
+
+  .reassurance__icon svg {
+    width: var(--rs-icon-size);
+    height: var(--rs-icon-size);
+  }
+
+  .reassurance__title {
+    font-family: var(--rs-title-family);
+    font-size: var(--rs-title-size);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-top: 1.2rem;
+  }
+
+  .reassurance__text {
+    font-family: var(--rs-text-family);
+    font-size: var(--rs-text-size);
+    line-height: 1.55;
+    margin-top: 0.5rem;
+    opacity: 0.65;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reassurance__cell::before {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Bandeau de réassurance",
+  "settings": [
+    { "type": "header", "content": "Mise en page" },
+    { "type": "range", "id": "columns", "label": "Colonnes — ordinateur", "min": 2, "max": 6, "step": 1, "default": 5 },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Colonnes — mobile",
+      "options": [
+        { "value": "1", "label": "1 colonne" },
+        { "value": "2", "label": "2 colonnes" }
+      ],
+      "default": "2"
+    },
+    { "type": "checkbox", "id": "show_numbers", "label": "Afficher les numéros (01, 02…)", "default": true },
+    { "type": "range", "id": "cell_padding", "label": "Marges intérieures des cases — ordinateur", "min": 12, "max": 72, "step": 2, "unit": "px", "default": 34 },
+    { "type": "range", "id": "cell_padding_mobile", "label": "Marges intérieures des cases — mobile", "min": 12, "max": 48, "step": 2, "unit": "px", "default": 22 },
+
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "background_color", "label": "Fond", "default": "#FFFFFF" },
+    { "type": "color", "id": "text_color", "label": "Texte", "default": "#1A1A1A" },
+    { "type": "color", "id": "line_color", "label": "Filets", "default": "#DDD9D7" },
+    { "type": "color", "id": "hover_color", "label": "Fond au survol", "default": "#E8E6E5" },
+    { "type": "color", "id": "icon_color", "label": "Icônes", "default": "#1A1A1A" },
+
+    { "type": "header", "content": "Icônes" },
+    { "type": "range", "id": "icon_size", "label": "Taille — ordinateur", "min": 14, "max": 56, "step": 2, "unit": "px", "default": 24 },
+    { "type": "range", "id": "icon_size_mobile", "label": "Taille — mobile", "min": 12, "max": 44, "step": 2, "unit": "px", "default": 20 },
+
+    { "type": "header", "content": "Typographie — Titres" },
+    { "type": "font_picker", "id": "title_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "title_size", "label": "Taille — ordinateur", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "title_size_mobile", "label": "Taille — mobile", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 15 },
+
+    { "type": "header", "content": "Typographie — Textes et numéros" },
+    { "type": "font_picker", "id": "text_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "text_size", "label": "Texte — ordinateur", "min": 9, "max": 24, "step": 1, "unit": "px", "default": 13 },
+    { "type": "range", "id": "text_size_mobile", "label": "Texte — mobile", "min": 9, "max": 20, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "kicker_size", "label": "Numéros — ordinateur", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "kicker_size_mobile", "label": "Numéros — mobile", "min": 8, "max": 18, "step": 1, "unit": "px", "default": 11 }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Argument",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "options": [
+            { "value": "truck", "label": "Camion — livraison" },
+            { "value": "split", "label": "Carte — paiement en plusieurs fois" },
+            { "value": "return", "label": "Flèche — retours" },
+            { "value": "france", "label": "Hexagone — fabriqué en France" },
+            { "value": "rabbit", "label": "Lapin — non testé sur les animaux" },
+            { "value": "leaf", "label": "Feuille — naturel" },
+            { "value": "shield", "label": "Bouclier — tolérance" },
+            { "value": "recycle", "label": "Recyclage — éco-responsable" },
+            { "value": "none", "label": "Aucune" }
+          ],
+          "default": "truck"
+        },
+        { "type": "text", "id": "title", "label": "Titre", "default": "Livraison offerte" },
+        { "type": "text", "id": "text", "label": "Texte", "default": "Dès 49 € en France." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bandeau de réassurance",
+      "blocks": [
+        { "type": "item", "settings": { "icon": "truck", "title": "Livraison offerte", "text": "Dès 49 € en France." } },
+        { "type": "item", "settings": { "icon": "split", "title": "Payez en 3 fois", "text": "Sans frais, dès 60 € d'achat." } },
+        { "type": "item", "settings": { "icon": "return", "title": "Retours gratuits", "text": "Sous 30 jours." } },
+        { "type": "item", "settings": { "icon": "france", "title": "Fabriqué en France", "text": "Dans nos ateliers partenaires." } },
+        { "type": "item", "settings": { "icon": "rabbit", "title": "Sans test animal", "text": "À aucune étape du développement." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,350 @@
+{% style %}
+  {{ section.settings.eyebrow_font | font_face: font_display: 'swap' }}
+  {{ section.settings.heading_font | font_face: font_display: 'swap' }}
+  {{ section.settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+  {{ section.settings.text_font | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} {
+    --br-bg: {{ section.settings.background_color }};
+    --br-text: {{ section.settings.text_color }};
+    --br-muted: {{ section.settings.muted_color }};
+    --br-line: {{ section.settings.line_color }};
+    --br-radius: {{ section.settings.corner_radius }}px;
+    --br-padding: {{ section.settings.padding_desktop }}px;
+    --br-gap: {{ section.settings.column_gap }}px;
+    --br-photo-gap: {{ section.settings.photo_gap }}px;
+    --br-row: {{ section.settings.photo_row_height }}px;
+
+    --br-eyebrow-family: {{ section.settings.eyebrow_font.family }}, {{ section.settings.eyebrow_font.fallback_families }};
+    --br-eyebrow-size: {{ section.settings.eyebrow_size }}px;
+
+    --br-heading-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+    --br-heading-size: {{ section.settings.heading_size }}px;
+
+    --br-text-family: {{ section.settings.text_font.family }}, {{ section.settings.text_font.fallback_families }};
+    --br-text-size: {{ section.settings.text_size }}px;
+    --br-tag-size: {{ section.settings.tag_size }}px;
+  }
+
+  /* Réglages mobiles : indépendants des valeurs ordinateur ci-dessus */
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --br-padding: {{ section.settings.padding_mobile }}px;
+      --br-gap: {{ section.settings.column_gap_mobile }}px;
+      --br-photo-gap: {{ section.settings.photo_gap_mobile }}px;
+      --br-row: {{ section.settings.photo_row_height_mobile }}px;
+      --br-eyebrow-size: {{ section.settings.eyebrow_size_mobile }}px;
+      --br-heading-size: {{ section.settings.heading_size_mobile }}px;
+      --br-text-size: {{ section.settings.text_size_mobile }}px;
+      --br-tag-size: {{ section.settings.tag_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="brand full-width">
+  <div class="brand__inner brand__inner--media-{{ section.settings.media_position }}">
+    <div class="brand__collage">
+      <div class="brand__photo brand__photo--tall">
+        {% if section.settings.image_main != blank %}
+          {{
+            section.settings.image_main
+            | image_url: width: 900
+            | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 26vw, 50vw', widths: '300, 600, 900', class: 'brand__img'
+          }}
+        {% endif %}
+      </div>
+      <div class="brand__photo">
+        {% if section.settings.image_top != blank %}
+          {{
+            section.settings.image_top
+            | image_url: width: 700
+            | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 26vw, 50vw', widths: '300, 500, 700', class: 'brand__img'
+          }}
+        {% endif %}
+      </div>
+      <div class="brand__photo">
+        {% if section.settings.image_bottom != blank %}
+          {{
+            section.settings.image_bottom
+            | image_url: width: 700
+            | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 26vw, 50vw', widths: '300, 500, 700', class: 'brand__img'
+          }}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="brand__body">
+      {% if section.settings.eyebrow != blank %}
+        <p class="brand__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 class="brand__heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.text != blank %}
+        <div class="brand__text">{{ section.settings.text }}</div>
+      {% endif %}
+
+      {% if section.blocks.size > 0 %}
+        <div class="brand__tags">
+          {% for block in section.blocks %}
+            {% if block.settings.label != blank %}
+              {% if block.settings.link != blank %}
+                <a href="{{ block.settings.link }}" class="brand__tag" {{ block.shopify_attributes }}>{{ block.settings.label }}</a>
+              {% else %}
+                <span class="brand__tag" {{ block.shopify_attributes }}>{{ block.settings.label }}</span>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if section.settings.button_label != blank %}
+        <a href="{{ section.settings.button_link | default: '#' }}" class="brand__button">
+          {{ section.settings.button_label }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .brand {
+    background-color: var(--br-bg);
+    color: var(--br-text);
+    padding: var(--br-padding) var(--page-margin);
+  }
+
+  .brand__inner {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: var(--br-gap);
+    align-items: center;
+    max-width: var(--page-width);
+    margin: 0 auto;
+  }
+
+  /* Collage à droite : on inverse l'ordre des colonnes */
+  .brand__inner--media-right .brand__collage {
+    order: 2;
+  }
+
+  /* Une grande photo à gauche, deux empilées à droite */
+  .brand__collage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: var(--br-row) var(--br-row);
+    gap: var(--br-photo-gap);
+  }
+
+  .brand__photo {
+    border-radius: var(--br-radius);
+    overflow: hidden;
+    background: color-mix(in srgb, var(--br-text) 8%, transparent);
+  }
+
+  .brand__photo--tall {
+    grid-row: 1 / 3;
+  }
+
+  .brand__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  @media (hover: hover) {
+    .brand__photo:hover .brand__img {
+      transform: scale(1.04);
+    }
+  }
+
+  .brand__eyebrow {
+    font-family: var(--br-eyebrow-family);
+    font-size: var(--br-eyebrow-size);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    color: var(--br-muted);
+    margin-bottom: 1.4rem;
+  }
+
+  .brand__heading {
+    font-family: var(--br-heading-family);
+    font-size: var(--br-heading-size);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    max-width: 19ch;
+    text-wrap: balance;
+    margin-bottom: 1.6rem;
+  }
+
+  .brand__text {
+    font-family: var(--br-text-family);
+    font-size: var(--br-text-size);
+    line-height: 1.7;
+    max-width: 46ch;
+    opacity: 0.78;
+  }
+
+  .brand__text p + p {
+    margin-top: 1rem;
+  }
+
+  .brand__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 2rem;
+  }
+
+  .brand__tag {
+    font-family: var(--br-text-family);
+    font-size: var(--br-tag-size);
+    font-weight: 600;
+    padding: 0.7rem 1.3rem;
+    border: 1px solid var(--br-line);
+    border-radius: 999px;
+    color: inherit;
+    text-decoration: none;
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+
+  @media (hover: hover) {
+    a.brand__tag:hover {
+      background: var(--br-text);
+      color: var(--br-bg);
+      border-color: var(--br-text);
+    }
+  }
+
+  .brand__button {
+    display: inline-block;
+    margin-top: 2.4rem;
+    padding: 1.3rem 2.6rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    color: inherit;
+    text-decoration: none;
+    font-family: var(--br-text-family);
+    font-size: var(--br-tag-size);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .brand__button:hover {
+    background: var(--br-text);
+    color: var(--br-bg);
+  }
+
+  @media (max-width: 749px) {
+    .brand__inner {
+      grid-template-columns: 1fr;
+    }
+
+    /* Sur mobile les photos passent toujours au-dessus du texte */
+    .brand__inner--media-right .brand__collage {
+      order: 0;
+    }
+
+    .brand__heading,
+    .brand__text {
+      max-width: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .brand__img {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Marque",
+  "settings": [
+    { "type": "header", "content": "Texte" },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Notre marque" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Retirer avant d'ajouter" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Irizée est née d'un constat simple : la plupart des soins promettent beaucoup et contiennent peu de ce qui compte vraiment.</p><p>Une formule, quelques actifs, une raison d'être pour chacun.</p>" },
+    { "type": "text", "id": "button_label", "label": "Texte du bouton (optionnel)" },
+    { "type": "url", "id": "button_link", "label": "Lien du bouton" },
+
+    { "type": "header", "content": "Collage photo" },
+    { "type": "image_picker", "id": "image_main", "label": "Grande photo" },
+    { "type": "image_picker", "id": "image_top", "label": "Petite photo — haut" },
+    { "type": "image_picker", "id": "image_bottom", "label": "Petite photo — bas" },
+    {
+      "type": "select",
+      "id": "media_position",
+      "label": "Position du collage (ordinateur)",
+      "options": [
+        { "value": "left", "label": "À gauche" },
+        { "value": "right", "label": "À droite" }
+      ],
+      "default": "left"
+    },
+    { "type": "range", "id": "photo_row_height", "label": "Hauteur d'une rangée de photos — ordinateur", "min": 90, "max": 320, "step": 10, "unit": "px", "default": 180 },
+    { "type": "range", "id": "photo_row_height_mobile", "label": "Hauteur d'une rangée de photos — mobile", "min": 70, "max": 240, "step": 10, "unit": "px", "default": 120 },
+    { "type": "range", "id": "photo_gap", "label": "Espace entre photos — ordinateur", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "range", "id": "photo_gap_mobile", "label": "Espace entre photos — mobile", "min": 0, "max": 30, "step": 2, "unit": "px", "default": 8 },
+    { "type": "range", "id": "corner_radius", "label": "Arrondi des photos", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+
+    { "type": "header", "content": "Mise en page" },
+    { "type": "range", "id": "column_gap", "label": "Espace entre photos et texte — ordinateur", "min": 12, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "column_gap_mobile", "label": "Espace entre photos et texte — mobile", "min": 12, "max": 60, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "padding_desktop", "label": "Marges verticales — ordinateur", "min": 16, "max": 160, "step": 4, "unit": "px", "default": 72 },
+    { "type": "range", "id": "padding_mobile", "label": "Marges verticales — mobile", "min": 16, "max": 120, "step": 4, "unit": "px", "default": 44 },
+
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "background_color", "label": "Fond", "default": "#FFFFFF" },
+    { "type": "color", "id": "text_color", "label": "Texte", "default": "#1A1A1A" },
+    { "type": "color", "id": "muted_color", "label": "Sur-titre", "default": "#8A8683" },
+    { "type": "color", "id": "line_color", "label": "Contour des étiquettes", "default": "#DDD9D7" },
+
+    { "type": "header", "content": "Typographie — Sur-titre" },
+    { "type": "font_picker", "id": "eyebrow_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "eyebrow_size", "label": "Taille — ordinateur", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 11 },
+    { "type": "range", "id": "eyebrow_size_mobile", "label": "Taille — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 11 },
+
+    { "type": "header", "content": "Typographie — Titre" },
+    { "type": "font_picker", "id": "heading_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "heading_size", "label": "Taille — ordinateur", "min": 16, "max": 72, "step": 1, "unit": "px", "default": 36 },
+    { "type": "range", "id": "heading_size_mobile", "label": "Taille — mobile", "min": 14, "max": 48, "step": 1, "unit": "px", "default": 26 },
+
+    { "type": "header", "content": "Typographie — Texte et étiquettes" },
+    { "type": "font_picker", "id": "text_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "text_size", "label": "Texte — ordinateur", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "text_size_mobile", "label": "Texte — mobile", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "tag_size", "label": "Étiquettes — ordinateur", "min": 8, "max": 22, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "tag_size_mobile", "label": "Étiquettes — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 12 }
+  ],
+  "blocks": [
+    {
+      "type": "tag",
+      "name": "Étiquette",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Texte", "default": "Formules courtes" },
+        { "type": "url", "id": "link", "label": "Lien (optionnel)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marque",
+      "blocks": [
+        { "type": "tag", "settings": { "label": "Formules courtes" } },
+        { "type": "tag", "settings": { "label": "Fabriqué en France" } },
+        { "type": "tag", "settings": { "label": "Sans surenchère" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,52 @@
+{% comment %}
+  Accepts: product, badge_text (optional), category_label (optional), buy_label (optional)
+  Le CSS de cette carte vit dans sections/featured-products.liquid :
+  Shopify n'exécute {% stylesheet %} que dans les sections et les blocks, pas dans les snippets.
+{% endcomment %}
+{% assign display_category = category_label | default: product.type %}
+{% assign secondary_image = product.images[1] %}
+{% assign cta_label = buy_label | default: 'Acheter' %}
+
+<a href="{{ product.url }}" class="product-card{% if secondary_image %} product-card--has-secondary{% endif %}">
+  <div class="product-card__media"{% if secondary_image %} data-swipe-media{% endif %}>
+    {% if product.featured_image %}
+      {{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 30vw, 78vw', widths: '400, 600, 900', class: 'product-card__image product-card__image--primary' }}
+    {% endif %}
+    {% if secondary_image %}
+      {{ secondary_image | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 30vw, 78vw', widths: '400, 600, 900', class: 'product-card__image product-card__image--secondary' }}
+    {% endif %}
+  </div>
+
+  <div class="product-card__content">
+    <div class="product-card__top">
+      {% if display_category != blank %}
+        <p class="product-card__type">{{ display_category }}</p>
+      {% endif %}
+      {% if badge_text != blank %}
+        <span class="product-card__badge">{{ badge_text }}</span>
+      {% endif %}
+    </div>
+
+    <div class="product-card__bottom">
+      <div class="product-card__info">
+        <div class="product-card__row">
+          <p class="product-card__title">{{ product.title }}</p>
+          <p class="product-card__price">{{ product.price | money }}</p>
+        </div>
+        {% if product.description != blank %}
+          <p class="product-card__subtitle">{{ product.description | strip_html | truncate: 60 }}</p>
+        {% endif %}
+      </div>
+
+      {% if secondary_image %}
+        <span class="product-card__buy">
+          {{ cta_label }} {{ product.title }} — <b>{{ product.price | money }}</b>
+        </span>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if secondary_image %}
+    <span class="product-card__swipe">swipe</span>
+  {% endif %}
+</a>

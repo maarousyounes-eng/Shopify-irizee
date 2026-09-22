@@ -1,0 +1,419 @@
+{% style %}
+  {{ section.settings.eyebrow_font | font_face: font_display: 'swap' }}
+  {{ section.settings.heading_font | font_face: font_display: 'swap' }}
+  {{ section.settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+  {{ section.settings.text_font | font_face: font_display: 'swap' }}
+  {{ section.settings.step_font | font_face: font_display: 'swap' }}
+  {{ section.settings.step_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+  {{ section.settings.button_font | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} {
+    --sd-bg: {{ section.settings.background_color }};
+    --sd-text: {{ section.settings.text_color }};
+    --sd-button-bg: {{ section.settings.button_background }};
+    --sd-button-text: {{ section.settings.button_text_color }};
+    --sd-radius: {{ section.settings.corner_radius }}px;
+    --sd-padding: {{ section.settings.padding_desktop }}px;
+    --sd-gap: {{ section.settings.column_gap }}px;
+    --sd-media-ratio: {{ section.settings.image_ratio }};
+
+    --sd-eyebrow-family: {{ section.settings.eyebrow_font.family }}, {{ section.settings.eyebrow_font.fallback_families }};
+    --sd-eyebrow-size: {{ section.settings.eyebrow_size }}px;
+
+    --sd-heading-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+    --sd-heading-size: {{ section.settings.heading_size }}px;
+
+    --sd-text-family: {{ section.settings.text_font.family }}, {{ section.settings.text_font.fallback_families }};
+    --sd-text-size: {{ section.settings.text_size }}px;
+
+    --sd-step-family: {{ section.settings.step_font.family }}, {{ section.settings.step_font.fallback_families }};
+    --sd-step-size: {{ section.settings.step_size }}px;
+
+    --sd-button-family: {{ section.settings.button_font.family }}, {{ section.settings.button_font.fallback_families }};
+    --sd-button-size: {{ section.settings.button_size }}px;
+  }
+
+  /* Réglages mobiles : indépendants des valeurs ordinateur ci-dessus */
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --sd-padding: {{ section.settings.padding_mobile }}px;
+      --sd-gap: {{ section.settings.column_gap_mobile }}px;
+      --sd-media-ratio: {{ section.settings.image_ratio_mobile }};
+      --sd-eyebrow-size: {{ section.settings.eyebrow_size_mobile }}px;
+      --sd-heading-size: {{ section.settings.heading_size_mobile }}px;
+      --sd-text-size: {{ section.settings.text_size_mobile }}px;
+      --sd-step-size: {{ section.settings.step_size_mobile }}px;
+      --sd-button-size: {{ section.settings.button_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="skin-diag full-width">
+  <div class="skin-diag__inner skin-diag__inner--media-{{ section.settings.image_position }} skin-diag__inner--align-{{ section.settings.text_alignment }}">
+    {% if section.settings.image != blank %}
+      <div class="skin-diag__media">
+        {{
+          section.settings.image
+          | image_url: width: 1400
+          | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 50vw, 100vw', widths: '500, 750, 1000, 1400', class: 'skin-diag__image'
+        }}
+      </div>
+    {% endif %}
+
+    <div class="skin-diag__body">
+      {% if section.settings.eyebrow != blank %}
+        <p class="skin-diag__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 class="skin-diag__heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.text != blank %}
+        <div class="skin-diag__text">{{ section.settings.text }}</div>
+      {% endif %}
+
+      {% if section.blocks.size > 0 %}
+        <ol class="skin-diag__steps">
+          {% for block in section.blocks %}
+            <li class="skin-diag__step" {{ block.shopify_attributes }}>
+              {% if section.settings.show_step_numbers %}
+                <span class="skin-diag__step-number">{{ forloop.index }}</span>
+              {% endif %}
+              <span class="skin-diag__step-body">
+                {% if block.settings.title != blank %}
+                  <span class="skin-diag__step-title">{{ block.settings.title }}</span>
+                {% endif %}
+                {% if block.settings.text != blank %}
+                  <span class="skin-diag__step-text">{{ block.settings.text }}</span>
+                {% endif %}
+              </span>
+            </li>
+          {% endfor %}
+        </ol>
+      {% endif %}
+
+      {% if section.settings.button_label != blank %}
+        <a
+          href="{{ section.settings.button_link | default: '#' }}"
+          class="skin-diag__button skin-diag__button--{{ section.settings.button_style }}"
+          {% if section.settings.button_new_tab %}target="_blank" rel="noopener"{% endif %}
+        >
+          {{ section.settings.button_label }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .skin-diag {
+    padding: var(--sd-padding) var(--page-margin);
+    background-color: var(--sd-bg);
+    color: var(--sd-text);
+  }
+
+  .skin-diag__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: var(--sd-gap);
+    max-width: var(--page-width);
+    margin: 0 auto;
+  }
+
+  /* Visuel à droite : on inverse l'ordre des colonnes */
+  .skin-diag__inner--media-right .skin-diag__media {
+    order: 2;
+  }
+
+  .skin-diag__media {
+    border-radius: var(--sd-radius);
+    overflow: hidden;
+  }
+
+  .skin-diag__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: var(--sd-media-ratio);
+    object-fit: cover;
+  }
+
+  .skin-diag__inner--align-center .skin-diag__body {
+    text-align: center;
+  }
+
+  .skin-diag__inner--align-center .skin-diag__steps {
+    display: inline-block;
+    text-align: left;
+  }
+
+  .skin-diag__eyebrow {
+    font-family: var(--sd-eyebrow-family);
+    font-size: var(--sd-eyebrow-size);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    opacity: 0.75;
+  }
+
+  .skin-diag__heading {
+    font-family: var(--sd-heading-family);
+    font-size: var(--sd-heading-size);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  .skin-diag__text {
+    font-family: var(--sd-text-family);
+    font-size: var(--sd-text-size);
+    line-height: 1.6;
+    margin-top: 1.6rem;
+    opacity: 0.85;
+  }
+
+  .skin-diag__steps {
+    list-style: none;
+    margin-top: 2.4rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  .skin-diag__step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    font-family: var(--sd-step-family);
+    font-size: var(--sd-step-size);
+    line-height: 1.5;
+  }
+
+  .skin-diag__step-number {
+    flex-shrink: 0;
+    width: 2.8rem;
+    height: 2.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: color-mix(in srgb, currentColor 12%, transparent);
+    font-weight: 700;
+    font-size: 0.85em;
+  }
+
+  .skin-diag__step-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .skin-diag__step-title {
+    font-weight: 700;
+  }
+
+  .skin-diag__step-text {
+    opacity: 0.8;
+  }
+
+  .skin-diag__button {
+    display: inline-block;
+    margin-top: 2.8rem;
+    padding: 1.4rem 2.8rem;
+    border-radius: 999px;
+    font-family: var(--sd-button-family);
+    font-size: var(--sd-button-size);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .skin-diag__button--filled {
+    background: var(--sd-button-bg);
+    color: var(--sd-button-text);
+    border: 1px solid var(--sd-button-bg);
+  }
+
+  .skin-diag__button--filled:hover {
+    opacity: 0.85;
+  }
+
+  .skin-diag__button--outline {
+    background: transparent;
+    color: var(--sd-text);
+    border: 1px solid currentColor;
+  }
+
+  .skin-diag__button--outline:hover {
+    background: var(--sd-button-bg);
+    color: var(--sd-button-text);
+    border-color: var(--sd-button-bg);
+  }
+
+  @media (max-width: 749px) {
+    .skin-diag__inner {
+      grid-template-columns: 1fr;
+    }
+
+    /* Sur mobile le visuel repasse toujours au-dessus du texte */
+    .skin-diag__inner--media-right .skin-diag__media {
+      order: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Diagnostic de peau",
+  "settings": [
+    { "type": "header", "content": "Contenu" },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Diagnostic de peau" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Votre peau analysée en une photo" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Prenez une photo ou importez-en une. Notre analyse identifie les besoins réels de votre peau — hydratation, éclat, imperfections — et vous oriente vers les soins qui lui correspondent.</p>" },
+    { "type": "checkbox", "id": "show_step_numbers", "label": "Afficher les numéros des étapes", "default": true },
+
+    { "type": "header", "content": "Bouton vers l'outil" },
+    { "type": "text", "id": "button_label", "label": "Texte du bouton", "default": "Analyser ma peau" },
+    { "type": "url", "id": "button_link", "label": "Lien vers l'outil" },
+    { "type": "checkbox", "id": "button_new_tab", "label": "Ouvrir dans un nouvel onglet", "default": false },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Style du bouton",
+      "options": [
+        { "value": "filled", "label": "Plein" },
+        { "value": "outline", "label": "Contour" }
+      ],
+      "default": "filled"
+    },
+
+    { "type": "header", "content": "Visuel" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Position du visuel (ordinateur)",
+      "options": [
+        { "value": "left", "label": "À gauche" },
+        { "value": "right", "label": "À droite" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Proportions du visuel — ordinateur",
+      "options": [
+        { "value": "1 / 1", "label": "Carré" },
+        { "value": "4 / 5", "label": "Portrait" },
+        { "value": "3 / 4", "label": "Portrait allongé" },
+        { "value": "16 / 9", "label": "Paysage" }
+      ],
+      "default": "4 / 5"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio_mobile",
+      "label": "Proportions du visuel — mobile",
+      "options": [
+        { "value": "1 / 1", "label": "Carré" },
+        { "value": "4 / 5", "label": "Portrait" },
+        { "value": "3 / 4", "label": "Portrait allongé" },
+        { "value": "16 / 9", "label": "Paysage" }
+      ],
+      "default": "1 / 1"
+    },
+
+    { "type": "header", "content": "Mise en page" },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Alignement du texte",
+      "options": [
+        { "value": "left", "label": "Gauche" },
+        { "value": "center", "label": "Centré" }
+      ],
+      "default": "left"
+    },
+    { "type": "range", "id": "corner_radius", "label": "Arrondi du visuel", "min": 0, "max": 48, "step": 2, "unit": "px", "default": 24 },
+    { "type": "range", "id": "padding_desktop", "label": "Marges verticales — ordinateur", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_mobile", "label": "Marges verticales — mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "column_gap", "label": "Espace entre visuel et texte — ordinateur", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "column_gap_mobile", "label": "Espace entre visuel et texte — mobile", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 28 },
+
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "background_color", "label": "Fond de la section", "default": "#E8E6E5" },
+    { "type": "color", "id": "text_color", "label": "Couleur du texte", "default": "#1A1A1A" },
+    { "type": "color", "id": "button_background", "label": "Fond du bouton", "default": "#214975" },
+    { "type": "color", "id": "button_text_color", "label": "Texte du bouton", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Typographie — Sur-titre" },
+    { "type": "font_picker", "id": "eyebrow_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "eyebrow_size", "label": "Taille — ordinateur", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "eyebrow_size_mobile", "label": "Taille — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 11 },
+
+    { "type": "header", "content": "Typographie — Titre" },
+    { "type": "font_picker", "id": "heading_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "heading_size", "label": "Taille — ordinateur", "min": 16, "max": 80, "step": 1, "unit": "px", "default": 40 },
+    { "type": "range", "id": "heading_size_mobile", "label": "Taille — mobile", "min": 14, "max": 56, "step": 1, "unit": "px", "default": 28 },
+
+    { "type": "header", "content": "Typographie — Texte" },
+    { "type": "font_picker", "id": "text_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "text_size", "label": "Taille — ordinateur", "min": 10, "max": 32, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "text_size_mobile", "label": "Taille — mobile", "min": 10, "max": 26, "step": 1, "unit": "px", "default": 15 },
+
+    { "type": "header", "content": "Typographie — Étapes" },
+    { "type": "font_picker", "id": "step_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "step_size", "label": "Taille — ordinateur", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "step_size_mobile", "label": "Taille — mobile", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 14 },
+
+    { "type": "header", "content": "Typographie — Bouton" },
+    { "type": "font_picker", "id": "button_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "button_size", "label": "Taille — ordinateur", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 13 },
+    { "type": "range", "id": "button_size_mobile", "label": "Taille — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 12 }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Étape",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titre de l'étape", "default": "Prenez une photo" },
+        { "type": "text", "id": "text", "label": "Description (optionnel)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Diagnostic de peau",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "title": "Prenez ou importez une photo",
+            "text": "Depuis votre téléphone ou votre ordinateur, en quelques secondes."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "L'analyse examine votre peau",
+            "text": "Hydratation, éclat, imperfections, zones sensibles."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Recevez votre routine",
+            "text": "Une sélection de soins adaptés à ce que révèle votre peau."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

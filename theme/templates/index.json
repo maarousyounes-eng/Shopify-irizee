@@ -1,75 +1,354 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "image_banner": {
-      "type": "image-banner",
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "image": "shopify://shop_images/Gemini_Generated_Image_acy37iacy37iacy3.jpg",
+        "text_color": "black",
+        "position_vertical": "bottom",
+        "position_horizontal": "left",
+        "show_overlay": true,
+        "overlay_opacity": 10,
+        "eyebrow": "Soins naturels",
+        "heading": "Des soins naturels pensés pour votre peau",
+        "button_label": "Découvrir",
+        "button_link": "shopify://collections/all"
+      }
+    },
+    "reassurance_L9RciR": {
+      "type": "reassurance",
       "blocks": {
-        "heading": {
-          "type": "heading",
+        "item_kjwDUC": {
+          "type": "item",
           "settings": {
-            "heading": "Browse our latest products",
-            "heading_size": "h0"
+            "icon": "leaf",
+            "title": "Formules naturelles",
+            "text": "Des ingrédients choisis, sans compromis."
           }
         },
-        "button": {
-          "type": "buttons",
+        "item_HDFdbt": {
+          "type": "item",
           "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
+            "icon": "france",
+            "title": "Fabriqué en France",
+            "text": "Produit dans nos ateliers partenaires."
+          }
+        },
+        "item_maaTrJ": {
+          "type": "item",
+          "settings": {
+            "icon": "rabbit",
+            "title": "Non testé sur les animaux",
+            "text": "Aucune formule testée sur les animaux."
+          }
+        },
+        "item_gzPHcC": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison offerte",
+            "text": "Dès 49 € d'achat en France."
+          }
+        },
+        "item_paiement3x": {
+          "type": "item",
+          "settings": {
+            "icon": "split",
+            "title": "Payez en 3 fois",
+            "text": "Sans frais, dès 60 € d'achat."
           }
         }
       },
       "block_order": [
-        "heading",
-        "button"
+        "item_gzPHcC",
+        "item_paiement3x",
+        "item_kjwDUC",
+        "item_HDFdbt",
+        "item_maaTrJ"
       ],
+      "name": "Bandeau de réassurance",
       "settings": {
-        "image_overlay_opacity": 40,
-        "image_height": "large",
-        "desktop_content_position": "bottom-center",
-        "show_text_box": false,
-        "image_behavior": "none",
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
+        "columns": 5,
+        "columns_mobile": "2",
+        "show_numbers": true,
+        "cell_padding": 34,
+        "cell_padding_mobile": 22,
+        "background_color": "#FFFFFF",
+        "text_color": "#1A1A1A",
+        "line_color": "#DDD9D7",
+        "hover_color": "#E8E6E5",
+        "icon_color": "#1A1A1A",
+        "icon_size": 24,
+        "icon_size_mobile": 20,
+        "title_font": "work_sans_n4",
+        "title_size": 16,
+        "title_size_mobile": 15,
+        "text_font": "work_sans_n4",
+        "text_size": 13,
+        "text_size_mobile": 12,
+        "kicker_size": 12,
+        "kicker_size_mobile": 11
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
+    "featured_products": {
+      "type": "featured-products",
+      "blocks": {
+        "product_Wamkke": {
+          "type": "product",
+          "settings": {
+            "product": "masque",
+            "badge_text": "Best",
+            "category_label": "Masque"
+          }
+        },
+        "product_C3EFeh": {
+          "type": "product",
+          "settings": {
+            "product": "masque",
+            "badge_text": "",
+            "category_label": ""
+          }
+        },
+        "product_nLALKQ": {
+          "type": "product",
+          "settings": {
+            "product": "masque",
+            "badge_text": "",
+            "category_label": ""
+          }
+        },
+        "product_FWzcgW": {
+          "type": "product",
+          "settings": {
+            "product": "masque",
+            "badge_text": "",
+            "category_label": ""
+          }
+        },
+        "p1": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "badge_text": "",
+            "category_label": ""
+          }
+        },
+        "p2": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "badge_text": "",
+            "category_label": ""
+          }
+        },
+        "p3": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "badge_text": "",
+            "category_label": ""
+          }
+        },
+        "p4": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "badge_text": "",
+            "category_label": ""
+          }
+        }
+      },
+      "block_order": [
+        "product_Wamkke",
+        "product_C3EFeh",
+        "product_nLALKQ",
+        "product_FWzcgW",
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ],
       "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "full_width": false,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
-        "columns_mobile": "2",
-        "padding_top": 44,
-        "padding_bottom": 36
+        "heading": "Sélection de rentrée",
+        "source": "manual",
+        "collection": "",
+        "products_count": 3,
+        "card_background": "#e8e6e5",
+        "blend_white_bg": true,
+        "image_inset": 14,
+        "buy_label": "Acheter",
+        "button_label": "Tout voir",
+        "button_link": "",
+        "heading_font": "work_sans_n4",
+        "heading_size": 34,
+        "heading_size_mobile": 26,
+        "category_font": "work_sans_n4",
+        "category_size": 45,
+        "category_size_mobile": 28,
+        "name_font": "work_sans_n4",
+        "name_size": 19,
+        "name_size_mobile": 14,
+        "subtitle_font": "work_sans_n4",
+        "subtitle_size": 14,
+        "subtitle_size_mobile": 13,
+        "badge_font": "work_sans_n4",
+        "badge_size": 11,
+        "badge_size_mobile": 11,
+        "badge_nudge": 0,
+        "buy_font": "work_sans_n4",
+        "buy_size": 14,
+        "buy_size_mobile": 13,
+        "cta_font": "work_sans_n4",
+        "cta_size": 12,
+        "cta_size_mobile": 12
+      }
+    },
+    "skin_diagnostic_PYwfF7": {
+      "type": "skin-diagnostic",
+      "blocks": {
+        "step_mCzT9M": {
+          "type": "step",
+          "settings": {
+            "title": "Prenez ou importez une photo",
+            "text": "Depuis votre téléphone ou votre ordinateur, en quelques secondes."
+          }
+        },
+        "step_n34NAF": {
+          "type": "step",
+          "settings": {
+            "title": "L'analyse examine votre peau",
+            "text": "Hydratation, éclat, imperfections, zones sensibles."
+          }
+        },
+        "step_WEmUG7": {
+          "type": "step",
+          "settings": {
+            "title": "Recevez votre routine",
+            "text": "Une sélection de soins adaptés à ce que révèle votre peau."
+          }
+        }
+      },
+      "block_order": [
+        "step_mCzT9M",
+        "step_n34NAF",
+        "step_WEmUG7"
+      ],
+      "name": "Diagnostic de peau",
+      "settings": {
+        "eyebrow": "Diagnostic de peau",
+        "heading": "Votre peau analysée en une photo",
+        "text": "<p>Prenez une photo ou importez-en une. Notre analyse identifie les besoins réels de votre peau — hydratation, éclat, imperfections — et vous oriente vers les soins qui lui correspondent.</p>",
+        "show_step_numbers": true,
+        "button_label": "Analyser ma peau",
+        "button_link": "",
+        "button_new_tab": false,
+        "button_style": "filled",
+        "image": "shopify://shop_images/Hero.png",
+        "image_position": "left",
+        "image_ratio": "4 / 5",
+        "image_ratio_mobile": "1 / 1",
+        "text_alignment": "left",
+        "corner_radius": 24,
+        "padding_desktop": 80,
+        "padding_mobile": 48,
+        "column_gap": 56,
+        "column_gap_mobile": 28,
+        "background_color": "#e8e6e5",
+        "text_color": "#1a1a1a",
+        "button_background": "#214975",
+        "button_text_color": "#ffffff",
+        "eyebrow_font": "work_sans_n4",
+        "eyebrow_size": 12,
+        "eyebrow_size_mobile": 11,
+        "heading_font": "work_sans_n4",
+        "heading_size": 40,
+        "heading_size_mobile": 28,
+        "text_font": "work_sans_n4",
+        "text_size": 16,
+        "text_size_mobile": 15,
+        "step_font": "work_sans_n4",
+        "step_size": 15,
+        "step_size_mobile": 14,
+        "button_font": "work_sans_n4",
+        "button_size": 13,
+        "button_size_mobile": 12
+      }
+    },
+    "brand_commitments_NCVAJB": {
+      "type": "brand-commitments",
+      "blocks": {
+        "chapter_1": {
+          "type": "chapter",
+          "settings": {
+            "title": "Une liste d'ingrédients illisible",
+            "text": "<p>Impossible de savoir ce qu'on met sur sa peau, ni pourquoi. C'est de là qu'est partie l'envie de faire autrement.</p>"
+          }
+        },
+        "chapter_2": {
+          "type": "chapter",
+          "settings": {
+            "title": "Retirer avant d'ajouter",
+            "text": "<p>Chaque ingrédient doit justifier sa présence. Si nous ne savons pas l'expliquer en une phrase, il ne rentre pas dans la formule.</p>"
+          }
+        },
+        "chapter_3": {
+          "type": "chapter",
+          "settings": {
+            "title": "Quelques soins, travaillés longtemps",
+            "text": "<p>Nous préférons sortir peu de produits et les retravailler, plutôt que d'élargir la gamme chaque saison.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "chapter_1",
+        "chapter_2",
+        "chapter_3"
+      ],
+      "name": "Marque et engagements",
+      "settings": {
+        "eyebrow": "Notre marque",
+        "heading": "Nous avons commencé par retirer, pas par ajouter",
+        "text_alignment": "left",
+        "show_numbers": true,
+        "media_height": 76,
+        "media_height_mobile": 42,
+        "chapter_height": 85,
+        "sticky_offset": 96,
+        "sticky_offset_mobile": 72,
+        "corner_radius": 14,
+        "column_gap": 64,
+        "column_gap_mobile": 16,
+        "background_color": "#FFFFFF",
+        "text_color": "#1A1A1A",
+        "muted_color": "#8A8683",
+        "eyebrow_font": "work_sans_n4",
+        "eyebrow_size": 12,
+        "eyebrow_size_mobile": 11,
+        "heading_font": "work_sans_n4",
+        "heading_size": 42,
+        "heading_size_mobile": 28,
+        "chapter_size": 34,
+        "chapter_size_mobile": 24,
+        "text_font": "work_sans_n4",
+        "text_size": 16,
+        "text_size_mobile": 15
       }
     }
   },
   "order": [
-    "image_banner",
-    "featured_collection"
+    "hero",
+    "reassurance_L9RciR",
+    "featured_products",
+    "skin_diagnostic_PYwfF7",
+    "brand_commitments_NCVAJB"
   ]
 }

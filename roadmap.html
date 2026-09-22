@@ -8,7 +8,7 @@
   :root{
     --page-bg:#F4F4F5; --card:#ffffff; --border:#E4E4E7; --border-soft:#F0F0F1;
     --ink:#0A0A0B; --muted:#6B6B72; --muted-soft:#A0A0A8;
-    --accent:#2B6EE8; --accent-soft:#EBF2FF;
+    --accent:#0A0A0B; --accent-soft:#F0F0F1;
     --done:#16A34A; --done-soft:#ECFDF5;
     --doing:#F59E0B; --doing-soft:#FFFBEB;
     --todo:#6B6B72; --todo-soft:#F4F4F5;
@@ -95,12 +95,12 @@
 <header>
   <div class="wordmark">Irizée</div>
   <h1>Boutique Shopify <span>· Suivi</span></h1>
-  <div class="sub">27 tâches · 5 phases · 5 modules — clique sur un statut pour le faire avancer</div>
+  <div class="sub">34 tâches · 5 phases · 6 modules — clique sur un statut pour le faire avancer</div>
 </header>
 
 <div class="stats">
-  <div class="stat"><div class="n" id="st-total">27</div><div class="l">Tâches totales</div></div>
-  <div class="stat"><div class="n" id="st-todo">27</div><div class="l">À faire</div></div>
+  <div class="stat"><div class="n" id="st-total">34</div><div class="l">Tâches totales</div></div>
+  <div class="stat"><div class="n" id="st-todo">34</div><div class="l">À faire</div></div>
   <div class="stat n-doing"><div class="n" id="st-doing">0</div><div class="l">En cours</div></div>
   <div class="stat n-done"><div class="n" id="st-done">0</div><div class="l">Terminé</div></div>
   <div class="progress-wrap">
@@ -119,7 +119,7 @@
   <label>Qui</label>
   <select id="f-qui"><option value="">Tous</option><option>Toi</option><option>Dev</option></select>
   <label>Module</label>
-  <select id="f-module"><option value="">Tous</option><option>Setup</option><option>Produits</option><option>Thème</option><option>SEO/Perf</option><option>Lancement</option></select>
+  <select id="f-module"><option value="">Tous</option><option>Setup</option><option>Produits</option><option>Thème</option><option>Conversion</option><option>SEO/Perf</option><option>Lancement</option></select>
   <button class="reset" id="f-reset">Réinitialiser</button>
 </div>
 
@@ -166,7 +166,14 @@ const TASKS = [
   {id:"SH-24", t:"Config analytics (GA4, Meta Pixel)", ph:"Phase 4", phl:"Phase 4 — Tests & lancement", mod:"Lancement", p:"Haute", e:"S", q:"Toi"},
   {id:"SH-25", t:"Tester une commande complète (mode test)", ph:"Phase 4", phl:"Phase 4 — Tests & lancement", mod:"Lancement", p:"Haute", e:"S", q:"Toi"},
   {id:"SH-26", t:"Checklist légale (mentions, CGV, RGPD, cookies)", ph:"Phase 4", phl:"Phase 4 — Tests & lancement", mod:"Lancement", p:"Haute", e:"S", q:"Toi"},
-  {id:"SH-27", t:"Lancement : DNS + redirections", ph:"Phase 4", phl:"Phase 4 — Tests & lancement", mod:"Lancement", p:"Haute", e:"M", q:"Toi"}
+  {id:"SH-27", t:"Lancement : DNS + redirections", ph:"Phase 4", phl:"Phase 4 — Tests & lancement", mod:"Lancement", p:"Haute", e:"M", q:"Toi"},
+  {id:"SH-28", t:"Proposition de valeur claire dès le 1er écran de la home", ph:"Phase 2", phl:"Phase 2 — Dev du thème", mod:"Conversion", p:"Haute", e:"S", q:"Toi"},
+  {id:"SH-29", t:"Bouton \"Ajouter au panier\" sticky sur mobile (fiche produit)", ph:"Phase 2", phl:"Phase 2 — Dev du thème", mod:"Conversion", p:"Haute", e:"S", q:"Dev"},
+  {id:"SH-30", t:"Éléments de réassurance sur fiche produit (fabrication, ingrédients, actifs)", ph:"Phase 2", phl:"Phase 2 — Dev du thème", mod:"Conversion", p:"Haute", e:"M", q:"Dev"},
+  {id:"SH-31", t:"Capture email dès la home (bandeau/pop-in, réduction 1ère commande)", ph:"Phase 2", phl:"Phase 2 — Dev du thème", mod:"Conversion", p:"Moyenne", e:"S", q:"Dev"},
+  {id:"SH-32", t:"Intégrer un système d'avis clients (app légère, faible impact perf)", ph:"Phase 2", phl:"Phase 2 — Dev du thème", mod:"Conversion", p:"Moyenne", e:"S", q:"Toi"},
+  {id:"SH-33", t:"Activer Shop Pay / Apple Pay / PayPal Express au checkout", ph:"Phase 4", phl:"Phase 4 — Tests & lancement", mod:"Conversion", p:"Haute", e:"S", q:"Toi"},
+  {id:"SH-34", t:"Stratégie de contenu blog SEO (routine skincare, recherche informationnelle)", ph:"Phase 3", phl:"Phase 3 — SEO & Perf", mod:"Conversion", p:"Moyenne", e:"M", q:"Toi"}
 ];
 
 const STATUSES = ["todo","doing","done"];
