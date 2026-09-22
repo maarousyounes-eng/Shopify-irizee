@@ -1,26 +1,406 @@
-<footer>
-  <div class="footer__copyright">
-    &copy;
-    {{ 'now' | date: '%Y' }}
-    {{ shop.name | link_to: routes.root_url }}
+{% style %}
+  {{ section.settings.heading_font | font_face: font_display: 'swap' }}
+  {{ section.settings.link_font | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} {
+    --ft-bg: {{ section.settings.background_color }};
+    --ft-text: {{ section.settings.text_color }};
+    --ft-muted: {{ section.settings.muted_color }};
+    --ft-line: {{ section.settings.line_color }};
+    --ft-padding-top: {{ section.settings.padding_top }}px;
+    --ft-columns: {{ section.settings.columns }};
+    --ft-column-gap: {{ section.settings.column_gap }}px;
+    --ft-logo-width: {{ section.settings.logo_width }}%;
+
+    --ft-heading-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+    --ft-heading-size: {{ section.settings.heading_size }}px;
+
+    --ft-link-family: {{ section.settings.link_font.family }}, {{ section.settings.link_font.fallback_families }};
+    --ft-link-size: {{ section.settings.link_size }}px;
+    --ft-pitch-size: {{ section.settings.pitch_size }}px;
+    --ft-legal-size: {{ section.settings.legal_size }}px;
+  }
+
+  /* Réglages mobiles : indépendants des valeurs ordinateur ci-dessus */
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --ft-padding-top: {{ section.settings.padding_top_mobile }}px;
+      --ft-columns: {{ section.settings.columns_mobile }};
+      --ft-column-gap: {{ section.settings.column_gap_mobile }}px;
+      --ft-logo-width: {{ section.settings.logo_width_mobile }}%;
+      --ft-heading-size: {{ section.settings.heading_size_mobile }}px;
+      --ft-link-size: {{ section.settings.link_size_mobile }}px;
+      --ft-pitch-size: {{ section.settings.pitch_size_mobile }}px;
+      --ft-legal-size: {{ section.settings.legal_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<footer class="footer">
+  <div class="footer__inner">
+    {% if section.blocks.size > 0 %}
+      <div class="footer__top">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'brand' %}
+              <div class="footer__col footer__col--brand" {{ block.shopify_attributes }}>
+                {% if block.settings.heading != blank %}
+                  <p class="footer__heading">{{ block.settings.heading }}</p>
+                {% endif %}
+                {% if block.settings.text != blank %}
+                  <p class="footer__pitch">{{ block.settings.text }}</p>
+                {% endif %}
+
+                {% assign has_social = false %}
+                {% if section.settings.instagram != blank or section.settings.tiktok != blank or section.settings.facebook != blank or section.settings.pinterest != blank %}
+                  {% assign has_social = true %}
+                {% endif %}
+
+                {% if has_social %}
+                  <div class="footer__social">
+                    {% if section.settings.instagram != blank %}
+                      <a href="{{ section.settings.instagram }}" target="_blank" rel="noopener" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" stroke-width="1.4"/>
+                          <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.4"/>
+                          <circle cx="17" cy="7" r="1.1" fill="currentColor"/>
+                        </svg>
+                      </a>
+                    {% endif %}
+                    {% if section.settings.tiktok != blank %}
+                      <a href="{{ section.settings.tiktok }}" target="_blank" rel="noopener" aria-label="TikTok">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M14 3.5v10.2a3.3 3.3 0 1 1-2.8-3.26" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M14 3.5c.5 2.4 2 3.8 4.5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                        </svg>
+                      </a>
+                    {% endif %}
+                    {% if section.settings.facebook != blank %}
+                      <a href="{{ section.settings.facebook }}" target="_blank" rel="noopener" aria-label="Facebook">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M14.5 8h2M14.5 8c0-2 .6-3.2 2.5-3.2M14.5 8v11.5M11 12h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                        </svg>
+                      </a>
+                    {% endif %}
+                    {% if section.settings.pinterest != blank %}
+                      <a href="{{ section.settings.pinterest }}" target="_blank" rel="noopener" aria-label="Pinterest">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M9.5 20c-.6-1.8.2-4.3.7-6.3-.9-1.9.3-4.4 2.6-4.4 1.9 0 2.8 1.4 2.5 3.2-.3 1.9-1.4 3.3-2.9 3-1-.2-1.4-1.1-1.2-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                          <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.4"/>
+                        </svg>
+                      </a>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+
+            {% when 'menu' %}
+              <div class="footer__col" {{ block.shopify_attributes }}>
+                {% if block.settings.heading != blank %}
+                  <p class="footer__heading">{{ block.settings.heading }}</p>
+                {% endif %}
+                {% if block.settings.menu != blank %}
+                  <ul class="footer__links">
+                    {% for link in block.settings.menu.links %}
+                      <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+          {% endcase %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if section.settings.show_logo %}
+      <div class="footer__wordmark">
+        {% if section.settings.logo != blank %}
+          {{
+            section.settings.logo
+            | image_url: width: 2600
+            | image_tag: loading: 'lazy', sizes: '100vw', widths: '800, 1400, 2000, 2600', class: 'footer__logo', alt: shop.name
+          }}
+        {% else %}
+          <img
+            class="footer__logo"
+            src="{{ 'irizee-logo.png' | asset_url }}"
+            alt="{{ shop.name }}"
+            loading="lazy"
+            width="2642"
+            height="844"
+          >
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="footer__legal">
+      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
+
+      {% if section.settings.legal_menu != blank %}
+        <ul class="footer__legal-links">
+          {% for link in section.settings.legal_menu.links %}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 %}
+        <ul class="footer__payments">
+          {% for type in shop.enabled_payment_types %}
+            <li>{{ type | payment_type_svg_tag: class: 'footer__payment-icon' }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
   </div>
 </footer>
 
 {% stylesheet %}
-  footer {
-    padding: 2rem var(--page-margin);
-    text-align: center;
-    font-size: 1.2rem;
+  .footer {
+    background-color: var(--ft-bg);
+    color: var(--ft-text);
+    padding: var(--ft-padding-top) var(--page-margin) 0;
   }
-  footer a {
+
+  .footer__inner {
+    max-width: var(--page-width);
+    margin: 0 auto;
+  }
+
+  .footer__top {
+    display: grid;
+    grid-template-columns: 1.3fr repeat(calc(var(--ft-columns) - 1), 1fr);
+    gap: var(--ft-column-gap);
+    padding-bottom: 5.6rem;
+  }
+
+  .footer__heading {
+    font-family: var(--ft-heading-family);
+    font-size: var(--ft-heading-size);
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    font-weight: 600;
+    color: var(--ft-muted);
+    margin-bottom: 1.8rem;
+  }
+
+  .footer__pitch {
+    font-family: var(--ft-link-family);
+    font-size: var(--ft-pitch-size);
+    line-height: 1.7;
+    max-width: 34ch;
+    opacity: 0.8;
+  }
+
+  .footer__links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .footer__links a {
+    font-family: var(--ft-link-family);
+    font-size: var(--ft-link-size);
+    color: inherit;
     text-decoration: none;
-    color: var(--color-foreground);
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+
+  .footer__links a:hover {
+    opacity: 1;
+  }
+
+  .footer__social {
+    display: flex;
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .footer__social a {
+    width: 3.6rem;
+    height: 3.6rem;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--ft-line);
+    border-radius: 50%;
+    color: inherit;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .footer__social a:hover {
+    background: var(--ft-text);
+    color: var(--ft-bg);
+  }
+
+  .footer__social svg {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  /* Le nom de la marque en très grand, en signature de page */
+  .footer__wordmark {
+    border-top: 1px solid var(--ft-line);
+    padding: 3.6rem 0 1.8rem;
+  }
+
+  .footer__logo {
+    display: block;
+    width: var(--ft-logo-width);
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .footer__legal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.6rem;
+    padding: 2.2rem 0 3rem;
+    border-top: 1px solid var(--ft-line);
+    font-family: var(--ft-link-family);
+    font-size: var(--ft-legal-size);
+    color: var(--ft-muted);
+  }
+
+  .footer__legal-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.6rem;
+  }
+
+  .footer__legal-links a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .footer__legal-links a:hover {
+    color: var(--ft-text);
+  }
+
+  .footer__payments {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .footer__payment-icon {
+    width: 3.4rem;
+    height: auto;
+  }
+
+  @media (max-width: 749px) {
+    .footer__top {
+      grid-template-columns: repeat(var(--ft-columns), 1fr);
+      padding-bottom: 4rem;
+    }
+
+    .footer__col--brand {
+      grid-column: 1 / -1;
+    }
+
+    .footer__legal {
+      justify-content: flex-start;
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.footer",
-  "settings": []
+  "name": "Pied de page",
+  "settings": [
+    { "type": "header", "content": "Logo en signature" },
+    { "type": "checkbox", "id": "show_logo", "label": "Afficher le logo en grand", "default": true },
+    { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Laisser vide pour utiliser le logo du thème." },
+    { "type": "range", "id": "logo_width", "label": "Largeur du logo — ordinateur", "min": 20, "max": 100, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "logo_width_mobile", "label": "Largeur du logo — mobile", "min": 20, "max": 100, "step": 5, "unit": "%", "default": 100 },
+
+    { "type": "header", "content": "Bas de page" },
+    { "type": "link_list", "id": "legal_menu", "label": "Menu des mentions légales", "info": "Créez un menu contenant Mentions légales, CGV, Confidentialité." },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Afficher les moyens de paiement", "default": true },
+
+    { "type": "header", "content": "Réseaux sociaux" },
+    { "type": "url", "id": "instagram", "label": "Instagram" },
+    { "type": "url", "id": "tiktok", "label": "TikTok" },
+    { "type": "url", "id": "facebook", "label": "Facebook" },
+    { "type": "url", "id": "pinterest", "label": "Pinterest" },
+
+    { "type": "header", "content": "Mise en page" },
+    { "type": "range", "id": "columns", "label": "Colonnes — ordinateur", "min": 2, "max": 5, "step": 1, "default": 4 },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Colonnes — mobile",
+      "options": [
+        { "value": "1", "label": "1 colonne" },
+        { "value": "2", "label": "2 colonnes" }
+      ],
+      "default": "2"
+    },
+    { "type": "range", "id": "column_gap", "label": "Espace entre colonnes — ordinateur", "min": 16, "max": 96, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "column_gap_mobile", "label": "Espace entre colonnes — mobile", "min": 16, "max": 64, "step": 4, "unit": "px", "default": 28 },
+    { "type": "range", "id": "padding_top", "label": "Marge haute — ordinateur", "min": 16, "max": 160, "step": 4, "unit": "px", "default": 72 },
+    { "type": "range", "id": "padding_top_mobile", "label": "Marge haute — mobile", "min": 16, "max": 120, "step": 4, "unit": "px", "default": 48 },
+
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "background_color", "label": "Fond", "default": "#E8E6E5" },
+    { "type": "color", "id": "text_color", "label": "Texte", "default": "#1A1A1A" },
+    { "type": "color", "id": "muted_color", "label": "Texte secondaire", "default": "#8A8683" },
+    { "type": "color", "id": "line_color", "label": "Filets", "default": "#D5D2D0" },
+
+    { "type": "header", "content": "Typographie — Titres de colonnes" },
+    { "type": "font_picker", "id": "heading_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "heading_size", "label": "Taille — ordinateur", "min": 8, "max": 22, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "heading_size_mobile", "label": "Taille — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 11 },
+
+    { "type": "header", "content": "Typographie — Liens et textes" },
+    { "type": "font_picker", "id": "link_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "link_size", "label": "Liens — ordinateur", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "link_size_mobile", "label": "Liens — mobile", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 14 },
+    { "type": "range", "id": "pitch_size", "label": "Texte de présentation — ordinateur", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "pitch_size_mobile", "label": "Texte de présentation — mobile", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "legal_size", "label": "Mentions du bas — ordinateur", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 13 },
+    { "type": "range", "id": "legal_size_mobile", "label": "Mentions du bas — mobile", "min": 8, "max": 18, "step": 1, "unit": "px", "default": 12 }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Marque",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Titre", "default": "Irizée" },
+        { "type": "textarea", "id": "text", "label": "Texte", "default": "Des soins pensés pour durer. Formules courtes, fabrication française." }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "Colonne de liens",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Titre de la colonne", "default": "Boutique" },
+        { "type": "link_list", "id": "menu", "label": "Menu" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pied de page",
+      "blocks": [
+        { "type": "brand" },
+        { "type": "menu", "settings": { "heading": "Boutique" } },
+        { "type": "menu", "settings": { "heading": "À propos" } },
+        { "type": "menu", "settings": { "heading": "Aide" } }
+      ]
+    }
+  ]
 }
 {% endschema %}

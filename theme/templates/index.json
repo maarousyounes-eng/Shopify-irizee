@@ -24,6 +24,81 @@
         "button_link": "shopify://collections/all"
       }
     },
+    "reassurance_L9RciR": {
+      "type": "reassurance",
+      "blocks": {
+        "item_kjwDUC": {
+          "type": "item",
+          "settings": {
+            "icon": "leaf",
+            "title": "Formules naturelles",
+            "text": "Des ingrédients choisis, sans compromis."
+          }
+        },
+        "item_HDFdbt": {
+          "type": "item",
+          "settings": {
+            "icon": "france",
+            "title": "Fabriqué en France",
+            "text": "Produit dans nos ateliers partenaires."
+          }
+        },
+        "item_maaTrJ": {
+          "type": "item",
+          "settings": {
+            "icon": "rabbit",
+            "title": "Non testé sur les animaux",
+            "text": "Aucune formule testée sur les animaux."
+          }
+        },
+        "item_gzPHcC": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison offerte",
+            "text": "Dès 49 € d'achat en France."
+          }
+        },
+        "item_paiement3x": {
+          "type": "item",
+          "settings": {
+            "icon": "split",
+            "title": "Payez en 3 fois",
+            "text": "Sans frais, dès 60 € d'achat."
+          }
+        }
+      },
+      "block_order": [
+        "item_gzPHcC",
+        "item_paiement3x",
+        "item_kjwDUC",
+        "item_HDFdbt",
+        "item_maaTrJ"
+      ],
+      "name": "Bandeau de réassurance",
+      "settings": {
+        "columns": 5,
+        "columns_mobile": "2",
+        "show_numbers": true,
+        "cell_padding": 34,
+        "cell_padding_mobile": 22,
+        "background_color": "#FFFFFF",
+        "text_color": "#1A1A1A",
+        "line_color": "#DDD9D7",
+        "hover_color": "#E8E6E5",
+        "icon_color": "#1A1A1A",
+        "icon_size": 24,
+        "icon_size_mobile": 20,
+        "title_font": "work_sans_n4",
+        "title_size": 16,
+        "title_size_mobile": 15,
+        "text_font": "work_sans_n4",
+        "text_size": 13,
+        "text_size_mobile": 12,
+        "kicker_size": 12,
+        "kicker_size_mobile": 11
+      }
+    },
     "featured_products": {
       "type": "featured-products",
       "blocks": {
@@ -187,10 +262,10 @@
         "padding_mobile": 48,
         "column_gap": 56,
         "column_gap_mobile": 28,
-        "background_color": "#E8E6E5",
-        "text_color": "#1A1A1A",
+        "background_color": "#e8e6e5",
+        "text_color": "#1a1a1a",
         "button_background": "#214975",
-        "button_text_color": "#FFFFFF",
+        "button_text_color": "#ffffff",
         "eyebrow_font": "work_sans_n4",
         "eyebrow_size": 12,
         "eyebrow_size_mobile": 11,
@@ -207,11 +282,73 @@
         "button_size": 13,
         "button_size_mobile": 12
       }
+    },
+    "brand_commitments_NCVAJB": {
+      "type": "brand-commitments",
+      "blocks": {
+        "chapter_1": {
+          "type": "chapter",
+          "settings": {
+            "title": "Une liste d'ingrédients illisible",
+            "text": "<p>Impossible de savoir ce qu'on met sur sa peau, ni pourquoi. C'est de là qu'est partie l'envie de faire autrement.</p>"
+          }
+        },
+        "chapter_2": {
+          "type": "chapter",
+          "settings": {
+            "title": "Retirer avant d'ajouter",
+            "text": "<p>Chaque ingrédient doit justifier sa présence. Si nous ne savons pas l'expliquer en une phrase, il ne rentre pas dans la formule.</p>"
+          }
+        },
+        "chapter_3": {
+          "type": "chapter",
+          "settings": {
+            "title": "Quelques soins, travaillés longtemps",
+            "text": "<p>Nous préférons sortir peu de produits et les retravailler, plutôt que d'élargir la gamme chaque saison.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "chapter_1",
+        "chapter_2",
+        "chapter_3"
+      ],
+      "name": "Marque et engagements",
+      "settings": {
+        "eyebrow": "Notre marque",
+        "heading": "Nous avons commencé par retirer, pas par ajouter",
+        "text_alignment": "left",
+        "show_numbers": true,
+        "media_height": 76,
+        "media_height_mobile": 42,
+        "chapter_height": 85,
+        "sticky_offset": 96,
+        "sticky_offset_mobile": 72,
+        "corner_radius": 14,
+        "column_gap": 64,
+        "column_gap_mobile": 16,
+        "background_color": "#FFFFFF",
+        "text_color": "#1A1A1A",
+        "muted_color": "#8A8683",
+        "eyebrow_font": "work_sans_n4",
+        "eyebrow_size": 12,
+        "eyebrow_size_mobile": 11,
+        "heading_font": "work_sans_n4",
+        "heading_size": 42,
+        "heading_size_mobile": 28,
+        "chapter_size": 34,
+        "chapter_size_mobile": 24,
+        "text_font": "work_sans_n4",
+        "text_size": 16,
+        "text_size_mobile": 15
+      }
     }
   },
   "order": [
     "hero",
+    "reassurance_L9RciR",
     "featured_products",
-    "skin_diagnostic_PYwfF7"
+    "skin_diagnostic_PYwfF7",
+    "brand_commitments_NCVAJB"
   ]
 }

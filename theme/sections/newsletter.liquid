@@ -1,0 +1,512 @@
+{% style %}
+  {{ section.settings.eyebrow_font | font_face: font_display: 'swap' }}
+  {{ section.settings.heading_font | font_face: font_display: 'swap' }}
+  {{ section.settings.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+  {{ section.settings.text_font | font_face: font_display: 'swap' }}
+  {{ section.settings.button_font | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} {
+    --nl-bg: {{ section.settings.background_color }};
+    --nl-text: {{ section.settings.text_color }};
+    --nl-field-bg: {{ section.settings.field_background }};
+    --nl-field-border: {{ section.settings.field_border_color }};
+    --nl-button-bg: {{ section.settings.button_background }};
+    --nl-button-text: {{ section.settings.button_text_color }};
+    --nl-radius: {{ section.settings.field_radius }}px;
+    --nl-padding: {{ section.settings.padding_desktop }}px;
+    --nl-gap: {{ section.settings.column_gap }}px;
+    --nl-media-ratio: {{ section.settings.image_ratio }};
+
+    --nl-eyebrow-family: {{ section.settings.eyebrow_font.family }}, {{ section.settings.eyebrow_font.fallback_families }};
+    --nl-eyebrow-size: {{ section.settings.eyebrow_size }}px;
+
+    --nl-heading-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+    --nl-heading-size: {{ section.settings.heading_size }}px;
+
+    --nl-text-family: {{ section.settings.text_font.family }}, {{ section.settings.text_font.fallback_families }};
+    --nl-text-size: {{ section.settings.text_size }}px;
+    --nl-legal-size: {{ section.settings.legal_size }}px;
+
+    --nl-button-family: {{ section.settings.button_font.family }}, {{ section.settings.button_font.fallback_families }};
+    --nl-button-size: {{ section.settings.button_size }}px;
+  }
+
+  /* Réglages mobiles : indépendants des valeurs ordinateur ci-dessus */
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --nl-padding: {{ section.settings.padding_mobile }}px;
+      --nl-gap: {{ section.settings.column_gap_mobile }}px;
+      --nl-media-ratio: {{ section.settings.image_ratio_mobile }};
+      --nl-eyebrow-size: {{ section.settings.eyebrow_size_mobile }}px;
+      --nl-heading-size: {{ section.settings.heading_size_mobile }}px;
+      --nl-text-size: {{ section.settings.text_size_mobile }}px;
+      --nl-legal-size: {{ section.settings.legal_size_mobile }}px;
+      --nl-button-size: {{ section.settings.button_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="newsletter full-width">
+  <div class="newsletter__inner newsletter__inner--{{ section.settings.layout }} newsletter__inner--media-{{ section.settings.image_position }} newsletter__inner--align-{{ section.settings.text_alignment }}">
+    {% if section.settings.layout == 'split' and section.settings.image != blank %}
+      <div class="newsletter__media">
+        {{
+          section.settings.image
+          | image_url: width: 1400
+          | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 50vw, 100vw', widths: '500, 750, 1000, 1400', class: 'newsletter__image'
+        }}
+      </div>
+    {% endif %}
+
+    <div class="newsletter__body">
+      {% if section.settings.eyebrow != blank %}
+        <p class="newsletter__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 class="newsletter__heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.text != blank %}
+        <div class="newsletter__text">{{ section.settings.text }}</div>
+      {% endif %}
+
+      {%- assign form_id = 'Newsletter--' | append: section.id -%}
+      {%- form 'customer', id: form_id, class: 'newsletter__form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+
+        {% if form.posted_successfully? %}
+          <p class="newsletter__success">{{ section.settings.success_message }}</p>
+        {% else %}
+          {%- if section.settings.form_style == 'pill' and section.settings.show_first_name == false -%}
+            {%- assign fields_class = 'newsletter__fields newsletter__fields--pill' -%}
+          {%- else -%}
+            {%- assign fields_class = 'newsletter__fields' -%}
+          {%- endif -%}
+
+          <div class="{{ fields_class }}">
+            {% if section.settings.show_first_name %}
+              <input
+                class="newsletter__input"
+                type="text"
+                name="contact[first_name]"
+                aria-label="{{ section.settings.name_placeholder }}"
+                placeholder="{{ section.settings.name_placeholder }}"
+                autocomplete="given-name"
+              >
+            {% endif %}
+
+            <input
+              class="newsletter__input"
+              type="email"
+              name="contact[email]"
+              id="NewsletterEmail--{{ section.id }}"
+              aria-label="{{ section.settings.email_placeholder }}"
+              placeholder="{{ section.settings.email_placeholder }}"
+              autocomplete="email"
+              required
+            >
+
+            <button class="newsletter__button" type="submit" name="commit">
+              {{ section.settings.button_label }}
+            </button>
+          </div>
+
+          {% if section.settings.require_consent %}
+            <label class="newsletter__consent">
+              <input type="checkbox" required>
+              <span>{{ section.settings.consent_text }}</span>
+            </label>
+          {% endif %}
+
+          {% if form.errors %}
+            <p class="newsletter__error">{{ form.errors | default_errors }}</p>
+          {% endif %}
+        {% endif %}
+      {%- endform -%}
+
+      {% if section.settings.legal_text != blank %}
+        <div class="newsletter__legal">{{ section.settings.legal_text }}</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .newsletter {
+    padding: var(--nl-padding) var(--page-margin);
+    background-color: var(--nl-bg);
+    color: var(--nl-text);
+  }
+
+  .newsletter__inner {
+    max-width: var(--page-width);
+    margin: 0 auto;
+  }
+
+  .newsletter__inner--split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: var(--nl-gap);
+  }
+
+  .newsletter__inner--split.newsletter__inner--media-right .newsletter__media {
+    order: 2;
+  }
+
+  .newsletter__inner--centered {
+    max-width: 68rem;
+    text-align: center;
+  }
+
+  .newsletter__inner--align-center .newsletter__body {
+    text-align: center;
+  }
+
+  .newsletter__media {
+    border-radius: var(--nl-radius);
+    overflow: hidden;
+  }
+
+  .newsletter__image {
+    display: block;
+    width: 100%;
+    aspect-ratio: var(--nl-media-ratio);
+    object-fit: cover;
+  }
+
+  .newsletter__eyebrow {
+    font-family: var(--nl-eyebrow-family);
+    font-size: var(--nl-eyebrow-size);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+  }
+
+  .newsletter__heading {
+    font-family: var(--nl-heading-family);
+    font-size: var(--nl-heading-size);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    max-width: 22ch;
+    text-wrap: balance;
+  }
+
+  .newsletter__inner--align-center .newsletter__heading {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .newsletter__text {
+    font-family: var(--nl-text-family);
+    font-size: var(--nl-text-size);
+    line-height: 1.6;
+    margin-top: 1.4rem;
+    max-width: 46ch;
+    opacity: 0.7;
+  }
+
+  .newsletter__inner--align-center .newsletter__text {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .newsletter__form {
+    margin-top: 3.2rem;
+  }
+
+  .newsletter__fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .newsletter__inner--align-center .newsletter__fields {
+    justify-content: center;
+  }
+
+  /* Champ et bouton fusionnés dans une même pilule */
+  .newsletter__fields--pill {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.4rem;
+    max-width: 48rem;
+    padding: 0.5rem;
+    background: var(--nl-field-bg);
+    border: 1px solid var(--nl-field-border);
+    border-radius: 999px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .newsletter__fields--pill:focus-within {
+    border-color: var(--nl-button-bg);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--nl-button-bg) 15%, transparent);
+  }
+
+  .newsletter__inner--align-center .newsletter__fields--pill {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .newsletter__fields--pill .newsletter__input {
+    flex: 1 1 auto;
+    border: 0;
+    background: transparent;
+    padding: 1.1rem 1.6rem;
+  }
+
+  .newsletter__fields--pill .newsletter__input:focus-visible {
+    outline: none;
+  }
+
+  .newsletter__fields--pill .newsletter__button {
+    border-radius: 999px;
+    padding: 1.1rem 2.4rem;
+    white-space: nowrap;
+  }
+
+  .newsletter__input {
+    flex: 1 1 22rem;
+    min-width: 0;
+    padding: 1.3rem 1.6rem;
+    border: 1px solid var(--nl-field-border);
+    border-radius: var(--nl-radius);
+    background: var(--nl-field-bg);
+    color: inherit;
+    font-family: var(--nl-text-family);
+    font-size: var(--nl-text-size);
+  }
+
+  .newsletter__input::placeholder {
+    color: color-mix(in srgb, currentColor 50%, transparent);
+  }
+
+  .newsletter__input:focus-visible {
+    outline: 2px solid var(--nl-button-bg);
+    outline-offset: 1px;
+  }
+
+  .newsletter__button {
+    flex: 0 0 auto;
+    padding: 1.3rem 2.6rem;
+    border: 1px solid var(--nl-button-bg);
+    border-radius: var(--nl-radius);
+    background: var(--nl-button-bg);
+    color: var(--nl-button-text);
+    font-family: var(--nl-button-family);
+    font-size: var(--nl-button-size);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+
+  .newsletter__button:hover {
+    opacity: 0.85;
+  }
+
+  .newsletter__consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-top: 1.2rem;
+    font-family: var(--nl-text-family);
+    font-size: var(--nl-legal-size);
+    line-height: 1.5;
+    opacity: 0.8;
+    text-align: left;
+  }
+
+  .newsletter__inner--align-center .newsletter__consent {
+    justify-content: center;
+    max-width: 46rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .newsletter__consent input {
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+
+  .newsletter__legal {
+    margin-top: 1.2rem;
+    font-family: var(--nl-text-family);
+    font-size: var(--nl-legal-size);
+    line-height: 1.5;
+    opacity: 0.6;
+  }
+
+  .newsletter__success {
+    padding: 1.4rem 1.8rem;
+    border-radius: var(--nl-radius);
+    background: color-mix(in srgb, currentColor 8%, transparent);
+    font-family: var(--nl-text-family);
+    font-size: var(--nl-text-size);
+  }
+
+  .newsletter__error {
+    margin-top: 1rem;
+    font-family: var(--nl-text-family);
+    font-size: var(--nl-legal-size);
+    color: #b3261e;
+  }
+
+  @media (max-width: 749px) {
+    .newsletter__inner--split {
+      grid-template-columns: 1fr;
+    }
+
+    /* Sur mobile le visuel repasse toujours au-dessus du texte */
+    .newsletter__inner--split.newsletter__inner--media-right .newsletter__media {
+      order: 0;
+    }
+
+    .newsletter__button {
+      flex: 1 1 100%;
+    }
+
+    /* La pilule reste d'un seul tenant sur mobile */
+    .newsletter__fields--pill .newsletter__button {
+      flex: 0 0 auto;
+      padding: 1.1rem 1.8rem;
+    }
+
+    .newsletter__fields--pill .newsletter__input {
+      padding: 1.1rem 1.2rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "header", "content": "Contenu" },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Newsletter" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Prenez soin de votre peau, un e-mail à la fois" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Conseils de soin, nouveautés et offres réservées. Un e-mail par mois, pas plus.</p>" },
+
+    { "type": "header", "content": "Formulaire" },
+    {
+      "type": "select",
+      "id": "form_style",
+      "label": "Style du formulaire",
+      "info": "La pilule fusionne le champ et le bouton. Indisponible si le prénom est demandé.",
+      "options": [
+        { "value": "pill", "label": "Champ et bouton fusionnés (pilule)" },
+        { "value": "separate", "label": "Champ et bouton séparés" }
+      ],
+      "default": "pill"
+    },
+    { "type": "checkbox", "id": "show_first_name", "label": "Demander le prénom", "default": false },
+    { "type": "text", "id": "name_placeholder", "label": "Champ prénom — texte indicatif", "default": "Votre prénom" },
+    { "type": "text", "id": "email_placeholder", "label": "Champ e-mail — texte indicatif", "default": "Votre adresse e-mail" },
+    { "type": "text", "id": "button_label", "label": "Texte du bouton", "default": "Je m'inscris" },
+    { "type": "text", "id": "success_message", "label": "Message de confirmation", "default": "Merci, votre inscription est confirmée." },
+
+    { "type": "header", "content": "Consentement et mentions" },
+    { "type": "checkbox", "id": "require_consent", "label": "Case de consentement obligatoire", "info": "Recommandé en Europe : le consentement doit être explicite et non pré-coché.", "default": true },
+    { "type": "text", "id": "consent_text", "label": "Texte de la case", "default": "J'accepte de recevoir les e-mails d'Irizée et je peux me désinscrire à tout moment." },
+    { "type": "richtext", "id": "legal_text", "label": "Mention sous le formulaire", "default": "<p>Vos données sont utilisées uniquement pour vous envoyer nos e-mails. Consultez notre politique de confidentialité.</p>" },
+
+    { "type": "header", "content": "Mise en page" },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Disposition",
+      "options": [
+        { "value": "centered", "label": "Centré, sans visuel" },
+        { "value": "split", "label": "Deux colonnes avec visuel" }
+      ],
+      "default": "centered"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Alignement du texte",
+      "options": [
+        { "value": "left", "label": "Gauche" },
+        { "value": "center", "label": "Centré" }
+      ],
+      "default": "center"
+    },
+    { "type": "image_picker", "id": "image", "label": "Visuel (disposition deux colonnes)" },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Position du visuel (ordinateur)",
+      "options": [
+        { "value": "left", "label": "À gauche" },
+        { "value": "right", "label": "À droite" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Proportions du visuel — ordinateur",
+      "options": [
+        { "value": "1 / 1", "label": "Carré" },
+        { "value": "4 / 5", "label": "Portrait" },
+        { "value": "16 / 9", "label": "Paysage" }
+      ],
+      "default": "4 / 5"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio_mobile",
+      "label": "Proportions du visuel — mobile",
+      "options": [
+        { "value": "1 / 1", "label": "Carré" },
+        { "value": "4 / 5", "label": "Portrait" },
+        { "value": "16 / 9", "label": "Paysage" }
+      ],
+      "default": "1 / 1"
+    },
+    { "type": "range", "id": "field_radius", "label": "Arrondi des champs et du visuel", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 8 },
+    { "type": "range", "id": "padding_desktop", "label": "Marges verticales — ordinateur", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_mobile", "label": "Marges verticales — mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "column_gap", "label": "Espace entre visuel et texte — ordinateur", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "column_gap_mobile", "label": "Espace entre visuel et texte — mobile", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 28 },
+
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "background_color", "label": "Fond", "default": "#E8E6E5" },
+    { "type": "color", "id": "text_color", "label": "Texte", "default": "#1A1A1A" },
+    { "type": "color", "id": "field_background", "label": "Fond des champs", "default": "#FFFFFF" },
+    { "type": "color", "id": "field_border_color", "label": "Bordure des champs", "default": "#D5D2D0" },
+    { "type": "color", "id": "button_background", "label": "Fond du bouton", "default": "#214975" },
+    { "type": "color", "id": "button_text_color", "label": "Texte du bouton", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Typographie — Sur-titre" },
+    { "type": "font_picker", "id": "eyebrow_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "eyebrow_size", "label": "Taille — ordinateur", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "eyebrow_size_mobile", "label": "Taille — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 11 },
+
+    { "type": "header", "content": "Typographie — Titre" },
+    { "type": "font_picker", "id": "heading_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "heading_size", "label": "Taille — ordinateur", "min": 16, "max": 72, "step": 1, "unit": "px", "default": 34 },
+    { "type": "range", "id": "heading_size_mobile", "label": "Taille — mobile", "min": 14, "max": 48, "step": 1, "unit": "px", "default": 25 },
+
+    { "type": "header", "content": "Typographie — Texte et champs" },
+    { "type": "font_picker", "id": "text_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "text_size", "label": "Taille — ordinateur", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "text_size_mobile", "label": "Taille — mobile", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 14 },
+    { "type": "range", "id": "legal_size", "label": "Taille des mentions — ordinateur", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "legal_size_mobile", "label": "Taille des mentions — mobile", "min": 8, "max": 18, "step": 1, "unit": "px", "default": 11 },
+
+    { "type": "header", "content": "Typographie — Bouton" },
+    { "type": "font_picker", "id": "button_font", "label": "Police", "default": "work_sans_n4" },
+    { "type": "range", "id": "button_size", "label": "Taille — ordinateur", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 13 },
+    { "type": "range", "id": "button_size_mobile", "label": "Taille — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 12 }
+  ],
+  "presets": [
+    { "name": "Newsletter" }
+  ]
+}
+{% endschema %}
