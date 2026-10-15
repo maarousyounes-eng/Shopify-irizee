@@ -1,0 +1,45 @@
+name: Qualité
+
+# Ces contrôles tournent sur les fichiers seuls : ni accès à la boutique,
+# ni mot de passe, ni secret. Ils sont destinés à bloquer la fusion d'une PR
+# qui casserait le thème — à activer dans Settings > Branches > Branch
+# protection rules, en les cochant comme « required status checks ».
+
+on:
+  pull_request:
+    branches: [main, preprod]
+  push:
+    branches: [main, preprod]
+
+jobs:
+  theme-check:
+    name: Linter Shopify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Installer le CLI Shopify
+        run: npm install -g @shopify/cli@latest
+
+      - name: theme check
+        run: shopify theme check --fail-level error
+
+  validations:
+    name: Validations de schéma
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Règles que theme check ne couvre pas, chacune tirée d'une panne réelle :
+      # les 101 crans des range, les réglages utilisés sans être déclarés, les
+      # valeurs de template hors bornes, les identifiants dupliqués.
+      - name: Contrôles maison
+        run: python3 scripts/valider-theme.py

@@ -76,3 +76,23 @@ s'en charge déjà, ce journal est pour le contexte que le code ne montre pas.
   structure du thème Dawn officiel.
 - Branche `preprod` créée pour porter cette connexion. Elle est permanente :
   la supprimer casserait le lien avec le thème.
+
+## 2026-10-15 (suite)
+
+- **Panne de la journée, et sa leçon.** Un réglage `range` déclaré en 0–999 avec
+  un pas de 1 (soit 999 crans, contre 101 autorisés par Shopify) a fait rejeter
+  7 fichiers. Shopify ne signale rien : le fichier n'arrive simplement jamais sur
+  la boutique. L'absence de `templates/index.json` a mis la page d'accueil en 404.
+  `shopify theme check` ne détecte pas cette règle et affichait zéro défaut.
+- **Deuxième leçon** : un symptôme visuel se vérifie sur la page rendue, jamais
+  sur le constat qu'un fichier est déployé. Le header n'occupait pas toute la
+  largeur à cause d'un `max-width: var(--page-width)` dans `.header--overlay` —
+  invisible en dessous de 1440 px de large. Trois corrections ont été annoncées
+  à tort avant de mesurer la page réelle avec `shopify theme dev`.
+- **Mise en place d'une barrière qualité sur les PR** (`.github/workflows/qualite.yml`) :
+  `shopify theme check` d'une part, et `scripts/valider-theme.py` d'autre part,
+  qui porte les règles que le linter ne couvre pas — les 101 crans des `range`,
+  les réglages utilisés sans être déclarés, les valeurs de template hors bornes,
+  les identifiants dupliqués. Chaque règle correspond à une erreur réellement
+  rencontrée. Reste à cocher ces deux contrôles comme obligatoires dans les
+  protections de branche du dépôt.
