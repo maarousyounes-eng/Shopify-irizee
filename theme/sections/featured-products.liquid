@@ -407,28 +407,6 @@
     pointer-events: none;
   }
 
-  /* Bulle "swipe" : apparaît au survol, en bas à droite de la carte */
-  .product-card__swipe {
-    position: absolute;
-    right: 1.6rem;
-    bottom: 9rem;
-    z-index: 3;
-    width: 9rem;
-    height: 9rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.45);
-    backdrop-filter: blur(6px);
-    color: color-mix(in srgb, var(--color-foreground) 70%, transparent);
-    font-size: 1.3rem;
-    font-weight: 600;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    pointer-events: none;
-  }
-
   /* ---------- États : survol (souris) et swipe (tactile) ---------- */
 
   .product-card--swiped .product-card__image--secondary {
@@ -460,10 +438,6 @@
     .product-card--has-secondary:hover .product-card__buy {
       opacity: 1;
       transform: translateY(0);
-    }
-
-    .product-card--has-secondary:hover .product-card__swipe {
-      opacity: 1;
     }
   }
 
