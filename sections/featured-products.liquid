@@ -20,9 +20,11 @@
 
     --fp-category-family: {{ section.settings.category_font.family }}, {{ section.settings.category_font.fallback_families }};
     --fp-category-size: {{ section.settings.category_size }}px;
+    --fp-category-color: {{ section.settings.category_color }};
 
     --fp-name-family: {{ section.settings.name_font.family }}, {{ section.settings.name_font.fallback_families }};
     --fp-name-size: {{ section.settings.name_size }}px;
+    --fp-name-color: {{ section.settings.name_color }};
 
     --fp-subtitle-family: {{ section.settings.subtitle_font.family }}, {{ section.settings.subtitle_font.fallback_families }};
     --fp-subtitle-size: {{ section.settings.subtitle_size }}px;
@@ -234,6 +236,11 @@
     display: flex;
     gap: 3.2rem;
     overflow-x: auto;
+    /* Déclarer overflow-x seul fait calculer overflow-y: auto par le CSS :
+       la rangée devenait un conteneur de défilement sur les deux axes et
+       avalait le scroll vertical de la page. */
+    overflow-y: hidden;
+    touch-action: pan-x pan-y;
     overscroll-behavior-x: contain;
     scroll-snap-type: x proximity;
     justify-content: safe center;
@@ -333,7 +340,7 @@
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.02em;
-    color: color-mix(in srgb, var(--color-foreground) 70%, transparent);
+    color: var(--fp-category-color);
   }
 
   .product-card__badge {
@@ -370,6 +377,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.01em;
+    color: var(--fp-name-color);
   }
 
   .product-card__price {
@@ -451,16 +459,16 @@
 
   .featured-products__button {
     display: inline-block;
-    padding: 1.1rem 2.4rem;
+    padding: var(--button-padding-y) var(--button-padding-x);
     border: 1px solid var(--color-foreground);
-    border-radius: 999px;
+    border-radius: var(--button-radius);
     color: var(--color-foreground);
     text-decoration: none;
     font-family: var(--fp-cta-family);
     font-size: var(--fp-cta-size);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 700;
+    text-transform: var(--button-text-transform);
+    letter-spacing: var(--button-letter-spacing);
+    font-weight: var(--button-font-weight);
     transition: background-color 0.15s ease, color 0.15s ease;
   }
 
@@ -510,6 +518,19 @@
       "label": "Couleur de fond des cartes",
       "info": "Gris clair de référence : #E8E6E5.",
       "default": "#E8E6E5"
+    },
+    {
+      "type": "color",
+      "id": "category_color",
+      "label": "Couleur du grand titre sur l'image",
+      "info": "Le nom affiché en grand en haut de la carte.",
+      "default": "#6B6B6B"
+    },
+    {
+      "type": "color",
+      "id": "name_color",
+      "label": "Couleur du nom sous la carte",
+      "default": "#1A1A1A"
     },
     {
       "type": "checkbox",

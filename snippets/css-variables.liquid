@@ -16,6 +16,15 @@
     --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
     --icon-stroke-width: 1.4;
 
+    /* Forme commune des boutons — Thème > Personnaliser > Boutons.
+       Chaque section ne décide plus que de ses couleurs. */
+    --button-radius: {{ settings.button_radius }}px;
+    --button-padding-y: {{ settings.button_padding_y }}px;
+    --button-padding-x: {{ settings.button_padding_x }}px;
+    --button-font-weight: {{ settings.button_font_weight }};
+    --button-letter-spacing: {{ settings.button_letter_spacing }}px;
+    --button-text-transform: {{ settings.button_text_transform }};
+
     /* Irizée — bleu nila (indigo naturel, ingrédient de la formule).
        Modifiable dans Shopify : Thème > Personnaliser > Couleurs. */
     --color-accent: {{ settings.accent_color }};

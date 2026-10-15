@@ -91,5 +91,79 @@
         "default": 4
       }
     ]
+  },
+  {
+    "name": "Boutons",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Forme commune à tous les boutons du site. Les couleurs restent réglables section par section."
+      },
+      {
+        "type": "range",
+        "id": "button_radius",
+        "label": "Arrondi",
+        "min": 0,
+        "max": 999,
+        "step": 1,
+        "unit": "px",
+        "default": 999
+      },
+      {
+        "type": "range",
+        "id": "button_padding_y",
+        "label": "Hauteur (marge verticale)",
+        "min": 6,
+        "max": 32,
+        "step": 1,
+        "unit": "px",
+        "default": 13
+      },
+      {
+        "type": "range",
+        "id": "button_padding_x",
+        "label": "Largeur (marge horizontale)",
+        "min": 10,
+        "max": 64,
+        "step": 2,
+        "unit": "px",
+        "default": 26
+      },
+      {
+        "type": "range",
+        "id": "button_font_weight",
+        "label": "Graisse du texte",
+        "min": 400,
+        "max": 900,
+        "step": 100,
+        "default": 700
+      },
+      {
+        "type": "range",
+        "id": "button_letter_spacing",
+        "label": "Espacement des lettres",
+        "min": -1,
+        "max": 4,
+        "step": 0.5,
+        "unit": "px",
+        "default": 1
+      },
+      {
+        "type": "select",
+        "id": "button_text_transform",
+        "label": "Casse du texte",
+        "options": [
+          {
+            "value": "none",
+            "label": "Normale"
+          },
+          {
+            "value": "uppercase",
+            "label": "Majuscules"
+          }
+        ],
+        "default": "uppercase"
+      }
+    ]
   }
 ]

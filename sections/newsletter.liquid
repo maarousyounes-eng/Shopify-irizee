@@ -292,16 +292,16 @@
 
   .newsletter__button {
     flex: 0 0 auto;
-    padding: 1.3rem 2.6rem;
+    padding: var(--button-padding-y) var(--button-padding-x);
     border: 1px solid var(--nl-button-bg);
-    border-radius: var(--nl-radius);
+    border-radius: var(--button-radius);
     background: var(--nl-button-bg);
     color: var(--nl-button-text);
     font-family: var(--nl-button-family);
     font-size: var(--nl-button-size);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    font-weight: var(--button-font-weight);
+    text-transform: var(--button-text-transform);
+    letter-spacing: var(--button-letter-spacing);
     cursor: pointer;
     transition: opacity 0.15s ease;
   }
