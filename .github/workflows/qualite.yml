@@ -18,9 +18,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Le CLI Shopify utilise enableCompileCache, absent avant Node 22 :
+      # sur Node 20 il plante au démarrage avant même de lire le thème.
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Installer le CLI Shopify
         run: npm install -g @shopify/cli@latest
