@@ -44,3 +44,35 @@ s'en charge déjà, ce journal est pour le contexte que le code ne montre pas.
   capture email, avis clients, wallets de paiement express (Shop Pay/Apple
   Pay/PayPal), stratégie contenu blog SEO. Objectif : penser le parcours
   utilisateur et la conversion dès le dev, pas après coup.
+
+## 2026-10-15
+
+- Corrections de la home : marges verticales réglables sur le menu (le
+  réglage existant n'agissait que sur l'horizontal), allègement du bandeau
+  de réassurance (filets et numéros retirés, devenus optionnels, marges
+  extérieures ajoutées), footer passé en pleine largeur — il était la
+  seule section du thème sans la classe `full-width`, d'où les bandes de
+  fond sur les côtés. Ajout de la flèche de retour sur le carrousel
+  produits, qui n'avait qu'un bouton « suivant ». Suppression de la bulle
+  « swipe » des cartes produit : elle était enfermée dans un
+  `@media (hover: hover)` et n'apparaissait donc que sur ordinateur, là
+  où on ne swipe pas.
+- **Incident à retenir** : un `shopify theme push` nu renvoie les copies
+  locales des fichiers JSON (`templates/*.json`,
+  `config/settings_data.json`, `sections/*-group.json`) et écrase donc ce
+  qui a été réglé dans l'éditeur Shopify depuis le dernier pull. C'est
+  arrivé en début de session. Des scripts de synchronisation ont d'abord
+  été écrits pour l'éviter, puis retirés au profit de la solution de fond.
+- **Décision : intégration GitHub de Shopify.** Le thème sera connecté à
+  une branche du dépôt, avec synchronisation dans les deux sens — les
+  enregistrements de l'éditeur sont commités automatiquement, les push
+  déploient automatiquement. Cela supprime la divergence entre le dépôt et
+  la boutique au lieu de la gérer à la main.
+- **Conséquence sur la structure du dépôt** : l'intégration exige les
+  dossiers du thème (`assets/`, `sections/`, `templates/`…) à la racine de
+  la branche, sans possibilité d'indiquer un sous-dossier. Le contenu de
+  `theme/` a donc été remonté d'un cran. `docs/`, `README.md` et
+  `roadmap.html` restent à la racine à côté — Shopify les ignore, c'est la
+  structure du thème Dawn officiel.
+- Branche `preprod` créée pour porter cette connexion. Elle est permanente :
+  la supprimer casserait le lien avec le thème.
