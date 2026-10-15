@@ -21,6 +21,13 @@
     --ft-legal-size: {{ section.settings.legal_size }}px;
   }
 
+  /* Même raison que pour le header : la classe `full-width` dépend de
+     `.shopify-section > .full-width`, qui ne s'applique pas aux sections
+     d'un groupe. On neutralise la grille de page sur le conteneur. */
+  #shopify-section-{{ section.id }} {
+    display: block;
+  }
+
   /* Réglages mobiles : indépendants des valeurs ordinateur ci-dessus */
   @media (max-width: 749px) {
     #shopify-section-{{ section.id }} {
