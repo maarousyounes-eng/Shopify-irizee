@@ -44,6 +44,19 @@
       --nl-button-size: {{ section.settings.button_size_mobile }}px;
     }
   }
+
+  {%- if section.settings.button_custom -%}
+    {%- comment -%} Ce bouton s'écarte du style commun : on redéfinit les
+      variables au niveau de la section, ce qui l'emporte sur :root. {%- endcomment -%}
+    #shopify-section-{{ section.id }} {
+      --button-radius: {{ section.settings.button_radius }}px;
+      --button-padding-y: {{ section.settings.button_padding_y }}px;
+      --button-padding-x: {{ section.settings.button_padding_x }}px;
+      --button-font-weight: {{ section.settings.button_font_weight }};
+      --button-letter-spacing: {{ section.settings.button_letter_spacing }}px;
+      --button-text-transform: {{ section.settings.button_text_transform }};
+    }
+  {%- endif -%}
 {% endstyle %}
 
 <div class="newsletter full-width">
@@ -387,42 +400,119 @@
 {
   "name": "Newsletter",
   "settings": [
-    { "type": "header", "content": "Contenu" },
-    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Newsletter" },
-    { "type": "text", "id": "heading", "label": "Titre", "default": "Prenez soin de votre peau, un e-mail à la fois" },
-    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Conseils de soin, nouveautés et offres réservées. Un e-mail par mois, pas plus.</p>" },
-
-    { "type": "header", "content": "Formulaire" },
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Sur-titre",
+      "default": "Newsletter"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Prenez soin de votre peau, un e-mail à la fois"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Texte",
+      "default": "<p>Conseils de soin, nouveautés et offres réservées. Un e-mail par mois, pas plus.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Formulaire"
+    },
     {
       "type": "select",
       "id": "form_style",
       "label": "Style du formulaire",
       "info": "La pilule fusionne le champ et le bouton. Indisponible si le prénom est demandé.",
       "options": [
-        { "value": "pill", "label": "Champ et bouton fusionnés (pilule)" },
-        { "value": "separate", "label": "Champ et bouton séparés" }
+        {
+          "value": "pill",
+          "label": "Champ et bouton fusionnés (pilule)"
+        },
+        {
+          "value": "separate",
+          "label": "Champ et bouton séparés"
+        }
       ],
       "default": "pill"
     },
-    { "type": "checkbox", "id": "show_first_name", "label": "Demander le prénom", "default": false },
-    { "type": "text", "id": "name_placeholder", "label": "Champ prénom — texte indicatif", "default": "Votre prénom" },
-    { "type": "text", "id": "email_placeholder", "label": "Champ e-mail — texte indicatif", "default": "Votre adresse e-mail" },
-    { "type": "text", "id": "button_label", "label": "Texte du bouton", "default": "Je m'inscris" },
-    { "type": "text", "id": "success_message", "label": "Message de confirmation", "default": "Merci, votre inscription est confirmée." },
-
-    { "type": "header", "content": "Consentement et mentions" },
-    { "type": "checkbox", "id": "require_consent", "label": "Case de consentement obligatoire", "info": "Recommandé en Europe : le consentement doit être explicite et non pré-coché.", "default": true },
-    { "type": "text", "id": "consent_text", "label": "Texte de la case", "default": "J'accepte de recevoir les e-mails d'Irizée et je peux me désinscrire à tout moment." },
-    { "type": "richtext", "id": "legal_text", "label": "Mention sous le formulaire", "default": "<p>Vos données sont utilisées uniquement pour vous envoyer nos e-mails. Consultez notre politique de confidentialité.</p>" },
-
-    { "type": "header", "content": "Mise en page" },
+    {
+      "type": "checkbox",
+      "id": "show_first_name",
+      "label": "Demander le prénom",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "name_placeholder",
+      "label": "Champ prénom — texte indicatif",
+      "default": "Votre prénom"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Champ e-mail — texte indicatif",
+      "default": "Votre adresse e-mail"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Texte du bouton",
+      "default": "Je m'inscris"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Message de confirmation",
+      "default": "Merci, votre inscription est confirmée."
+    },
+    {
+      "type": "header",
+      "content": "Consentement et mentions"
+    },
+    {
+      "type": "checkbox",
+      "id": "require_consent",
+      "label": "Case de consentement obligatoire",
+      "info": "Recommandé en Europe : le consentement doit être explicite et non pré-coché.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "consent_text",
+      "label": "Texte de la case",
+      "default": "J'accepte de recevoir les e-mails d'Irizée et je peux me désinscrire à tout moment."
+    },
+    {
+      "type": "richtext",
+      "id": "legal_text",
+      "label": "Mention sous le formulaire",
+      "default": "<p>Vos données sont utilisées uniquement pour vous envoyer nos e-mails. Consultez notre politique de confidentialité.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
     {
       "type": "select",
       "id": "layout",
       "label": "Disposition",
       "options": [
-        { "value": "centered", "label": "Centré, sans visuel" },
-        { "value": "split", "label": "Deux colonnes avec visuel" }
+        {
+          "value": "centered",
+          "label": "Centré, sans visuel"
+        },
+        {
+          "value": "split",
+          "label": "Deux colonnes avec visuel"
+        }
       ],
       "default": "centered"
     },
@@ -431,19 +521,35 @@
       "id": "text_alignment",
       "label": "Alignement du texte",
       "options": [
-        { "value": "left", "label": "Gauche" },
-        { "value": "center", "label": "Centré" }
+        {
+          "value": "left",
+          "label": "Gauche"
+        },
+        {
+          "value": "center",
+          "label": "Centré"
+        }
       ],
       "default": "center"
     },
-    { "type": "image_picker", "id": "image", "label": "Visuel (disposition deux colonnes)" },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Visuel (disposition deux colonnes)"
+    },
     {
       "type": "select",
       "id": "image_position",
       "label": "Position du visuel (ordinateur)",
       "options": [
-        { "value": "left", "label": "À gauche" },
-        { "value": "right", "label": "À droite" }
+        {
+          "value": "left",
+          "label": "À gauche"
+        },
+        {
+          "value": "right",
+          "label": "À droite"
+        }
       ],
       "default": "left"
     },
@@ -452,9 +558,18 @@
       "id": "image_ratio",
       "label": "Proportions du visuel — ordinateur",
       "options": [
-        { "value": "1 / 1", "label": "Carré" },
-        { "value": "4 / 5", "label": "Portrait" },
-        { "value": "16 / 9", "label": "Paysage" }
+        {
+          "value": "1 / 1",
+          "label": "Carré"
+        },
+        {
+          "value": "4 / 5",
+          "label": "Portrait"
+        },
+        {
+          "value": "16 / 9",
+          "label": "Paysage"
+        }
       ],
       "default": "4 / 5"
     },
@@ -463,50 +578,332 @@
       "id": "image_ratio_mobile",
       "label": "Proportions du visuel — mobile",
       "options": [
-        { "value": "1 / 1", "label": "Carré" },
-        { "value": "4 / 5", "label": "Portrait" },
-        { "value": "16 / 9", "label": "Paysage" }
+        {
+          "value": "1 / 1",
+          "label": "Carré"
+        },
+        {
+          "value": "4 / 5",
+          "label": "Portrait"
+        },
+        {
+          "value": "16 / 9",
+          "label": "Paysage"
+        }
       ],
       "default": "1 / 1"
     },
-    { "type": "range", "id": "field_radius", "label": "Arrondi des champs et du visuel", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 8 },
-    { "type": "range", "id": "padding_desktop", "label": "Marges verticales — ordinateur", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
-    { "type": "range", "id": "padding_mobile", "label": "Marges verticales — mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
-    { "type": "range", "id": "column_gap", "label": "Espace entre visuel et texte — ordinateur", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56 },
-    { "type": "range", "id": "column_gap_mobile", "label": "Espace entre visuel et texte — mobile", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 28 },
-
-    { "type": "header", "content": "Couleurs" },
-    { "type": "color", "id": "background_color", "label": "Fond", "default": "#E8E6E5" },
-    { "type": "color", "id": "text_color", "label": "Texte", "default": "#1A1A1A" },
-    { "type": "color", "id": "field_background", "label": "Fond des champs", "default": "#FFFFFF" },
-    { "type": "color", "id": "field_border_color", "label": "Bordure des champs", "default": "#D5D2D0" },
-    { "type": "color", "id": "button_background", "label": "Fond du bouton", "default": "#214975" },
-    { "type": "color", "id": "button_text_color", "label": "Texte du bouton", "default": "#FFFFFF" },
-
-    { "type": "header", "content": "Typographie — Sur-titre" },
-    { "type": "font_picker", "id": "eyebrow_font", "label": "Police", "default": "work_sans_n4" },
-    { "type": "range", "id": "eyebrow_size", "label": "Taille — ordinateur", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 12 },
-    { "type": "range", "id": "eyebrow_size_mobile", "label": "Taille — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 11 },
-
-    { "type": "header", "content": "Typographie — Titre" },
-    { "type": "font_picker", "id": "heading_font", "label": "Police", "default": "work_sans_n4" },
-    { "type": "range", "id": "heading_size", "label": "Taille — ordinateur", "min": 16, "max": 72, "step": 1, "unit": "px", "default": 34 },
-    { "type": "range", "id": "heading_size_mobile", "label": "Taille — mobile", "min": 14, "max": 48, "step": 1, "unit": "px", "default": 25 },
-
-    { "type": "header", "content": "Typographie — Texte et champs" },
-    { "type": "font_picker", "id": "text_font", "label": "Police", "default": "work_sans_n4" },
-    { "type": "range", "id": "text_size", "label": "Taille — ordinateur", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 15 },
-    { "type": "range", "id": "text_size_mobile", "label": "Taille — mobile", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 14 },
-    { "type": "range", "id": "legal_size", "label": "Taille des mentions — ordinateur", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 12 },
-    { "type": "range", "id": "legal_size_mobile", "label": "Taille des mentions — mobile", "min": 8, "max": 18, "step": 1, "unit": "px", "default": 11 },
-
-    { "type": "header", "content": "Typographie — Bouton" },
-    { "type": "font_picker", "id": "button_font", "label": "Police", "default": "work_sans_n4" },
-    { "type": "range", "id": "button_size", "label": "Taille — ordinateur", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 13 },
-    { "type": "range", "id": "button_size_mobile", "label": "Taille — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 12 }
+    {
+      "type": "range",
+      "id": "field_radius",
+      "label": "Arrondi des champs et du visuel",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "label": "Marges verticales — ordinateur",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Marges verticales — mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Espace entre visuel et texte — ordinateur",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "column_gap_mobile",
+      "label": "Espace entre visuel et texte — mobile",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "header",
+      "content": "Couleurs"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Fond",
+      "default": "#E8E6E5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Texte",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "field_background",
+      "label": "Fond des champs",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "field_border_color",
+      "label": "Bordure des champs",
+      "default": "#D5D2D0"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Fond du bouton",
+      "default": "#214975"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Texte du bouton",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Typographie — Sur-titre"
+    },
+    {
+      "type": "font_picker",
+      "id": "eyebrow_font",
+      "label": "Police",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "label": "Taille — ordinateur",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_mobile",
+      "label": "Taille — mobile",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "header",
+      "content": "Typographie — Titre"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Police",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Taille — ordinateur",
+      "min": 16,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Taille — mobile",
+      "min": 14,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 25
+    },
+    {
+      "type": "header",
+      "content": "Typographie — Texte et champs"
+    },
+    {
+      "type": "font_picker",
+      "id": "text_font",
+      "label": "Police",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Taille — ordinateur",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "label": "Taille — mobile",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "legal_size",
+      "label": "Taille des mentions — ordinateur",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "legal_size_mobile",
+      "label": "Taille des mentions — mobile",
+      "min": 8,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "header",
+      "content": "Typographie — Bouton"
+    },
+    {
+      "type": "font_picker",
+      "id": "button_font",
+      "label": "Police",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "button_size",
+      "label": "Taille — ordinateur",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "button_size_mobile",
+      "label": "Taille — mobile",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Bouton — style propre"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_custom",
+      "label": "Personnaliser ce bouton",
+      "info": "Décoché, le bouton suit le style commun défini dans Thème > Personnaliser > Boutons.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Arrondi",
+      "min": 0,
+      "max": 999,
+      "step": 1,
+      "unit": "px",
+      "default": 999
+    },
+    {
+      "type": "range",
+      "id": "button_padding_y",
+      "label": "Hauteur (marge verticale)",
+      "min": 6,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "button_padding_x",
+      "label": "Largeur (marge horizontale)",
+      "min": 10,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "button_font_weight",
+      "label": "Graisse du texte",
+      "min": 400,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "button_letter_spacing",
+      "label": "Espacement des lettres",
+      "min": -1,
+      "max": 4,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "button_text_transform",
+      "label": "Casse du texte",
+      "options": [
+        {
+          "value": "none",
+          "label": "Normale"
+        },
+        {
+          "value": "uppercase",
+          "label": "Majuscules"
+        }
+      ],
+      "default": "uppercase"
+    }
   ],
   "presets": [
-    { "name": "Newsletter" }
+    {
+      "name": "Newsletter"
+    }
   ]
 }
 {% endschema %}

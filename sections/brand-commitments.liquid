@@ -39,6 +39,19 @@
       --br-tag-size: {{ section.settings.tag_size_mobile }}px;
     }
   }
+
+  {%- if section.settings.button_custom -%}
+    {%- comment -%} Ce bouton s'écarte du style commun : on redéfinit les
+      variables au niveau de la section, ce qui l'emporte sur :root. {%- endcomment -%}
+    #shopify-section-{{ section.id }} {
+      --button-radius: {{ section.settings.button_radius }}px;
+      --button-padding-y: {{ section.settings.button_padding_y }}px;
+      --button-padding-x: {{ section.settings.button_padding_x }}px;
+      --button-font-weight: {{ section.settings.button_font_weight }};
+      --button-letter-spacing: {{ section.settings.button_letter_spacing }}px;
+      --button-text-transform: {{ section.settings.button_text_transform }};
+    }
+  {%- endif -%}
 {% endstyle %}
 
 <div class="brand full-width">
@@ -270,69 +283,398 @@
 {
   "name": "Marque",
   "settings": [
-    { "type": "header", "content": "Texte" },
-    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Notre marque" },
-    { "type": "text", "id": "heading", "label": "Titre", "default": "Retirer avant d'ajouter" },
-    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Irizée est née d'un constat simple : la plupart des soins promettent beaucoup et contiennent peu de ce qui compte vraiment.</p><p>Une formule, quelques actifs, une raison d'être pour chacun.</p>" },
-    { "type": "text", "id": "button_label", "label": "Texte du bouton (optionnel)" },
-    { "type": "url", "id": "button_link", "label": "Lien du bouton" },
-
-    { "type": "header", "content": "Collage photo" },
-    { "type": "image_picker", "id": "image_main", "label": "Grande photo" },
-    { "type": "image_picker", "id": "image_top", "label": "Petite photo — haut" },
-    { "type": "image_picker", "id": "image_bottom", "label": "Petite photo — bas" },
+    {
+      "type": "header",
+      "content": "Texte"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Sur-titre",
+      "default": "Notre marque"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Retirer avant d'ajouter"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Texte",
+      "default": "<p>Irizée est née d'un constat simple : la plupart des soins promettent beaucoup et contiennent peu de ce qui compte vraiment.</p><p>Une formule, quelques actifs, une raison d'être pour chacun.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Texte du bouton (optionnel)"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Lien du bouton"
+    },
+    {
+      "type": "header",
+      "content": "Collage photo"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_main",
+      "label": "Grande photo"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_top",
+      "label": "Petite photo — haut"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_bottom",
+      "label": "Petite photo — bas"
+    },
     {
       "type": "select",
       "id": "media_position",
       "label": "Position du collage (ordinateur)",
       "options": [
-        { "value": "left", "label": "À gauche" },
-        { "value": "right", "label": "À droite" }
+        {
+          "value": "left",
+          "label": "À gauche"
+        },
+        {
+          "value": "right",
+          "label": "À droite"
+        }
       ],
       "default": "left"
     },
-    { "type": "range", "id": "photo_row_height", "label": "Hauteur d'une rangée de photos — ordinateur", "min": 90, "max": 320, "step": 10, "unit": "px", "default": 180 },
-    { "type": "range", "id": "photo_row_height_mobile", "label": "Hauteur d'une rangée de photos — mobile", "min": 70, "max": 240, "step": 10, "unit": "px", "default": 120 },
-    { "type": "range", "id": "photo_gap", "label": "Espace entre photos — ordinateur", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
-    { "type": "range", "id": "photo_gap_mobile", "label": "Espace entre photos — mobile", "min": 0, "max": 30, "step": 2, "unit": "px", "default": 8 },
-    { "type": "range", "id": "corner_radius", "label": "Arrondi des photos", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
-
-    { "type": "header", "content": "Mise en page" },
-    { "type": "range", "id": "column_gap", "label": "Espace entre photos et texte — ordinateur", "min": 12, "max": 120, "step": 4, "unit": "px", "default": 48 },
-    { "type": "range", "id": "column_gap_mobile", "label": "Espace entre photos et texte — mobile", "min": 12, "max": 60, "step": 4, "unit": "px", "default": 24 },
-    { "type": "range", "id": "padding_desktop", "label": "Marges verticales — ordinateur", "min": 16, "max": 160, "step": 4, "unit": "px", "default": 72 },
-    { "type": "range", "id": "padding_mobile", "label": "Marges verticales — mobile", "min": 16, "max": 120, "step": 4, "unit": "px", "default": 44 },
-
-    { "type": "header", "content": "Couleurs" },
-    { "type": "color", "id": "background_color", "label": "Fond", "default": "#FFFFFF" },
-    { "type": "color", "id": "text_color", "label": "Texte", "default": "#1A1A1A" },
-    { "type": "color", "id": "muted_color", "label": "Sur-titre", "default": "#8A8683" },
-    { "type": "color", "id": "line_color", "label": "Contour des étiquettes", "default": "#DDD9D7" },
-
-    { "type": "header", "content": "Typographie — Sur-titre" },
-    { "type": "font_picker", "id": "eyebrow_font", "label": "Police", "default": "work_sans_n4" },
-    { "type": "range", "id": "eyebrow_size", "label": "Taille — ordinateur", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 11 },
-    { "type": "range", "id": "eyebrow_size_mobile", "label": "Taille — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 11 },
-
-    { "type": "header", "content": "Typographie — Titre" },
-    { "type": "font_picker", "id": "heading_font", "label": "Police", "default": "work_sans_n4" },
-    { "type": "range", "id": "heading_size", "label": "Taille — ordinateur", "min": 16, "max": 72, "step": 1, "unit": "px", "default": 36 },
-    { "type": "range", "id": "heading_size_mobile", "label": "Taille — mobile", "min": 14, "max": 48, "step": 1, "unit": "px", "default": 26 },
-
-    { "type": "header", "content": "Typographie — Texte et étiquettes" },
-    { "type": "font_picker", "id": "text_font", "label": "Police", "default": "work_sans_n4" },
-    { "type": "range", "id": "text_size", "label": "Texte — ordinateur", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 16 },
-    { "type": "range", "id": "text_size_mobile", "label": "Texte — mobile", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 15 },
-    { "type": "range", "id": "tag_size", "label": "Étiquettes — ordinateur", "min": 8, "max": 22, "step": 1, "unit": "px", "default": 12 },
-    { "type": "range", "id": "tag_size_mobile", "label": "Étiquettes — mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 12 }
+    {
+      "type": "range",
+      "id": "photo_row_height",
+      "label": "Hauteur d'une rangée de photos — ordinateur",
+      "min": 90,
+      "max": 320,
+      "step": 10,
+      "unit": "px",
+      "default": 180
+    },
+    {
+      "type": "range",
+      "id": "photo_row_height_mobile",
+      "label": "Hauteur d'une rangée de photos — mobile",
+      "min": 70,
+      "max": 240,
+      "step": 10,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "photo_gap",
+      "label": "Espace entre photos — ordinateur",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "photo_gap_mobile",
+      "label": "Espace entre photos — mobile",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "label": "Arrondi des photos",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Espace entre photos et texte — ordinateur",
+      "min": 12,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "column_gap_mobile",
+      "label": "Espace entre photos et texte — mobile",
+      "min": 12,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "label": "Marges verticales — ordinateur",
+      "min": 16,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Marges verticales — mobile",
+      "min": 16,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 44
+    },
+    {
+      "type": "header",
+      "content": "Couleurs"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Fond",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Texte",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Sur-titre",
+      "default": "#8A8683"
+    },
+    {
+      "type": "color",
+      "id": "line_color",
+      "label": "Contour des étiquettes",
+      "default": "#DDD9D7"
+    },
+    {
+      "type": "header",
+      "content": "Typographie — Sur-titre"
+    },
+    {
+      "type": "font_picker",
+      "id": "eyebrow_font",
+      "label": "Police",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "label": "Taille — ordinateur",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_mobile",
+      "label": "Taille — mobile",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "header",
+      "content": "Typographie — Titre"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Police",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Taille — ordinateur",
+      "min": 16,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Taille — mobile",
+      "min": 14,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 26
+    },
+    {
+      "type": "header",
+      "content": "Typographie — Texte et étiquettes"
+    },
+    {
+      "type": "font_picker",
+      "id": "text_font",
+      "label": "Police",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Texte — ordinateur",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "label": "Texte — mobile",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "tag_size",
+      "label": "Étiquettes — ordinateur",
+      "min": 8,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "tag_size_mobile",
+      "label": "Étiquettes — mobile",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Bouton — style propre"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_custom",
+      "label": "Personnaliser ce bouton",
+      "info": "Décoché, le bouton suit le style commun défini dans Thème > Personnaliser > Boutons.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Arrondi",
+      "min": 0,
+      "max": 999,
+      "step": 1,
+      "unit": "px",
+      "default": 999
+    },
+    {
+      "type": "range",
+      "id": "button_padding_y",
+      "label": "Hauteur (marge verticale)",
+      "min": 6,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "button_padding_x",
+      "label": "Largeur (marge horizontale)",
+      "min": 10,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "button_font_weight",
+      "label": "Graisse du texte",
+      "min": 400,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "button_letter_spacing",
+      "label": "Espacement des lettres",
+      "min": -1,
+      "max": 4,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "button_text_transform",
+      "label": "Casse du texte",
+      "options": [
+        {
+          "value": "none",
+          "label": "Normale"
+        },
+        {
+          "value": "uppercase",
+          "label": "Majuscules"
+        }
+      ],
+      "default": "uppercase"
+    }
   ],
   "blocks": [
     {
       "type": "tag",
       "name": "Étiquette",
       "settings": [
-        { "type": "text", "id": "label", "label": "Texte", "default": "Formules courtes" },
-        { "type": "url", "id": "link", "label": "Lien (optionnel)" }
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Texte",
+          "default": "Formules courtes"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Lien (optionnel)"
+        }
       ]
     }
   ],
@@ -340,9 +682,24 @@
     {
       "name": "Marque",
       "blocks": [
-        { "type": "tag", "settings": { "label": "Formules courtes" } },
-        { "type": "tag", "settings": { "label": "Fabriqué en France" } },
-        { "type": "tag", "settings": { "label": "Sans surenchère" } }
+        {
+          "type": "tag",
+          "settings": {
+            "label": "Formules courtes"
+          }
+        },
+        {
+          "type": "tag",
+          "settings": {
+            "label": "Fabriqué en France"
+          }
+        },
+        {
+          "type": "tag",
+          "settings": {
+            "label": "Sans surenchère"
+          }
+        }
       ]
     }
   ]

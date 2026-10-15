@@ -1,3 +1,18 @@
+{%- if section.settings.button_custom -%}
+  {%- comment -%} Ce bouton s'écarte du style commun : on redéfinit les
+    variables au niveau de la section, ce qui l'emporte sur :root. {%- endcomment -%}
+  {% style %}
+    #shopify-section-{{ section.id }} {
+      --button-radius: {{ section.settings.button_radius }}px;
+      --button-padding-y: {{ section.settings.button_padding_y }}px;
+      --button-padding-x: {{ section.settings.button_padding_x }}px;
+      --button-font-weight: {{ section.settings.button_font_weight }};
+      --button-letter-spacing: {{ section.settings.button_letter_spacing }}px;
+      --button-text-transform: {{ section.settings.button_text_transform }};
+    }
+  {% endstyle %}
+{%- endif -%}
+
 <div class="hero hero--{{ section.settings.text_color }} hero--v-{{ section.settings.position_vertical | default: 'bottom' }} full-width">
   {% if section.settings.image != blank %}
     {{
@@ -188,8 +203,14 @@
       "id": "text_color",
       "label": "Couleur du texte",
       "options": [
-        { "value": "white", "label": "Blanc" },
-        { "value": "black", "label": "Noir" }
+        {
+          "value": "white",
+          "label": "Blanc"
+        },
+        {
+          "value": "black",
+          "label": "Noir"
+        }
       ],
       "default": "white"
     },
@@ -198,9 +219,18 @@
       "id": "position_vertical",
       "label": "Position verticale du texte",
       "options": [
-        { "value": "top", "label": "Haut" },
-        { "value": "center", "label": "Centre" },
-        { "value": "bottom", "label": "Bas" }
+        {
+          "value": "top",
+          "label": "Haut"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "bottom",
+          "label": "Bas"
+        }
       ],
       "default": "bottom"
     },
@@ -209,9 +239,18 @@
       "id": "position_horizontal",
       "label": "Position horizontale du texte",
       "options": [
-        { "value": "left", "label": "Gauche" },
-        { "value": "center", "label": "Centre" },
-        { "value": "right", "label": "Droite" }
+        {
+          "value": "left",
+          "label": "Gauche"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Droite"
+        }
       ],
       "default": "right"
     },
@@ -253,6 +292,82 @@
       "type": "url",
       "id": "button_link",
       "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Bouton — style propre"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_custom",
+      "label": "Personnaliser ce bouton",
+      "info": "Décoché, le bouton suit le style commun défini dans Thème > Personnaliser > Boutons.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Arrondi",
+      "min": 0,
+      "max": 999,
+      "step": 1,
+      "unit": "px",
+      "default": 999
+    },
+    {
+      "type": "range",
+      "id": "button_padding_y",
+      "label": "Hauteur (marge verticale)",
+      "min": 6,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "button_padding_x",
+      "label": "Largeur (marge horizontale)",
+      "min": 10,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "button_font_weight",
+      "label": "Graisse du texte",
+      "min": 400,
+      "max": 900,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "button_letter_spacing",
+      "label": "Espacement des lettres",
+      "min": -1,
+      "max": 4,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "button_text_transform",
+      "label": "Casse du texte",
+      "options": [
+        {
+          "value": "none",
+          "label": "Normale"
+        },
+        {
+          "value": "uppercase",
+          "label": "Majuscules"
+        }
+      ],
+      "default": "uppercase"
     }
   ],
   "presets": [
