@@ -12,7 +12,7 @@
     "hero": {
       "type": "hero",
       "settings": {
-        "image": "shopify://shop_images/Gemini_Generated_Image_acy37iacy37iacy3.jpg",
+        "image": "shopify://shop_images/Hero.png",
         "text_color": "black",
         "position_vertical": "bottom",
         "position_horizontal": "left",
@@ -27,6 +27,22 @@
     "reassurance_L9RciR": {
       "type": "reassurance",
       "blocks": {
+        "item_gzPHcC": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison offerte",
+            "text": "Dès 49 € d'achat en France."
+          }
+        },
+        "item_paiement3x": {
+          "type": "item",
+          "settings": {
+            "icon": "split",
+            "title": "Payez en 3 fois",
+            "text": "Sans frais, dès 60 € d'achat."
+          }
+        },
         "item_kjwDUC": {
           "type": "item",
           "settings": {
@@ -50,22 +66,6 @@
             "title": "Non testé sur les animaux",
             "text": "Aucune formule testée sur les animaux."
           }
-        },
-        "item_gzPHcC": {
-          "type": "item",
-          "settings": {
-            "icon": "truck",
-            "title": "Livraison offerte",
-            "text": "Dès 49 € d'achat en France."
-          }
-        },
-        "item_paiement3x": {
-          "type": "item",
-          "settings": {
-            "icon": "split",
-            "title": "Payez en 3 fois",
-            "text": "Sans frais, dès 60 € d'achat."
-          }
         }
       },
       "block_order": [
@@ -79,24 +79,14 @@
       "settings": {
         "columns": 5,
         "columns_mobile": "2",
-        "alignment": "center",
         "show_numbers": false,
-        "show_separators": false,
         "cell_padding": 20,
         "cell_padding_mobile": 16,
-        "column_gap": 32,
-        "column_gap_mobile": 16,
-        "row_gap": 32,
-        "row_gap_mobile": 24,
-        "margin_top": 64,
-        "margin_top_mobile": 40,
-        "margin_bottom": 64,
-        "margin_bottom_mobile": 40,
-        "background_color": "#FFFFFF",
-        "text_color": "#1A1A1A",
-        "line_color": "#DDD9D7",
-        "hover_color": "#E8E6E5",
-        "icon_color": "#1A1A1A",
+        "background_color": "#ffffff",
+        "text_color": "#1a1a1a",
+        "line_color": "#ddd9d7",
+        "hover_color": "#e8e6e5",
+        "icon_color": "#1a1a1a",
         "icon_size": 24,
         "icon_size_mobile": 20,
         "title_font": "work_sans_n4",
@@ -106,7 +96,17 @@
         "text_size": 13,
         "text_size_mobile": 12,
         "kicker_size": 12,
-        "kicker_size_mobile": 11
+        "kicker_size_mobile": 11,
+        "alignment": "center",
+        "show_separators": false,
+        "column_gap": 32,
+        "column_gap_mobile": 16,
+        "row_gap": 32,
+        "row_gap_mobile": 24,
+        "margin_top": 64,
+        "margin_top_mobile": 40,
+        "margin_bottom": 64,
+        "margin_bottom_mobile": 40
       }
     },
     "featured_products": {
@@ -295,70 +295,46 @@
     },
     "brand_commitments_NCVAJB": {
       "type": "brand-commitments",
-      "blocks": {
-        "chapter_1": {
-          "type": "chapter",
-          "settings": {
-            "title": "Une liste d'ingrédients illisible",
-            "text": "<p>Impossible de savoir ce qu'on met sur sa peau, ni pourquoi. C'est de là qu'est partie l'envie de faire autrement.</p>"
-          }
-        },
-        "chapter_2": {
-          "type": "chapter",
-          "settings": {
-            "title": "Retirer avant d'ajouter",
-            "text": "<p>Chaque ingrédient doit justifier sa présence. Si nous ne savons pas l'expliquer en une phrase, il ne rentre pas dans la formule.</p>"
-          }
-        },
-        "chapter_3": {
-          "type": "chapter",
-          "settings": {
-            "title": "Quelques soins, travaillés longtemps",
-            "text": "<p>Nous préférons sortir peu de produits et les retravailler, plutôt que d'élargir la gamme chaque saison.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "chapter_1",
-        "chapter_2",
-        "chapter_3"
-      ],
       "name": "Marque et engagements",
       "settings": {
         "eyebrow": "Notre marque",
         "heading": "Nous avons commencé par retirer, pas par ajouter",
-        "text_alignment": "left",
-        "show_numbers": true,
-        "media_height": 76,
-        "media_height_mobile": 42,
-        "chapter_height": 85,
-        "sticky_offset": 96,
-        "sticky_offset_mobile": 72,
+        "text": "<p>Irizée est née d'un constat simple : la plupart des soins promettent beaucoup et contiennent peu de ce qui compte vraiment.</p><p>Une formule, quelques actifs, une raison d'être pour chacun.</p>",
+        "button_label": "",
+        "button_link": "",
+        "media_position": "left",
+        "photo_row_height": 180,
+        "photo_row_height_mobile": 120,
+        "photo_gap": 12,
+        "photo_gap_mobile": 8,
         "corner_radius": 14,
         "column_gap": 64,
         "column_gap_mobile": 16,
-        "background_color": "#FFFFFF",
-        "text_color": "#1A1A1A",
-        "muted_color": "#8A8683",
+        "padding_desktop": 72,
+        "padding_mobile": 44,
+        "background_color": "#ffffff",
+        "text_color": "#1a1a1a",
+        "muted_color": "#8a8683",
+        "line_color": "#ddd9d7",
         "eyebrow_font": "work_sans_n4",
         "eyebrow_size": 12,
         "eyebrow_size_mobile": 11,
         "heading_font": "work_sans_n4",
         "heading_size": 42,
         "heading_size_mobile": 28,
-        "chapter_size": 34,
-        "chapter_size_mobile": 24,
         "text_font": "work_sans_n4",
         "text_size": 16,
-        "text_size_mobile": 15
+        "text_size_mobile": 15,
+        "tag_size": 12,
+        "tag_size_mobile": 12
       }
     }
   },
   "order": [
     "hero",
-    "reassurance_L9RciR",
     "featured_products",
     "skin_diagnostic_PYwfF7",
-    "brand_commitments_NCVAJB"
+    "brand_commitments_NCVAJB",
+    "reassurance_L9RciR"
   ]
 }
