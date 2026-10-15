@@ -19,94 +19,9 @@
         "show_overlay": true,
         "overlay_opacity": 10,
         "eyebrow": "Soins naturels",
-        "heading": "Des soins naturels pensés pour votre peau",
+        "heading": "Des soins naturels pensés <br>pour votre peau",
         "button_label": "Découvrir",
         "button_link": "shopify://collections/all"
-      }
-    },
-    "reassurance_L9RciR": {
-      "type": "reassurance",
-      "blocks": {
-        "item_gzPHcC": {
-          "type": "item",
-          "settings": {
-            "icon": "truck",
-            "title": "Livraison offerte",
-            "text": "Dès 49 € d'achat en France."
-          }
-        },
-        "item_paiement3x": {
-          "type": "item",
-          "settings": {
-            "icon": "split",
-            "title": "Payez en 3 fois",
-            "text": "Sans frais, dès 60 € d'achat."
-          }
-        },
-        "item_kjwDUC": {
-          "type": "item",
-          "settings": {
-            "icon": "leaf",
-            "title": "Formules naturelles",
-            "text": "Des ingrédients choisis, sans compromis."
-          }
-        },
-        "item_HDFdbt": {
-          "type": "item",
-          "settings": {
-            "icon": "france",
-            "title": "Fabriqué en France",
-            "text": "Produit dans nos ateliers partenaires."
-          }
-        },
-        "item_maaTrJ": {
-          "type": "item",
-          "settings": {
-            "icon": "rabbit",
-            "title": "Non testé sur les animaux",
-            "text": "Aucune formule testée sur les animaux."
-          }
-        }
-      },
-      "block_order": [
-        "item_gzPHcC",
-        "item_paiement3x",
-        "item_kjwDUC",
-        "item_HDFdbt",
-        "item_maaTrJ"
-      ],
-      "name": "Bandeau de réassurance",
-      "settings": {
-        "columns": 5,
-        "columns_mobile": "2",
-        "show_numbers": false,
-        "cell_padding": 20,
-        "cell_padding_mobile": 16,
-        "background_color": "#ffffff",
-        "text_color": "#1a1a1a",
-        "line_color": "#ddd9d7",
-        "hover_color": "#e8e6e5",
-        "icon_color": "#1a1a1a",
-        "icon_size": 24,
-        "icon_size_mobile": 20,
-        "title_font": "work_sans_n4",
-        "title_size": 16,
-        "title_size_mobile": 15,
-        "text_font": "work_sans_n4",
-        "text_size": 13,
-        "text_size_mobile": 12,
-        "kicker_size": 12,
-        "kicker_size_mobile": 11,
-        "alignment": "center",
-        "show_separators": false,
-        "column_gap": 32,
-        "column_gap_mobile": 16,
-        "row_gap": 32,
-        "row_gap_mobile": 24,
-        "margin_top": 64,
-        "margin_top_mobile": 40,
-        "margin_bottom": 64,
-        "margin_bottom_mobile": 40
       }
     },
     "featured_products": {
@@ -327,6 +242,91 @@
         "text_size_mobile": 15,
         "tag_size": 12,
         "tag_size_mobile": 12
+      }
+    },
+    "reassurance_L9RciR": {
+      "type": "reassurance",
+      "blocks": {
+        "item_gzPHcC": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison offerte",
+            "text": "Dès 49 € d'achat en France."
+          }
+        },
+        "item_paiement3x": {
+          "type": "item",
+          "settings": {
+            "icon": "split",
+            "title": "Payez en 3 fois",
+            "text": "Sans frais, dès 60 € d'achat."
+          }
+        },
+        "item_kjwDUC": {
+          "type": "item",
+          "settings": {
+            "icon": "leaf",
+            "title": "Formules naturelles",
+            "text": "Des ingrédients choisis, sans compromis."
+          }
+        },
+        "item_HDFdbt": {
+          "type": "item",
+          "settings": {
+            "icon": "france",
+            "title": "Fabriqué en France",
+            "text": "Produit dans nos ateliers partenaires."
+          }
+        },
+        "item_maaTrJ": {
+          "type": "item",
+          "settings": {
+            "icon": "rabbit",
+            "title": "Non testé sur les animaux",
+            "text": "Aucune formule testée sur les animaux."
+          }
+        }
+      },
+      "block_order": [
+        "item_gzPHcC",
+        "item_paiement3x",
+        "item_kjwDUC",
+        "item_HDFdbt",
+        "item_maaTrJ"
+      ],
+      "name": "Bandeau de réassurance",
+      "settings": {
+        "columns": 5,
+        "columns_mobile": "2",
+        "alignment": "center",
+        "show_numbers": false,
+        "show_separators": false,
+        "cell_padding": 20,
+        "cell_padding_mobile": 16,
+        "column_gap": 32,
+        "column_gap_mobile": 16,
+        "row_gap": 32,
+        "row_gap_mobile": 24,
+        "margin_top": 64,
+        "margin_top_mobile": 40,
+        "margin_bottom": 64,
+        "margin_bottom_mobile": 40,
+        "background_color": "#ffffff",
+        "text_color": "#1a1a1a",
+        "line_color": "#ddd9d7",
+        "hover_color": "#e8e6e5",
+        "icon_color": "#1a1a1a",
+        "icon_size": 24,
+        "icon_size_mobile": 20,
+        "title_font": "work_sans_n4",
+        "title_size": 16,
+        "title_size_mobile": 15,
+        "text_font": "work_sans_n4",
+        "text_size": 13,
+        "text_size_mobile": 12,
+        "kicker_size": 12,
+        "kicker_size_mobile": 11
       }
     }
   },
