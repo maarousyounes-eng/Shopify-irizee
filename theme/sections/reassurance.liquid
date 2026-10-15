@@ -12,6 +12,11 @@
     --rs-columns: {{ section.settings.columns }};
     --rs-cell-padding: {{ section.settings.cell_padding }}px;
     --rs-icon-size: {{ section.settings.icon_size }}px;
+    --rs-margin-top: {{ section.settings.margin_top }}px;
+    --rs-margin-bottom: {{ section.settings.margin_bottom }}px;
+    --rs-column-gap: {{ section.settings.column_gap }}px;
+    --rs-row-gap: {{ section.settings.row_gap }}px;
+    --rs-align: {{ section.settings.alignment }};
 
     --rs-kicker-size: {{ section.settings.kicker_size }}px;
     --rs-title-family: {{ section.settings.title_font.family }}, {{ section.settings.title_font.fallback_families }};
@@ -26,6 +31,10 @@
       --rs-columns: {{ section.settings.columns_mobile }};
       --rs-cell-padding: {{ section.settings.cell_padding_mobile }}px;
       --rs-icon-size: {{ section.settings.icon_size_mobile }}px;
+      --rs-margin-top: {{ section.settings.margin_top_mobile }}px;
+      --rs-margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+      --rs-column-gap: {{ section.settings.column_gap_mobile }}px;
+      --rs-row-gap: {{ section.settings.row_gap_mobile }}px;
       --rs-kicker-size: {{ section.settings.kicker_size_mobile }}px;
       --rs-title-size: {{ section.settings.title_size_mobile }}px;
       --rs-text-size: {{ section.settings.text_size_mobile }}px;
@@ -34,7 +43,7 @@
 {% endstyle %}
 
 <div class="reassurance full-width">
-  <div class="reassurance__grid">
+  <div class="reassurance__grid{% if section.settings.show_separators %} reassurance__grid--separated{% endif %}">
     {% for block in section.blocks %}
       <div class="reassurance__cell" {{ block.shopify_attributes }}>
         <div class="reassurance__cell-inner">
@@ -108,29 +117,47 @@
   .reassurance {
     background-color: var(--rs-bg);
     color: var(--rs-text);
+    padding-top: var(--rs-margin-top);
+    padding-bottom: var(--rs-margin-bottom);
   }
 
-  /* Les filets sont dessinés par le fond de la grille visible dans les
-     interstices d'1px : fonctionne quel que soit le nombre de colonnes,
-     sans filet en trop sur les bords. */
+  /* Par défaut : pas de filets, les colonnes respirent grâce aux gouttières.
+     C'est l'absence de cadre qui allège la section. */
   .reassurance__grid {
     display: grid;
     grid-template-columns: repeat(var(--rs-columns), minmax(0, 1fr));
+    column-gap: var(--rs-column-gap);
+    row-gap: var(--rs-row-gap);
+    text-align: var(--rs-align);
+  }
+
+  .reassurance__cell {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .reassurance__cell-inner {
+    padding: var(--rs-cell-padding);
+  }
+
+  /* Variante avec filets : le fond de la grille apparaît dans les
+     interstices d'1px. Fonctionne quel que soit le nombre de colonnes,
+     sans filet en trop sur les bords. */
+  .reassurance__grid--separated {
     gap: 1px;
     background: var(--rs-line);
     border-top: 1px solid var(--rs-line);
     border-bottom: 1px solid var(--rs-line);
   }
 
-  /* Chaque case : le fond monte depuis le bas au survol */
-  .reassurance__cell {
-    position: relative;
-    isolation: isolate;
+  .reassurance__grid--separated .reassurance__cell {
     overflow: hidden;
     background: var(--rs-bg);
   }
 
-  .reassurance__cell::before {
+  /* Le fond qui monte depuis le bas au survol n'a de sens qu'avec les
+     cases délimitées : sans filets, il n'y a pas de case à remplir. */
+  .reassurance__grid--separated .reassurance__cell::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -140,12 +167,8 @@
     transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 
-  .reassurance__cell-inner {
-    padding: var(--rs-cell-padding);
-  }
-
   @media (hover: hover) {
-    .reassurance__cell:hover::before {
+    .reassurance__grid--separated .reassurance__cell:hover::before {
       transform: none;
     }
   }
@@ -166,6 +189,8 @@
     color: var(--rs-icon);
   }
 
+  /* Le SVG est inline : le text-align de la grille le centre avec le texte,
+     pas besoin de marge auto. */
   .reassurance__icon svg {
     width: var(--rs-icon-size);
     height: var(--rs-icon-size);
@@ -188,7 +213,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .reassurance__cell::before {
+    .reassurance__grid--separated .reassurance__cell::before {
       transition: none;
     }
   }
@@ -210,9 +235,30 @@
       ],
       "default": "2"
     },
-    { "type": "checkbox", "id": "show_numbers", "label": "Afficher les numéros (01, 02…)", "default": true },
-    { "type": "range", "id": "cell_padding", "label": "Marges intérieures des cases — ordinateur", "min": 12, "max": 72, "step": 2, "unit": "px", "default": 34 },
-    { "type": "range", "id": "cell_padding_mobile", "label": "Marges intérieures des cases — mobile", "min": 12, "max": 48, "step": 2, "unit": "px", "default": 22 },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignement du contenu",
+      "options": [
+        { "value": "left", "label": "À gauche" },
+        { "value": "center", "label": "Centré" }
+      ],
+      "default": "center"
+    },
+    { "type": "checkbox", "id": "show_numbers", "label": "Afficher les numéros (01, 02…)", "default": false },
+    { "type": "checkbox", "id": "show_separators", "label": "Afficher les filets entre les colonnes", "info": "Décoché, la section est plus aérée. Le fond au survol ne s'applique qu'avec les filets.", "default": false },
+    { "type": "range", "id": "cell_padding", "label": "Marges intérieures des cases — ordinateur", "min": 12, "max": 72, "step": 2, "unit": "px", "default": 20 },
+    { "type": "range", "id": "cell_padding_mobile", "label": "Marges intérieures des cases — mobile", "min": 12, "max": 48, "step": 2, "unit": "px", "default": 16 },
+    { "type": "range", "id": "column_gap", "label": "Espace entre colonnes — ordinateur", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 32 },
+    { "type": "range", "id": "column_gap_mobile", "label": "Espace entre colonnes — mobile", "min": 0, "max": 48, "step": 4, "unit": "px", "default": 16 },
+    { "type": "range", "id": "row_gap", "label": "Espace entre lignes — ordinateur", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 32 },
+    { "type": "range", "id": "row_gap_mobile", "label": "Espace entre lignes — mobile", "min": 0, "max": 48, "step": 4, "unit": "px", "default": 24 },
+
+    { "type": "header", "content": "Marges extérieures" },
+    { "type": "range", "id": "margin_top", "label": "Marge au-dessus — ordinateur", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "margin_top_mobile", "label": "Marge au-dessus — mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "margin_bottom", "label": "Marge en dessous — ordinateur", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "margin_bottom_mobile", "label": "Marge en dessous — mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
 
     { "type": "header", "content": "Couleurs" },
     { "type": "color", "id": "background_color", "label": "Fond", "default": "#FFFFFF" },
