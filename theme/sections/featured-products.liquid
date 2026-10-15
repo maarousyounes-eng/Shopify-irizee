@@ -89,7 +89,13 @@
       {% endif %}
       </div>
 
-      <button class="featured-products__arrow" type="button" data-products-next aria-label="Voir les produits suivants" hidden>
+      <button class="featured-products__arrow featured-products__arrow--prev" type="button" data-products-prev aria-label="Voir les produits précédents" hidden>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+
+      <button class="featured-products__arrow featured-products__arrow--next" type="button" data-products-next aria-label="Voir les produits suivants" hidden>
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
@@ -111,26 +117,37 @@
     var root = document.getElementById('shopify-section-{{ section.id }}');
     if (!root) return;
 
-    // Flèche de défilement : visible seulement s'il y a plus de produits que la largeur disponible
+    // Flèches de défilement : chacune n'apparaît que s'il reste des produits
+    // à voir de son côté, et seulement si la rangée déborde.
     var row = root.querySelector('[data-products-row]');
     var next = root.querySelector('[data-products-next]');
+    var prev = root.querySelector('[data-products-prev]');
 
-    if (row && next) {
-      var updateArrow = function () {
+    if (row && next && prev) {
+      var updateArrows = function () {
         var overflows = row.scrollWidth - row.clientWidth > 8;
         var atEnd = row.scrollLeft + row.clientWidth >= row.scrollWidth - 8;
+        var atStart = row.scrollLeft <= 8;
         next.hidden = !overflows || atEnd;
+        prev.hidden = !overflows || atStart;
+      };
+
+      var step = function () {
+        var card = row.querySelector('.product-card');
+        return card ? card.getBoundingClientRect().width + 32 : row.clientWidth * 0.8;
       };
 
       next.addEventListener('click', function () {
-        var card = row.querySelector('.product-card');
-        var step = card ? card.getBoundingClientRect().width + 32 : row.clientWidth * 0.8;
-        row.scrollBy({ left: step, behavior: 'smooth' });
+        row.scrollBy({ left: step(), behavior: 'smooth' });
       });
 
-      row.addEventListener('scroll', updateArrow, { passive: true });
-      window.addEventListener('resize', updateArrow);
-      updateArrow();
+      prev.addEventListener('click', function () {
+        row.scrollBy({ left: -step(), behavior: 'smooth' });
+      });
+
+      row.addEventListener('scroll', updateArrows, { passive: true });
+      window.addEventListener('resize', updateArrows);
+      updateArrows();
     }
 
     root.querySelectorAll('[data-swipe-media]').forEach(function (media) {
@@ -180,7 +197,6 @@
   .featured-products__arrow {
     position: absolute;
     top: 50%;
-    right: -1.6rem;
     transform: translateY(-50%);
     z-index: 4;
     width: 4.4rem;
@@ -195,6 +211,14 @@
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
     cursor: pointer;
     transition: transform 0.15s ease;
+  }
+
+  .featured-products__arrow--next {
+    right: -1.6rem;
+  }
+
+  .featured-products__arrow--prev {
+    left: -1.6rem;
   }
 
   .featured-products__arrow:hover {
