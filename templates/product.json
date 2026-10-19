@@ -12,64 +12,45 @@
     "main": {
       "type": "iz-main-product",
       "blocks": {
-        "eyebrow": {
-          "type": "eyebrow",
+        "entete": {
+          "type": "entete",
           "settings": {}
         },
-        "title": {
-          "type": "title",
+        "promesse": {
+          "type": "promesse",
           "settings": {}
         },
-        "rating": {
-          "type": "rating",
+        "benefices": {
+          "type": "benefices",
           "settings": {}
         },
-        "promise": {
-          "type": "promise",
+        "offres": {
+          "type": "offres",
           "settings": {}
         },
-        "benefits": {
-          "type": "benefits",
+        "achat": {
+          "type": "achat",
           "settings": {}
         },
-        "offers": {
-          "type": "offers",
+        "jauge": {
+          "type": "jauge",
           "settings": {}
         },
-        "buy": {
-          "type": "buy",
-          "settings": {}
-        },
-        "gauge": {
-          "type": "shipping_gauge",
-          "settings": {}
-        },
-        "acc_inci": {
-          "type": "accordion",
+        "accordeons": {
+          "type": "accordeons",
           "settings": {
-            "titre": "Composition",
-            "source_metafield": "inci"
-          }
-        },
-        "acc_livraison": {
-          "type": "accordion",
-          "settings": {
-            "titre": "Livraison et retours",
-            "contenu": "<p>Livraison offerte dès 49 € d'achat en France. Retours acceptés sous 14 jours.</p>"
+            "contenu_4": "<p>Livraison offerte dès 49 € d'achat en France. Retours acceptés sous 14 jours.</p>"
           }
         }
       },
       "block_order": [
-        "eyebrow",
-        "title",
-        "rating",
-        "promise",
-        "benefits",
-        "offers",
-        "buy",
-        "gauge",
-        "acc_inci",
-        "acc_livraison"
+        "entete",
+        "promesse",
+        "benefices",
+        "offres",
+        "achat",
+        "jauge",
+        "accordeons"
       ],
       "settings": {}
     }
