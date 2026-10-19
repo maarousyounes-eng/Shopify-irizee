@@ -28,6 +28,7 @@
         "menu_letter_spacing_mobile": 0,
         "menu_item_gap": 24,
         "menu_item_gap_mobile": 16,
+        "menu_hover_style": "trait",
         "logo_width": 110,
         "logo_width_mobile": 84,
         "icon_size": 20,
@@ -37,13 +38,13 @@
         "header_column_gap": 16,
         "header_padding_desktop": 48,
         "header_padding_mobile": 24,
+        "header_padding_top_desktop": 32,
+        "header_padding_bottom_desktop": 0,
+        "header_padding_top_mobile": 0,
+        "header_padding_bottom_mobile": 0,
         "menu_text_transform": "none",
         "menu": "main-menu",
-        "customer_account_menu": "customer-account-main-menu",
-        "header_padding_top_desktop": 46,
-        "header_padding_bottom_desktop": 46,
-        "header_padding_top_mobile": 40,
-        "header_padding_bottom_mobile": 40
+        "customer_account_menu": "customer-account-main-menu"
       }
     }
   },
