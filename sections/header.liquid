@@ -41,8 +41,10 @@
     --header-column-gap: {{ section.settings.header_column_gap }}px;
     --header-padding-desktop: {{ section.settings.header_padding_desktop }}px;
     --header-padding-mobile: {{ section.settings.header_padding_mobile }}px;
-    --header-padding-y-desktop: {{ section.settings.header_padding_y_desktop }}px;
-    --header-padding-y-mobile: {{ section.settings.header_padding_y_mobile }}px;
+    --header-padding-top-desktop: {{ section.settings.header_padding_top_desktop }}px;
+    --header-padding-bottom-desktop: {{ section.settings.header_padding_bottom_desktop }}px;
+    --header-padding-top-mobile: {{ section.settings.header_padding_top_mobile }}px;
+    --header-padding-bottom-mobile: {{ section.settings.header_padding_bottom_mobile }}px;
   }
 
   /* Le header doit occuper toute la largeur de l'écran. La classe
@@ -207,7 +209,10 @@
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     column-gap: var(--header-column-gap, 16px);
-    padding: var(--header-padding-y-desktop, 0) var(--header-padding-desktop, var(--page-margin));
+    padding:
+      var(--header-padding-top-desktop, 0)
+      var(--header-padding-desktop, var(--page-margin))
+      var(--header-padding-bottom-desktop, 0);
     position: sticky;
     top: 0;
     z-index: 10;
@@ -505,7 +510,10 @@
 
     .header {
       column-gap: 0.8rem;
-      padding: var(--header-padding-y-mobile, 0) var(--header-padding-mobile, 16px);
+      padding:
+        var(--header-padding-top-mobile, 0)
+        var(--header-padding-mobile, 16px)
+        var(--header-padding-bottom-mobile, 0);
     }
 
     .header .header__account-native {
@@ -768,8 +776,8 @@
     },
     {
       "type": "range",
-      "id": "header_padding_y_desktop",
-      "label": "Marge verticale (haut/bas) — ordinateur",
+      "id": "header_padding_top_desktop",
+      "label": "Marge haute — ordinateur",
       "info": "Ajoute de la hauteur au menu. À 0, le menu garde sa hauteur minimale.",
       "min": 0,
       "max": 60,
@@ -779,8 +787,28 @@
     },
     {
       "type": "range",
-      "id": "header_padding_y_mobile",
-      "label": "Marge verticale (haut/bas) — mobile",
+      "id": "header_padding_bottom_desktop",
+      "label": "Marge basse — ordinateur",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "header_padding_top_mobile",
+      "label": "Marge haute — mobile",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "header_padding_bottom_mobile",
+      "label": "Marge basse — mobile",
       "min": 0,
       "max": 40,
       "step": 2,

@@ -37,11 +37,13 @@
         "header_column_gap": 16,
         "header_padding_desktop": 48,
         "header_padding_mobile": 24,
-        "header_padding_y_desktop": 46,
-        "header_padding_y_mobile": 40,
         "menu_text_transform": "none",
         "menu": "main-menu",
-        "customer_account_menu": "customer-account-main-menu"
+        "customer_account_menu": "customer-account-main-menu",
+        "header_padding_top_desktop": 46,
+        "header_padding_bottom_desktop": 46,
+        "header_padding_top_mobile": 40,
+        "header_padding_bottom_mobile": 40
       }
     }
   },
