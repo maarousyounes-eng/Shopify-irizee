@@ -1,11 +1,12 @@
 {% comment %}
   Fiche produit — galerie et bloc d'achat.
 
-  Le bloc d'achat est entièrement composé de blocs réordonnables : chaque
-  élément se déplace, se masque ou se retire depuis l'éditeur.
+  Construit d'après la maquette : fil d'Ariane, galerie à gauche (base 560)
+  et bloc d'achat à droite (base 420), les deux dans un conteneur de 1320.
 
-  Le contenu propre à chaque produit vient des metafields `custom` ; tant
-  qu'un metafield est vide, l'élément correspondant ne s'affiche pas.
+  Le bloc d'achat est composé de blocs réordonnables. Le contenu propre à
+  chaque produit vient des metafields `custom` ; un élément dont la source
+  est vide ne s'affiche pas.
 {% endcomment %}
 
 {%- assign p = product -%}
@@ -14,23 +15,33 @@
 
 {% style %}
   #shopify-section-{{ section.id }} {
-    --izp-gallery-ratio: {{ section.settings.gallery_ratio }};
-    --izp-col-gap: {{ section.settings.column_gap }}px;
+    --izp-ratio: {{ section.settings.ratio }};
+    --izp-gap: {{ section.settings.column_gap }}px;
+    --izp-gallery-base: {{ section.settings.gallery_base }}px;
+    --izp-buybox-base: {{ section.settings.buybox_base }}px;
   }
 {% endstyle %}
 
-<section class="iz-section iz-product full-width" data-iz-product>
-  <div class="iz-container iz-product__grid">
+<section class="iz-pdp full-width">
+  <div class="iz-container">
 
-    {%- comment -%} ---------------- Galerie ---------------- {%- endcomment -%}
-    <div class="iz-product__gallery">
-      <div class="iz-gallery__stage" data-iz-stage>
-        {%- if p.media.size > 0 -%}
+    {%- if section.settings.afficher_fil -%}
+      <nav class="iz-breadcrumb" aria-label="{{ section.settings.libelle_fil }}">
+        <a href="{{ routes.root_url }}">{{ section.settings.libelle_accueil }}</a>
+        <span aria-hidden="true">/</span>
+        <a href="{{ routes.all_products_collection_url }}">{{ section.settings.libelle_catalogue }}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ p.title }}</span>
+      </nav>
+    {%- endif -%}
+
+    <div class="iz-pdp__cols">
+
+      {%- comment -%} ---------- Galerie ---------- {%- endcomment -%}
+      <div class="iz-pdp__gallery">
+        <div class="iz-gallery__stage" data-iz-stage>
           {%- for media in p.media -%}
-            <figure
-              class="iz-gallery__slide{% if forloop.first %} is-active{% endif %}"
-              data-iz-slide="{{ forloop.index0 }}"
-            >
+            <figure class="iz-gallery__slide{% if forloop.first %} is-active{% endif %}" data-iz-slide="{{ forloop.index0 }}">
               {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
                 {{ media | media_tag: image_size: '1200x', autoplay: false, loop: false, controls: true }}
               {%- else -%}
@@ -39,112 +50,95 @@
                   srcset="{{ media | image_url: width: 600 }} 600w, {{ media | image_url: width: 900 }} 900w, {{ media | image_url: width: 1200 }} 1200w"
                   sizes="(min-width: 750px) 46vw, 92vw"
                   alt="{{ media.alt | escape | default: p.title | escape }}"
-                  width="1200"
-                  height="1200"
+                  width="1200" height="1200"
                   {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
                 >
               {%- endif -%}
             </figure>
           {%- endfor -%}
-        {%- endif -%}
 
-        {%- if section.settings.show_badge and section.settings.badge_text != blank -%}
-          <span class="iz-gallery__badge">{{ section.settings.badge_text }}</span>
-        {%- endif -%}
+          {%- if section.settings.show_badge and section.settings.badge_text != blank -%}
+            <span class="iz-gallery__badge">{{ section.settings.badge_text }}</span>
+          {%- endif -%}
+
+          {%- if p.media.size > 1 -%}
+            <div class="iz-gallery__dots" aria-hidden="true">
+              {%- for media in p.media -%}
+                <span class="iz-gallery__dot{% if forloop.first %} is-active{% endif %}" data-iz-dot="{{ forloop.index0 }}"></span>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
 
         {%- if p.media.size > 1 -%}
-          <div class="iz-gallery__dots" aria-hidden="true">
-            {%- for media in p.media -%}
-              <span class="iz-gallery__dot{% if forloop.first %} is-active{% endif %}" data-iz-dot="{{ forloop.index0 }}"></span>
+          <ul class="iz-gallery__thumbs" role="list">
+            {%- for media in p.media limit: section.settings.thumb_count -%}
+              <li>
+                <button type="button" class="iz-gallery__thumb{% if forloop.first %} is-active{% endif %}"
+                  data-iz-thumb="{{ forloop.index0 }}"
+                  aria-label="{{ section.settings.libelle_vignette }} {{ forloop.index }}">
+                  <img src="{{ media.preview_image | image_url: width: 240 }}" alt="" width="240" height="240" loading="lazy">
+                </button>
+              </li>
             {%- endfor -%}
-          </div>
+          </ul>
         {%- endif -%}
       </div>
 
-      {%- if p.media.size > 1 -%}
-        <ul class="iz-gallery__thumbs" role="list">
-          {%- for media in p.media limit: section.settings.thumb_count -%}
-            <li>
-              <button
-                type="button"
-                class="iz-gallery__thumb iz-tap{% if forloop.first %} is-active{% endif %}"
-                data-iz-thumb="{{ forloop.index0 }}"
-                aria-label="{{ 'Voir le média ' | append: forloop.index }}"
-              >
-                <img
-                  src="{{ media.preview_image | image_url: width: 200 }}"
-                  alt=""
-                  width="200"
-                  height="200"
-                  loading="lazy"
-                >
-              </button>
-            </li>
-          {%- endfor -%}
-        </ul>
-      {%- endif -%}
-    </div>
+      {%- comment -%} ---------- Bloc d'achat ---------- {%- endcomment -%}
+      <div class="iz-pdp__buybox">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
 
-    {%- comment -%} ---------------- Bloc d'achat ---------------- {%- endcomment -%}
-    <div class="iz-product__buybox">
-      {%- for block in section.blocks -%}
-        {%- case block.type -%}
-
-          {%- when 'eyebrow' -%}
-            {%- assign format = block.settings.texte | default: p.metafields.custom.format -%}
-            {%- if format != blank -%}
-              <p class="iz-eyebrow" {{ block.shopify_attributes }}>{{ format }}</p>
-            {%- endif -%}
-
-          {%- when 'title' -%}
-            <h1 class="iz-h1" {{ block.shopify_attributes }}>{{ p.title }}</h1>
-
-          {%- when 'rating' -%}
-            {%- assign note = p.metafields.reviews.rating.value -%}
-            {%- assign nb = p.metafields.reviews.rating_count | plus: 0 -%}
-            {%- if note != blank and nb >= block.settings.minimum -%}
-              <a class="iz-rating" href="#{{ block.settings.ancre }}" {{ block.shopify_attributes }}>
-                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-                  <path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L2 9.5l7.1-.6z" fill="currentColor"/>
-                </svg>
-                <strong>{{ note.rating }}</strong>
-                <span>· {{ nb }} {{ block.settings.libelle_avis }}</span>
-              </a>
-            {%- endif -%}
-
-          {%- when 'promise' -%}
-            {%- assign promesse = block.settings.texte | default: p.metafields.custom.promesse -%}
-            {%- if promesse != blank -%}
-              <p class="iz-text iz-product__promise" {{ block.shopify_attributes }}>{{ promesse }}</p>
-            {%- endif -%}
-
-          {%- when 'benefits' -%}
-            {%- assign benefices = p.metafields.custom.benefices.value -%}
-            {%- if benefices != blank and benefices.size > 0 -%}
-              <ul class="iz-benefits" role="list" {{ block.shopify_attributes }}>
-                {%- for b in benefices -%}
-                  <li>
-                    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                      <path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <span>{{ b }}</span>
-                  </li>
-                {%- endfor -%}
-              </ul>
-            {%- endif -%}
-
-          {%- when 'offers' -%}
-            {%- comment -%}
-              Chaque offre est un produit à part entière : la carte est donc un
-              lien vers sa fiche, pas un bouton de variante. La carte du produit
-              courant n'est pas un lien et porte l'état sélectionné.
-            {%- endcomment -%}
-            {%- if offres != blank and offres.size > 0 -%}
-              <div class="iz-offers" {{ block.shopify_attributes }}>
-                {%- if block.settings.titre != blank -%}
-                  <p class="iz-eyebrow">{{ block.settings.titre }}</p>
+            {%- when 'entete' -%}
+              {%- assign format = block.settings.texte | default: p.metafields.custom.format -%}
+              {%- assign note = p.metafields.reviews.rating.value -%}
+              {%- assign nb = p.metafields.reviews.rating_count | plus: 0 -%}
+              <div class="iz-pdp__head" {{ block.shopify_attributes }}>
+                {%- if format != blank -%}
+                  <p class="iz-eyebrow">{{ format }}</p>
                 {%- endif -%}
-                <div class="iz-offers__list">
+                <h1 class="iz-h1">{{ p.title }}</h1>
+                {%- if note != blank and nb >= block.settings.minimum -%}
+                  <a class="iz-stars" href="#{{ block.settings.ancre }}">
+                    <span class="iz-stars__icons" aria-hidden="true">
+                      {%- for i in (1..5) -%}
+                        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L2 9.5l7.1-.6z" fill="currentColor"/></svg>
+                      {%- endfor -%}
+                    </span>
+                    <strong>{{ note.rating }}</strong>
+                    <span class="iz-stars__count">{{ nb }} {{ block.settings.libelle_avis }}</span>
+                  </a>
+                {%- endif -%}
+              </div>
+
+            {%- when 'promesse' -%}
+              {%- assign promesse = block.settings.texte | default: p.metafields.custom.promesse -%}
+              {%- if promesse != blank -%}
+                <p class="iz-pdp__promise" {{ block.shopify_attributes }}>{{ promesse }}</p>
+              {%- endif -%}
+
+            {%- when 'benefices' -%}
+              {%- assign benefices = p.metafields.custom.benefices.value -%}
+              {%- if benefices != blank and benefices.size > 0 -%}
+                <ul class="iz-benefits" role="list" {{ block.shopify_attributes }}>
+                  {%- for b in benefices -%}
+                    <li>
+                      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                        <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      <span>{{ b }}</span>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+
+            {%- when 'offres' -%}
+              {%- if offres != blank and offres.size > 0 -%}
+                <div class="iz-offers" {{ block.shopify_attributes }}>
+                  {%- if block.settings.titre != blank -%}
+                    <p class="iz-offers__legend iz-eyebrow">{{ block.settings.titre }}</p>
+                  {%- endif -%}
                   {%- render 'iz-offer-card', offre: p, courant: true -%}
                   {%- for offre in offres -%}
                     {%- unless offre.id == p.id -%}
@@ -152,86 +146,67 @@
                     {%- endunless -%}
                   {%- endfor -%}
                 </div>
-              </div>
-            {%- endif -%}
+              {%- endif -%}
 
-          {%- when 'buy' -%}
-            <div class="iz-buy" {{ block.shopify_attributes }}>
-              <form data-iz-form>
-                <input type="hidden" name="id" value="{{ variant.id }}">
-
-                {%- if block.settings.afficher_quantite -%}
-                  <div class="iz-qty">
-                    <label class="iz-visually-hidden" for="iz-qty-{{ section.id }}">{{ block.settings.libelle_quantite }}</label>
-                    <button type="button" class="iz-qty__btn iz-tap" data-iz-qty="-1" aria-label="{{ block.settings.libelle_moins }}">−</button>
-                    <input
-                      id="iz-qty-{{ section.id }}"
-                      class="iz-qty__input"
-                      type="number"
-                      name="quantity"
-                      value="1"
-                      min="1"
-                      inputmode="numeric"
-                    >
-                    <button type="button" class="iz-qty__btn iz-tap" data-iz-qty="1" aria-label="{{ block.settings.libelle_plus }}">+</button>
-                  </div>
-                {%- else -%}
-                  <input type="hidden" name="quantity" value="1">
-                {%- endif -%}
-
-                <button
-                  type="submit"
-                  class="iz-btn iz-btn--primary iz-buy__submit"
-                  {% unless variant.available %}disabled{% endunless %}
-                >
-                  {%- if variant.available -%}
-                    <span data-iz-submit-label>
-                      {{ block.settings.libelle_ajout }} — {{ variant.price | money }}
-                    </span>
+            {%- when 'achat' -%}
+              <div class="iz-cta" {{ block.shopify_attributes }}>
+                <form class="iz-cta__row" data-iz-form>
+                  <input type="hidden" name="id" value="{{ variant.id }}">
+                  {%- if block.settings.afficher_quantite -%}
+                    <div class="iz-qty">
+                      <button type="button" class="iz-qty__btn" data-iz-qty="-1" aria-label="{{ block.settings.libelle_moins }}">−</button>
+                      <label class="iz-visually-hidden" for="iz-qty-{{ section.id }}">{{ block.settings.libelle_quantite }}</label>
+                      <input id="iz-qty-{{ section.id }}" class="iz-qty__input" type="number" name="quantity" value="1" min="1" inputmode="numeric">
+                      <button type="button" class="iz-qty__btn" data-iz-qty="1" aria-label="{{ block.settings.libelle_plus }}">+</button>
+                    </div>
                   {%- else -%}
-                    {{ block.settings.libelle_epuise }}
+                    <input type="hidden" name="quantity" value="1">
                   {%- endif -%}
-                </button>
-              </form>
-              <p class="iz-buy__feedback" data-iz-feedback role="status" aria-live="polite"></p>
-            </div>
+                  <button type="submit" class="iz-btn iz-btn--primary iz-cta__submit" {% unless variant.available %}disabled{% endunless %}>
+                    {%- if variant.available -%}
+                      {{ block.settings.libelle_ajout }} — {{ variant.price | money }}
+                    {%- else -%}
+                      {{ block.settings.libelle_epuise }}
+                    {%- endif -%}
+                  </button>
+                </form>
+                <p class="iz-cta__feedback" data-iz-feedback role="status" aria-live="polite"></p>
+              </div>
 
-          {%- when 'shipping_gauge' -%}
-            <div
-              class="iz-gauge"
-              data-iz-gauge
-              data-seuil="{{ block.settings.seuil | times: 100 }}"
-              data-texte-restant="{{ block.settings.texte_restant | escape }}"
-              data-texte-atteint="{{ block.settings.texte_atteint | escape }}"
-              {{ block.shopify_attributes }}
-            >
-              <p class="iz-gauge__text" data-iz-gauge-text></p>
-              <div class="iz-gauge__track"><span class="iz-gauge__fill" data-iz-gauge-fill></span></div>
-            </div>
+            {%- when 'jauge' -%}
+              <div class="iz-gauge" data-iz-gauge
+                data-seuil="{{ block.settings.seuil | times: 100 }}"
+                data-restant="{{ block.settings.texte_restant | escape }}"
+                data-atteint="{{ block.settings.texte_atteint | escape }}"
+                {{ block.shopify_attributes }}>
+                <p class="iz-gauge__text" data-iz-gauge-text></p>
+                <div class="iz-gauge__track"><span class="iz-gauge__fill" data-iz-gauge-fill></span></div>
+              </div>
 
-          {%- when 'accordion' -%}
-            {%- assign contenu = block.settings.contenu -%}
-            {%- if block.settings.source_metafield != blank -%}
-              {%- assign contenu = p.metafields.custom[block.settings.source_metafield] -%}
-            {%- endif -%}
-            {%- if contenu != blank -%}
-              <details
-                class="iz-accordion"
-                {% if block.settings.ouvert %}open{% endif %}
-                {{ block.shopify_attributes }}
-              >
-                <summary class="iz-accordion__summary">
-                  <span>{{ block.settings.titre }}</span>
-                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                    <path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                  </svg>
-                </summary>
-                <div class="iz-accordion__body iz-text">{{ contenu }}</div>
-              </details>
-            {%- endif -%}
+            {%- when 'accordeons' -%}
+              <div class="iz-accordions" {{ block.shopify_attributes }}>
+                {%- for i in (1..4) -%}
+                  {%- assign cle_titre = 'titre_' | append: i -%}
+                  {%- assign cle_contenu = 'contenu_' | append: i -%}
+                  {%- assign cle_meta = 'metafield_' | append: i -%}
+                  {%- assign titre = block.settings[cle_titre] -%}
+                  {%- assign contenu = block.settings[cle_contenu] -%}
+                  {%- assign source = block.settings[cle_meta] -%}
+                  {%- if source != blank -%}
+                    {%- assign contenu = p.metafields.custom[source] -%}
+                  {%- endif -%}
+                  {%- if titre != blank and contenu != blank -%}
+                    <details class="iz-accordion"{% if forloop.first and block.settings.premier_ouvert %} open{% endif %}>
+                      <summary class="iz-accordion__summary">{{ titre }}</summary>
+                      <div class="iz-accordion__body">{{ contenu }}</div>
+                    </details>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
 
-        {%- endcase -%}
-      {%- endfor -%}
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
     </div>
   </div>
 </section>
@@ -241,59 +216,44 @@
     var root = document.getElementById('shopify-section-{{ section.id }}');
     if (!root) return;
 
-    /* ---------- Galerie ---------- */
     var slides = root.querySelectorAll('[data-iz-slide]');
     var thumbs = root.querySelectorAll('[data-iz-thumb]');
     var dots = root.querySelectorAll('[data-iz-dot]');
+    var courant = 0;
 
     function montrer(i) {
-      slides.forEach(function (s) { s.classList.toggle('is-active', s.dataset.izSlide === String(i)); });
-      thumbs.forEach(function (t) { t.classList.toggle('is-active', t.dataset.izThumb === String(i)); });
-      dots.forEach(function (d) { d.classList.toggle('is-active', d.dataset.izDot === String(i)); });
+      courant = parseInt(i, 10) || 0;
+      slides.forEach(function (s) { s.classList.toggle('is-active', s.dataset.izSlide === String(courant)); });
+      thumbs.forEach(function (t) { t.classList.toggle('is-active', t.dataset.izThumb === String(courant)); });
+      dots.forEach(function (d) { d.classList.toggle('is-active', d.dataset.izDot === String(courant)); });
     }
+    thumbs.forEach(function (t) { t.addEventListener('click', function () { montrer(t.dataset.izThumb); }); });
 
-    thumbs.forEach(function (t) {
-      t.addEventListener('click', function () { montrer(t.dataset.izThumb); });
-    });
-
-    /* Balayage horizontal sur mobile. Les gestionnaires sont passifs et
-       n'appellent jamais preventDefault : le défilement vertical de la page
-       doit continuer de fonctionner par-dessus la galerie. */
+    /* Gestionnaires passifs, sans preventDefault : le défilement vertical de
+       la page doit continuer de fonctionner par-dessus la galerie. */
     var stage = root.querySelector('[data-iz-stage]');
     if (stage && slides.length > 1) {
-      var x0 = 0, y0 = 0, suit = false, courant = 0;
-      stage.addEventListener('touchstart', function (e) {
-        x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; suit = true;
-      }, { passive: true });
+      var x0 = 0, y0 = 0, suit = false;
+      stage.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; suit = true; }, { passive: true });
       stage.addEventListener('touchend', function (e) {
-        if (!suit) return;
-        suit = false;
-        var dx = e.changedTouches[0].clientX - x0;
-        var dy = e.changedTouches[0].clientY - y0;
+        if (!suit) return; suit = false;
+        var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
         if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-        courant = dx < 0
-          ? Math.min(courant + 1, slides.length - 1)
-          : Math.max(courant - 1, 0);
-        montrer(courant);
+        montrer(dx < 0 ? Math.min(courant + 1, slides.length - 1) : Math.max(courant - 1, 0));
       }, { passive: true });
     }
 
-    /* ---------- Quantité ---------- */
-    var champQte = root.querySelector('.iz-qty__input');
+    var champ = root.querySelector('.iz-qty__input');
     root.querySelectorAll('[data-iz-qty]').forEach(function (b) {
       b.addEventListener('click', function () {
-        if (!champQte) return;
-        var v = parseInt(champQte.value, 10) || 1;
-        champQte.value = Math.max(1, v + parseInt(b.dataset.izQty, 10));
-        champQte.dispatchEvent(new Event('change', { bubbles: true }));
+        if (!champ) return;
+        champ.value = Math.max(1, (parseInt(champ.value, 10) || 1) + parseInt(b.dataset.izQty, 10));
       });
     });
 
-    /* ---------- Jauge de livraison ----------
-       Le calcul porte sur le panier réel, relu après chaque ajout, et non sur
-       le prix affiché : c'est le total du panier qui déclenche la franchise. */
+    /* Le calcul porte sur le panier réel, relu après chaque ajout : c'est son
+       total qui déclenche la franchise, pas le prix affiché sur la page. */
     var jauge = root.querySelector('[data-iz-gauge]');
-
     function majJauge() {
       if (!jauge) return;
       fetch('/cart.js', { headers: { Accept: 'application/json' } })
@@ -304,30 +264,35 @@
           var texte = jauge.querySelector('[data-iz-gauge-text]');
           var fill = jauge.querySelector('[data-iz-gauge-fill]');
           if (total >= seuil) {
-            texte.textContent = jauge.dataset.texteAtteint;
+            texte.textContent = jauge.dataset.atteint;
             fill.style.width = '100%';
           } else {
-            var reste = (seuil - total) / 100;
-            var formate = reste.toFixed(2).replace('.', ',').replace(/,00$/, '');
-            texte.textContent = jauge.dataset.texteRestant.replace('{montant}', formate + ' €');
+            var reste = ((seuil - total) / 100).toFixed(2).replace('.', ',').replace(/,00$/, '');
+            texte.innerHTML = jauge.dataset.restant.replace('{montant}', '<strong>' + reste + ' €</strong>');
             fill.style.width = Math.max(2, (total / seuil) * 100) + '%';
           }
         })
-        .catch(function () { /* panier injoignable : la jauge reste muette */ });
+        .catch(function () {});
     }
     majJauge();
 
-    /* ---------- Ajout au panier ---------- */
+    function majCompteur() {
+      fetch('/cart.js', { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (panier) {
+          document.querySelectorAll('.header__icons sup').forEach(function (el) { el.textContent = panier.item_count; });
+        })
+        .catch(function () {});
+    }
+
     var form = root.querySelector('[data-iz-form]');
     var retour = root.querySelector('[data-iz-feedback]');
-
     if (form) {
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         var bouton = form.querySelector('[type="submit"]');
         bouton.disabled = true;
         if (retour) retour.textContent = '';
-
         fetch('/cart/add.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -339,13 +304,8 @@
           .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
           .then(function (res) {
             bouton.disabled = false;
-            if (!res.ok) {
-              if (retour) retour.textContent = res.d.description || form.dataset.erreur || '';
-              return;
-            }
-            if (retour) retour.textContent = {{ section.settings.message_ajout | json }};
-            majJauge();
-            majCompteur();
+            if (retour) retour.textContent = res.ok ? {{ section.settings.message_ajout | json }} : (res.d.description || {{ section.settings.message_erreur | json }});
+            if (res.ok) { majJauge(); majCompteur(); }
           })
           .catch(function () {
             bouton.disabled = false;
@@ -353,34 +313,52 @@
           });
       });
     }
-
-    /* Le thème n'a pas de tiroir panier : on tient au moins le compteur du
-       header à jour, sans quoi l'ajout serait invisible. */
-    function majCompteur() {
-      fetch('/cart.js', { headers: { Accept: 'application/json' } })
-        .then(function (r) { return r.json(); })
-        .then(function (panier) {
-          document.querySelectorAll('.header__icons sup').forEach(function (el) {
-            el.textContent = panier.item_count;
-          });
-        })
-        .catch(function () {});
-    }
   })();
 </script>
 
 {% stylesheet %}
-  .iz-product__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--izp-col-gap, 48px);
+  .iz-pdp {
+    padding: 8px 0 72px;
   }
 
-  @media (min-width: 750px) {
-    .iz-product__grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      align-items: start;
-    }
+  .iz-breadcrumb {
+    font-size: 13px;
+    color: var(--iz-muted);
+    margin-bottom: 20px;
+  }
+
+  .iz-breadcrumb a {
+    color: var(--iz-muted);
+  }
+
+  .iz-breadcrumb span {
+    margin: 0 4px;
+  }
+
+  /* Flex et non grid : la maquette donne à la galerie une base plus large
+     (560) qu'au bloc d'achat (420), et les deux colonnes se replient d'elles
+     mêmes quand la place manque. */
+  .iz-pdp__cols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--izp-gap, 56px);
+    align-items: flex-start;
+  }
+
+  .iz-pdp__gallery {
+    flex: 1 1 var(--izp-gallery-base, 560px);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .iz-pdp__buybox {
+    flex: 1 1 var(--izp-buybox-base, 420px);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
   }
 
   /* ---------- Galerie ---------- */
@@ -389,7 +367,7 @@
     background: var(--iz-surface);
     border-radius: var(--iz-radius);
     overflow: hidden;
-    aspect-ratio: var(--izp-gallery-ratio, 1);
+    aspect-ratio: var(--izp-ratio, 1);
   }
 
   .iz-gallery__slide {
@@ -400,9 +378,7 @@
     transition: opacity 0.3s ease;
   }
 
-  .iz-gallery__slide.is-active {
-    opacity: 1;
-  }
+  .iz-gallery__slide.is-active { opacity: 1; }
 
   .iz-gallery__slide img,
   .iz-gallery__slide video,
@@ -414,13 +390,13 @@
 
   .iz-gallery__badge {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 18px;
+    right: 18px;
     background: var(--iz-ink);
     color: var(--iz-bg);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: var(--iz-radius-pill);
   }
 
@@ -447,30 +423,19 @@
     background: var(--iz-ink);
   }
 
-  @media (min-width: 750px) {
-    .iz-gallery__dots {
-      display: none;
-    }
-  }
-
   .iz-gallery__thumbs {
-    display: none;
-    list-style: none;
-    margin: 12px 0 0;
-    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 12px;
-  }
-
-  @media (min-width: 750px) {
-    .iz-gallery__thumbs {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-    }
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
   .iz-gallery__thumb {
     display: block;
     width: 100%;
+    min-height: 44px;
     padding: 0;
     border: 1px solid transparent;
     border-radius: var(--iz-radius-inner);
@@ -478,11 +443,10 @@
     overflow: hidden;
     cursor: pointer;
     aspect-ratio: 1;
+    transition: border-color 0.2s ease;
   }
 
-  .iz-gallery__thumb.is-active {
-    border-color: var(--iz-ink);
-  }
+  .iz-gallery__thumb.is-active { border-color: var(--iz-ink); }
 
   .iz-gallery__thumb img {
     width: 100%;
@@ -490,42 +454,49 @@
     object-fit: contain;
   }
 
-  /* ---------- Bloc d'achat ---------- */
-  .iz-product__buybox {
+  /* ---------- En-tête du bloc d'achat ---------- */
+  .iz-pdp__head {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
   }
 
-  .iz-rating {
-    display: inline-flex;
+  .iz-stars {
+    display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 13px;
+    gap: 8px;
+    font-size: 14px;
     color: var(--iz-ink);
     text-decoration: none;
-    align-self: start;
   }
 
-  .iz-rating:hover {
-    text-decoration: underline;
+  .iz-stars__icons {
+    display: flex;
+    gap: 2px;
+  }
+
+  .iz-stars__count { text-decoration: underline; }
+
+  .iz-pdp__promise {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.5;
   }
 
   .iz-benefits {
-    list-style: none;
     margin: 0;
     padding: 0;
+    list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    font-size: 15px;
   }
 
   .iz-benefits li {
     display: flex;
-    align-items: flex-start;
     gap: 10px;
-    font-size: 15px;
-    line-height: 1.45;
+    align-items: flex-start;
   }
 
   .iz-benefits svg {
@@ -534,39 +505,38 @@
   }
 
   /* ---------- Sélecteur d'offre ----------
-     Le CSS des cartes vit ici et non dans le snippet : Shopify n'exécute
-     les blocs de style que dans les sections, jamais dans les snippets. */
-  .iz-offers__list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-    gap: 8px;
-    margin-top: 8px;
+     Le CSS des cartes vit ici : Shopify n'exécute les blocs de style que
+     dans les sections, jamais dans les snippets. */
+  .iz-offers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
+
+  .iz-offers__legend { margin-bottom: 2px; }
 
   .iz-offer {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 12px 14px;
-    border: 1px solid var(--iz-line);
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid #D6D6D3;
     border-radius: var(--iz-radius);
     background: var(--iz-card);
     color: inherit;
     text-decoration: none;
-    min-height: 44px;
+    position: relative;
     transition: border-color 0.2s ease;
   }
 
   .iz-offer.is-current {
     border-width: 2px;
     border-color: var(--iz-ink);
-    padding: 11px 13px;
+    padding: 15px 17px;
   }
 
   @media (hover: hover) {
-    a.iz-offer:hover {
-      border-color: var(--iz-muted);
-    }
+    a.iz-offer:hover { border-color: var(--iz-muted); }
   }
 
   .iz-offer:focus-visible {
@@ -574,63 +544,80 @@
     outline-offset: 2px;
   }
 
-  .iz-offer__top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+  /* Pastille qui reprend l'aspect d'un bouton radio : la carte est un lien
+     vers la fiche de l'offre, mais l'acheteur lit bien un choix. */
+  .iz-offer__radio {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #9A9A97;
+    position: relative;
   }
+
+  .iz-offer.is-current .iz-offer__radio {
+    border-color: var(--iz-ink);
+    border-width: 6px;
+  }
+
+  .iz-offer__main { flex: 1; min-width: 0; }
 
   .iz-offer__name {
+    display: block;
+    font-weight: 700;
+  }
+
+  .iz-offer__sub {
+    display: block;
     font-size: 13px;
-    font-weight: 700;
-  }
-
-  .iz-offer__badge {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: var(--iz-radius-pill);
-    background: var(--iz-ink);
-    color: var(--iz-bg);
-  }
-
-  .iz-offer__sub,
-  .iz-offer__price {
-    font-size: 12px;
     color: var(--iz-muted);
   }
 
-  .iz-offer__price strong {
-    color: var(--iz-ink);
+  .iz-offer__prices { text-align: right; }
+
+  .iz-offer__price {
+    display: block;
+    font-weight: 700;
   }
 
-  .iz-offer__price s {
-    margin-left: 5px;
+  .iz-offer__compare {
+    display: block;
+    font-size: 13px;
+    color: var(--iz-muted);
+    text-decoration: line-through;
+  }
+
+  .iz-offer__badge {
+    position: absolute;
+    top: -11px;
+    right: 16px;
+    background: var(--iz-ink);
+    color: var(--iz-bg);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: var(--iz-radius-pill);
   }
 
   /* ---------- Quantité et ajout ---------- */
-  .iz-buy form {
+  .iz-cta__row {
     display: flex;
-    gap: 12px;
-    align-items: stretch;
-  }
-
-  .iz-buy__submit {
-    flex: 1;
+    gap: 10px;
   }
 
   .iz-qty {
     display: flex;
     align-items: center;
-    border: 1px solid var(--iz-line);
+    border: 1px solid #D6D6D3;
     border-radius: var(--iz-radius-pill);
-    overflow: hidden;
+    background: var(--iz-card);
   }
 
   .iz-qty__btn {
     width: 44px;
-    min-height: 44px;
+    height: 56px;
     border: 0;
     background: transparent;
     color: var(--iz-ink);
@@ -639,11 +626,12 @@
   }
 
   .iz-qty__input {
-    width: 40px;
+    width: 24px;
     border: 0;
     background: transparent;
     text-align: center;
     font: inherit;
+    font-weight: 700;
     color: inherit;
     -moz-appearance: textfield;
   }
@@ -654,79 +642,70 @@
     margin: 0;
   }
 
-  .iz-buy__feedback:empty {
-    display: none;
-  }
+  .iz-cta__submit { flex: 1; }
 
-  .iz-buy__feedback {
+  .iz-cta__feedback {
     margin: 8px 0 0;
     font-size: 13px;
     color: var(--iz-muted);
   }
 
+  .iz-cta__feedback:empty { display: none; }
+
   /* ---------- Jauge ---------- */
-  .iz-gauge__text {
-    margin: 0 0 6px;
-    font-size: 13px;
-    color: var(--iz-muted);
+  .iz-gauge {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
-  .iz-gauge__text:empty {
-    display: none;
+  .iz-gauge__text {
+    margin: 0;
+    font-size: 13px;
   }
+
+  .iz-gauge__text:empty { display: none; }
 
   .iz-gauge__track {
     height: 4px;
-    border-radius: var(--iz-radius-pill);
     background: var(--iz-line);
+    border-radius: 2px;
     overflow: hidden;
   }
 
   .iz-gauge__fill {
     display: block;
-    height: 100%;
+    height: 4px;
     width: 0;
     background: var(--iz-ink);
     transition: width 0.4s ease;
   }
 
   /* ---------- Accordéons ---------- */
-  .iz-accordion {
-    border-top: 1px solid var(--iz-line);
+  .iz-accordions {
+    display: flex;
+    flex-direction: column;
   }
 
-  .iz-accordion:last-of-type {
+  .iz-accordion {
     border-bottom: 1px solid var(--iz-line);
+    padding: 16px 0;
   }
 
   .iz-accordion__summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    min-height: 56px;
+    font-weight: 700;
     cursor: pointer;
-    list-style: none;
-    font-size: 15px;
-    font-weight: 600;
-  }
-
-  .iz-accordion__summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .iz-accordion[open] .iz-accordion__summary svg {
-    transform: rotate(180deg);
-  }
-
-  .iz-accordion__summary svg {
-    flex-shrink: 0;
-    transition: transform 0.2s ease;
+    min-height: 24px;
   }
 
   .iz-accordion__body {
-    padding-bottom: 20px;
+    margin: 10px 0 0;
+    font-size: 15px;
+    color: var(--iz-text-2);
   }
+
+  .iz-accordion__body > :first-child { margin-top: 0; }
+  .iz-accordion__body > :last-child { margin-bottom: 0; }
 
   .iz-visually-hidden {
     position: absolute;
@@ -737,13 +716,22 @@
     white-space: nowrap;
   }
 
+  @media (max-width: 749px) {
+    .iz-pdp { padding-bottom: 40px; }
+    .iz-gallery__thumbs { display: none; }
+    .iz-pdp__promise { font-size: 16px; }
+  }
+
+  @media (min-width: 750px) {
+    .iz-gallery__dots { display: none; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .iz-gallery__slide,
     .iz-gallery__dot,
-    .iz-gauge__fill,
-    .iz-accordion__summary svg {
-      transition: none;
-    }
+    .iz-gallery__thumb,
+    .iz-offer,
+    .iz-gauge__fill { transition: none; }
   }
 {% endstylesheet %}
 
@@ -752,14 +740,23 @@
   "name": "Fiche — achat",
   "tag": "section",
   "settings": [
+    { "type": "header", "content": "Fil d'Ariane" },
+    { "type": "checkbox", "id": "afficher_fil", "label": "Afficher le fil d'Ariane", "default": true },
+    { "type": "text", "id": "libelle_fil", "label": "Libellé pour lecteurs d'écran", "default": "Fil d'Ariane" },
+    { "type": "text", "id": "libelle_accueil", "label": "Premier niveau", "default": "Accueil" },
+    { "type": "text", "id": "libelle_catalogue", "label": "Deuxième niveau", "default": "Catalogue" },
+
     { "type": "header", "content": "Galerie" },
     { "type": "checkbox", "id": "show_badge", "label": "Afficher le badge", "default": true },
     { "type": "text", "id": "badge_text", "label": "Texte du badge", "default": "Best" },
-    { "type": "range", "id": "gallery_ratio", "label": "Proportion de l'image", "info": "1 = carré.", "min": 0.6, "max": 1.6, "step": 0.1, "default": 1 },
+    { "type": "range", "id": "ratio", "label": "Proportion de l'image", "info": "1 = carré.", "min": 0.6, "max": 1.6, "step": 0.1, "default": 1 },
     { "type": "range", "id": "thumb_count", "label": "Nombre de vignettes", "min": 3, "max": 8, "step": 1, "default": 5 },
+    { "type": "text", "id": "libelle_vignette", "label": "Libellé des vignettes", "info": "Lu par les lecteurs d'écran, suivi du numéro.", "default": "Voir le média" },
 
     { "type": "header", "content": "Mise en page" },
-    { "type": "range", "id": "column_gap", "label": "Espace entre les colonnes", "min": 16, "max": 96, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "column_gap", "label": "Espace entre les colonnes", "min": 16, "max": 96, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "gallery_base", "label": "Largeur de référence — galerie", "info": "Les deux colonnes se partagent la place à partir de ces largeurs.", "min": 320, "max": 800, "step": 20, "unit": "px", "default": 560 },
+    { "type": "range", "id": "buybox_base", "label": "Largeur de référence — achat", "min": 320, "max": 800, "step": 20, "unit": "px", "default": 420 },
 
     { "type": "header", "content": "Messages du panier" },
     { "type": "text", "id": "message_ajout", "label": "Confirmation d'ajout", "default": "Ajouté à votre panier." },
@@ -767,87 +764,86 @@
   ],
   "blocks": [
     {
-      "type": "eyebrow",
-      "name": "Sur-titre",
+      "type": "entete",
+      "name": "Titre et note",
       "limit": 1,
       "settings": [
-        { "type": "text", "id": "texte", "label": "Texte", "info": "Vide : utilise le metafield « format » du produit." }
-      ]
-    },
-    {
-      "type": "title",
-      "name": "Titre du produit",
-      "limit": 1,
-      "settings": [
-        { "type": "paragraph", "content": "Le titre vient du produit Shopify." }
-      ]
-    },
-    {
-      "type": "rating",
-      "name": "Note et avis",
-      "limit": 1,
-      "settings": [
-        { "type": "range", "id": "minimum", "label": "Nombre minimum d'avis", "info": "En dessous, la note ne s'affiche pas.", "min": 0, "max": 50, "step": 1, "default": 5 },
+        { "type": "text", "id": "texte", "label": "Sur-titre", "info": "Vide : utilise le metafield « format »." },
+        { "type": "range", "id": "minimum", "label": "Minimum d'avis", "info": "En dessous, la note ne s'affiche pas.", "min": 0, "max": 50, "step": 1, "default": 5 },
         { "type": "text", "id": "libelle_avis", "label": "Mot après le nombre", "default": "avis" },
-        { "type": "text", "id": "ancre", "label": "Ancre de la section avis", "default": "avis" }
+        { "type": "text", "id": "ancre", "label": "Ancre des avis", "default": "avis" }
       ]
     },
     {
-      "type": "promise",
+      "type": "promesse",
       "name": "Promesse",
       "limit": 1,
       "settings": [
-        { "type": "text", "id": "texte", "label": "Texte", "info": "Vide : utilise le metafield « promesse » du produit." }
+        { "type": "text", "id": "texte", "label": "Texte", "info": "Vide : utilise le metafield « promesse »." }
       ]
     },
     {
-      "type": "benefits",
+      "type": "benefices",
       "name": "Bénéfices",
       "limit": 1,
       "settings": [
-        { "type": "paragraph", "content": "Alimenté par le metafield « benefices » du produit. Vide, la liste ne s'affiche pas." }
+        { "type": "paragraph", "content": "Alimenté par le metafield « benefices »." }
       ]
     },
     {
-      "type": "offers",
-      "name": "Sélecteur d'offre",
+      "type": "offres",
+      "name": "Choix du format",
       "limit": 1,
       "settings": [
-        { "type": "text", "id": "titre", "label": "Sur-titre", "default": "Choisissez votre formule" },
-        { "type": "paragraph", "content": "Alimenté par le metafield « offres ». Chaque offre renvoie vers sa propre fiche produit." }
+        { "type": "text", "id": "titre", "label": "Sur-titre", "default": "Choisissez votre format" },
+        { "type": "paragraph", "content": "Alimenté par le metafield « offres ». Chaque offre renvoie vers sa fiche." }
       ]
     },
     {
-      "type": "buy",
+      "type": "achat",
       "name": "Quantité et achat",
       "limit": 1,
       "settings": [
-        { "type": "checkbox", "id": "afficher_quantite", "label": "Afficher le sélecteur de quantité", "default": true },
+        { "type": "checkbox", "id": "afficher_quantite", "label": "Afficher la quantité", "default": true },
         { "type": "text", "id": "libelle_ajout", "label": "Libellé du bouton", "default": "Ajouter au panier" },
         { "type": "text", "id": "libelle_epuise", "label": "Libellé si épuisé", "default": "Épuisé" },
-        { "type": "text", "id": "libelle_quantite", "label": "Libellé de la quantité", "default": "Quantité" },
+        { "type": "text", "id": "libelle_quantite", "label": "Libellé quantité", "default": "Quantité" },
         { "type": "text", "id": "libelle_moins", "label": "Bouton moins", "default": "Diminuer la quantité" },
         { "type": "text", "id": "libelle_plus", "label": "Bouton plus", "default": "Augmenter la quantité" }
       ]
     },
     {
-      "type": "shipping_gauge",
+      "type": "jauge",
       "name": "Jauge de livraison",
       "limit": 1,
       "settings": [
-        { "type": "range", "id": "seuil", "label": "Seuil de livraison offerte", "info": "Shopify limite un curseur à 101 crans : d'où une borne haute à 100 €.", "min": 0, "max": 100, "step": 1, "unit": "€", "default": 49 },
-        { "type": "text", "id": "texte_restant", "label": "Texte avant le seuil", "info": "{montant} est remplacé par ce qu'il reste à ajouter.", "default": "Plus que {montant} pour la livraison offerte" },
-        { "type": "text", "id": "texte_atteint", "label": "Texte une fois le seuil atteint", "default": "Livraison offerte 🎉" }
+        { "type": "range", "id": "seuil", "label": "Seuil", "info": "Shopify limite un curseur à 101 crans, d'où la borne à 100 €.", "min": 0, "max": 100, "step": 1, "unit": "€", "default": 49 },
+        { "type": "text", "id": "texte_restant", "label": "Avant le seuil", "info": "{montant} est remplacé par ce qu'il reste.", "default": "Plus que {montant} pour la livraison offerte" },
+        { "type": "text", "id": "texte_atteint", "label": "Seuil atteint", "default": "Livraison offerte" }
       ]
     },
     {
-      "type": "accordion",
-      "name": "Accordéon",
+      "type": "accordeons",
+      "name": "Accordéons",
+      "limit": 1,
       "settings": [
-        { "type": "text", "id": "titre", "label": "Titre", "default": "Composition" },
-        { "type": "richtext", "id": "contenu", "label": "Contenu" },
-        { "type": "text", "id": "source_metafield", "label": "Clé de metafield", "info": "Facultatif. Exemple : inci. Renseigné, il remplace le contenu ci-dessus." },
-        { "type": "checkbox", "id": "ouvert", "label": "Ouvert par défaut", "default": false }
+        { "type": "checkbox", "id": "premier_ouvert", "label": "Premier ouvert", "default": true },
+        { "type": "header", "content": "1" },
+        { "type": "text", "id": "titre_1", "label": "Titre", "default": "Ce que fait le masque" },
+        { "type": "richtext", "id": "contenu_1", "label": "Contenu" },
+        { "type": "text", "id": "metafield_1", "label": "Clé de metafield", "info": "Renseignée, elle remplace le contenu." },
+        { "type": "header", "content": "2" },
+        { "type": "text", "id": "titre_2", "label": "Titre", "default": "Comment l'utiliser" },
+        { "type": "richtext", "id": "contenu_2", "label": "Contenu" },
+        { "type": "text", "id": "metafield_2", "label": "Clé de metafield" },
+        { "type": "header", "content": "3" },
+        { "type": "text", "id": "titre_3", "label": "Titre", "default": "Ingrédients" },
+        { "type": "richtext", "id": "contenu_3", "label": "Contenu" },
+        { "type": "text", "id": "metafield_3", "label": "Clé de metafield", "default": "inci" },
+        { "type": "header", "content": "4" },
+        { "type": "text", "id": "titre_4", "label": "Titre", "default": "Livraison et retours" },
+        { "type": "richtext", "id": "contenu_4", "label": "Contenu" },
+        { "type": "text", "id": "metafield_4", "label": "Clé de metafield" }
       ]
     }
   ],
@@ -855,15 +851,8 @@
     {
       "name": "Fiche — achat",
       "blocks": [
-        { "type": "eyebrow" },
-        { "type": "title" },
-        { "type": "rating" },
-        { "type": "promise" },
-        { "type": "benefits" },
-        { "type": "offers" },
-        { "type": "buy" },
-        { "type": "shipping_gauge" },
-        { "type": "accordion" }
+        { "type": "entete" }, { "type": "promesse" }, { "type": "benefices" },
+        { "type": "offres" }, { "type": "achat" }, { "type": "jauge" }, { "type": "accordeons" }
       ]
     }
   ]
