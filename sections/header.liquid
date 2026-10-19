@@ -45,6 +45,8 @@
     --header-padding-bottom-desktop: {{ section.settings.header_padding_bottom_desktop }}px;
     --header-padding-top-mobile: {{ section.settings.header_padding_top_mobile }}px;
     --header-padding-bottom-mobile: {{ section.settings.header_padding_bottom_mobile }}px;
+    --header-scrolled-height: {{ section.settings.scrolled_height }}px;
+    --header-scrolled-logo-width: {{ section.settings.scrolled_logo_width }}px;
   }
 
   /* Le header doit occuper toute la largeur de l'écran. La classe
@@ -66,6 +68,8 @@
       --header-icon-size: {{ section.settings.icon_size_mobile }}px;
       --header-icon-gap: {{ section.settings.icon_gap_mobile }}px;
       --header-logo-width: {{ section.settings.logo_width_mobile }}px;
+      --header-scrolled-height: {{ section.settings.scrolled_height_mobile }}px;
+      --header-scrolled-logo-width: {{ section.settings.scrolled_logo_width_mobile }}px;
     }
   }
 
@@ -218,7 +222,18 @@
     z-index: 10;
     background: var(--color-background);
     color: var(--color-foreground);
-    transition: background-color 0.3s ease, backdrop-filter 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    transition:
+      background-color 0.3s ease,
+      backdrop-filter 0.3s ease,
+      color 0.3s ease,
+      transform 0.3s ease,
+      min-height 0.3s ease,
+      padding-top 0.3s ease,
+      padding-bottom 0.3s ease;
+  }
+
+  .header .header__logo {
+    transition: width 0.3s ease;
   }
 
   .header--overlay {
@@ -249,6 +264,21 @@
   .header--overlay.header--scrolled {
     background: color-mix(in srgb, var(--color-background) 75%, transparent);
     color: var(--color-foreground);
+  }
+
+  /* Une fois scrollé, le menu devient une barre utilitaire : il ne reprend
+     plus les marges généreuses pensées pour la superposition sur le hero,
+     mais une hauteur cible propre. Les marges sont remises à zéro pour que
+     cette hauteur soit exactement celle demandée — `align-items: center`
+     sur la grille recentre le contenu de lui-même. */
+  .header--scrolled {
+    min-height: var(--header-scrolled-height, 64px);
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .header--scrolled .header__logo {
+    width: var(--header-scrolled-logo-width, 84px);
   }
 
   .header--overlay.header--scrolled.header--blur {
@@ -814,6 +844,49 @@
       "step": 2,
       "unit": "px",
       "default": 0
+    },
+    { "type": "header", "content": "Une fois scrollé" },
+    {
+      "type": "range",
+      "id": "scrolled_height",
+      "label": "Hauteur du menu — ordinateur",
+      "info": "Une fois qu'on a quitté le hero, le menu adopte cette hauteur et ignore les marges ci-dessus.",
+      "min": 40,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "scrolled_height_mobile",
+      "label": "Hauteur du menu — mobile",
+      "min": 40,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "scrolled_logo_width",
+      "label": "Largeur du logo — ordinateur",
+      "info": "Un logo trop large toucherait les bords d'une barre réduite.",
+      "min": 40,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 84
+    },
+    {
+      "type": "range",
+      "id": "scrolled_logo_width_mobile",
+      "label": "Largeur du logo — mobile",
+      "min": 30,
+      "max": 160,
+      "step": 2,
+      "unit": "px",
+      "default": 68
     },
     {
       "type": "select",
