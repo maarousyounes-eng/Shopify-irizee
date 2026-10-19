@@ -216,6 +216,22 @@
     var root = document.getElementById('shopify-section-{{ section.id }}');
     if (!root) return;
 
+    /* Le header est en position fixe pour se superposer au hero de l'accueil.
+       Une fiche produit n'a pas de hero : sans compensation, le haut de la
+       page passe dessous. On mesure plutôt qu'on ne fige une valeur, la
+       hauteur du header dépendant de ses propres réglages et différant entre
+       ordinateur et mobile. */
+    function compenserHeader() {
+      var header = document.querySelector('.header');
+      if (!header || getComputedStyle(header).position !== 'fixed') {
+        root.style.removeProperty('--izp-offset');
+        return;
+      }
+      root.style.setProperty('--izp-offset', Math.round(header.getBoundingClientRect().height) + 'px');
+    }
+    compenserHeader();
+    window.addEventListener('resize', compenserHeader);
+
     var slides = root.querySelectorAll('[data-iz-slide]');
     var thumbs = root.querySelectorAll('[data-iz-thumb]');
     var dots = root.querySelectorAll('[data-iz-dot]');
@@ -332,7 +348,7 @@
 
 {% stylesheet %}
   .iz-pdp {
-    padding: 8px 0 72px;
+    padding: calc(8px + var(--izp-offset, 0px)) 0 72px;
   }
 
   .iz-breadcrumb {
