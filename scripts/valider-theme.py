@@ -123,6 +123,41 @@ def controle_range():
                 )
 
 
+# ------------------------- 3 bis. Longueur des noms de section et de bloc
+def controle_longueur_noms():
+    """
+    Shopify limite à 25 caractères le `name` d'une section, d'un bloc ou d'un
+    préréglage, et rejette le fichier entier au-delà. Rencontré le 19/10/2026 :
+    « Jauge de livraison offerte », 26 caractères, a suffi à faire disparaître
+    toute la section et à rendre la fiche produit vide.
+    """
+    global controles
+    MAX = 25
+    for chemin in fichiers_a_schema():
+        try:
+            schema, _ = schema_de(chemin)
+        except Exception:
+            continue
+        if schema is None:
+            continue
+        a_verifier = [("section", schema.get("name"))]
+        a_verifier += [("bloc", b.get("name")) for b in schema.get("blocks") or []]
+        a_verifier += [("préréglage", p.get("name")) for p in schema.get("presets") or []]
+        for genre, nom in a_verifier:
+            # Un nom préfixé « t: » est une clé de traduction, résolue par
+            # Shopify depuis les fichiers de locale : la limite porte sur le
+            # texte résolu, pas sur la clé.
+            if not nom or nom.startswith("t:"):
+                continue
+            controles += 1
+            if len(nom) > MAX:
+                erreurs.append(
+                    f"{chemin.relative_to(RACINE)} : nom de {genre} « {nom} » fait "
+                    f"{len(nom)} caractères. Shopify en autorise {MAX} et rejettera "
+                    f"le fichier entier."
+                )
+
+
 # ------------------------------- 4. Réglages utilisés mais absents du schéma
 def controle_reglages_declares():
     global controles
@@ -219,6 +254,7 @@ def main():
         controle_json_valide,
         controle_schemas,
         controle_range,
+        controle_longueur_noms,
         controle_reglages_declares,
         controle_valeurs_templates,
         controle_doublons,
