@@ -329,9 +329,9 @@
       "settings": {
         "columns": 5,
         "columns_mobile": "2",
-        "alignment": "center",
+        "alignment": "left",
         "show_numbers": false,
-        "show_separators": false,
+        "show_separators": true,
         "cell_padding": 20,
         "cell_padding_mobile": 16,
         "column_gap": 32,
