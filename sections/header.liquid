@@ -69,7 +69,7 @@
 
 {% endstyle %}
 
-<header class="header full-width{% if is_overlay %} header--overlay header--overlay-{{ section.settings.overlay_text_color }}{% if section.settings.enable_blur %} header--blur{% endif %}{% endif %}">
+<header class="header full-width header--survol-{{ section.settings.menu_hover_style }}{% if is_overlay %} header--overlay header--overlay-{{ section.settings.overlay_text_color }}{% if section.settings.enable_blur %} header--blur{% endif %}{% endif %}">
   <details class="header__mobile-nav">
     <summary class="header__hamburger" aria-label="Menu">
       <span></span>
@@ -312,6 +312,78 @@
   .header .header__menu a {
     font-size: var(--menu-font-size);
     letter-spacing: var(--menu-letter-spacing);
+  }
+
+  /* ---------- Retour visuel au survol ----------
+     Les effets s'appuient sur currentColor : ils restent lisibles aussi bien
+     en superposition claire sur le hero qu'une fois le header scrollé. */
+
+  .header .header__menu a {
+    position: relative;
+    transition: opacity 0.2s ease;
+  }
+
+  /* Le trait est un pseudo-élément et non un border-bottom : il se déploie
+     depuis la gauche sans décaler le texte ni modifier la hauteur du menu. */
+  .header--survol-trait .header__menu a::after,
+  .header--survol-les-deux .header__menu a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.4rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .header__icons a,
+  .header__logo-link {
+    transition: opacity 0.2s ease;
+  }
+
+  /* Réservé aux appareils à souris : sur tactile, :hover reste collé après
+     le toucher et laisserait un élément surligné à tort. */
+  @media (hover: hover) {
+    .header--survol-trait .header__menu a:hover::after,
+    .header--survol-les-deux .header__menu a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .header--survol-opacite .header__menu a:hover,
+    .header--survol-les-deux .header__menu a:hover {
+      opacity: 0.55;
+    }
+
+    .header__icons a:hover,
+    .header__logo-link:hover {
+      opacity: 0.55;
+    }
+  }
+
+  /* Au clavier, le trait et l'opacité suivent la même logique que la souris :
+     sans cela, la navigation au Tab ne montrerait aucun élément actif. */
+  .header .header__menu a:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  .header .header__menu a:focus-visible,
+  .header__icons a:focus-visible,
+  .header__logo-link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .header .header__menu a,
+    .header .header__menu a::after,
+    .header__icons a,
+    .header__logo-link {
+      transition: none;
+    }
   }
 
   .header__menu--uppercase a {
@@ -587,6 +659,19 @@
       "step": 2,
       "unit": "px",
       "default": 16
+    },
+    {
+      "type": "select",
+      "id": "menu_hover_style",
+      "label": "Effet au survol des liens",
+      "info": "Indique quel lien est survolé. Les icônes et le logo s'atténuent dans tous les cas.",
+      "options": [
+        { "value": "trait", "label": "Trait sous le lien" },
+        { "value": "opacite", "label": "Atténuation" },
+        { "value": "les-deux", "label": "Trait et atténuation" },
+        { "value": "aucun", "label": "Aucun" }
+      ],
+      "default": "trait"
     },
 
     { "type": "header", "content": "Logo et icônes" },
