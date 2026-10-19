@@ -21,7 +21,14 @@
         "eyebrow": "Soins naturels",
         "heading": "Des soins naturels pensés <br>pour votre peau",
         "button_label": "Découvrir",
-        "button_link": "shopify://collections/all"
+        "button_link": "shopify://collections/all",
+        "button_custom": false,
+        "button_radius": 100,
+        "button_padding_y": 9,
+        "button_padding_x": 18,
+        "button_font_weight": 600,
+        "button_letter_spacing": 1,
+        "button_text_transform": "uppercase"
       }
     },
     "featured_products": {
@@ -108,6 +115,8 @@
         "collection": "",
         "products_count": 3,
         "card_background": "#e8e6e5",
+        "category_color": "#6b6b6b",
+        "name_color": "#1a1a1a",
         "blend_white_bg": true,
         "image_inset": 14,
         "buy_label": "Acheter",
@@ -134,7 +143,14 @@
         "buy_size_mobile": 13,
         "cta_font": "work_sans_n4",
         "cta_size": 12,
-        "cta_size_mobile": 12
+        "cta_size_mobile": 12,
+        "button_custom": false,
+        "button_radius": 100,
+        "button_padding_y": 13,
+        "button_padding_x": 26,
+        "button_font_weight": 700,
+        "button_letter_spacing": 1,
+        "button_text_transform": "uppercase"
       }
     },
     "skin_diagnostic_PYwfF7": {
@@ -176,7 +192,7 @@
         "button_label": "Analyser ma peau",
         "button_link": "",
         "button_new_tab": false,
-        "button_style": "filled",
+        "button_style": "outline",
         "image": "shopify://shop_images/Hero.png",
         "image_position": "left",
         "image_ratio": "4 / 5",
@@ -205,7 +221,14 @@
         "step_size_mobile": 14,
         "button_font": "work_sans_n4",
         "button_size": 13,
-        "button_size_mobile": 12
+        "button_size_mobile": 12,
+        "button_custom": false,
+        "button_radius": 100,
+        "button_padding_y": 13,
+        "button_padding_x": 26,
+        "button_font_weight": 700,
+        "button_letter_spacing": 1,
+        "button_text_transform": "uppercase"
       }
     },
     "brand_commitments_NCVAJB": {
@@ -241,7 +264,14 @@
         "text_size": 16,
         "text_size_mobile": 15,
         "tag_size": 12,
-        "tag_size_mobile": 12
+        "tag_size_mobile": 12,
+        "button_custom": false,
+        "button_radius": 100,
+        "button_padding_y": 13,
+        "button_padding_x": 26,
+        "button_font_weight": 700,
+        "button_letter_spacing": 1,
+        "button_text_transform": "uppercase"
       }
     },
     "reassurance_L9RciR": {
