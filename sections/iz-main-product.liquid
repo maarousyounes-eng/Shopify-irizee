@@ -276,11 +276,25 @@
     }
     majJauge();
 
+    /* Le header ne rend le compteur que si le panier est déjà non vide au
+       chargement. Après un premier ajout, il n'y a donc rien à mettre à jour :
+       on crée l'élément au besoin, sinon l'ajout resterait invisible jusqu'au
+       rechargement de la page. */
     function majCompteur() {
       fetch('/cart.js', { headers: { Accept: 'application/json' } })
         .then(function (r) { return r.json(); })
         .then(function (panier) {
-          document.querySelectorAll('.header__icons sup').forEach(function (el) { el.textContent = panier.item_count; });
+          var lien = document.querySelector('.header__icons a[href*="/cart"]');
+          if (!lien) return;
+          var sup = lien.querySelector('sup');
+          if (!sup && panier.item_count > 0) {
+            sup = document.createElement('sup');
+            lien.prepend(sup);
+          }
+          if (sup) {
+            sup.textContent = panier.item_count;
+            sup.hidden = panier.item_count === 0;
+          }
         })
         .catch(function () {});
     }
