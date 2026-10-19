@@ -10,7 +10,67 @@
 {
   "sections": {
     "main": {
-      "type": "product",
+      "type": "iz-main-product",
+      "blocks": {
+        "eyebrow": {
+          "type": "eyebrow",
+          "settings": {}
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "rating": {
+          "type": "rating",
+          "settings": {}
+        },
+        "promise": {
+          "type": "promise",
+          "settings": {}
+        },
+        "benefits": {
+          "type": "benefits",
+          "settings": {}
+        },
+        "offers": {
+          "type": "offers",
+          "settings": {}
+        },
+        "buy": {
+          "type": "buy",
+          "settings": {}
+        },
+        "gauge": {
+          "type": "shipping_gauge",
+          "settings": {}
+        },
+        "acc_inci": {
+          "type": "accordion",
+          "settings": {
+            "titre": "Composition",
+            "source_metafield": "inci"
+          }
+        },
+        "acc_livraison": {
+          "type": "accordion",
+          "settings": {
+            "titre": "Livraison et retours",
+            "contenu": "<p>Livraison offerte dès 49 € d'achat en France. Retours acceptés sous 14 jours.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "eyebrow",
+        "title",
+        "rating",
+        "promise",
+        "benefits",
+        "offers",
+        "buy",
+        "gauge",
+        "acc_inci",
+        "acc_livraison"
+      ],
       "settings": {}
     }
   },

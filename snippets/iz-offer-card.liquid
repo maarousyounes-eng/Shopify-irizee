@@ -1,0 +1,38 @@
+{% doc %}
+  Une carte du sélecteur d'offre.
+
+  Chaque offre étant un produit distinct, la carte est un lien vers sa fiche :
+  l'acheteur voit les photos et les textes de ce qu'il commande réellement.
+  La carte du produit courant n'est pas un lien et porte l'état sélectionné.
+
+  @param {product} offre - Le produit à présenter
+  @param {boolean} courant - Vrai s'il s'agit du produit de la page
+{% enddoc %}
+
+{%- assign libelle = offre.metafields.custom.offre_libelle | default: offre.title -%}
+{%- assign sous_titre = offre.metafields.custom.offre_sous_titre -%}
+{%- assign badge = offre.metafields.custom.offre_badge -%}
+{%- assign v = offre.selected_or_first_available_variant -%}
+
+<{% if courant %}div{% else %}a href="{{ offre.url }}"{% endif %}
+  class="iz-offer{% if courant %} is-current{% endif %}"
+  {% if courant %}aria-current="true"{% endif %}
+>
+  <span class="iz-offer__top">
+    <span class="iz-offer__name">{{ libelle }}</span>
+    {%- if badge != blank -%}
+      <span class="iz-offer__badge">{{ badge }}</span>
+    {%- endif -%}
+  </span>
+
+  {%- if sous_titre != blank -%}
+    <span class="iz-offer__sub">{{ sous_titre }}</span>
+  {%- endif -%}
+
+  <span class="iz-offer__price">
+    <strong>{{ v.price | money }}</strong>
+    {%- if v.compare_at_price > v.price -%}
+      <s>{{ v.compare_at_price | money }}</s>
+    {%- endif -%}
+  </span>
+</{% if courant %}div{% else %}a{% endif %}>
