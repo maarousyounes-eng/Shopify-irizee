@@ -1,0 +1,167 @@
+{% comment %}
+  Tokens de la fiche produit Irizée.
+
+  Déclarés une seule fois, rendus depuis layout/theme.liquid, et utilisés par
+  toutes les sections iz-*. Aucune section ne redéclare une de ces valeurs.
+
+  Les tokens qui correspondent à un réglage existant du thème s'y branchent
+  plutôt que d'être figés : sans cela, changer la couleur de marque dans
+  l'éditeur désynchroniserait la fiche produit du reste du site.
+{% endcomment %}
+
+{% style %}
+  :root {
+    /* ---------- Couleurs ---------- */
+    /* Repris des réglages du thème : Personnaliser > Couleurs */
+    --iz-bg: var(--color-background);
+    --iz-ink: var(--color-foreground);
+
+    /* Propres à la fiche produit */
+    --iz-surface: #EBEBEA;
+    --iz-line: #E2E2DF;
+    --iz-card: #FFFFFF;
+    --iz-text-2: #3D3D3D;
+    --iz-muted: #5C5C5C;
+
+    /* ---------- Rayons ---------- */
+    --iz-radius: 16px;
+    --iz-radius-inner: 12px;
+    --iz-radius-pill: 999px;
+
+    /* ---------- Gabarit ---------- */
+    --iz-container: 1320px;
+    --iz-gutter: 32px;
+    --iz-section-y: 88px;
+
+    /* ---------- Typographie ----------
+       Work Sans, chargée par le sélecteur de police du thème. Les tailles
+       portent leur valeur mobile dans la requête média plus bas, pour qu'une
+       section n'ait jamais à gérer elle-même la bascule. */
+    --iz-eyebrow-size: 12px;
+    --iz-eyebrow-tracking: 0.12em;
+    --iz-h1-size: 44px;
+    --iz-h2-size: 40px;
+    --iz-heading-tracking: -0.02em;
+    --iz-body-size: 16px;
+    --iz-body-leading: 1.55;
+  }
+
+  @media (max-width: 749px) {
+    :root {
+      --iz-gutter: 16px;
+      --iz-section-y: 56px;
+      --iz-h1-size: 30px;
+      --iz-h2-size: 28px;
+    }
+  }
+
+  /* ---------- Gabarit de section ----------
+     Chaque section iz-* enveloppe son contenu dans .iz-container : une seule
+     définition de largeur et de gouttières pour toute la fiche. */
+  .iz-container {
+    max-width: var(--iz-container);
+    margin-inline: auto;
+    padding-inline: var(--iz-gutter);
+    box-sizing: border-box;
+  }
+
+  .iz-section {
+    padding-block: var(--iz-section-y);
+  }
+
+  .iz-section--surface {
+    background: var(--iz-surface);
+  }
+
+  /* ---------- Blocs de texte ---------- */
+  .iz-eyebrow {
+    font-size: var(--iz-eyebrow-size);
+    font-weight: 700;
+    letter-spacing: var(--iz-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--iz-muted);
+    margin: 0;
+  }
+
+  .iz-h1 {
+    font-size: var(--iz-h1-size);
+    font-weight: 800;
+    letter-spacing: var(--iz-heading-tracking);
+    line-height: 1.05;
+    margin: 0;
+  }
+
+  .iz-h2 {
+    font-size: var(--iz-h2-size);
+    font-weight: 800;
+    letter-spacing: var(--iz-heading-tracking);
+    line-height: 1.1;
+    margin: 0;
+  }
+
+  .iz-text {
+    font-size: var(--iz-body-size);
+    line-height: var(--iz-body-leading);
+    color: var(--iz-text-2);
+    margin: 0;
+  }
+
+  /* ---------- Boutons ----------
+     La forme vient du système commun du thème (Personnaliser > Boutons), que
+     chaque section peut déjà surcharger. Les tokens ci-dessous ne fixent que
+     ce qui est propre à la fiche produit : la hauteur des deux variantes.
+     Figer ici l'arrondi ou la casse annulerait ce système. */
+  .iz-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--button-radius, var(--iz-radius-pill));
+    font-weight: var(--button-font-weight, 700);
+    letter-spacing: var(--button-letter-spacing, 1px);
+    text-transform: var(--button-text-transform, uppercase);
+    text-decoration: none;
+    cursor: pointer;
+    padding-inline: 28px;
+    transition: opacity 0.2s ease;
+  }
+
+  .iz-btn--primary {
+    min-height: 56px;
+    border: 0;
+    background: var(--iz-ink);
+    color: var(--iz-bg);
+    font-size: 14px;
+  }
+
+  .iz-btn--secondary {
+    min-height: 48px;
+    border: 1px solid var(--iz-ink);
+    background: transparent;
+    color: var(--iz-ink);
+    font-size: 13px;
+  }
+
+  @media (hover: hover) {
+    .iz-btn:hover {
+      opacity: 0.8;
+    }
+  }
+
+  /* Zone cliquable d'au moins 44px, y compris pour les boutons-icônes. */
+  .iz-btn,
+  .iz-tap {
+    min-width: 44px;
+  }
+
+  .iz-btn:focus-visible,
+  .iz-tap:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .iz-btn {
+      transition: none;
+    }
+  }
+{% endstyle %}

@@ -4,6 +4,9 @@
     {% # Inlined CSS Variables %}
     {% render 'css-variables' %}
 
+    {% # Tokens de la fiche produit — déclarés une seule fois, utilisés par les sections iz-* %}
+    {% render 'irizee-tokens' %}
+
     {% comment %}
       Font preloading:
       1. Preconnect to font CDN for faster connection
