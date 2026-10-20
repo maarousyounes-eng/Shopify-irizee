@@ -254,16 +254,30 @@
        page passe dessous. On mesure plutôt qu'on ne fige une valeur, la
        hauteur du header dépendant de ses propres réglages et différant entre
        ordinateur et mobile. */
+    var header = document.querySelector('.header');
+
     function compenserHeader() {
-      var header = document.querySelector('.header');
       if (!header || getComputedStyle(header).position !== 'fixed') {
         root.style.removeProperty('--izp-offset');
         return;
       }
+      /* Hauteur au repos : une fois scrollé, le header se réduit, et reprendre
+         cette hauteur-là laisserait un trou en haut de page au retour. */
+      if (header.classList.contains('header--scrolled')) return;
       root.style.setProperty('--izp-offset', Math.round(header.getBoundingClientRect().height) + 'px');
     }
+
     compenserHeader();
-    window.addEventListener('resize', compenserHeader);
+
+    /* Un écouteur de redimensionnement ne suffit pas : la hauteur du header
+       change aussi quand une requête média bascule ou qu'un réglage est
+       modifié dans l'éditeur, sans qu'aucun évènement de fenêtre ne parte.
+       L'observateur, lui, réagit à tout changement de taille. */
+    if (window.ResizeObserver && header) {
+      new ResizeObserver(compenserHeader).observe(header);
+    } else {
+      window.addEventListener('resize', compenserHeader);
+    }
 
     var slides = root.querySelectorAll('[data-iz-slide]');
     var thumbs = root.querySelectorAll('[data-iz-thumb]');
