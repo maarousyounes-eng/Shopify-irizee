@@ -11,6 +11,7 @@
     --rs-icon: {{ section.settings.icon_color }};
     --rs-columns: {{ section.settings.columns }};
     --rs-cell-padding: {{ section.settings.cell_padding }}px;
+    --rs-cell-padding-x: {{ section.settings.cell_padding_x }}px;
     --rs-icon-size: {{ section.settings.icon_size }}px;
     --rs-margin-top: {{ section.settings.margin_top }}px;
     --rs-margin-bottom: {{ section.settings.margin_bottom }}px;
@@ -30,6 +31,7 @@
     #shopify-section-{{ section.id }} {
       --rs-columns: {{ section.settings.columns_mobile }};
       --rs-cell-padding: {{ section.settings.cell_padding_mobile }}px;
+      --rs-cell-padding-x: {{ section.settings.cell_padding_x_mobile }}px;
       --rs-icon-size: {{ section.settings.icon_size_mobile }}px;
       --rs-margin-top: {{ section.settings.margin_top_mobile }}px;
       --rs-margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
@@ -42,8 +44,8 @@
   }
 {% endstyle %}
 
-<div class="reassurance full-width">
-  <div class="reassurance__grid{% if section.settings.show_separators %} reassurance__grid--separated{% endif %}">
+<div class="reassurance full-width{% if section.settings.largeur == 'page' %} reassurance--contenue{% endif %}">
+  <div class="reassurance__grid{% if section.settings.show_separators %} reassurance__grid--separated{% elsif section.settings.show_edges %} reassurance__grid--bordee{% endif %}">
     {% for block in section.blocks %}
       <div class="reassurance__cell" {{ block.shopify_attributes }}>
         <div class="reassurance__cell-inner">
@@ -137,7 +139,7 @@
   }
 
   .reassurance__cell-inner {
-    padding: var(--rs-cell-padding);
+    padding: var(--rs-cell-padding) var(--rs-cell-padding-x, var(--rs-cell-padding));
   }
 
   /* Variante avec filets : le fond de la grille apparaît dans les
@@ -146,6 +148,23 @@
   .reassurance__grid--separated {
     gap: 1px;
     background: var(--rs-line);
+    border-top: 1px solid var(--rs-line);
+    border-bottom: 1px solid var(--rs-line);
+  }
+
+  /* Contraint à la largeur de page, pour s'aligner sur le contenu des
+     sections voisines au lieu de courir d'un bord à l'autre. */
+  .reassurance--contenue .reassurance__grid {
+    max-width: var(--iz-container, 1320px);
+    margin-inline: auto;
+    padding-inline: var(--iz-gutter, 32px);
+    box-sizing: border-box;
+  }
+
+  /* Filets haut et bas seuls, sans séparations verticales : les colonnes
+     gardent leurs gouttières. Indépendant de la variante à filets, qui elle
+     dessine aussi les traits entre les cases. */
+  .reassurance__grid--bordee {
     border-top: 1px solid var(--rs-line);
     border-bottom: 1px solid var(--rs-line);
   }
@@ -223,15 +242,32 @@
 {
   "name": "Bandeau de réassurance",
   "settings": [
-    { "type": "header", "content": "Mise en page" },
-    { "type": "range", "id": "columns", "label": "Colonnes — ordinateur", "min": 2, "max": 6, "step": 1, "default": 5 },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Colonnes — ordinateur",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 5
+    },
     {
       "type": "select",
       "id": "columns_mobile",
       "label": "Colonnes — mobile",
       "options": [
-        { "value": "1", "label": "1 colonne" },
-        { "value": "2", "label": "2 colonnes" }
+        {
+          "value": "1",
+          "label": "1 colonne"
+        },
+        {
+          "value": "2",
+          "label": "2 colonnes"
+        }
       ],
       "default": "2"
     },
@@ -240,48 +276,315 @@
       "id": "alignment",
       "label": "Alignement du contenu",
       "options": [
-        { "value": "left", "label": "À gauche" },
-        { "value": "center", "label": "Centré" }
+        {
+          "value": "left",
+          "label": "À gauche"
+        },
+        {
+          "value": "center",
+          "label": "Centré"
+        }
       ],
       "default": "center"
     },
-    { "type": "checkbox", "id": "show_numbers", "label": "Afficher les numéros (01, 02…)", "default": false },
-    { "type": "checkbox", "id": "show_separators", "label": "Afficher les filets entre les colonnes", "info": "Décoché, la section est plus aérée. Le fond au survol ne s'applique qu'avec les filets.", "default": false },
-    { "type": "range", "id": "cell_padding", "label": "Marges intérieures des cases — ordinateur", "min": 12, "max": 72, "step": 2, "unit": "px", "default": 20 },
-    { "type": "range", "id": "cell_padding_mobile", "label": "Marges intérieures des cases — mobile", "min": 12, "max": 48, "step": 2, "unit": "px", "default": 16 },
-    { "type": "range", "id": "column_gap", "label": "Espace entre colonnes — ordinateur", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 32 },
-    { "type": "range", "id": "column_gap_mobile", "label": "Espace entre colonnes — mobile", "min": 0, "max": 48, "step": 4, "unit": "px", "default": 16 },
-    { "type": "range", "id": "row_gap", "label": "Espace entre lignes — ordinateur", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 32 },
-    { "type": "range", "id": "row_gap_mobile", "label": "Espace entre lignes — mobile", "min": 0, "max": 48, "step": 4, "unit": "px", "default": 24 },
-
-    { "type": "header", "content": "Marges extérieures" },
-    { "type": "range", "id": "margin_top", "label": "Marge au-dessus — ordinateur", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
-    { "type": "range", "id": "margin_top_mobile", "label": "Marge au-dessus — mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
-    { "type": "range", "id": "margin_bottom", "label": "Marge en dessous — ordinateur", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
-    { "type": "range", "id": "margin_bottom_mobile", "label": "Marge en dessous — mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
-
-    { "type": "header", "content": "Couleurs" },
-    { "type": "color", "id": "background_color", "label": "Fond", "default": "#FFFFFF" },
-    { "type": "color", "id": "text_color", "label": "Texte", "default": "#1A1A1A" },
-    { "type": "color", "id": "line_color", "label": "Filets", "default": "#DDD9D7" },
-    { "type": "color", "id": "hover_color", "label": "Fond au survol", "default": "#E8E6E5" },
-    { "type": "color", "id": "icon_color", "label": "Icônes", "default": "#1A1A1A" },
-
-    { "type": "header", "content": "Icônes" },
-    { "type": "range", "id": "icon_size", "label": "Taille — ordinateur", "min": 14, "max": 56, "step": 2, "unit": "px", "default": 24 },
-    { "type": "range", "id": "icon_size_mobile", "label": "Taille — mobile", "min": 12, "max": 44, "step": 2, "unit": "px", "default": 20 },
-
-    { "type": "header", "content": "Typographie — Titres" },
-    { "type": "font_picker", "id": "title_font", "label": "Police", "default": "work_sans_n4" },
-    { "type": "range", "id": "title_size", "label": "Taille — ordinateur", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 16 },
-    { "type": "range", "id": "title_size_mobile", "label": "Taille — mobile", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 15 },
-
-    { "type": "header", "content": "Typographie — Textes et numéros" },
-    { "type": "font_picker", "id": "text_font", "label": "Police", "default": "work_sans_n4" },
-    { "type": "range", "id": "text_size", "label": "Texte — ordinateur", "min": 9, "max": 24, "step": 1, "unit": "px", "default": 13 },
-    { "type": "range", "id": "text_size_mobile", "label": "Texte — mobile", "min": 9, "max": 20, "step": 1, "unit": "px", "default": 12 },
-    { "type": "range", "id": "kicker_size", "label": "Numéros — ordinateur", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 12 },
-    { "type": "range", "id": "kicker_size_mobile", "label": "Numéros — mobile", "min": 8, "max": 18, "step": 1, "unit": "px", "default": 11 }
+    {
+      "type": "checkbox",
+      "id": "show_numbers",
+      "label": "Afficher les numéros (01, 02…)",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_separators",
+      "label": "Afficher les filets entre les colonnes",
+      "info": "Décoché, la section est plus aérée. Le fond au survol ne s'applique qu'avec les filets.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_edges",
+      "label": "Filets en haut et en bas seulement",
+      "info": "Sans traits entre les colonnes. Ignoré si les filets ci-dessus sont cochés.",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "largeur",
+      "label": "Largeur du bandeau",
+      "options": [
+        {
+          "value": "pleine",
+          "label": "Pleine largeur"
+        },
+        {
+          "value": "page",
+          "label": "Largeur de page"
+        }
+      ],
+      "default": "pleine"
+    },
+    {
+      "type": "range",
+      "id": "cell_padding",
+      "label": "Marges intérieures des cases — haut et bas, ordinateur",
+      "min": 12,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "cell_padding_mobile",
+      "label": "Marges intérieures des cases — haut et bas, mobile",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "cell_padding_x",
+      "label": "Marges intérieures des cases — gauche et droite, ordinateur",
+      "min": 0,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "cell_padding_x_mobile",
+      "label": "Marges intérieures des cases — gauche et droite, mobile",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Espace entre colonnes — ordinateur",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "column_gap_mobile",
+      "label": "Espace entre colonnes — mobile",
+      "min": 0,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "row_gap",
+      "label": "Espace entre lignes — ordinateur",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "row_gap_mobile",
+      "label": "Espace entre lignes — mobile",
+      "min": 0,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Marges extérieures"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge au-dessus — ordinateur",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Marge au-dessus — mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en dessous — ordinateur",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Marge en dessous — mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Couleurs"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Fond",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Texte",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "line_color",
+      "label": "Filets",
+      "default": "#DDD9D7"
+    },
+    {
+      "type": "color",
+      "id": "hover_color",
+      "label": "Fond au survol",
+      "default": "#E8E6E5"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icônes",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "header",
+      "content": "Icônes"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Taille — ordinateur",
+      "min": 14,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "icon_size_mobile",
+      "label": "Taille — mobile",
+      "min": 12,
+      "max": 44,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Typographie — Titres"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Police",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Taille — ordinateur",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Taille — mobile",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Typographie — Textes et numéros"
+    },
+    {
+      "type": "font_picker",
+      "id": "text_font",
+      "label": "Police",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Texte — ordinateur",
+      "min": 9,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "label": "Texte — mobile",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "kicker_size",
+      "label": "Numéros — ordinateur",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "kicker_size_mobile",
+      "label": "Numéros — mobile",
+      "min": 8,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    }
   ],
   "blocks": [
     {
@@ -293,20 +596,57 @@
           "id": "icon",
           "label": "Icône",
           "options": [
-            { "value": "truck", "label": "Camion — livraison" },
-            { "value": "split", "label": "Carte — paiement en plusieurs fois" },
-            { "value": "return", "label": "Flèche — retours" },
-            { "value": "france", "label": "Hexagone — fabriqué en France" },
-            { "value": "rabbit", "label": "Lapin — non testé sur les animaux" },
-            { "value": "leaf", "label": "Feuille — naturel" },
-            { "value": "shield", "label": "Bouclier — tolérance" },
-            { "value": "recycle", "label": "Recyclage — éco-responsable" },
-            { "value": "none", "label": "Aucune" }
+            {
+              "value": "truck",
+              "label": "Camion — livraison"
+            },
+            {
+              "value": "split",
+              "label": "Carte — paiement en plusieurs fois"
+            },
+            {
+              "value": "return",
+              "label": "Flèche — retours"
+            },
+            {
+              "value": "france",
+              "label": "Hexagone — fabriqué en France"
+            },
+            {
+              "value": "rabbit",
+              "label": "Lapin — non testé sur les animaux"
+            },
+            {
+              "value": "leaf",
+              "label": "Feuille — naturel"
+            },
+            {
+              "value": "shield",
+              "label": "Bouclier — tolérance"
+            },
+            {
+              "value": "recycle",
+              "label": "Recyclage — éco-responsable"
+            },
+            {
+              "value": "none",
+              "label": "Aucune"
+            }
           ],
           "default": "truck"
         },
-        { "type": "text", "id": "title", "label": "Titre", "default": "Livraison offerte" },
-        { "type": "text", "id": "text", "label": "Texte", "default": "Dès 49 € en France." }
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Livraison offerte"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texte",
+          "default": "Dès 49 € en France."
+        }
       ]
     }
   ],
@@ -314,11 +654,46 @@
     {
       "name": "Bandeau de réassurance",
       "blocks": [
-        { "type": "item", "settings": { "icon": "truck", "title": "Livraison offerte", "text": "Dès 49 € en France." } },
-        { "type": "item", "settings": { "icon": "split", "title": "Payez en 3 fois", "text": "Sans frais, dès 60 € d'achat." } },
-        { "type": "item", "settings": { "icon": "return", "title": "Retours gratuits", "text": "Sous 30 jours." } },
-        { "type": "item", "settings": { "icon": "france", "title": "Fabriqué en France", "text": "Dans nos ateliers partenaires." } },
-        { "type": "item", "settings": { "icon": "rabbit", "title": "Sans test animal", "text": "À aucune étape du développement." } }
+        {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison offerte",
+            "text": "Dès 49 € en France."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "split",
+            "title": "Payez en 3 fois",
+            "text": "Sans frais, dès 60 € d'achat."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "return",
+            "title": "Retours gratuits",
+            "text": "Sous 30 jours."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "france",
+            "title": "Fabriqué en France",
+            "text": "Dans nos ateliers partenaires."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "rabbit",
+            "title": "Sans test animal",
+            "text": "À aucune étape du développement."
+          }
+        }
       ]
     }
   ]
