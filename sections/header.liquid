@@ -1,8 +1,29 @@
+{% comment %}
+  Shopify ne charge qu'un seul groupe de sections pour l'en-tête : il n'existe
+  pas de « header de la page produit » à régler à part. On détecte donc le type
+  de page et on applique des valeurs alternatives pour ce qui doit différer.
+
+  Sur une fiche produit il n'y a pas de hero : la superposition y est désactivée
+  par défaut, ce qui remet aussi le header en position collante plutôt que fixe.
+{% endcomment %}
+{% assign reglages_pdp = false %}
+{% if request.page_type == 'product' and section.settings.pdp_override %}
+  {% assign reglages_pdp = true %}
+{% endif %}
+
 {% assign is_overlay = section.settings.overlay_on_image %}
+{% assign couleur_texte = section.settings.overlay_text_color %}
+{% assign couleur_logo = section.settings.logo_color %}
+
+{% if reglages_pdp %}
+  {% assign is_overlay = section.settings.pdp_overlay %}
+  {% assign couleur_texte = section.settings.pdp_text_color %}
+  {% assign couleur_logo = section.settings.pdp_logo_color %}
+{% endif %}
 
 {% comment %} Logo affiché en haut de page (sur l'image, si superposé) {% endcomment %}
 {% assign top_logo_white = false %}
-{% if is_overlay and section.settings.logo_color == 'white' %}
+{% if is_overlay and couleur_logo == 'white' %}
   {% assign top_logo_white = true %}
 {% endif %}
 {% assign top_logo_image = section.settings.logo %}
@@ -75,7 +96,7 @@
 
 {% endstyle %}
 
-<header class="header full-width header--survol-{{ section.settings.menu_hover_style }}{% if is_overlay %} header--overlay header--overlay-{{ section.settings.overlay_text_color }}{% if section.settings.enable_blur %} header--blur{% endif %}{% endif %}">
+<header class="header full-width header--survol-{{ section.settings.menu_hover_style }}{% if is_overlay %} header--overlay header--overlay-{{ couleur_texte }}{% if section.settings.enable_blur %} header--blur{% endif %}{% endif %}">
   <details class="header__mobile-nav">
     <summary class="header__hamburger" aria-label="Menu">
       <span></span>
