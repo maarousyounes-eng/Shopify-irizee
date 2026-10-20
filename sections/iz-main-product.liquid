@@ -16,6 +16,7 @@
 {% style %}
   #shopify-section-{{ section.id }} {
     --izp-ratio: {{ section.settings.ratio }};
+    --izp-sticky-bg: {{ section.settings.barre_mobile_fond }};
 
     /* Typographie : chaque taille est réglable, avec sa variante mobile. */
     --izp-fil: {{ section.settings.taille_fil }}px;
@@ -828,6 +829,37 @@
   .iz-accordion__body > :first-child { margin-top: 0; }
   .iz-accordion__body > :last-child { margin-bottom: 0; }
 
+  /* ---------- Barre d'achat mobile ---------- */
+  .iz-sticky {
+    display: none;
+  }
+
+  @media (max-width: 749px) {
+    .iz-sticky {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20;
+      display: block;
+      padding: 12px 16px;
+      /* Dégage la barre d'accueil des iPhone récents, sans marge inutile
+         sur les appareils qui n'en ont pas. */
+      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      background: var(--izp-sticky-bg, var(--iz-bg));
+      border-top: 1px solid var(--iz-line);
+    }
+
+    .iz-sticky[hidden] {
+      display: none;
+    }
+  }
+
+  .iz-sticky__btn {
+    width: 100%;
+    min-height: 52px;
+  }
+
   .iz-visually-hidden {
     position: absolute;
     width: 1px;
@@ -964,6 +996,23 @@
       "step": 20,
       "unit": "px",
       "default": 420
+    },
+    {
+      "type": "header",
+      "content": "Barre d'achat mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "barre_mobile",
+      "label": "Afficher la barre fixe",
+      "info": "Mobile uniquement. Apparaît dès que le bouton principal sort de l'écran.",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "barre_mobile_fond",
+      "label": "Fond de la barre",
+      "default": "#FBFAF8"
     },
     {
       "type": "header",
