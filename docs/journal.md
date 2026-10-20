@@ -96,3 +96,24 @@ s'en charge déjà, ce journal est pour le contexte que le code ne montre pas.
   les identifiants dupliqués. Chaque règle correspond à une erreur réellement
   rencontrée. Reste à cocher ces deux contrôles comme obligatoires dans les
   protections de branche du dépôt.
+
+## 2026-10-20
+
+- Fiche produit construite d'après la maquette : snippet de tokens, section
+  d'achat (galerie, bloc d'achat, choix du format, jauge, accordéons), barre
+  d'achat fixe sur mobile, puis texture, résultats, vidéos, rituel, formule,
+  routine, FAQ et marque. Le bandeau d'engagements réutilise la section de
+  réassurance de l'accueil, sans la modifier.
+- **Trois règles Shopify non documentées par le linter**, chacune ayant fait
+  disparaître un fichier en silence : un `range` limité à 101 crans, un `name`
+  de section ou de bloc limité à 25 caractères, et le rejet du fichier entier
+  dès qu'une de ces règles est violée. Les deux premières sont désormais
+  contrôlées par `scripts/valider-theme.py`.
+- **Leçon de méthode** : un symptôme visuel se mesure sur la page rendue. Le
+  header plafonné à 1440 px, le bandeau décalé de 64 puis 28 px, la
+  compensation de hauteur figée à une valeur périmée — aucun de ces défauts
+  n'était visible dans le code, tous l'étaient en deux mesures.
+- Les sections 6 à 13 dépendent de metafields et de metaobjets qui n'existent
+  pas encore : elles sont en place mais restent masquées, conformément à la
+  règle d'état vide. La section d'avis (étape 11) attend l'installation d'une
+  app d'avis.
