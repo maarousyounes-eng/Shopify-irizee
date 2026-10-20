@@ -32,7 +32,7 @@
   /* Fond et masquage posés sur le conteneur de la section : uniforme d'une
      section à l'autre, et indépendant de son balisage interne. */
   #shopify-section-{{ section.id }} {
-    background: {% if section.settings.fond == 'gris' %}var(--iz-surface){% else %}var(--iz-bg){% endif %};
+    background: {{ section.settings.couleur_fond }};
   }
 
   {%- if section.settings.masquer_mobile -%}
@@ -182,21 +182,11 @@
       "content": "Fond et affichage"
     },
     {
-      "type": "select",
-      "id": "fond",
+      "type": "color",
+      "id": "couleur_fond",
       "label": "Fond de la section",
-      "info": "Alternez blanc et gris pour séparer les sections.",
-      "options": [
-        {
-          "value": "blanc",
-          "label": "Blanc cassé"
-        },
-        {
-          "value": "gris",
-          "label": "Gris"
-        }
-      ],
-      "default": "blanc"
+      "info": "Alternez deux tons pour séparer les sections.",
+      "default": "#FBFAF8"
     },
     {
       "type": "checkbox",
