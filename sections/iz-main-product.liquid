@@ -387,10 +387,28 @@
        d'écouter le défilement en continu. */
     var sticky = root.querySelector('[data-iz-sticky]');
     var cta = root.querySelector('.iz-cta');
-    if (sticky && cta && window.IntersectionObserver) {
-      new IntersectionObserver(function (entrees) {
-        sticky.hidden = entrees[0].isIntersecting;
-      }, { rootMargin: '0px 0px -80px 0px' }).observe(cta);
+    if (sticky && cta) {
+      /* Écouteur de défilement plutôt qu'IntersectionObserver : ce dernier
+         reste muet dans certains contextes d'affichage, sans erreur ni
+         indice. Le calage sur le rafraîchissement d'écran évite de recalculer
+         à chaque pixel. */
+      var enAttente = false;
+
+      function majSticky() {
+        enAttente = false;
+        var b = cta.getBoundingClientRect();
+        sticky.hidden = b.bottom > 0 && b.top < window.innerHeight;
+      }
+
+      function planifier() {
+        if (enAttente) return;
+        enAttente = true;
+        window.requestAnimationFrame(majSticky);
+      }
+
+      majSticky();
+      window.addEventListener('scroll', planifier, { passive: true });
+      window.addEventListener('resize', planifier);
 
       var boutonSticky = root.querySelector('[data-iz-sticky-btn]');
       if (boutonSticky) {
