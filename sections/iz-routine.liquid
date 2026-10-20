@@ -1,0 +1,257 @@
+{% comment %}
+  Fiche produit — complétez votre routine.
+
+  Produits complémentaires depuis le metafield `complementaires` (liste de
+  références produit). Prix et disponibilité viennent de Shopify.
+
+  Sans produit, la section ne s'affiche pas.
+{% endcomment %}
+
+{%- assign produits = product.metafields.custom.complementaires.value -%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --izn-fond: {{ section.settings.couleur_fond }};
+    --izn-carte: {{ section.settings.couleur_carte }};
+    --izn-marge: {{ section.settings.marge_verticale }}px;
+    --izn-min: {{ section.settings.largeur_min }}px;
+    --izn-gap: {{ section.settings.gap }}px;
+    --izn-eyebrow: {{ section.settings.taille_eyebrow }}px;
+    --izn-titre: {{ section.settings.taille_titre }}px;
+    --izn-nom: {{ section.settings.taille_nom }}px;
+    --izn-desc: {{ section.settings.taille_description }}px;
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --izn-marge: {{ section.settings.marge_verticale_mobile }}px;
+      --izn-titre: {{ section.settings.taille_titre_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+{%- if produits != blank and produits.size > 0 -%}
+  <section class="iz-routine full-width">
+    <div class="iz-routine__inner">
+
+      <div class="iz-routine__entete">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="iz-routine__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.titre != blank -%}
+          <h2 class="iz-routine__titre">{{ section.settings.titre }}</h2>
+        {%- endif -%}
+      </div>
+
+      <div class="iz-routine__grille">
+        {%- for p in produits -%}
+          {%- assign v = p.selected_or_first_available_variant -%}
+          <div class="iz-routine__carte">
+            <a class="iz-routine__media" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+              {%- if p.featured_image -%}
+                <img
+                  src="{{ p.featured_image | image_url: width: 600 }}"
+                  srcset="{{ p.featured_image | image_url: width: 300 }} 300w, {{ p.featured_image | image_url: width: 600 }} 600w"
+                  sizes="(min-width: 750px) 24vw, 80vw"
+                  alt="" width="600" height="600" loading="lazy"
+                >
+              {%- endif -%}
+            </a>
+
+            <div class="iz-routine__ligne">
+              <a class="iz-routine__nom" href="{{ p.url }}">{{ p.title }}</a>
+              <span class="iz-routine__prix">{{ v.price | money }}</span>
+            </div>
+
+            {%- if p.description != blank -%}
+              <p class="iz-routine__desc">{{ p.description | strip_html | truncate: 70 }}</p>
+            {%- endif -%}
+
+            <button
+              type="button"
+              class="iz-btn iz-btn--secondary iz-routine__ajout"
+              data-iz-ajout="{{ v.id }}"
+              {% unless v.available %}disabled{% endunless %}
+            >
+              {%- if v.available -%}{{ section.settings.bouton_label }}{%- else -%}{{ section.settings.bouton_epuise }}{%- endif -%}
+            </button>
+          </div>
+        {%- endfor -%}
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      var root = document.getElementById('shopify-section-{{ section.id }}');
+      if (!root) return;
+      root.querySelectorAll('[data-iz-ajout]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var initial = b.textContent;
+          b.disabled = true;
+          fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ id: b.dataset.izAjout, quantity: 1 })
+          })
+            .then(function (r) { return r.ok; })
+            .then(function (ok) {
+              b.textContent = ok ? {{ section.settings.bouton_ajoute | json }} : initial;
+              b.disabled = false;
+              if (ok) {
+                /* Le compteur du header n'existe que si le panier était déjà
+                   rempli au chargement : on le crée au besoin. */
+                fetch('/cart.js', { headers: { Accept: 'application/json' } })
+                  .then(function (r) { return r.json(); })
+                  .then(function (panier) {
+                    var lien = document.querySelector('.header__icons a[href*="/cart"]');
+                    if (!lien) return;
+                    var sup = lien.querySelector('sup');
+                    if (!sup) { sup = document.createElement('sup'); lien.prepend(sup); }
+                    sup.textContent = panier.item_count;
+                  })
+                  .catch(function () {});
+                setTimeout(function () { b.textContent = initial; }, 2500);
+              }
+            })
+            .catch(function () { b.disabled = false; });
+        });
+      });
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .iz-routine {
+    background: var(--izn-fond);
+  }
+
+  .iz-routine__inner {
+    max-width: var(--iz-container, 1320px);
+    margin-inline: auto;
+    padding-inline: var(--iz-gutter, 32px);
+    padding-block: var(--izn-marge, 88px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .iz-routine__entete {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .iz-routine__eyebrow {
+    margin: 0;
+    font-size: var(--izn-eyebrow, 12px);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .iz-routine__titre {
+    margin: 0;
+    font-size: var(--izn-titre, 40px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .iz-routine__grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--izn-min, 260px), 1fr));
+    gap: var(--izn-gap, 16px);
+  }
+
+  .iz-routine__carte {
+    background: var(--izn-carte);
+    border-radius: var(--iz-radius);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .iz-routine__media {
+    aspect-ratio: 1;
+    background: var(--iz-line);
+    border-radius: var(--iz-radius-inner);
+    overflow: hidden;
+    display: block;
+  }
+
+  .iz-routine__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .iz-routine__ligne {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .iz-routine__nom {
+    font-weight: 800;
+    font-size: var(--izn-nom, 16px);
+    text-transform: uppercase;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .iz-routine__nom:hover {
+    text-decoration: underline;
+  }
+
+  .iz-routine__prix {
+    font-weight: 700;
+  }
+
+  .iz-routine__desc {
+    margin: 0;
+    font-size: var(--izn-desc, 14px);
+    color: var(--iz-text-2);
+  }
+
+  .iz-routine__ajout {
+    width: 100%;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Fiche — routine",
+  "tag": "section",
+  "settings": [
+    { "type": "paragraph", "content": "Alimentée par le metafield complementaires. Prix et disponibilité viennent de Shopify. Sans produit, la section ne s'affiche pas." },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Allez plus loin" },
+    { "type": "text", "id": "titre", "label": "Titre", "default": "Complétez votre routine" },
+    { "type": "text", "id": "bouton_label", "label": "Libellé du bouton", "default": "Ajouter" },
+    { "type": "text", "id": "bouton_ajoute", "label": "Libellé après ajout", "default": "Ajouté" },
+    { "type": "text", "id": "bouton_epuise", "label": "Libellé si épuisé", "default": "Épuisé" },
+
+    { "type": "header", "content": "Mise en page" },
+    { "type": "range", "id": "largeur_min", "label": "Largeur minimale d'une carte", "min": 180, "max": 400, "step": 10, "unit": "px", "default": 260 },
+    { "type": "range", "id": "gap", "label": "Espace entre les cartes", "min": 8, "max": 40, "step": 2, "unit": "px", "default": 16 },
+    { "type": "range", "id": "marge_verticale", "label": "Marge verticale — ordinateur", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 88 },
+    { "type": "range", "id": "marge_verticale_mobile", "label": "Marge verticale — mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56 },
+
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "couleur_fond", "label": "Fond de la section", "default": "#EBEBEA" },
+    { "type": "color", "id": "couleur_carte", "label": "Fond des cartes", "default": "#FBFAF8" },
+
+    { "type": "header", "content": "Typographie" },
+    { "type": "range", "id": "taille_eyebrow", "label": "Sur-titre", "min": 9, "max": 20, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "taille_titre", "label": "Titre — ordinateur", "min": 20, "max": 64, "step": 1, "unit": "px", "default": 40 },
+    { "type": "range", "id": "taille_titre_mobile", "label": "Titre — mobile", "min": 18, "max": 44, "step": 1, "unit": "px", "default": 28 },
+    { "type": "range", "id": "taille_nom", "label": "Nom de produit", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "taille_description", "label": "Description", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 14 }
+  ],
+  "presets": [{ "name": "Fiche — routine" }]
+}
+{% endschema %}
