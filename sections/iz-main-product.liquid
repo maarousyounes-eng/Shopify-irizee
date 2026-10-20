@@ -17,6 +17,7 @@
   #shopify-section-{{ section.id }} {
     --izp-ratio: {{ section.settings.ratio }};
     --izp-sticky-bg: {{ section.settings.barre_mobile_fond }};
+    --izp-sticky-haut: {{ section.settings.galerie_fixe_haut }}px;
 
     /* Typographie : chaque taille est réglable, avec sa variante mobile. */
     --izp-fil: {{ section.settings.taille_fil }}px;
@@ -998,6 +999,23 @@
     {
       "type": "header",
       "content": "Mise en page"
+    },
+    {
+      "type": "checkbox",
+      "id": "galerie_fixe",
+      "label": "Photo fixe au défilement",
+      "info": "Sur ordinateur seulement : la colonne photo reste en place pendant qu'on parcourt les informations.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "galerie_fixe_haut",
+      "label": "Écart avec le haut de l'écran",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 24
     },
     {
       "type": "range",
