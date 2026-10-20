@@ -30,7 +30,11 @@
   }
 {% endstyle %}
 
-{%- if actifs != blank and actifs.size > 0 -%}
+{%- assign a_des_actifs = false -%}
+{%- if actifs != blank and actifs.size > 0 -%}{%- assign a_des_actifs = true -%}
+{%- elsif section.blocks.size > 0 -%}{%- assign a_des_actifs = true -%}{%- endif -%}
+
+{%- if a_des_actifs -%}
   <section class="iz-actifs full-width">
     <div class="iz-actifs__inner">
 
@@ -44,14 +48,21 @@
       </div>
 
       <div class="iz-actifs__grille">
-        {%- for a in actifs -%}
-          <div class="iz-actifs__carte">
-            <span class="iz-actifs__nom">{{ a.nom }}</span>
-            {%- if a.description != blank -%}
-              <span class="iz-actifs__texte">{{ a.description }}</span>
-            {%- endif -%}
-          </div>
-        {%- endfor -%}
+        {%- if actifs != blank and actifs.size > 0 -%}
+          {%- for a in actifs -%}
+            <div class="iz-actifs__carte">
+              <span class="iz-actifs__nom">{{ a.nom }}</span>
+              {%- if a.description != blank -%}<span class="iz-actifs__texte">{{ a.description }}</span>{%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for block in section.blocks -%}
+            <div class="iz-actifs__carte" {{ block.shopify_attributes }}>
+              <span class="iz-actifs__nom">{{ block.settings.nom }}</span>
+              {%- if block.settings.description != blank -%}<span class="iz-actifs__texte">{{ block.settings.description }}</span>{%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
       </div>
 
       {%- if section.settings.bouton_label != blank -%}
@@ -154,26 +165,178 @@
   "name": "Fiche — formule",
   "tag": "section",
   "settings": [
-    { "type": "paragraph", "content": "Alimentée par le metafield actifs. Sans actif, la section ne s'affiche pas." },
-    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Formule" },
-    { "type": "text", "id": "titre", "label": "Titre", "default": "Quelques actifs. Chacun a sa raison." },
-    { "type": "text", "id": "bouton_label", "label": "Libellé du bouton", "default": "Liste INCI complète" },
-    { "type": "text", "id": "accordeon_titre", "label": "Accordéon à ouvrir", "info": "Le bouton ouvre l'accordéon du bloc d'achat dont le titre contient ce texte.", "default": "Ingrédients" },
-
-    { "type": "header", "content": "Mise en page" },
-    { "type": "range", "id": "largeur_min", "label": "Largeur minimale d'une carte", "min": 160, "max": 400, "step": 10, "unit": "px", "default": 240 },
-    { "type": "range", "id": "gap", "label": "Espace entre les cartes", "min": 8, "max": 48, "step": 2, "unit": "px", "default": 20 },
-    { "type": "range", "id": "padding_carte", "label": "Marge intérieure des cartes", "min": 12, "max": 56, "step": 2, "unit": "px", "default": 28 },
-    { "type": "range", "id": "marge_verticale", "label": "Marge verticale — ordinateur", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 88 },
-    { "type": "range", "id": "marge_verticale_mobile", "label": "Marge verticale — mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56 },
-
-    { "type": "header", "content": "Typographie" },
-    { "type": "range", "id": "taille_eyebrow", "label": "Sur-titre", "min": 9, "max": 20, "step": 1, "unit": "px", "default": 12 },
-    { "type": "range", "id": "taille_titre", "label": "Titre — ordinateur", "min": 20, "max": 64, "step": 1, "unit": "px", "default": 40 },
-    { "type": "range", "id": "taille_titre_mobile", "label": "Titre — mobile", "min": 18, "max": 44, "step": 1, "unit": "px", "default": 28 },
-    { "type": "range", "id": "taille_nom", "label": "Nom d'actif", "min": 12, "max": 26, "step": 1, "unit": "px", "default": 17 },
-    { "type": "range", "id": "taille_texte", "label": "Description", "min": 11, "max": 22, "step": 1, "unit": "px", "default": 15 }
+    {
+      "type": "paragraph",
+      "content": "Alimentée par le metafield actifs. Sans actif, la section ne s'affiche pas."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Sur-titre",
+      "default": "Formule"
+    },
+    {
+      "type": "text",
+      "id": "titre",
+      "label": "Titre",
+      "default": "Quelques actifs. Chacun a sa raison."
+    },
+    {
+      "type": "text",
+      "id": "bouton_label",
+      "label": "Libellé du bouton",
+      "default": "Liste INCI complète"
+    },
+    {
+      "type": "text",
+      "id": "accordeon_titre",
+      "label": "Accordéon à ouvrir",
+      "info": "Le bouton ouvre l'accordéon du bloc d'achat dont le titre contient ce texte.",
+      "default": "Ingrédients"
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "range",
+      "id": "largeur_min",
+      "label": "Largeur minimale d'une carte",
+      "min": 160,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 240
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Espace entre les cartes",
+      "min": 8,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_carte",
+      "label": "Marge intérieure des cartes",
+      "min": 12,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale",
+      "label": "Marge verticale — ordinateur",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale_mobile",
+      "label": "Marge verticale — mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Typographie"
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow",
+      "label": "Sur-titre",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_titre",
+      "label": "Titre — ordinateur",
+      "min": 20,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "taille_titre_mobile",
+      "label": "Titre — mobile",
+      "min": 18,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "taille_nom",
+      "label": "Nom d'actif",
+      "min": 12,
+      "max": 26,
+      "step": 1,
+      "unit": "px",
+      "default": 17
+    },
+    {
+      "type": "range",
+      "id": "taille_texte",
+      "label": "Description",
+      "min": 11,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    }
   ],
-  "presets": [{ "name": "Fiche — formule" }]
+  "presets": [
+    {
+      "name": "Fiche — formule",
+      "blocks": [
+        {
+          "type": "actif"
+        },
+        {
+          "type": "actif"
+        },
+        {
+          "type": "actif"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "actif",
+      "name": "Actif",
+      "settings": [
+        {
+          "type": "text",
+          "id": "nom",
+          "label": "Nom",
+          "default": "Nila"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description"
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}

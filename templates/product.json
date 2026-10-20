@@ -140,7 +140,10 @@
     },
     "texture": {
       "type": "iz-texture",
-      "settings": {}
+      "settings": {
+        "titre": "Le bleu nila, vraiment",
+        "texte": "<p>Un indigo naturel extrait de la plante, utilisé depuis des siècles au Maroc. Il éclaircit et purifie sans agresser.</p>"
+      }
     },
     "resultats": {
       "type": "iz-resultats",
@@ -148,15 +151,99 @@
     },
     "ugc": {
       "type": "iz-ugc",
-      "settings": {}
+      "settings": {},
+      "blocks": {
+        "v1": {
+          "type": "video",
+          "settings": {
+            "pseudo": "@creatrice1",
+            "accroche": "Ma routine du soir"
+          }
+        },
+        "v2": {
+          "type": "video",
+          "settings": {
+            "pseudo": "@creatrice2",
+            "accroche": "Avant / après 4 semaines"
+          }
+        },
+        "v3": {
+          "type": "video",
+          "settings": {
+            "pseudo": "@creatrice3",
+            "accroche": "Premier essai"
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3"
+      ]
     },
     "rituel": {
       "type": "iz-rituel",
-      "settings": {}
+      "settings": {},
+      "blocks": {
+        "e1": {
+          "type": "etape",
+          "settings": {
+            "titre": "Appliquer",
+            "description": "Une noisette sur peau propre, en couche fine."
+          }
+        },
+        "e2": {
+          "type": "etape",
+          "settings": {
+            "titre": "Laisser poser",
+            "description": "Dix minutes, le temps d'un café."
+          }
+        },
+        "e3": {
+          "type": "etape",
+          "settings": {
+            "titre": "Rincer",
+            "description": "À l'eau tiède, sans frotter."
+          }
+        }
+      },
+      "block_order": [
+        "e1",
+        "e2",
+        "e3"
+      ]
     },
     "actifs": {
       "type": "iz-actifs",
-      "settings": {}
+      "settings": {},
+      "blocks": {
+        "a1": {
+          "type": "actif",
+          "settings": {
+            "nom": "Nila",
+            "description": "L'indigo naturel qui donne sa couleur au masque."
+          }
+        },
+        "a2": {
+          "type": "actif",
+          "settings": {
+            "nom": "Argile blanche",
+            "description": "Absorbe l'excès de sébum sans dessécher."
+          }
+        },
+        "a3": {
+          "type": "actif",
+          "settings": {
+            "nom": "Glycérine végétale",
+            "description": "Retient l'eau dans l'épiderme."
+          }
+        }
+      },
+      "block_order": [
+        "a1",
+        "a2",
+        "a3"
+      ]
     },
     "routine": {
       "type": "iz-routine",
@@ -164,11 +251,41 @@
     },
     "faq": {
       "type": "iz-faq",
-      "settings": {}
+      "settings": {},
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "À quelle fréquence l'utiliser ?",
+            "reponse": "<p>Une à deux fois par semaine suffit.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Convient-il aux peaux sensibles ?",
+            "reponse": "<p>Oui, la formule est sans parfum ni alcool.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Quels sont les délais de livraison ?",
+            "reponse": "<p>2 à 4 jours ouvrés en France.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ]
     },
     "marque": {
       "type": "iz-marque",
-      "settings": {}
+      "settings": {
+        "texte": "<p>Chaque ingrédient doit justifier sa présence. Si nous ne savons pas l'expliquer en une phrase, il ne rentre pas dans la formule.</p>"
+      }
     }
   },
   "order": [
