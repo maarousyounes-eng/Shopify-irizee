@@ -53,9 +53,42 @@
         "accordeons"
       ],
       "settings": {}
+    },
+    "engagements": {
+      "type": "iz-engagements",
+      "blocks": {
+        "e1": {
+          "type": "engagement",
+          "settings": {
+            "titre": "Formules naturelles",
+            "texte": "Des ingrédients choisis, sans compromis."
+          }
+        },
+        "e2": {
+          "type": "engagement",
+          "settings": {
+            "titre": "Fabriqué en France",
+            "texte": "Produit dans nos ateliers partenaires."
+          }
+        },
+        "e3": {
+          "type": "engagement",
+          "settings": {
+            "titre": "Non testé sur les animaux",
+            "texte": "Aucune formule testée sur les animaux."
+          }
+        }
+      },
+      "block_order": [
+        "e1",
+        "e2",
+        "e3"
+      ],
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "engagements"
   ]
 }
