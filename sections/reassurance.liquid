@@ -43,7 +43,7 @@
 {% endstyle %}
 
 <div class="reassurance full-width">
-  <div class="reassurance__grid{% if section.settings.show_separators %} reassurance__grid--separated{% endif %}">
+  <div class="reassurance__grid{% if section.settings.show_separators %} reassurance__grid--separated{% elsif section.settings.show_edges %} reassurance__grid--bordee{% endif %}">
     {% for block in section.blocks %}
       <div class="reassurance__cell" {{ block.shopify_attributes }}>
         <div class="reassurance__cell-inner">
@@ -146,6 +146,14 @@
   .reassurance__grid--separated {
     gap: 1px;
     background: var(--rs-line);
+    border-top: 1px solid var(--rs-line);
+    border-bottom: 1px solid var(--rs-line);
+  }
+
+  /* Filets haut et bas seuls, sans séparations verticales : les colonnes
+     gardent leurs gouttières. Indépendant de la variante à filets, qui elle
+     dessine aussi les traits entre les cases. */
+  .reassurance__grid--bordee {
     border-top: 1px solid var(--rs-line);
     border-bottom: 1px solid var(--rs-line);
   }
