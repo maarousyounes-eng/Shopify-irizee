@@ -70,6 +70,40 @@
     --header-scrolled-logo-width: {{ section.settings.scrolled_logo_width }}px;
   }
 
+  {%- if reglages_pdp -%}
+    /* Valeurs propres aux pages produit. Déclarées après les valeurs
+       générales pour l'emporter, sans les modifier ailleurs. */
+    #shopify-section-{{ section.id }} .header--pdp {
+      min-height: {{ section.settings.pdp_height }}px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    #shopify-section-{{ section.id }} .header--pdp .header__logo {
+      width: {{ section.settings.pdp_logo_width }}px;
+    }
+
+    @media (max-width: 749px) {
+      #shopify-section-{{ section.id }} .header--pdp {
+        min-height: {{ section.settings.pdp_height_mobile }}px;
+      }
+
+      #shopify-section-{{ section.id }} .header--pdp .header__logo {
+        width: {{ section.settings.pdp_logo_width_mobile }}px;
+      }
+    }
+
+    /* Hors superposition, la couleur vient du thème : il faut donc la poser
+       explicitement pour que le réglage serve dans les deux cas. */
+    #shopify-section-{{ section.id }} .header--pdp-white:not(.header--scrolled) {
+      color: #fff;
+    }
+
+    #shopify-section-{{ section.id }} .header--pdp-black:not(.header--scrolled) {
+      color: #1a1a1a;
+    }
+  {%- endif -%}
+
   /* Le header doit occuper toute la largeur de l'écran. La classe
      `full-width` ne suffit pas : elle dépend de la règle
      `.shopify-section > .full-width`, qui ne s'applique pas ici parce que
@@ -96,7 +130,7 @@
 
 {% endstyle %}
 
-<header class="header full-width header--survol-{{ section.settings.menu_hover_style }}{% if is_overlay %} header--overlay header--overlay-{{ couleur_texte }}{% if section.settings.enable_blur %} header--blur{% endif %}{% endif %}">
+<header class="header full-width header--survol-{{ section.settings.menu_hover_style }}{% if reglages_pdp %} header--pdp header--pdp-{{ couleur_texte }}{% endif %}{% if is_overlay %} header--overlay header--overlay-{{ couleur_texte }}{% if section.settings.enable_blur %} header--blur{% endif %}{% endif %}">
   <details class="header__mobile-nav">
     <summary class="header__hamburger" aria-label="Menu">
       <span></span>
