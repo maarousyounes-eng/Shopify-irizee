@@ -230,6 +230,16 @@
                   {%- if source != blank -%}
                     {%- assign contenu = p.metafields.custom[source] -%}
                   {%- endif -%}
+                  {%- comment -%}
+                    Dernier recours : la description du produit saisie dans
+                    Shopify. Sans cela elle ne s'afficherait nulle part sur la
+                    fiche, alors que c'est le champ que l'on remplit en premier
+                    en créant un produit.
+                  {%- endcomment -%}
+                  {%- assign cle_desc = 'description_produit_' | append: i -%}
+                  {%- if contenu == blank and block.settings[cle_desc] -%}
+                    {%- assign contenu = p.description -%}
+                  {%- endif -%}
                   {%- if titre != blank and contenu != blank -%}
                     <details class="iz-accordion"{% if forloop.first and block.settings.premier_ouvert %} open{% endif %}>
                       <summary class="iz-accordion__summary">{{ titre }}</summary>
@@ -1534,6 +1544,13 @@
           "info": "Renseignée, elle remplace le contenu."
         },
         {
+          "type": "checkbox",
+          "id": "description_produit_1",
+          "label": "Sinon, utiliser la description du produit",
+          "info": "La description saisie dans Shopify, si les deux champs ci-dessus sont vides.",
+          "default": true
+        },
+        {
           "type": "header",
           "content": "2"
         },
@@ -1552,6 +1569,12 @@
           "type": "text",
           "id": "metafield_2",
           "label": "Clé de metafield"
+        },
+        {
+          "type": "checkbox",
+          "id": "description_produit_2",
+          "label": "Sinon, utiliser la description du produit",
+          "default": false
         },
         {
           "type": "header",
@@ -1575,6 +1598,12 @@
           "default": "inci"
         },
         {
+          "type": "checkbox",
+          "id": "description_produit_3",
+          "label": "Sinon, utiliser la description du produit",
+          "default": false
+        },
+        {
           "type": "header",
           "content": "4"
         },
@@ -1593,6 +1622,12 @@
           "type": "text",
           "id": "metafield_4",
           "label": "Clé de metafield"
+        },
+        {
+          "type": "checkbox",
+          "id": "description_produit_4",
+          "label": "Sinon, utiliser la description du produit",
+          "default": false
         }
       ]
     }
