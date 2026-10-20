@@ -30,6 +30,17 @@
   }
 {% endstyle %}
 
+{%- comment -%} Repli : les produits saisis en blocs, si le metafield est vide. {%- endcomment -%}
+{%- if produits == blank or produits.size == 0 -%}
+  {%- assign liste = '' | split: ',' -%}
+  {%- for block in section.blocks -%}
+    {%- if block.settings.produit != blank -%}
+      {%- assign liste = liste | concat: block.settings.produit -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- assign produits = liste -%}
+{%- endif -%}
+
 {%- if produits != blank and produits.size > 0 -%}
   <section class="iz-routine full-width">
     <div class="iz-routine__inner">
@@ -228,30 +239,180 @@
   "name": "Fiche — routine",
   "tag": "section",
   "settings": [
-    { "type": "paragraph", "content": "Alimentée par le metafield complementaires. Prix et disponibilité viennent de Shopify. Sans produit, la section ne s'affiche pas." },
-    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Allez plus loin" },
-    { "type": "text", "id": "titre", "label": "Titre", "default": "Complétez votre routine" },
-    { "type": "text", "id": "bouton_label", "label": "Libellé du bouton", "default": "Ajouter" },
-    { "type": "text", "id": "bouton_ajoute", "label": "Libellé après ajout", "default": "Ajouté" },
-    { "type": "text", "id": "bouton_epuise", "label": "Libellé si épuisé", "default": "Épuisé" },
-
-    { "type": "header", "content": "Mise en page" },
-    { "type": "range", "id": "largeur_min", "label": "Largeur minimale d'une carte", "min": 180, "max": 400, "step": 10, "unit": "px", "default": 260 },
-    { "type": "range", "id": "gap", "label": "Espace entre les cartes", "min": 8, "max": 40, "step": 2, "unit": "px", "default": 16 },
-    { "type": "range", "id": "marge_verticale", "label": "Marge verticale — ordinateur", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 88 },
-    { "type": "range", "id": "marge_verticale_mobile", "label": "Marge verticale — mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56 },
-
-    { "type": "header", "content": "Couleurs" },
-    { "type": "color", "id": "couleur_fond", "label": "Fond de la section", "default": "#EBEBEA" },
-    { "type": "color", "id": "couleur_carte", "label": "Fond des cartes", "default": "#FBFAF8" },
-
-    { "type": "header", "content": "Typographie" },
-    { "type": "range", "id": "taille_eyebrow", "label": "Sur-titre", "min": 9, "max": 20, "step": 1, "unit": "px", "default": 12 },
-    { "type": "range", "id": "taille_titre", "label": "Titre — ordinateur", "min": 20, "max": 64, "step": 1, "unit": "px", "default": 40 },
-    { "type": "range", "id": "taille_titre_mobile", "label": "Titre — mobile", "min": 18, "max": 44, "step": 1, "unit": "px", "default": 28 },
-    { "type": "range", "id": "taille_nom", "label": "Nom de produit", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
-    { "type": "range", "id": "taille_description", "label": "Description", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 14 }
+    {
+      "type": "paragraph",
+      "content": "Alimentée par le metafield complementaires. Prix et disponibilité viennent de Shopify. Sans produit, la section ne s'affiche pas."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Sur-titre",
+      "default": "Allez plus loin"
+    },
+    {
+      "type": "text",
+      "id": "titre",
+      "label": "Titre",
+      "default": "Complétez votre routine"
+    },
+    {
+      "type": "text",
+      "id": "bouton_label",
+      "label": "Libellé du bouton",
+      "default": "Ajouter"
+    },
+    {
+      "type": "text",
+      "id": "bouton_ajoute",
+      "label": "Libellé après ajout",
+      "default": "Ajouté"
+    },
+    {
+      "type": "text",
+      "id": "bouton_epuise",
+      "label": "Libellé si épuisé",
+      "default": "Épuisé"
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "range",
+      "id": "largeur_min",
+      "label": "Largeur minimale d'une carte",
+      "min": 180,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 260
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Espace entre les cartes",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale",
+      "label": "Marge verticale — ordinateur",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale_mobile",
+      "label": "Marge verticale — mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Couleurs"
+    },
+    {
+      "type": "color",
+      "id": "couleur_fond",
+      "label": "Fond de la section",
+      "default": "#EBEBEA"
+    },
+    {
+      "type": "color",
+      "id": "couleur_carte",
+      "label": "Fond des cartes",
+      "default": "#FBFAF8"
+    },
+    {
+      "type": "header",
+      "content": "Typographie"
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow",
+      "label": "Sur-titre",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_titre",
+      "label": "Titre — ordinateur",
+      "min": 20,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "taille_titre_mobile",
+      "label": "Titre — mobile",
+      "min": 18,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "taille_nom",
+      "label": "Nom de produit",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "taille_description",
+      "label": "Description",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    }
   ],
-  "presets": [{ "name": "Fiche — routine" }]
+  "presets": [
+    {
+      "name": "Fiche — routine",
+      "blocks": [
+        {
+          "type": "produit"
+        },
+        {
+          "type": "produit"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "produit",
+      "name": "Produit",
+      "settings": [
+        {
+          "type": "product",
+          "id": "produit",
+          "label": "Produit"
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}

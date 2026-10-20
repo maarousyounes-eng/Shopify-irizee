@@ -1,0 +1,30 @@
+{% doc %}
+  Une vignette vidéo. Le même rendu sert aux metaobjets et aux blocs.
+
+  @param {object} video - Fichier vidéo
+  @param {string} pseudo - Pseudo du créateur
+  @param {string} accroche - Accroche
+  @param {string} libelle - Libellé de lecture, pour les lecteurs d'écran
+  @param {string} [attrs] - Attributs d'éditeur, pour un bloc
+{% enddoc %}
+
+<article class="iz-ugc__item" {{ attrs }}>
+  {%- if video -%}
+    {%- assign poster = video.preview_image -%}
+    <button
+      type="button"
+      class="iz-ugc__lecteur"
+      data-iz-video-src="{{ video.sources[0].url | default: video }}"
+      aria-label="{{ libelle }}{% if pseudo != blank %} — {{ pseudo }}{% endif %}"
+      {% if poster %}style="background-image: url({{ poster | image_url: width: 600 }})"{% endif %}
+    >
+      <span class="iz-ugc__play" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+      </span>
+    </button>
+  {%- endif -%}
+  <div class="iz-ugc__legende">
+    {%- if pseudo != blank -%}<span class="iz-ugc__pseudo">{{ pseudo }}</span>{%- endif -%}
+    {%- if accroche != blank -%}<span class="iz-ugc__accroche">{{ accroche }}</span>{%- endif -%}
+  </div>
+</article>
