@@ -14,11 +14,18 @@
       "blocks": {
         "entete": {
           "type": "entete",
-          "settings": {}
+          "settings": {
+            "texte": "",
+            "minimum": 5,
+            "libelle_avis": "avis",
+            "ancre": "avis"
+          }
         },
         "promesse": {
           "type": "promesse",
-          "settings": {}
+          "settings": {
+            "texte": ""
+          }
         },
         "benefices": {
           "type": "benefices",
@@ -26,20 +33,45 @@
         },
         "offres": {
           "type": "offres",
-          "settings": {}
+          "settings": {
+            "titre": "Choisissez votre format"
+          }
         },
         "achat": {
           "type": "achat",
-          "settings": {}
+          "settings": {
+            "afficher_quantite": true,
+            "libelle_ajout": "Ajouter au panier",
+            "libelle_epuise": "Épuisé",
+            "libelle_quantite": "Quantité",
+            "libelle_moins": "Diminuer la quantité",
+            "libelle_plus": "Augmenter la quantité"
+          }
         },
         "jauge": {
           "type": "jauge",
-          "settings": {}
+          "settings": {
+            "seuil": 49,
+            "texte_restant": "Plus que {montant} pour la livraison offerte",
+            "texte_atteint": "Livraison offerte"
+          }
         },
         "accordeons": {
           "type": "accordeons",
           "settings": {
-            "contenu_4": "<p>Livraison offerte dès 49 € d'achat en France. Retours acceptés sous 14 jours.</p>"
+            "premier_ouvert": true,
+            "titre_1": "Ce que fait le masque",
+            "contenu_1": "",
+            "metafield_1": "",
+            "titre_2": "Comment l'utiliser",
+            "contenu_2": "",
+            "metafield_2": "",
+            "titre_3": "Ingrédients",
+            "contenu_3": "",
+            "metafield_3": "inci",
+            "titre_4": "Livraison et retours",
+            "contenu_4": "<p>Livraison offerte dès 49 € d'achat en France. Retours acceptés sous 14 jours.</p>",
+            "metafield_4": ""
           }
         }
       },
@@ -52,7 +84,50 @@
         "jauge",
         "accordeons"
       ],
-      "settings": {}
+      "settings": {
+        "afficher_fil": true,
+        "libelle_fil": "Fil d'Ariane",
+        "libelle_accueil": "Accueil",
+        "libelle_catalogue": "Catalogue",
+        "show_badge": true,
+        "badge_text": "Best",
+        "ratio": 1,
+        "thumb_count": 5,
+        "libelle_vignette": "Voir le média",
+        "column_gap": 56,
+        "gallery_base": 560,
+        "buybox_base": 420,
+        "barre_mobile": true,
+        "barre_mobile_fond": "#fbfaf8",
+        "message_ajout": "Ajouté à votre panier.",
+        "message_erreur": "L'ajout n'a pas abouti. Réessayez.",
+        "taille_fil": 13,
+        "taille_eyebrow": 12,
+        "taille_titre": 44,
+        "taille_note": 14,
+        "taille_promesse": 18,
+        "taille_benefices": 15,
+        "taille_offre_nom": 15,
+        "taille_offre_sub": 13,
+        "taille_offre_badge": 11,
+        "taille_bouton": 14,
+        "taille_quantite": 18,
+        "taille_jauge": 13,
+        "taille_acc_titre": 15,
+        "taille_acc_texte": 15,
+        "taille_fil_m": 12,
+        "taille_eyebrow_m": 11,
+        "taille_titre_m": 30,
+        "taille_note_m": 13,
+        "taille_promesse_m": 16,
+        "taille_benefices_m": 14,
+        "taille_offre_nom_m": 14,
+        "taille_offre_sub_m": 12,
+        "taille_bouton_m": 13,
+        "taille_jauge_m": 12,
+        "taille_acc_titre_m": 14,
+        "taille_acc_texte_m": 14
+      }
     },
     "engagements": {
       "type": "reassurance",
@@ -138,14 +213,56 @@
         "kicker_size_mobile": 11
       }
     },
+    "iz_texture_6AUkFd": {
+      "type": "iz-texture",
+      "name": "Fiche — texture",
+      "settings": {
+        "eyebrow": "La texture",
+        "titre": "iohoi",
+        "texte": "",
+        "position_image": "gauche",
+        "ratio": 1.3,
+        "image_base": 520,
+        "texte_base": 420,
+        "gap": 56,
+        "gap_mobile": 28,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "taille_eyebrow": 12,
+        "taille_eyebrow_mobile": 11,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_texte": 17,
+        "taille_texte_mobile": 15
+      }
+    },
     "texture": {
       "type": "iz-texture",
-      "settings": {}
+      "settings": {
+        "eyebrow": "La texture",
+        "titre": "",
+        "texte": "",
+        "position_image": "gauche",
+        "ratio": 1.3,
+        "image_base": 520,
+        "texte_base": 420,
+        "gap": 56,
+        "gap_mobile": 28,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "taille_eyebrow": 12,
+        "taille_eyebrow_mobile": 11,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_texte": 17,
+        "taille_texte_mobile": 15
+      }
     }
   },
   "order": [
     "main",
     "engagements",
+    "iz_texture_6AUkFd",
     "texture"
   ]
 }
