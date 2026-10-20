@@ -809,27 +809,395 @@
   "name": "Fiche — achat",
   "tag": "section",
   "settings": [
-    { "type": "header", "content": "Fil d'Ariane" },
-    { "type": "checkbox", "id": "afficher_fil", "label": "Afficher le fil d'Ariane", "default": true },
-    { "type": "text", "id": "libelle_fil", "label": "Libellé pour lecteurs d'écran", "default": "Fil d'Ariane" },
-    { "type": "text", "id": "libelle_accueil", "label": "Premier niveau", "default": "Accueil" },
-    { "type": "text", "id": "libelle_catalogue", "label": "Deuxième niveau", "default": "Catalogue" },
-
-    { "type": "header", "content": "Galerie" },
-    { "type": "checkbox", "id": "show_badge", "label": "Afficher le badge", "default": true },
-    { "type": "text", "id": "badge_text", "label": "Texte du badge", "default": "Best" },
-    { "type": "range", "id": "ratio", "label": "Proportion de l'image", "info": "1 = carré.", "min": 0.6, "max": 1.6, "step": 0.1, "default": 1 },
-    { "type": "range", "id": "thumb_count", "label": "Nombre de vignettes", "min": 3, "max": 8, "step": 1, "default": 5 },
-    { "type": "text", "id": "libelle_vignette", "label": "Libellé des vignettes", "info": "Lu par les lecteurs d'écran, suivi du numéro.", "default": "Voir le média" },
-
-    { "type": "header", "content": "Mise en page" },
-    { "type": "range", "id": "column_gap", "label": "Espace entre les colonnes", "min": 16, "max": 96, "step": 4, "unit": "px", "default": 56 },
-    { "type": "range", "id": "gallery_base", "label": "Largeur de référence — galerie", "info": "Les deux colonnes se partagent la place à partir de ces largeurs.", "min": 320, "max": 800, "step": 20, "unit": "px", "default": 560 },
-    { "type": "range", "id": "buybox_base", "label": "Largeur de référence — achat", "min": 320, "max": 800, "step": 20, "unit": "px", "default": 420 },
-
-    { "type": "header", "content": "Messages du panier" },
-    { "type": "text", "id": "message_ajout", "label": "Confirmation d'ajout", "default": "Ajouté à votre panier." },
-    { "type": "text", "id": "message_erreur", "label": "Message d'erreur", "default": "L'ajout n'a pas abouti. Réessayez." }
+    {
+      "type": "header",
+      "content": "Fil d'Ariane"
+    },
+    {
+      "type": "checkbox",
+      "id": "afficher_fil",
+      "label": "Afficher le fil d'Ariane",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "libelle_fil",
+      "label": "Libellé pour lecteurs d'écran",
+      "default": "Fil d'Ariane"
+    },
+    {
+      "type": "text",
+      "id": "libelle_accueil",
+      "label": "Premier niveau",
+      "default": "Accueil"
+    },
+    {
+      "type": "text",
+      "id": "libelle_catalogue",
+      "label": "Deuxième niveau",
+      "default": "Catalogue"
+    },
+    {
+      "type": "header",
+      "content": "Galerie"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Afficher le badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Texte du badge",
+      "default": "Best"
+    },
+    {
+      "type": "range",
+      "id": "ratio",
+      "label": "Proportion de l'image",
+      "info": "1 = carré.",
+      "min": 0.6,
+      "max": 1.6,
+      "step": 0.1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "thumb_count",
+      "label": "Nombre de vignettes",
+      "min": 3,
+      "max": 8,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "libelle_vignette",
+      "label": "Libellé des vignettes",
+      "info": "Lu par les lecteurs d'écran, suivi du numéro.",
+      "default": "Voir le média"
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Espace entre les colonnes",
+      "min": 16,
+      "max": 96,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "gallery_base",
+      "label": "Largeur de référence — galerie",
+      "info": "Les deux colonnes se partagent la place à partir de ces largeurs.",
+      "min": 320,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "default": 560
+    },
+    {
+      "type": "range",
+      "id": "buybox_base",
+      "label": "Largeur de référence — achat",
+      "min": 320,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "default": 420
+    },
+    {
+      "type": "header",
+      "content": "Messages du panier"
+    },
+    {
+      "type": "text",
+      "id": "message_ajout",
+      "label": "Confirmation d'ajout",
+      "default": "Ajouté à votre panier."
+    },
+    {
+      "type": "text",
+      "id": "message_erreur",
+      "label": "Message d'erreur",
+      "default": "L'ajout n'a pas abouti. Réessayez."
+    },
+    {
+      "type": "header",
+      "content": "Typographie — ordinateur"
+    },
+    {
+      "type": "range",
+      "id": "taille_fil",
+      "label": "Fil d'Ariane",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow",
+      "label": "Sur-titre",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_titre",
+      "label": "Titre du produit",
+      "min": 20,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "taille_note",
+      "label": "Note et avis",
+      "min": 10,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "taille_promesse",
+      "label": "Promesse",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "taille_benefices",
+      "label": "Bénéfices",
+      "min": 11,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "taille_offre_nom",
+      "label": "Nom et prix d'offre",
+      "min": 11,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "taille_offre_sub",
+      "label": "Sous-titre d'offre",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "taille_offre_badge",
+      "label": "Badge d'offre",
+      "min": 8,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "taille_bouton",
+      "label": "Bouton d'ajout",
+      "min": 10,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "taille_quantite",
+      "label": "Quantité",
+      "min": 12,
+      "max": 26,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "taille_jauge",
+      "label": "Jauge et messages",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "taille_acc_titre",
+      "label": "Titre d'accordéon",
+      "min": 11,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "taille_acc_texte",
+      "label": "Texte d'accordéon",
+      "min": 11,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Typographie — mobile"
+    },
+    {
+      "type": "range",
+      "id": "taille_fil_m",
+      "label": "Fil d'Ariane",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow_m",
+      "label": "Sur-titre",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "taille_titre_m",
+      "label": "Titre du produit",
+      "min": 18,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "taille_note_m",
+      "label": "Note et avis",
+      "min": 10,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "taille_promesse_m",
+      "label": "Promesse",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "taille_benefices_m",
+      "label": "Bénéfices",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "taille_offre_nom_m",
+      "label": "Nom et prix d'offre",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "taille_offre_sub_m",
+      "label": "Sous-titre d'offre",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_bouton_m",
+      "label": "Bouton d'ajout",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "taille_jauge_m",
+      "label": "Jauge et messages",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_acc_titre_m",
+      "label": "Titre d'accordéon",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "taille_acc_texte_m",
+      "label": "Texte d'accordéon",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    }
   ],
   "blocks": [
     {
@@ -837,10 +1205,34 @@
       "name": "Titre et note",
       "limit": 1,
       "settings": [
-        { "type": "text", "id": "texte", "label": "Sur-titre", "info": "Vide : utilise le metafield « format »." },
-        { "type": "range", "id": "minimum", "label": "Minimum d'avis", "info": "En dessous, la note ne s'affiche pas.", "min": 0, "max": 50, "step": 1, "default": 5 },
-        { "type": "text", "id": "libelle_avis", "label": "Mot après le nombre", "default": "avis" },
-        { "type": "text", "id": "ancre", "label": "Ancre des avis", "default": "avis" }
+        {
+          "type": "text",
+          "id": "texte",
+          "label": "Sur-titre",
+          "info": "Vide : utilise le metafield « format »."
+        },
+        {
+          "type": "range",
+          "id": "minimum",
+          "label": "Minimum d'avis",
+          "info": "En dessous, la note ne s'affiche pas.",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "text",
+          "id": "libelle_avis",
+          "label": "Mot après le nombre",
+          "default": "avis"
+        },
+        {
+          "type": "text",
+          "id": "ancre",
+          "label": "Ancre des avis",
+          "default": "avis"
+        }
       ]
     },
     {
@@ -848,7 +1240,12 @@
       "name": "Promesse",
       "limit": 1,
       "settings": [
-        { "type": "text", "id": "texte", "label": "Texte", "info": "Vide : utilise le metafield « promesse »." }
+        {
+          "type": "text",
+          "id": "texte",
+          "label": "Texte",
+          "info": "Vide : utilise le metafield « promesse »."
+        }
       ]
     },
     {
@@ -856,7 +1253,10 @@
       "name": "Bénéfices",
       "limit": 1,
       "settings": [
-        { "type": "paragraph", "content": "Alimenté par le metafield « benefices »." }
+        {
+          "type": "paragraph",
+          "content": "Alimenté par le metafield « benefices »."
+        }
       ]
     },
     {
@@ -864,8 +1264,16 @@
       "name": "Choix du format",
       "limit": 1,
       "settings": [
-        { "type": "text", "id": "titre", "label": "Sur-titre", "default": "Choisissez votre format" },
-        { "type": "paragraph", "content": "Alimenté par le metafield « offres ». Chaque offre renvoie vers sa fiche." }
+        {
+          "type": "text",
+          "id": "titre",
+          "label": "Sur-titre",
+          "default": "Choisissez votre format"
+        },
+        {
+          "type": "paragraph",
+          "content": "Alimenté par le metafield « offres ». Chaque offre renvoie vers sa fiche."
+        }
       ]
     },
     {
@@ -873,12 +1281,42 @@
       "name": "Quantité et achat",
       "limit": 1,
       "settings": [
-        { "type": "checkbox", "id": "afficher_quantite", "label": "Afficher la quantité", "default": true },
-        { "type": "text", "id": "libelle_ajout", "label": "Libellé du bouton", "default": "Ajouter au panier" },
-        { "type": "text", "id": "libelle_epuise", "label": "Libellé si épuisé", "default": "Épuisé" },
-        { "type": "text", "id": "libelle_quantite", "label": "Libellé quantité", "default": "Quantité" },
-        { "type": "text", "id": "libelle_moins", "label": "Bouton moins", "default": "Diminuer la quantité" },
-        { "type": "text", "id": "libelle_plus", "label": "Bouton plus", "default": "Augmenter la quantité" }
+        {
+          "type": "checkbox",
+          "id": "afficher_quantite",
+          "label": "Afficher la quantité",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "libelle_ajout",
+          "label": "Libellé du bouton",
+          "default": "Ajouter au panier"
+        },
+        {
+          "type": "text",
+          "id": "libelle_epuise",
+          "label": "Libellé si épuisé",
+          "default": "Épuisé"
+        },
+        {
+          "type": "text",
+          "id": "libelle_quantite",
+          "label": "Libellé quantité",
+          "default": "Quantité"
+        },
+        {
+          "type": "text",
+          "id": "libelle_moins",
+          "label": "Bouton moins",
+          "default": "Diminuer la quantité"
+        },
+        {
+          "type": "text",
+          "id": "libelle_plus",
+          "label": "Bouton plus",
+          "default": "Augmenter la quantité"
+        }
       ]
     },
     {
@@ -886,9 +1324,30 @@
       "name": "Jauge de livraison",
       "limit": 1,
       "settings": [
-        { "type": "range", "id": "seuil", "label": "Seuil", "info": "Shopify limite un curseur à 101 crans, d'où la borne à 100 €.", "min": 0, "max": 100, "step": 1, "unit": "€", "default": 49 },
-        { "type": "text", "id": "texte_restant", "label": "Avant le seuil", "info": "{montant} est remplacé par ce qu'il reste.", "default": "Plus que {montant} pour la livraison offerte" },
-        { "type": "text", "id": "texte_atteint", "label": "Seuil atteint", "default": "Livraison offerte" }
+        {
+          "type": "range",
+          "id": "seuil",
+          "label": "Seuil",
+          "info": "Shopify limite un curseur à 101 crans, d'où la borne à 100 €.",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "€",
+          "default": 49
+        },
+        {
+          "type": "text",
+          "id": "texte_restant",
+          "label": "Avant le seuil",
+          "info": "{montant} est remplacé par ce qu'il reste.",
+          "default": "Plus que {montant} pour la livraison offerte"
+        },
+        {
+          "type": "text",
+          "id": "texte_atteint",
+          "label": "Seuil atteint",
+          "default": "Livraison offerte"
+        }
       ]
     },
     {
@@ -896,23 +1355,94 @@
       "name": "Accordéons",
       "limit": 1,
       "settings": [
-        { "type": "checkbox", "id": "premier_ouvert", "label": "Premier ouvert", "default": true },
-        { "type": "header", "content": "1" },
-        { "type": "text", "id": "titre_1", "label": "Titre", "default": "Ce que fait le masque" },
-        { "type": "richtext", "id": "contenu_1", "label": "Contenu" },
-        { "type": "text", "id": "metafield_1", "label": "Clé de metafield", "info": "Renseignée, elle remplace le contenu." },
-        { "type": "header", "content": "2" },
-        { "type": "text", "id": "titre_2", "label": "Titre", "default": "Comment l'utiliser" },
-        { "type": "richtext", "id": "contenu_2", "label": "Contenu" },
-        { "type": "text", "id": "metafield_2", "label": "Clé de metafield" },
-        { "type": "header", "content": "3" },
-        { "type": "text", "id": "titre_3", "label": "Titre", "default": "Ingrédients" },
-        { "type": "richtext", "id": "contenu_3", "label": "Contenu" },
-        { "type": "text", "id": "metafield_3", "label": "Clé de metafield", "default": "inci" },
-        { "type": "header", "content": "4" },
-        { "type": "text", "id": "titre_4", "label": "Titre", "default": "Livraison et retours" },
-        { "type": "richtext", "id": "contenu_4", "label": "Contenu" },
-        { "type": "text", "id": "metafield_4", "label": "Clé de metafield" }
+        {
+          "type": "checkbox",
+          "id": "premier_ouvert",
+          "label": "Premier ouvert",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "1"
+        },
+        {
+          "type": "text",
+          "id": "titre_1",
+          "label": "Titre",
+          "default": "Ce que fait le masque"
+        },
+        {
+          "type": "richtext",
+          "id": "contenu_1",
+          "label": "Contenu"
+        },
+        {
+          "type": "text",
+          "id": "metafield_1",
+          "label": "Clé de metafield",
+          "info": "Renseignée, elle remplace le contenu."
+        },
+        {
+          "type": "header",
+          "content": "2"
+        },
+        {
+          "type": "text",
+          "id": "titre_2",
+          "label": "Titre",
+          "default": "Comment l'utiliser"
+        },
+        {
+          "type": "richtext",
+          "id": "contenu_2",
+          "label": "Contenu"
+        },
+        {
+          "type": "text",
+          "id": "metafield_2",
+          "label": "Clé de metafield"
+        },
+        {
+          "type": "header",
+          "content": "3"
+        },
+        {
+          "type": "text",
+          "id": "titre_3",
+          "label": "Titre",
+          "default": "Ingrédients"
+        },
+        {
+          "type": "richtext",
+          "id": "contenu_3",
+          "label": "Contenu"
+        },
+        {
+          "type": "text",
+          "id": "metafield_3",
+          "label": "Clé de metafield",
+          "default": "inci"
+        },
+        {
+          "type": "header",
+          "content": "4"
+        },
+        {
+          "type": "text",
+          "id": "titre_4",
+          "label": "Titre",
+          "default": "Livraison et retours"
+        },
+        {
+          "type": "richtext",
+          "id": "contenu_4",
+          "label": "Contenu"
+        },
+        {
+          "type": "text",
+          "id": "metafield_4",
+          "label": "Clé de metafield"
+        }
       ]
     }
   ],
@@ -920,8 +1450,27 @@
     {
       "name": "Fiche — achat",
       "blocks": [
-        { "type": "entete" }, { "type": "promesse" }, { "type": "benefices" },
-        { "type": "offres" }, { "type": "achat" }, { "type": "jauge" }, { "type": "accordeons" }
+        {
+          "type": "entete"
+        },
+        {
+          "type": "promesse"
+        },
+        {
+          "type": "benefices"
+        },
+        {
+          "type": "offres"
+        },
+        {
+          "type": "achat"
+        },
+        {
+          "type": "jauge"
+        },
+        {
+          "type": "accordeons"
+        }
       ]
     }
   ]
