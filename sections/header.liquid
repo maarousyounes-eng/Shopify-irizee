@@ -82,22 +82,44 @@
       top: 0;
       left: 0;
       right: 0;
-      min-height: {{ section.settings.pdp_height }}px;
       padding-top: 0;
       padding-bottom: 0;
+    }
+
+    /* La hauteur propre aux fiches ne vaut qu'en haut de page : une fois
+       scrollé, c'est la hauteur réduite du groupe « Une fois scrollé » qui
+       reprend la main, comme partout ailleurs sur le site. Sans le :not(),
+       cette règle l'écrasait et supprimait l'état scrollé. */
+    #shopify-section-{{ section.id }} .header--pdp:not(.header--scrolled) {
+      min-height: {{ section.settings.pdp_height }}px;
       background: var(--color-background);
     }
 
-    #shopify-section-{{ section.id }} .header--pdp .header__logo {
+    /* L'état scrollé dépendait de .header--overlay, absent ici : on le
+       rétablit pour que les fiches aient la même barre translucide que le
+       reste du site. */
+    #shopify-section-{{ section.id }} .header--pdp.header--scrolled {
+      background: color-mix(in srgb, var(--color-background) 75%, transparent);
+      color: var(--color-foreground);
+    }
+
+    {%- if section.settings.enable_blur -%}
+      #shopify-section-{{ section.id }} .header--pdp.header--scrolled {
+        backdrop-filter: blur(var(--header-blur));
+        -webkit-backdrop-filter: blur(var(--header-blur));
+      }
+    {%- endif -%}
+
+    #shopify-section-{{ section.id }} .header--pdp:not(.header--scrolled) .header__logo {
       width: {{ section.settings.pdp_logo_width }}px;
     }
 
     @media (max-width: 749px) {
-      #shopify-section-{{ section.id }} .header--pdp {
+      #shopify-section-{{ section.id }} .header--pdp:not(.header--scrolled) {
         min-height: {{ section.settings.pdp_height_mobile }}px;
       }
 
-      #shopify-section-{{ section.id }} .header--pdp .header__logo {
+      #shopify-section-{{ section.id }} .header--pdp:not(.header--scrolled) .header__logo {
         width: {{ section.settings.pdp_logo_width_mobile }}px;
       }
     }
