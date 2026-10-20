@@ -155,7 +155,7 @@
     "ugc": {
       "type": "iz-ugc",
       "settings": {
-        "fond": "gris"
+        "fond": "blanc"
       },
       "blocks": {
         "v1": {
@@ -189,7 +189,7 @@
     "rituel": {
       "type": "iz-rituel",
       "settings": {
-        "fond": "blanc"
+        "fond": "gris"
       },
       "blocks": {
         "e1": {
@@ -223,7 +223,7 @@
     "actifs": {
       "type": "iz-actifs",
       "settings": {
-        "fond": "gris"
+        "fond": "blanc"
       },
       "blocks": {
         "a1": {
@@ -257,7 +257,7 @@
     "routine": {
       "type": "iz-routine",
       "settings": {
-        "fond": "blanc"
+        "fond": "gris"
       }
     },
     "faq": {
