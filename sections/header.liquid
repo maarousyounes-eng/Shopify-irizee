@@ -15,8 +15,12 @@
 {% assign couleur_texte = section.settings.overlay_text_color %}
 {% assign couleur_logo = section.settings.logo_color %}
 
+{% comment %}
+  Seules les valeurs changent sur les fiches : la superposition et tout le
+  mécanisme de défilement restent ceux du reste du site, par le même chemin
+  de code. Les forker reviendrait à entretenir deux comportements.
+{% endcomment %}
 {% if reglages_pdp %}
-  {% assign is_overlay = section.settings.pdp_overlay %}
   {% assign couleur_texte = section.settings.pdp_text_color %}
   {% assign couleur_logo = section.settings.pdp_logo_color %}
 {% endif %}
@@ -77,38 +81,14 @@
        son conteneur ne fait que sa propre hauteur : il n'a aucun espace où
        coller et disparaîtrait dès le premier défilement. La section produit
        compense cette hauteur pour que rien ne passe dessous. */
-    #shopify-section-{{ section.id }} .header--pdp {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+    /* Hauteur et logo propres aux fiches, au repos seulement : une fois
+       scrollé, la hauteur réduite du groupe « Une fois scrollé » reprend la
+       main, exactement comme sur l'accueil. */
+    #shopify-section-{{ section.id }} .header--pdp:not(.header--scrolled) {
+      min-height: {{ section.settings.pdp_height }}px;
       padding-top: 0;
       padding-bottom: 0;
     }
-
-    /* La hauteur propre aux fiches ne vaut qu'en haut de page : une fois
-       scrollé, c'est la hauteur réduite du groupe « Une fois scrollé » qui
-       reprend la main, comme partout ailleurs sur le site. Sans le :not(),
-       cette règle l'écrasait et supprimait l'état scrollé. */
-    #shopify-section-{{ section.id }} .header--pdp:not(.header--scrolled) {
-      min-height: {{ section.settings.pdp_height }}px;
-      background: var(--color-background);
-    }
-
-    /* L'état scrollé dépendait de .header--overlay, absent ici : on le
-       rétablit pour que les fiches aient la même barre translucide que le
-       reste du site. */
-    #shopify-section-{{ section.id }} .header--pdp.header--scrolled {
-      background: color-mix(in srgb, var(--color-background) 75%, transparent);
-      color: var(--color-foreground);
-    }
-
-    {%- if section.settings.enable_blur -%}
-      #shopify-section-{{ section.id }} .header--pdp.header--scrolled {
-        backdrop-filter: blur(var(--header-blur));
-        -webkit-backdrop-filter: blur(var(--header-blur));
-      }
-    {%- endif -%}
 
     #shopify-section-{{ section.id }} .header--pdp:not(.header--scrolled) .header__logo {
       width: {{ section.settings.pdp_logo_width }}px;
