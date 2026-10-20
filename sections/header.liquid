@@ -636,8 +636,14 @@
       "id": "logo_color",
       "label": "Couleur du logo quand superposé",
       "options": [
-        { "value": "white", "label": "Blanc" },
-        { "value": "black", "label": "Noir" }
+        {
+          "value": "white",
+          "label": "Blanc"
+        },
+        {
+          "value": "black",
+          "label": "Noir"
+        }
       ],
       "default": "white"
     },
@@ -646,8 +652,14 @@
       "id": "scrolled_logo_color",
       "label": "Couleur du logo une fois scrollé",
       "options": [
-        { "value": "white", "label": "Blanc" },
-        { "value": "black", "label": "Noir" }
+        {
+          "value": "white",
+          "label": "Blanc"
+        },
+        {
+          "value": "black",
+          "label": "Noir"
+        }
       ],
       "default": "black"
     },
@@ -656,8 +668,14 @@
       "id": "overlay_text_color",
       "label": "Couleur du menu et des icônes quand superposé",
       "options": [
-        { "value": "white", "label": "Blanc" },
-        { "value": "black", "label": "Noir" }
+        {
+          "value": "white",
+          "label": "Blanc"
+        },
+        {
+          "value": "black",
+          "label": "Noir"
+        }
       ],
       "default": "white"
     },
@@ -759,15 +777,29 @@
       "label": "Effet au survol des liens",
       "info": "Indique quel lien est survolé. Les icônes et le logo s'atténuent dans tous les cas.",
       "options": [
-        { "value": "trait", "label": "Trait sous le lien" },
-        { "value": "opacite", "label": "Atténuation" },
-        { "value": "les-deux", "label": "Trait et atténuation" },
-        { "value": "aucun", "label": "Aucun" }
+        {
+          "value": "trait",
+          "label": "Trait sous le lien"
+        },
+        {
+          "value": "opacite",
+          "label": "Atténuation"
+        },
+        {
+          "value": "les-deux",
+          "label": "Trait et atténuation"
+        },
+        {
+          "value": "aucun",
+          "label": "Aucun"
+        }
       ],
       "default": "trait"
     },
-
-    { "type": "header", "content": "Logo et icônes" },
+    {
+      "type": "header",
+      "content": "Logo et icônes"
+    },
     {
       "type": "range",
       "id": "logo_width",
@@ -900,7 +932,10 @@
       "unit": "px",
       "default": 0
     },
-    { "type": "header", "content": "Une fois scrollé" },
+    {
+      "type": "header",
+      "content": "Une fois scrollé"
+    },
     {
       "type": "range",
       "id": "scrolled_height",
@@ -948,10 +983,22 @@
       "id": "menu_text_transform",
       "label": "Casse du texte",
       "options": [
-        { "value": "none", "label": "Normal" },
-        { "value": "uppercase", "label": "Majuscules" },
-        { "value": "lowercase", "label": "Minuscules" },
-        { "value": "capitalize", "label": "Première lettre en majuscule" }
+        {
+          "value": "none",
+          "label": "Normal"
+        },
+        {
+          "value": "uppercase",
+          "label": "Majuscules"
+        },
+        {
+          "value": "lowercase",
+          "label": "Minuscules"
+        },
+        {
+          "value": "capitalize",
+          "label": "Première lettre en majuscule"
+        }
       ],
       "default": "uppercase"
     },
@@ -965,6 +1012,99 @@
       "id": "customer_account_menu",
       "label": "t:labels.customer_account_menu",
       "default": "customer-account-main-menu"
+    },
+    {
+      "type": "header",
+      "content": "Pages produit"
+    },
+    {
+      "type": "paragraph",
+      "content": "Shopify ne charge qu'un seul en-tête pour tout le site. Ces valeurs le remplacent uniquement sur les fiches produit."
+    },
+    {
+      "type": "checkbox",
+      "id": "pdp_override",
+      "label": "Réglages propres aux fiches produit",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "pdp_overlay",
+      "label": "Superposer sur le contenu",
+      "info": "Une fiche produit n'a pas d'image de couverture : décoché, le menu pousse le contenu au lieu de le recouvrir.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "pdp_height",
+      "label": "Hauteur — ordinateur",
+      "min": 40,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "pdp_height_mobile",
+      "label": "Hauteur — mobile",
+      "min": 40,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "pdp_logo_width",
+      "label": "Largeur du logo — ordinateur",
+      "min": 40,
+      "max": 240,
+      "step": 2,
+      "unit": "px",
+      "default": 110
+    },
+    {
+      "type": "range",
+      "id": "pdp_logo_width_mobile",
+      "label": "Largeur du logo — mobile",
+      "min": 30,
+      "max": 180,
+      "step": 2,
+      "unit": "px",
+      "default": 84
+    },
+    {
+      "type": "select",
+      "id": "pdp_text_color",
+      "label": "Couleur du menu et des icônes",
+      "options": [
+        {
+          "value": "black",
+          "label": "Noir"
+        },
+        {
+          "value": "white",
+          "label": "Blanc"
+        }
+      ],
+      "default": "black"
+    },
+    {
+      "type": "select",
+      "id": "pdp_logo_color",
+      "label": "Couleur du logo",
+      "options": [
+        {
+          "value": "black",
+          "label": "Noir"
+        },
+        {
+          "value": "white",
+          "label": "Blanc"
+        }
+      ],
+      "default": "black"
     }
   ]
 }
