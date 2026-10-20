@@ -145,12 +145,42 @@
     "resultats": {
       "type": "iz-resultats",
       "settings": {}
+    },
+    "ugc": {
+      "type": "iz-ugc",
+      "settings": {}
+    },
+    "rituel": {
+      "type": "iz-rituel",
+      "settings": {}
+    },
+    "actifs": {
+      "type": "iz-actifs",
+      "settings": {}
+    },
+    "routine": {
+      "type": "iz-routine",
+      "settings": {}
+    },
+    "faq": {
+      "type": "iz-faq",
+      "settings": {}
+    },
+    "marque": {
+      "type": "iz-marque",
+      "settings": {}
     }
   },
   "order": [
     "main",
     "engagements",
     "texture",
-    "resultats"
+    "resultats",
+    "ugc",
+    "rituel",
+    "actifs",
+    "routine",
+    "faq",
+    "marque"
   ]
 }
