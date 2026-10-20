@@ -73,10 +73,19 @@
   {%- if reglages_pdp -%}
     /* Valeurs propres aux pages produit. Déclarées après les valeurs
        générales pour l'emporter, sans les modifier ailleurs. */
+    /* Le header reste en position fixe même sans superposition. En `sticky`,
+       son conteneur ne fait que sa propre hauteur : il n'a aucun espace où
+       coller et disparaîtrait dès le premier défilement. La section produit
+       compense cette hauteur pour que rien ne passe dessous. */
     #shopify-section-{{ section.id }} .header--pdp {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
       min-height: {{ section.settings.pdp_height }}px;
       padding-top: 0;
       padding-bottom: 0;
+      background: var(--color-background);
     }
 
     #shopify-section-{{ section.id }} .header--pdp .header__logo {
