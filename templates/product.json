@@ -107,7 +107,8 @@
         "title_size": 15,
         "title_size_mobile": 15,
         "text_size": 14,
-        "text_size_mobile": 14
+        "text_size_mobile": 14,
+        "largeur": "page"
       }
     }
   },
