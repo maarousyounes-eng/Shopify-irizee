@@ -16,9 +16,42 @@
 {% style %}
   #shopify-section-{{ section.id }} {
     --izp-ratio: {{ section.settings.ratio }};
+
+    /* Typographie : chaque taille est réglable, avec sa variante mobile. */
+    --izp-fil: {{ section.settings.taille_fil }}px;
+    --izp-eyebrow: {{ section.settings.taille_eyebrow }}px;
+    --izp-titre: {{ section.settings.taille_titre }}px;
+    --izp-note: {{ section.settings.taille_note }}px;
+    --izp-promesse: {{ section.settings.taille_promesse }}px;
+    --izp-benefices: {{ section.settings.taille_benefices }}px;
+    --izp-offre-nom: {{ section.settings.taille_offre_nom }}px;
+    --izp-offre-sub: {{ section.settings.taille_offre_sub }}px;
+    --izp-offre-badge: {{ section.settings.taille_offre_badge }}px;
+    --izp-bouton: {{ section.settings.taille_bouton }}px;
+    --izp-quantite: {{ section.settings.taille_quantite }}px;
+    --izp-jauge: {{ section.settings.taille_jauge }}px;
+    --izp-acc-titre: {{ section.settings.taille_acc_titre }}px;
+    --izp-acc-texte: {{ section.settings.taille_acc_texte }}px;
     --izp-gap: {{ section.settings.column_gap }}px;
     --izp-gallery-base: {{ section.settings.gallery_base }}px;
     --izp-buybox-base: {{ section.settings.buybox_base }}px;
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --izp-fil: {{ section.settings.taille_fil_m }}px;
+      --izp-eyebrow: {{ section.settings.taille_eyebrow_m }}px;
+      --izp-titre: {{ section.settings.taille_titre_m }}px;
+      --izp-note: {{ section.settings.taille_note_m }}px;
+      --izp-promesse: {{ section.settings.taille_promesse_m }}px;
+      --izp-benefices: {{ section.settings.taille_benefices_m }}px;
+      --izp-offre-nom: {{ section.settings.taille_offre_nom_m }}px;
+      --izp-offre-sub: {{ section.settings.taille_offre_sub_m }}px;
+      --izp-bouton: {{ section.settings.taille_bouton_m }}px;
+      --izp-jauge: {{ section.settings.taille_jauge_m }}px;
+      --izp-acc-titre: {{ section.settings.taille_acc_titre_m }}px;
+      --izp-acc-texte: {{ section.settings.taille_acc_texte_m }}px;
+    }
   }
 {% endstyle %}
 
@@ -351,8 +384,12 @@
     padding: calc(8px + var(--izp-offset, 0px)) 0 72px;
   }
 
+  .iz-pdp .iz-h1 { font-size: var(--izp-titre, 44px); }
+  .iz-pdp .iz-eyebrow { font-size: var(--izp-eyebrow, 12px); }
+  .iz-pdp .iz-btn--primary { font-size: var(--izp-bouton, 14px); }
+
   .iz-breadcrumb {
-    font-size: 13px;
+    font-size: var(--izp-fil, 13px);
     color: var(--iz-muted);
     margin-bottom: 20px;
   }
@@ -495,7 +532,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 14px;
+    font-size: var(--izp-note, 14px);
     color: var(--iz-ink);
     text-decoration: none;
   }
@@ -509,7 +546,7 @@
 
   .iz-pdp__promise {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--izp-promesse, 18px);
     line-height: 1.5;
   }
 
@@ -520,7 +557,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    font-size: 15px;
+    font-size: var(--izp-benefices, 15px);
   }
 
   .iz-benefits li {
@@ -595,11 +632,12 @@
   .iz-offer__name {
     display: block;
     font-weight: 700;
+    font-size: var(--izp-offre-nom, 15px);
   }
 
   .iz-offer__sub {
     display: block;
-    font-size: 13px;
+    font-size: var(--izp-offre-sub, 13px);
     color: var(--iz-muted);
   }
 
@@ -608,11 +646,12 @@
   .iz-offer__price {
     display: block;
     font-weight: 700;
+    font-size: var(--izp-offre-nom, 15px);
   }
 
   .iz-offer__compare {
     display: block;
-    font-size: 13px;
+    font-size: var(--izp-offre-sub, 13px);
     color: var(--iz-muted);
     text-decoration: line-through;
   }
@@ -623,7 +662,7 @@
     right: 16px;
     background: var(--iz-ink);
     color: var(--iz-bg);
-    font-size: 11px;
+    font-size: var(--izp-offre-badge, 11px);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -651,7 +690,7 @@
     border: 0;
     background: transparent;
     color: var(--iz-ink);
-    font-size: 18px;
+    font-size: var(--izp-quantite, 18px);
     cursor: pointer;
   }
 
@@ -676,7 +715,7 @@
 
   .iz-cta__feedback {
     margin: 8px 0 0;
-    font-size: 13px;
+    font-size: var(--izp-jauge, 13px);
     color: var(--iz-muted);
   }
 
@@ -691,7 +730,7 @@
 
   .iz-gauge__text {
     margin: 0;
-    font-size: 13px;
+    font-size: var(--izp-jauge, 13px);
   }
 
   .iz-gauge__text:empty { display: none; }
@@ -724,13 +763,14 @@
 
   .iz-accordion__summary {
     font-weight: 700;
+    font-size: var(--izp-acc-titre, 15px);
     cursor: pointer;
     min-height: 24px;
   }
 
   .iz-accordion__body {
     margin: 10px 0 0;
-    font-size: 15px;
+    font-size: var(--izp-acc-texte, 15px);
     color: var(--iz-text-2);
   }
 
@@ -749,7 +789,6 @@
   @media (max-width: 749px) {
     .iz-pdp { padding-bottom: 40px; }
     .iz-gallery__thumbs { display: none; }
-    .iz-pdp__promise { font-size: 16px; }
   }
 
   @media (min-width: 750px) {
