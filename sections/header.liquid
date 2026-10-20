@@ -81,6 +81,15 @@
        son conteneur ne fait que sa propre hauteur : il n'a aucun espace où
        coller et disparaîtrait dès le premier défilement. La section produit
        compense cette hauteur pour que rien ne passe dessous. */
+    {%- if section.settings.pdp_border -%}
+      /* Filet de séparation sous le menu. Conservé dans les deux états :
+         il sépare aussi bien le menu au repos que la barre translucide du
+         contenu qui défile dessous. */
+      #shopify-section-{{ section.id }} .header--pdp {
+        border-bottom: 1px solid {{ section.settings.pdp_border_color }};
+      }
+    {%- endif -%}
+
     /* Hauteur et logo propres aux fiches, au repos seulement : une fois
        scrollé, la hauteur réduite du groupe « Une fois scrollé » reprend la
        main, exactement comme sur l'accueil. */
@@ -1109,6 +1118,19 @@
         }
       ],
       "default": "black"
+    },
+    {
+      "type": "checkbox",
+      "id": "pdp_border",
+      "label": "Filet sous le menu",
+      "info": "Sépare le menu du contenu de la fiche.",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "pdp_border_color",
+      "label": "Couleur du filet",
+      "default": "#E2E2DF"
     }
   ]
 }
