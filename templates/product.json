@@ -144,7 +144,9 @@
     },
     "resultats": {
       "type": "iz-resultats",
-      "settings": {}
+      "settings": {
+        "source": "Étude d'usage sur 42 volontaires, 4 semaines. Résultats auto-évalués."
+      }
     }
   },
   "order": [

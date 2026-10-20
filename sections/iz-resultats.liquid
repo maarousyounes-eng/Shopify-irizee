@@ -10,6 +10,11 @@
 {% endcomment %}
 
 {%- assign resultats = product.metafields.custom.resultats.value -%}
+{%- comment -%} TEST TEMPORAIRE — à retirer {%- endcomment -%}
+{%- unless resultats -%}
+  {%- assign resultats = '92|peaux plus lisses,8 sur 10|teint plus uniforme,4 semaines|pour un résultat visible' | split: ',' -%}
+  {%- assign test = true -%}
+{%- endunless -%}
 {%- assign source = product.metafields.custom.resultats_source | default: section.settings.source -%}
 
 {% style %}
@@ -57,8 +62,14 @@
       <div class="iz-res__grille">
         {%- for r in resultats -%}
           <div class="iz-res__carte">
-            <span class="iz-res__chiffre">{{ r.chiffre }}</span>
-            <span class="iz-res__libelle">{{ r.libelle }}</span>
+            {%- if test -%}
+              {%- assign paire = r | split: '|' -%}
+              <span class="iz-res__chiffre">{{ paire[0] }}</span>
+              <span class="iz-res__libelle">{{ paire[1] }}</span>
+            {%- else -%}
+              <span class="iz-res__chiffre">{{ r.chiffre }}</span>
+              <span class="iz-res__libelle">{{ r.libelle }}</span>
+            {%- endif -%}
           </div>
         {%- endfor -%}
       </div>
