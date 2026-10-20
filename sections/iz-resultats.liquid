@@ -39,7 +39,11 @@
   }
 {% endstyle %}
 
-{%- if resultats != blank and resultats.size > 0 and source != blank -%}
+{%- assign a_des_chiffres = false -%}
+{%- if resultats != blank and resultats.size > 0 -%}{%- assign a_des_chiffres = true -%}
+{%- elsif section.blocks.size > 0 -%}{%- assign a_des_chiffres = true -%}{%- endif -%}
+
+{%- if a_des_chiffres and source != blank -%}
   <section class="iz-res full-width">
     <div class="iz-res__inner">
 
@@ -55,12 +59,21 @@
       {%- endif -%}
 
       <div class="iz-res__grille">
-        {%- for r in resultats -%}
-          <div class="iz-res__carte">
-            <span class="iz-res__chiffre">{{ r.chiffre }}</span>
-            <span class="iz-res__libelle">{{ r.libelle }}</span>
-          </div>
-        {%- endfor -%}
+        {%- if resultats != blank and resultats.size > 0 -%}
+          {%- for r in resultats -%}
+            <div class="iz-res__carte">
+              <span class="iz-res__chiffre">{{ r.chiffre }}</span>
+              <span class="iz-res__libelle">{{ r.libelle }}</span>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for block in section.blocks -%}
+            <div class="iz-res__carte" {{ block.shopify_attributes }}>
+              <span class="iz-res__chiffre">{{ block.settings.chiffre }}</span>
+              <span class="iz-res__libelle">{{ block.settings.libelle }}</span>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
       </div>
 
       <p class="iz-res__source">{{ source }}</p>
@@ -149,34 +162,238 @@
   "name": "Fiche — résultats",
   "tag": "section",
   "settings": [
-    { "type": "paragraph", "content": "Les chiffres viennent du metafield resultats. La section ne s'affiche que si une source est renseignée : un chiffre sans source est une allégation non étayée." },
-    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Résultats" },
-    { "type": "text", "id": "titre", "label": "Titre", "default": "Ce que la peau ressent" },
-    { "type": "text", "id": "source", "label": "Source (repli)", "info": "Utilisée si le metafield resultats_source est vide. Sans l'un ni l'autre, la section reste masquée." },
-
-    { "type": "header", "content": "Mise en page" },
-    { "type": "range", "id": "largeur_min_carte", "label": "Largeur minimale d'une carte", "min": 140, "max": 400, "step": 10, "unit": "px", "default": 240 },
-    { "type": "range", "id": "gap", "label": "Espace entre les cartes", "min": 8, "max": 48, "step": 2, "unit": "px", "default": 20 },
-    { "type": "range", "id": "padding_carte", "label": "Marge intérieure des cartes — ordinateur", "min": 12, "max": 64, "step": 2, "unit": "px", "default": 32 },
-    { "type": "range", "id": "padding_carte_mobile", "label": "Marge intérieure des cartes — mobile", "min": 12, "max": 48, "step": 2, "unit": "px", "default": 24 },
-    { "type": "range", "id": "marge_verticale", "label": "Marge verticale — ordinateur", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 88 },
-    { "type": "range", "id": "marge_verticale_mobile", "label": "Marge verticale — mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56 },
-
-    { "type": "header", "content": "Couleurs" },
-    { "type": "color", "id": "couleur_fond", "label": "Fond de la section", "default": "#EBEBEA" },
-    { "type": "color", "id": "couleur_carte", "label": "Fond des cartes", "default": "#FBFAF8" },
-
-    { "type": "header", "content": "Typographie" },
-    { "type": "range", "id": "taille_eyebrow", "label": "Sur-titre — ordinateur", "min": 9, "max": 20, "step": 1, "unit": "px", "default": 12 },
-    { "type": "range", "id": "taille_eyebrow_mobile", "label": "Sur-titre — mobile", "min": 9, "max": 18, "step": 1, "unit": "px", "default": 11 },
-    { "type": "range", "id": "taille_titre", "label": "Titre — ordinateur", "min": 20, "max": 64, "step": 1, "unit": "px", "default": 40 },
-    { "type": "range", "id": "taille_titre_mobile", "label": "Titre — mobile", "min": 18, "max": 44, "step": 1, "unit": "px", "default": 28 },
-    { "type": "range", "id": "taille_chiffre", "label": "Chiffre — ordinateur", "min": 24, "max": 96, "step": 2, "unit": "px", "default": 56 },
-    { "type": "range", "id": "taille_chiffre_mobile", "label": "Chiffre — mobile", "min": 20, "max": 72, "step": 2, "unit": "px", "default": 40 },
-    { "type": "range", "id": "taille_libelle", "label": "Libellé — ordinateur", "min": 11, "max": 24, "step": 1, "unit": "px", "default": 16 },
-    { "type": "range", "id": "taille_libelle_mobile", "label": "Libellé — mobile", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 15 },
-    { "type": "range", "id": "taille_source", "label": "Mention de source", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 13 }
+    {
+      "type": "paragraph",
+      "content": "Les chiffres viennent du metafield resultats. La section ne s'affiche que si une source est renseignée : un chiffre sans source est une allégation non étayée."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Sur-titre",
+      "default": "Résultats"
+    },
+    {
+      "type": "text",
+      "id": "titre",
+      "label": "Titre",
+      "default": "Ce que la peau ressent"
+    },
+    {
+      "type": "text",
+      "id": "source",
+      "label": "Source (repli)",
+      "info": "Utilisée si le metafield resultats_source est vide. Sans l'un ni l'autre, la section reste masquée."
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "range",
+      "id": "largeur_min_carte",
+      "label": "Largeur minimale d'une carte",
+      "min": 140,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 240
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Espace entre les cartes",
+      "min": 8,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_carte",
+      "label": "Marge intérieure des cartes — ordinateur",
+      "min": 12,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_carte_mobile",
+      "label": "Marge intérieure des cartes — mobile",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale",
+      "label": "Marge verticale — ordinateur",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale_mobile",
+      "label": "Marge verticale — mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Couleurs"
+    },
+    {
+      "type": "color",
+      "id": "couleur_fond",
+      "label": "Fond de la section",
+      "default": "#EBEBEA"
+    },
+    {
+      "type": "color",
+      "id": "couleur_carte",
+      "label": "Fond des cartes",
+      "default": "#FBFAF8"
+    },
+    {
+      "type": "header",
+      "content": "Typographie"
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow",
+      "label": "Sur-titre — ordinateur",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow_mobile",
+      "label": "Sur-titre — mobile",
+      "min": 9,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "taille_titre",
+      "label": "Titre — ordinateur",
+      "min": 20,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "taille_titre_mobile",
+      "label": "Titre — mobile",
+      "min": 18,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "taille_chiffre",
+      "label": "Chiffre — ordinateur",
+      "min": 24,
+      "max": 96,
+      "step": 2,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "taille_chiffre_mobile",
+      "label": "Chiffre — mobile",
+      "min": 20,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "taille_libelle",
+      "label": "Libellé — ordinateur",
+      "min": 11,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "taille_libelle_mobile",
+      "label": "Libellé — mobile",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "taille_source",
+      "label": "Mention de source",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    }
   ],
-  "presets": [{ "name": "Fiche — résultats" }]
+  "presets": [
+    {
+      "name": "Fiche — résultats",
+      "blocks": [
+        {
+          "type": "resultat"
+        },
+        {
+          "type": "resultat"
+        },
+        {
+          "type": "resultat"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "resultat",
+      "name": "Résultat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "chiffre",
+          "label": "Chiffre",
+          "default": "92 %"
+        },
+        {
+          "type": "text",
+          "id": "libelle",
+          "label": "Libellé",
+          "default": "peaux plus lisses"
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}
