@@ -1,8 +1,29 @@
+{% comment %}
+  Shopify ne charge qu'un seul groupe de sections pour l'en-tête : il n'existe
+  pas de « header de la page produit » à régler à part. On détecte donc le type
+  de page et on applique des valeurs alternatives pour ce qui doit différer.
+
+  Sur une fiche produit il n'y a pas de hero : la superposition y est désactivée
+  par défaut, ce qui remet aussi le header en position collante plutôt que fixe.
+{% endcomment %}
+{% assign reglages_pdp = false %}
+{% if request.page_type == 'product' and section.settings.pdp_override %}
+  {% assign reglages_pdp = true %}
+{% endif %}
+
 {% assign is_overlay = section.settings.overlay_on_image %}
+{% assign couleur_texte = section.settings.overlay_text_color %}
+{% assign couleur_logo = section.settings.logo_color %}
+
+{% if reglages_pdp %}
+  {% assign is_overlay = section.settings.pdp_overlay %}
+  {% assign couleur_texte = section.settings.pdp_text_color %}
+  {% assign couleur_logo = section.settings.pdp_logo_color %}
+{% endif %}
 
 {% comment %} Logo affiché en haut de page (sur l'image, si superposé) {% endcomment %}
 {% assign top_logo_white = false %}
-{% if is_overlay and section.settings.logo_color == 'white' %}
+{% if is_overlay and couleur_logo == 'white' %}
   {% assign top_logo_white = true %}
 {% endif %}
 {% assign top_logo_image = section.settings.logo %}
@@ -49,6 +70,40 @@
     --header-scrolled-logo-width: {{ section.settings.scrolled_logo_width }}px;
   }
 
+  {%- if reglages_pdp -%}
+    /* Valeurs propres aux pages produit. Déclarées après les valeurs
+       générales pour l'emporter, sans les modifier ailleurs. */
+    #shopify-section-{{ section.id }} .header--pdp {
+      min-height: {{ section.settings.pdp_height }}px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    #shopify-section-{{ section.id }} .header--pdp .header__logo {
+      width: {{ section.settings.pdp_logo_width }}px;
+    }
+
+    @media (max-width: 749px) {
+      #shopify-section-{{ section.id }} .header--pdp {
+        min-height: {{ section.settings.pdp_height_mobile }}px;
+      }
+
+      #shopify-section-{{ section.id }} .header--pdp .header__logo {
+        width: {{ section.settings.pdp_logo_width_mobile }}px;
+      }
+    }
+
+    /* Hors superposition, la couleur vient du thème : il faut donc la poser
+       explicitement pour que le réglage serve dans les deux cas. */
+    #shopify-section-{{ section.id }} .header--pdp-white:not(.header--scrolled) {
+      color: #fff;
+    }
+
+    #shopify-section-{{ section.id }} .header--pdp-black:not(.header--scrolled) {
+      color: #1a1a1a;
+    }
+  {%- endif -%}
+
   /* Le header doit occuper toute la largeur de l'écran. La classe
      `full-width` ne suffit pas : elle dépend de la règle
      `.shopify-section > .full-width`, qui ne s'applique pas ici parce que
@@ -75,7 +130,7 @@
 
 {% endstyle %}
 
-<header class="header full-width header--survol-{{ section.settings.menu_hover_style }}{% if is_overlay %} header--overlay header--overlay-{{ section.settings.overlay_text_color }}{% if section.settings.enable_blur %} header--blur{% endif %}{% endif %}">
+<header class="header full-width header--survol-{{ section.settings.menu_hover_style }}{% if reglages_pdp %} header--pdp header--pdp-{{ couleur_texte }}{% endif %}{% if is_overlay %} header--overlay header--overlay-{{ couleur_texte }}{% if section.settings.enable_blur %} header--blur{% endif %}{% endif %}">
   <details class="header__mobile-nav">
     <summary class="header__hamburger" aria-label="Menu">
       <span></span>
@@ -581,8 +636,14 @@
       "id": "logo_color",
       "label": "Couleur du logo quand superposé",
       "options": [
-        { "value": "white", "label": "Blanc" },
-        { "value": "black", "label": "Noir" }
+        {
+          "value": "white",
+          "label": "Blanc"
+        },
+        {
+          "value": "black",
+          "label": "Noir"
+        }
       ],
       "default": "white"
     },
@@ -591,8 +652,14 @@
       "id": "scrolled_logo_color",
       "label": "Couleur du logo une fois scrollé",
       "options": [
-        { "value": "white", "label": "Blanc" },
-        { "value": "black", "label": "Noir" }
+        {
+          "value": "white",
+          "label": "Blanc"
+        },
+        {
+          "value": "black",
+          "label": "Noir"
+        }
       ],
       "default": "black"
     },
@@ -601,8 +668,14 @@
       "id": "overlay_text_color",
       "label": "Couleur du menu et des icônes quand superposé",
       "options": [
-        { "value": "white", "label": "Blanc" },
-        { "value": "black", "label": "Noir" }
+        {
+          "value": "white",
+          "label": "Blanc"
+        },
+        {
+          "value": "black",
+          "label": "Noir"
+        }
       ],
       "default": "white"
     },
@@ -704,15 +777,29 @@
       "label": "Effet au survol des liens",
       "info": "Indique quel lien est survolé. Les icônes et le logo s'atténuent dans tous les cas.",
       "options": [
-        { "value": "trait", "label": "Trait sous le lien" },
-        { "value": "opacite", "label": "Atténuation" },
-        { "value": "les-deux", "label": "Trait et atténuation" },
-        { "value": "aucun", "label": "Aucun" }
+        {
+          "value": "trait",
+          "label": "Trait sous le lien"
+        },
+        {
+          "value": "opacite",
+          "label": "Atténuation"
+        },
+        {
+          "value": "les-deux",
+          "label": "Trait et atténuation"
+        },
+        {
+          "value": "aucun",
+          "label": "Aucun"
+        }
       ],
       "default": "trait"
     },
-
-    { "type": "header", "content": "Logo et icônes" },
+    {
+      "type": "header",
+      "content": "Logo et icônes"
+    },
     {
       "type": "range",
       "id": "logo_width",
@@ -845,7 +932,10 @@
       "unit": "px",
       "default": 0
     },
-    { "type": "header", "content": "Une fois scrollé" },
+    {
+      "type": "header",
+      "content": "Une fois scrollé"
+    },
     {
       "type": "range",
       "id": "scrolled_height",
@@ -893,10 +983,22 @@
       "id": "menu_text_transform",
       "label": "Casse du texte",
       "options": [
-        { "value": "none", "label": "Normal" },
-        { "value": "uppercase", "label": "Majuscules" },
-        { "value": "lowercase", "label": "Minuscules" },
-        { "value": "capitalize", "label": "Première lettre en majuscule" }
+        {
+          "value": "none",
+          "label": "Normal"
+        },
+        {
+          "value": "uppercase",
+          "label": "Majuscules"
+        },
+        {
+          "value": "lowercase",
+          "label": "Minuscules"
+        },
+        {
+          "value": "capitalize",
+          "label": "Première lettre en majuscule"
+        }
       ],
       "default": "uppercase"
     },
@@ -910,6 +1012,99 @@
       "id": "customer_account_menu",
       "label": "t:labels.customer_account_menu",
       "default": "customer-account-main-menu"
+    },
+    {
+      "type": "header",
+      "content": "Pages produit"
+    },
+    {
+      "type": "paragraph",
+      "content": "Shopify ne charge qu'un seul en-tête pour tout le site. Ces valeurs le remplacent uniquement sur les fiches produit."
+    },
+    {
+      "type": "checkbox",
+      "id": "pdp_override",
+      "label": "Réglages propres aux fiches produit",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "pdp_overlay",
+      "label": "Superposer sur le contenu",
+      "info": "Une fiche produit n'a pas d'image de couverture : décoché, le menu pousse le contenu au lieu de le recouvrir.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "pdp_height",
+      "label": "Hauteur — ordinateur",
+      "min": 40,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "pdp_height_mobile",
+      "label": "Hauteur — mobile",
+      "min": 40,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "pdp_logo_width",
+      "label": "Largeur du logo — ordinateur",
+      "min": 40,
+      "max": 240,
+      "step": 2,
+      "unit": "px",
+      "default": 110
+    },
+    {
+      "type": "range",
+      "id": "pdp_logo_width_mobile",
+      "label": "Largeur du logo — mobile",
+      "min": 30,
+      "max": 180,
+      "step": 2,
+      "unit": "px",
+      "default": 84
+    },
+    {
+      "type": "select",
+      "id": "pdp_text_color",
+      "label": "Couleur du menu et des icônes",
+      "options": [
+        {
+          "value": "black",
+          "label": "Noir"
+        },
+        {
+          "value": "white",
+          "label": "Blanc"
+        }
+      ],
+      "default": "black"
+    },
+    {
+      "type": "select",
+      "id": "pdp_logo_color",
+      "label": "Couleur du logo",
+      "options": [
+        {
+          "value": "black",
+          "label": "Noir"
+        },
+        {
+          "value": "white",
+          "label": "Blanc"
+        }
+      ],
+      "default": "black"
     }
   ]
 }
