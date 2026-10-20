@@ -137,10 +137,15 @@
         "kicker_size": 12,
         "kicker_size_mobile": 11
       }
+    },
+    "texture": {
+      "type": "iz-texture",
+      "settings": {}
     }
   },
   "order": [
     "main",
-    "engagements"
+    "engagements",
+    "texture"
   ]
 }
