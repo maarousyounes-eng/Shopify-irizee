@@ -1,0 +1,31 @@
+{% doc %}
+  Une étape du rituel. Le même rendu sert aux metaobjets et aux blocs de
+  section, pour que les deux sources ne puissent pas diverger.
+
+  @param {object} image - Image de l'étape
+  @param {string} titre - Titre de l'étape
+  @param {string} description - Description
+  @param {number} numero - Rang affiché
+  @param {string} [attrs] - Attributs d'éditeur, pour un bloc
+{% enddoc %}
+
+<li class="iz-rituel__etape" {{ attrs }}>
+  {%- if image -%}
+    <div class="iz-rituel__media">
+      <img
+        src="{{ image | image_url: width: 800 }}"
+        srcset="{{ image | image_url: width: 400 }} 400w, {{ image | image_url: width: 800 }} 800w"
+        sizes="(min-width: 750px) 30vw, 92vw"
+        alt="{{ image.alt | escape | default: titre | escape }}"
+        width="800" height="600" loading="lazy"
+      >
+    </div>
+  {%- endif -%}
+  <div class="iz-rituel__ligne">
+    <span class="iz-rituel__numero" aria-hidden="true">{{ numero }}</span>
+    <span class="iz-rituel__nom">{{ titre }}</span>
+  </div>
+  {%- if description != blank -%}
+    <p class="iz-rituel__texte">{{ description }}</p>
+  {%- endif -%}
+</li>
