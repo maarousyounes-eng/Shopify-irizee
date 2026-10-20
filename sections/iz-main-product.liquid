@@ -56,7 +56,7 @@
   }
 {% endstyle %}
 
-<section class="iz-pdp full-width">
+<section class="iz-pdp full-width{% if section.settings.galerie_fixe %} iz-pdp--galerie-fixe{% endif %}">
   <div class="iz-container">
 
     {%- if section.settings.afficher_fil -%}
@@ -488,6 +488,21 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+  }
+
+  /* Colonne photo collante : elle reste en place pendant qu'on parcourt les
+     informations, et se détache à la fin de la section.
+
+     Réservée à l'affichage en deux colonnes : empilée sur mobile, une photo
+     collante masquerait le contenu qu'on essaie de lire.
+
+     L'écart haut reprend la hauteur du header mesurée par le script ; sans
+     lui, la photo se collerait sous un menu fixe qui la recouvrirait. */
+  @media (min-width: 750px) {
+    .iz-pdp--galerie-fixe .iz-pdp__gallery {
+      position: sticky;
+      top: calc(var(--izp-offset, 0px) + var(--izp-sticky-haut, 24px));
+    }
   }
 
   .iz-pdp__buybox {
