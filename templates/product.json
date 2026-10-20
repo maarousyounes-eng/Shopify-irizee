@@ -140,7 +140,10 @@
     },
     "texture": {
       "type": "iz-texture",
-      "settings": {}
+      "settings": {
+        "titre": "Le bleu nila, vraiment",
+        "texte": "<p>Un indigo naturel extrait de la plante, utilisé depuis des siècles au Maroc. Il éclaircit et purifie sans agresser.</p>"
+      }
     }
   },
   "order": [
