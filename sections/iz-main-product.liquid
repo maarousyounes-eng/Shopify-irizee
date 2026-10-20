@@ -244,6 +244,25 @@
   </div>
 </section>
 
+{%- comment -%}
+  Barre d'achat fixe, mobile uniquement. Elle n'a pas de formulaire propre :
+  elle déclenche celui du bloc d'achat, pour que quantité, produit et prix ne
+  puissent pas diverger entre les deux boutons.
+{%- endcomment -%}
+{%- if section.settings.barre_mobile and variant.available -%}
+  {%- assign bloc_achat = nil -%}
+  {%- for b in section.blocks -%}
+    {%- if b.type == 'achat' -%}{%- assign bloc_achat = b -%}{%- endif -%}
+  {%- endfor -%}
+  {%- if bloc_achat -%}
+    <div class="iz-sticky" data-iz-sticky hidden>
+      <button type="button" class="iz-btn iz-btn--primary iz-sticky__btn" data-iz-sticky-btn>
+        {{ bloc_achat.settings.libelle_ajout }} — {{ variant.price | money }}
+      </button>
+    </div>
+  {%- endif -%}
+{%- endif -%}
+
 <script>
   (function () {
     var root = document.getElementById('shopify-section-{{ section.id }}');
@@ -360,6 +379,24 @@
           }
         })
         .catch(function () {});
+    }
+
+    /* Barre fixe mobile : elle n'apparaît que lorsque le bouton principal a
+       quitté l'écran, et déclenche le même formulaire. L'observateur évite
+       d'écouter le défilement en continu. */
+    var sticky = root.querySelector('[data-iz-sticky]');
+    var cta = root.querySelector('.iz-cta');
+    if (sticky && cta && window.IntersectionObserver) {
+      new IntersectionObserver(function (entrees) {
+        sticky.hidden = entrees[0].isIntersecting;
+      }, { rootMargin: '0px 0px -80px 0px' }).observe(cta);
+
+      var boutonSticky = root.querySelector('[data-iz-sticky-btn]');
+      if (boutonSticky) {
+        boutonSticky.addEventListener('click', function () {
+          root.querySelector('[data-iz-form] [type="submit"]').click();
+        });
+      }
     }
 
     var form = root.querySelector('[data-iz-form]');
