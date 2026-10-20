@@ -11,6 +11,7 @@
     --rs-icon: {{ section.settings.icon_color }};
     --rs-columns: {{ section.settings.columns }};
     --rs-cell-padding: {{ section.settings.cell_padding }}px;
+    --rs-cell-padding-x: {{ section.settings.cell_padding_x }}px;
     --rs-icon-size: {{ section.settings.icon_size }}px;
     --rs-margin-top: {{ section.settings.margin_top }}px;
     --rs-margin-bottom: {{ section.settings.margin_bottom }}px;
@@ -30,6 +31,7 @@
     #shopify-section-{{ section.id }} {
       --rs-columns: {{ section.settings.columns_mobile }};
       --rs-cell-padding: {{ section.settings.cell_padding_mobile }}px;
+      --rs-cell-padding-x: {{ section.settings.cell_padding_x_mobile }}px;
       --rs-icon-size: {{ section.settings.icon_size_mobile }}px;
       --rs-margin-top: {{ section.settings.margin_top_mobile }}px;
       --rs-margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
@@ -137,7 +139,7 @@
   }
 
   .reassurance__cell-inner {
-    padding: var(--rs-cell-padding);
+    padding: var(--rs-cell-padding) var(--rs-cell-padding-x, var(--rs-cell-padding));
   }
 
   /* Variante avec filets : le fond de la grille apparaît dans les
@@ -324,7 +326,7 @@
     {
       "type": "range",
       "id": "cell_padding",
-      "label": "Marges intérieures des cases — ordinateur",
+      "label": "Marges intérieures des cases — haut et bas, ordinateur",
       "min": 12,
       "max": 72,
       "step": 2,
@@ -334,8 +336,28 @@
     {
       "type": "range",
       "id": "cell_padding_mobile",
-      "label": "Marges intérieures des cases — mobile",
+      "label": "Marges intérieures des cases — haut et bas, mobile",
       "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "cell_padding_x",
+      "label": "Marges intérieures des cases — gauche et droite, ordinateur",
+      "min": 0,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "cell_padding_x_mobile",
+      "label": "Marges intérieures des cases — gauche et droite, mobile",
+      "min": 0,
       "max": 48,
       "step": 2,
       "unit": "px",
