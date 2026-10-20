@@ -141,11 +141,16 @@
     "texture": {
       "type": "iz-texture",
       "settings": {}
+    },
+    "resultats": {
+      "type": "iz-resultats",
+      "settings": {}
     }
   },
   "order": [
     "main",
     "engagements",
-    "texture"
+    "texture",
+    "resultats"
   ]
 }

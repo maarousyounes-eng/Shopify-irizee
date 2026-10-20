@@ -1,0 +1,182 @@
+{% comment %}
+  Fiche produit — résultats chiffrés.
+
+  Les chiffres viennent du metafield `resultats` (liste de metaobjets), la
+  mention d'étude de `resultats_source`.
+
+  La section ne s'affiche que si les DEUX sont renseignés. Afficher un
+  pourcentage sans dire d'où il sort est une allégation non étayée : le
+  garde-fou est donc dans le code, pas dans une consigne qu'on oublie.
+{% endcomment %}
+
+{%- assign resultats = product.metafields.custom.resultats.value -%}
+{%- assign source = product.metafields.custom.resultats_source | default: section.settings.source -%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --izr-fond: {{ section.settings.couleur_fond }};
+    --izr-carte: {{ section.settings.couleur_carte }};
+    --izr-marge: {{ section.settings.marge_verticale }}px;
+    --izr-min-carte: {{ section.settings.largeur_min_carte }}px;
+    --izr-gap: {{ section.settings.gap }}px;
+    --izr-carte-padding: {{ section.settings.padding_carte }}px;
+    --izr-eyebrow: {{ section.settings.taille_eyebrow }}px;
+    --izr-titre: {{ section.settings.taille_titre }}px;
+    --izr-chiffre: {{ section.settings.taille_chiffre }}px;
+    --izr-libelle: {{ section.settings.taille_libelle }}px;
+    --izr-source: {{ section.settings.taille_source }}px;
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --izr-marge: {{ section.settings.marge_verticale_mobile }}px;
+      --izr-carte-padding: {{ section.settings.padding_carte_mobile }}px;
+      --izr-eyebrow: {{ section.settings.taille_eyebrow_mobile }}px;
+      --izr-titre: {{ section.settings.taille_titre_mobile }}px;
+      --izr-chiffre: {{ section.settings.taille_chiffre_mobile }}px;
+      --izr-libelle: {{ section.settings.taille_libelle_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+{%- if resultats != blank and resultats.size > 0 and source != blank -%}
+  <section class="iz-res full-width">
+    <div class="iz-res__inner">
+
+      {%- if section.settings.eyebrow != blank or section.settings.titre != blank -%}
+        <div class="iz-res__entete">
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="iz-res__eyebrow">{{ section.settings.eyebrow }}</p>
+          {%- endif -%}
+          {%- if section.settings.titre != blank -%}
+            <h2 class="iz-res__titre">{{ section.settings.titre }}</h2>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <div class="iz-res__grille">
+        {%- for r in resultats -%}
+          <div class="iz-res__carte">
+            <span class="iz-res__chiffre">{{ r.chiffre }}</span>
+            <span class="iz-res__libelle">{{ r.libelle }}</span>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <p class="iz-res__source">{{ source }}</p>
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .iz-res {
+    background: var(--izr-fond);
+  }
+
+  .iz-res__inner {
+    max-width: var(--iz-container, 1320px);
+    margin-inline: auto;
+    padding-inline: var(--iz-gutter, 32px);
+    padding-block: var(--izr-marge, 88px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .iz-res__entete {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .iz-res__eyebrow {
+    margin: 0;
+    font-size: var(--izr-eyebrow, 12px);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .iz-res__titre {
+    margin: 0;
+    font-size: var(--izr-titre, 40px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  /* auto-fit plutôt qu'un nombre fixe de colonnes : la grille s'adapte au
+     nombre de résultats saisis, qui varie d'un produit à l'autre. */
+  .iz-res__grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--izr-min-carte, 240px), 1fr));
+    gap: var(--izr-gap, 20px);
+  }
+
+  .iz-res__carte {
+    background: var(--izr-carte);
+    border-radius: var(--iz-radius);
+    padding: var(--izr-carte-padding, 32px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .iz-res__chiffre {
+    font-size: var(--izr-chiffre, 56px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .iz-res__libelle {
+    font-size: var(--izr-libelle, 16px);
+  }
+
+  .iz-res__source {
+    margin: 0;
+    font-size: var(--izr-source, 13px);
+    color: var(--iz-text-2);
+  }
+
+  @media (max-width: 749px) {
+    .iz-res__inner { gap: 28px; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Fiche — résultats",
+  "tag": "section",
+  "settings": [
+    { "type": "paragraph", "content": "Les chiffres viennent du metafield resultats. La section ne s'affiche que si une source est renseignée : un chiffre sans source est une allégation non étayée." },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Résultats" },
+    { "type": "text", "id": "titre", "label": "Titre", "default": "Ce que la peau ressent" },
+    { "type": "text", "id": "source", "label": "Source (repli)", "info": "Utilisée si le metafield resultats_source est vide. Sans l'un ni l'autre, la section reste masquée." },
+
+    { "type": "header", "content": "Mise en page" },
+    { "type": "range", "id": "largeur_min_carte", "label": "Largeur minimale d'une carte", "min": 140, "max": 400, "step": 10, "unit": "px", "default": 240 },
+    { "type": "range", "id": "gap", "label": "Espace entre les cartes", "min": 8, "max": 48, "step": 2, "unit": "px", "default": 20 },
+    { "type": "range", "id": "padding_carte", "label": "Marge intérieure des cartes — ordinateur", "min": 12, "max": 64, "step": 2, "unit": "px", "default": 32 },
+    { "type": "range", "id": "padding_carte_mobile", "label": "Marge intérieure des cartes — mobile", "min": 12, "max": 48, "step": 2, "unit": "px", "default": 24 },
+    { "type": "range", "id": "marge_verticale", "label": "Marge verticale — ordinateur", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 88 },
+    { "type": "range", "id": "marge_verticale_mobile", "label": "Marge verticale — mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56 },
+
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "couleur_fond", "label": "Fond de la section", "default": "#EBEBEA" },
+    { "type": "color", "id": "couleur_carte", "label": "Fond des cartes", "default": "#FBFAF8" },
+
+    { "type": "header", "content": "Typographie" },
+    { "type": "range", "id": "taille_eyebrow", "label": "Sur-titre — ordinateur", "min": 9, "max": 20, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "taille_eyebrow_mobile", "label": "Sur-titre — mobile", "min": 9, "max": 18, "step": 1, "unit": "px", "default": 11 },
+    { "type": "range", "id": "taille_titre", "label": "Titre — ordinateur", "min": 20, "max": 64, "step": 1, "unit": "px", "default": 40 },
+    { "type": "range", "id": "taille_titre_mobile", "label": "Titre — mobile", "min": 18, "max": 44, "step": 1, "unit": "px", "default": 28 },
+    { "type": "range", "id": "taille_chiffre", "label": "Chiffre — ordinateur", "min": 24, "max": 96, "step": 2, "unit": "px", "default": 56 },
+    { "type": "range", "id": "taille_chiffre_mobile", "label": "Chiffre — mobile", "min": 20, "max": 72, "step": 2, "unit": "px", "default": 40 },
+    { "type": "range", "id": "taille_libelle", "label": "Libellé — ordinateur", "min": 11, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "taille_libelle_mobile", "label": "Libellé — mobile", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "taille_source", "label": "Mention de source", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 13 }
+  ],
+  "presets": [{ "name": "Fiche — résultats" }]
+}
+{% endschema %}
