@@ -142,16 +142,21 @@
       "type": "iz-texture",
       "settings": {
         "titre": "Le bleu nila, vraiment",
-        "texte": "<p>Un indigo naturel extrait de la plante, utilisé depuis des siècles au Maroc. Il éclaircit et purifie sans agresser.</p>"
+        "texte": "<p>Un indigo naturel extrait de la plante, utilisé depuis des siècles au Maroc. Il éclaircit et purifie sans agresser.</p>",
+        "fond": "gris"
       }
     },
     "resultats": {
       "type": "iz-resultats",
-      "settings": {}
+      "settings": {
+        "fond": "blanc"
+      }
     },
     "ugc": {
       "type": "iz-ugc",
-      "settings": {},
+      "settings": {
+        "fond": "blanc"
+      },
       "blocks": {
         "v1": {
           "type": "video",
@@ -183,7 +188,9 @@
     },
     "rituel": {
       "type": "iz-rituel",
-      "settings": {},
+      "settings": {
+        "fond": "gris"
+      },
       "blocks": {
         "e1": {
           "type": "etape",
@@ -215,7 +222,9 @@
     },
     "actifs": {
       "type": "iz-actifs",
-      "settings": {},
+      "settings": {
+        "fond": "blanc"
+      },
       "blocks": {
         "a1": {
           "type": "actif",
@@ -247,11 +256,15 @@
     },
     "routine": {
       "type": "iz-routine",
-      "settings": {}
+      "settings": {
+        "fond": "gris"
+      }
     },
     "faq": {
       "type": "iz-faq",
-      "settings": {},
+      "settings": {
+        "fond": "gris"
+      },
       "blocks": {
         "q1": {
           "type": "question",
@@ -284,7 +297,8 @@
     "marque": {
       "type": "iz-marque",
       "settings": {
-        "texte": "<p>Chaque ingrédient doit justifier sa présence. Si nous ne savons pas l'expliquer en une phrase, il ne rentre pas dans la formule.</p>"
+        "texte": "<p>Chaque ingrédient doit justifier sa présence. Si nous ne savons pas l'expliquer en une phrase, il ne rentre pas dans la formule.</p>",
+        "fond": "blanc"
       }
     }
   },
