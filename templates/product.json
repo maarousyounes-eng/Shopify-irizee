@@ -53,9 +53,66 @@
         "accordeons"
       ],
       "settings": {}
+    },
+    "engagements": {
+      "type": "reassurance",
+      "blocks": {
+        "e1": {
+          "type": "item",
+          "settings": {
+            "icon": "none",
+            "title": "Formules naturelles",
+            "text": "Des ingrédients choisis, sans compromis."
+          }
+        },
+        "e2": {
+          "type": "item",
+          "settings": {
+            "icon": "none",
+            "title": "Fabriqué en France",
+            "text": "Produit dans nos ateliers partenaires."
+          }
+        },
+        "e3": {
+          "type": "item",
+          "settings": {
+            "icon": "none",
+            "title": "Non testé sur les animaux",
+            "text": "Aucune formule testée sur les animaux."
+          }
+        }
+      },
+      "block_order": [
+        "e1",
+        "e2",
+        "e3"
+      ],
+      "settings": {
+        "columns": 3,
+        "columns_mobile": "1",
+        "alignment": "left",
+        "show_numbers": false,
+        "show_separators": false,
+        "show_edges": true,
+        "cell_padding": 28,
+        "cell_padding_mobile": 20,
+        "column_gap": 32,
+        "column_gap_mobile": 16,
+        "row_gap": 0,
+        "row_gap_mobile": 0,
+        "margin_top": 0,
+        "margin_top_mobile": 0,
+        "margin_bottom": 0,
+        "margin_bottom_mobile": 0,
+        "title_size": 15,
+        "title_size_mobile": 15,
+        "text_size": 14,
+        "text_size_mobile": 14
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "engagements"
   ]
 }
