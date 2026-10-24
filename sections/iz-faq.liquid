@@ -151,6 +151,11 @@
     color: var(--iz-text-2);
   }
 
+  /* Le thème remet les marges des paragraphes à zéro : sans cette règle,
+     deux paragraphes d'un texte enrichi se touchent. Constaté sur la
+     section texture du Masque. */
+  .iz-faq__reponse p + p { margin-top: 1em; }
+
   .iz-faq__reponse > :first-child { margin-top: 0; }
   .iz-faq__reponse > :last-child { margin-bottom: 0; }
 {% endstylesheet %}
