@@ -117,3 +117,28 @@ s'en charge déjà, ce journal est pour le contexte que le code ne montre pas.
   pas encore : elles sont en place mais restent masquées, conformément à la
   règle d'état vide. La section d'avis (étape 11) attend l'installation d'une
   app d'avis.
+
+## 2026-10-24
+
+- **Metafields, metaobjets et contenu créés directement dans l'admin** : les
+  dix définitions de champ produit, les trois définitions de metaobjets, les
+  24 entrées (6 étapes de rituel, 8 actifs, 10 questions) et le remplissage
+  complet de la fiche du Masque. Chaque clé a été vérifiée à l'écran avant
+  enregistrement — Shopify fabrique la clé à partir du nom affiché, et une
+  clé fausse ne renvoie rien et ne signale rien.
+- **Le texte enrichi sortait en JSON brut sur la page rendue.** Shopify
+  convertit un metafield `rich_text` quand on le sort directement, mais pas
+  dans deux cas : quand la valeur passe par un filtre (`iz-texture` utilisait
+  `| default:`) et quand elle vient d'un champ de metaobjet (`iz-faq` lisait
+  `q.reponse`). Dans le second cas l'arbre n'est même accessible que derrière
+  `.value`. D'où `snippets/iz-richtext.liquid`, qui fait la conversion à la
+  main et laisse passer intact ce qui est déjà du HTML.
+- **La leçon du 20 octobre a resservi le jour même** : les deux défauts
+  ci-dessus étaient invisibles dans le code et dans l'admin — l'admin
+  affichait un joli texte formaté. Ils n'apparaissent qu'en lisant le HTML de
+  la page rendue. Le premier correctif n'a d'ailleurs réparé que la section
+  texture ; c'est la mesure suivante qui a montré que la FAQ, elle, tenait à
+  une autre cause.
+- Le contenu de démonstration du gabarit (vidéos, rituel, actifs, FAQ) a été
+  retiré. L'une des accroches annonçait « Avant / après 4 semaines », un
+  résultat daté que rien n'étaye.
