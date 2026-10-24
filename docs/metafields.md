@@ -10,6 +10,12 @@ Espace de noms partout : `custom`
 
 ## Étape 1 — Les champs simples
 
+> **Déjà créé dans l'admin le 24/10/2026.** Les sept définitions existent,
+> clés vérifiées une à une. Les noms affichés sont sans accent (« Benefices »,
+> « Inci ») parce que Shopify fabrique la clé à partir du nom : tu peux les
+> renommer, la clé ne bougera plus.
+
+
 Les plus rentables : ils remplissent le haut de la fiche, là où se joue la
 décision d'achat. Commence par eux.
 
@@ -42,6 +48,12 @@ composition et section texture s'affichent.
 ---
 
 ## Étape 2 — Les metaobjets
+
+> **Déjà créé dans l'admin le 24/10/2026** : les trois définitions de
+> metaobjets (`etape_rituel`, `actif`, `question_faq`) et les trois champs
+> produit qui les référencent (`etapes`, `actifs`, `faq`), tous en liste.
+> Il ne reste qu'à créer les entrées et à les rattacher aux produits.
+
 
 Trois types à créer, pour le rituel, les actifs et la FAQ.
 
