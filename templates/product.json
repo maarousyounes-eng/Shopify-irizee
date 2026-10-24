@@ -163,7 +163,7 @@
     "rituel": {
       "type": "iz-rituel",
       "settings": {
-        "couleur_fond": "#EBEBEA"
+        "couleur_fond": "#FFFFFF"
       },
       "blocks": {},
       "block_order": []
@@ -171,7 +171,7 @@
     "actifs": {
       "type": "iz-actifs",
       "settings": {
-        "couleur_fond": "#FFFFFF"
+        "couleur_fond": "#EBEBEA"
       },
       "blocks": {},
       "block_order": []
@@ -179,13 +179,13 @@
     "routine": {
       "type": "iz-routine",
       "settings": {
-        "couleur_fond": "#EBEBEA"
+        "couleur_fond": "#FFFFFF"
       }
     },
     "faq": {
       "type": "iz-faq",
       "settings": {
-        "couleur_fond": "#EBEBEA"
+        "couleur_fond": "#FFFFFF"
       },
       "blocks": {},
       "block_order": []
@@ -194,7 +194,7 @@
       "type": "iz-marque",
       "settings": {
         "texte": "<p>Chaque ingrédient doit justifier sa présence. Si nous ne savons pas l'expliquer en une phrase, il ne rentre pas dans la formule.</p>",
-        "couleur_fond": "#FFFFFF"
+        "couleur_fond": "#EBEBEA"
       }
     }
   },
