@@ -159,8 +159,12 @@ cohérente avec la promesse d'uniformité du teint.
 **Format**
 `Sérum visage · [volume à confirmer]`
 
-> ⚠ Le volume ne figure pas sur la fiche technique. À compléter avant la mise
-> en ligne — c'est une mention obligatoire.
+> ⚠ **Toujours en attente au 24/10/2026.** Le volume ne figure pas sur la
+> fiche technique BIOCYLAB, et le champ `format` du produit est resté vide
+> plutôt que de porter une valeur inventée. C'est une mention obligatoire :
+> rien ne part en ligne sans elle.
+>
+> Le « 250 » communiqué le 24/10 est la quantité en stock, pas le contenant.
 
 **Promesse**
 `Un sérum concentré en vitamine C et alpha-arbutine, pour unifier le teint et révéler l'éclat naturel de la peau.`
