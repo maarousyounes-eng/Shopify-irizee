@@ -17,10 +17,20 @@
   Usage : {%- render 'iz-richtext', contenu: product.metafields.custom.x.value -%}
 {% endcomment %}
 
-{%- if contenu.children == blank -%}
+{%- comment -%}
+  Un metafield donne son arbre directement ; un champ de metaobjet le range
+  derrière `.value` et s'affiche sinon comme la chaîne JSON. On essaie les
+  deux avant de renoncer.
+{%- endcomment -%}
+{%- assign racine = contenu -%}
+{%- if racine.children == blank and contenu.value.children != blank -%}
+  {%- assign racine = contenu.value -%}
+{%- endif -%}
+
+{%- if racine.children == blank -%}
   {{ contenu }}
 {%- else -%}
-  {%- for bloc in contenu.children -%}
+  {%- for bloc in racine.children -%}
     {%- case bloc.type -%}
 
       {%- when 'paragraph' -%}
