@@ -37,7 +37,7 @@
         "product_Wamkke": {
           "type": "product",
           "settings": {
-            "product": "masque",
+            "product": "masque-rituel-nila",
             "badge_text": "Best",
             "category_label": "Masque"
           }
@@ -45,7 +45,7 @@
         "product_C3EFeh": {
           "type": "product",
           "settings": {
-            "product": "masque",
+            "product": "masque-rituel-nila",
             "badge_text": "",
             "category_label": ""
           }
@@ -53,7 +53,7 @@
         "product_nLALKQ": {
           "type": "product",
           "settings": {
-            "product": "masque",
+            "product": "masque-rituel-nila",
             "badge_text": "",
             "category_label": ""
           }
@@ -61,7 +61,7 @@
         "product_FWzcgW": {
           "type": "product",
           "settings": {
-            "product": "masque",
+            "product": "masque-rituel-nila",
             "badge_text": "",
             "category_label": ""
           }
