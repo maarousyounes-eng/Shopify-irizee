@@ -67,7 +67,7 @@
           {%- for q in faq -%}
             <details class="iz-faq__item">
               <summary class="iz-faq__question">{{ q.question }}</summary>
-              <div class="iz-faq__reponse">{{ q.reponse }}</div>
+              <div class="iz-faq__reponse">{%- render 'iz-richtext', contenu: q.reponse -%}</div>
             </details>
           {%- endfor -%}
         {%- else -%}

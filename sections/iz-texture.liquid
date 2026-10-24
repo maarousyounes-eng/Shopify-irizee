@@ -9,7 +9,12 @@
 {% endcomment %}
 
 {%- assign titre = product.metafields.custom.texture_titre | default: section.settings.titre -%}
-{%- assign texte = product.metafields.custom.texture_texte | default: section.settings.texte -%}
+{%- comment -%}
+  Le texte enrichi ne passe pas par `default` : le filtre transforme le
+  metafield en son arbre JSON, qui s'affichait tel quel sur la page.
+{%- endcomment -%}
+{%- assign texte = product.metafields.custom.texture_texte.value -%}
+{%- if texte == blank -%}{%- assign texte = section.settings.texte -%}{%- endif -%}
 {%- assign image = product.metafields.custom.texture_image.value | default: section.settings.image -%}
 
 {% style %}
@@ -69,7 +74,7 @@
         {%- endif -%}
         <h2 class="iz-texture__titre">{{ titre }}</h2>
         {%- if texte != blank -%}
-          <div class="iz-texture__corps">{{ texte }}</div>
+          <div class="iz-texture__corps">{%- render 'iz-richtext', contenu: texte -%}</div>
         {%- endif -%}
       </div>
 

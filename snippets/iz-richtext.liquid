@@ -1,0 +1,66 @@
+{% comment %}
+  Rend un champ « texte enrichi » en HTML.
+
+  Shopify convertit tout seul un metafield rich_text sorti directement, mais
+  pas un champ de metaobjet, ni une valeur passée par un filtre : dans ces
+  deux cas c'est l'arbre JSON brut qui s'affiche sur la page. Constaté sur la
+  fiche du Masque : la section texture et les réponses de la FAQ sortaient
+  en {"type":"root","children":[...]}.
+
+  Liquid n'autorise pas la récursion dans un snippet : la profondeur est donc
+  figée. Elle couvre ce que l'éditeur de Shopify sait produire — paragraphes,
+  titres, listes, liens, gras et italique.
+
+  Une chaîne déjà en HTML (le repli richtext d'un réglage de section) n'a pas
+  d'enfants : elle ressort telle quelle.
+
+  Usage : {%- render 'iz-richtext', contenu: product.metafields.custom.x.value -%}
+{% endcomment %}
+
+{%- if contenu.children == blank -%}
+  {{ contenu }}
+{%- else -%}
+  {%- for bloc in contenu.children -%}
+    {%- case bloc.type -%}
+
+      {%- when 'paragraph' -%}
+        <p>
+          {%- for n in bloc.children -%}
+            {%- if n.type == 'link' -%}
+              <a href="{{ n.url }}"{% if n.title != blank %} title="{{ n.title | escape }}"{% endif %}{% if n.target != blank %} target="{{ n.target }}" rel="noopener"{% endif %}>
+                {%- for t in n.children -%}{{ t.value | escape }}{%- endfor -%}
+              </a>
+            {%- elsif n.bold -%}<strong>{{ n.value | escape }}</strong>
+            {%- elsif n.italic -%}<em>{{ n.value | escape }}</em>
+            {%- else -%}{{ n.value | escape }}
+            {%- endif -%}
+          {%- endfor -%}
+        </p>
+
+      {%- when 'heading' -%}
+        {%- assign niveau = bloc.level | default: 2 -%}
+        <h{{ niveau }}>
+          {%- for n in bloc.children -%}{{ n.value | escape }}{%- endfor -%}
+        </h{{ niveau }}>
+
+      {%- when 'list' -%}
+        {%- if bloc.listType == 'ordered' -%}<ol>{%- else -%}<ul>{%- endif -%}
+          {%- for item in bloc.children -%}
+            <li>
+              {%- for n in item.children -%}
+                {%- if n.type == 'link' -%}
+                  <a href="{{ n.url }}"{% if n.target != blank %} target="{{ n.target }}" rel="noopener"{% endif %}>
+                    {%- for t in n.children -%}{{ t.value | escape }}{%- endfor -%}
+                  </a>
+                {%- elsif n.bold -%}<strong>{{ n.value | escape }}</strong>
+                {%- elsif n.italic -%}<em>{{ n.value | escape }}</em>
+                {%- else -%}{{ n.value | escape }}
+                {%- endif -%}
+              {%- endfor -%}
+            </li>
+          {%- endfor -%}
+        {%- if bloc.listType == 'ordered' -%}</ol>{%- else -%}</ul>{%- endif -%}
+
+    {%- endcase -%}
+  {%- endfor -%}
+{%- endif -%}
