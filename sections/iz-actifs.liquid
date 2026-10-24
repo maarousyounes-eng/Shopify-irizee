@@ -1,0 +1,371 @@
+{% comment %}
+  Fiche produit — la formule.
+
+  Cartes d'actifs depuis le metafield `actifs` (liste de metaobjets actif :
+  nom, description), puis un bouton qui ouvre l'accordéon INCI du bloc
+  d'achat et y fait défiler la page.
+
+  Sans actif, la section ne s'affiche pas.
+{% endcomment %}
+
+{%- assign actifs = product.metafields.custom.actifs.value -%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --iza-marge: {{ section.settings.marge_verticale }}px;
+    --iza-min: {{ section.settings.largeur_min }}px;
+    --iza-gap: {{ section.settings.gap }}px;
+    --iza-padding: {{ section.settings.padding_carte }}px;
+    --iza-eyebrow: {{ section.settings.taille_eyebrow }}px;
+    --iza-titre: {{ section.settings.taille_titre }}px;
+    --iza-nom: {{ section.settings.taille_nom }}px;
+    --iza-texte: {{ section.settings.taille_texte }}px;
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --iza-marge: {{ section.settings.marge_verticale_mobile }}px;
+      --iza-titre: {{ section.settings.taille_titre_mobile }}px;
+    }
+  }
+
+  /* Fond et masquage posés sur le conteneur de la section : uniforme d'une
+     section à l'autre, et indépendant de son balisage interne. */
+  #shopify-section-{{ section.id }} {
+    background: {{ section.settings.couleur_fond }};
+  }
+
+  {%- if section.settings.masquer_mobile -%}
+    @media (max-width: 749px) {
+      #shopify-section-{{ section.id }} { display: none; }
+    }
+  {%- endif -%}
+{% endstyle %}
+
+{%- assign a_des_actifs = false -%}
+{%- if actifs != blank and actifs.size > 0 -%}{%- assign a_des_actifs = true -%}
+{%- elsif section.blocks.size > 0 -%}{%- assign a_des_actifs = true -%}{%- endif -%}
+
+{%- if a_des_actifs -%}
+  <section class="iz-actifs full-width">
+    <div class="iz-actifs__inner">
+
+      <div class="iz-actifs__entete">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="iz-actifs__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.titre != blank -%}
+          <h2 class="iz-actifs__titre">{{ section.settings.titre }}</h2>
+        {%- endif -%}
+      </div>
+
+      <div class="iz-actifs__grille">
+        {%- if actifs != blank and actifs.size > 0 -%}
+          {%- for a in actifs -%}
+            <div class="iz-actifs__carte">
+              <span class="iz-actifs__nom">{{ a.nom }}</span>
+              {%- if a.description != blank -%}<span class="iz-actifs__texte">{{ a.description }}</span>{%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for block in section.blocks -%}
+            <div class="iz-actifs__carte" {{ block.shopify_attributes }}>
+              <span class="iz-actifs__nom">{{ block.settings.nom }}</span>
+              {%- if block.settings.description != blank -%}<span class="iz-actifs__texte">{{ block.settings.description }}</span>{%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.bouton_label != blank -%}
+        <button type="button" class="iz-btn iz-btn--secondary iz-actifs__bouton" data-iz-inci>
+          {{ section.settings.bouton_label }}
+        </button>
+      {%- endif -%}
+
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      var bouton = document.querySelector('[data-iz-inci]');
+      if (!bouton) return;
+      bouton.addEventListener('click', function () {
+        /* On cherche l'accordéon dont le titre correspond, plutôt qu'un
+           identifiant : l'ordre et le libellé des accordéons se règlent dans
+           l'éditeur et ne peuvent pas être présumés ici. */
+        var cible = {{ section.settings.accordeon_titre | json }}.toLowerCase();
+        var trouve = null;
+        document.querySelectorAll('.iz-accordion').forEach(function (d) {
+          var s = d.querySelector('summary');
+          if (s && s.textContent.trim().toLowerCase().indexOf(cible) !== -1) trouve = d;
+        });
+        if (!trouve) return;
+        trouve.open = true;
+        trouve.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .iz-actifs__inner {
+    max-width: var(--iz-container, 1320px);
+    margin-inline: auto;
+    padding-inline: var(--iz-gutter, 32px);
+    padding-block: var(--iza-marge, 88px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .iz-actifs__entete {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .iz-actifs__eyebrow {
+    margin: 0;
+    font-size: var(--iza-eyebrow, 12px);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .iz-actifs__titre {
+    margin: 0;
+    font-size: var(--iza-titre, 40px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .iz-actifs__grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--iza-min, 240px), 1fr));
+    gap: var(--iza-gap, 20px);
+  }
+
+  .iz-actifs__carte {
+    background: var(--iz-card);
+    border: 1px solid var(--iz-line);
+    border-radius: var(--iz-radius);
+    padding: var(--iza-padding, 28px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .iz-actifs__nom {
+    font-weight: 700;
+    font-size: var(--iza-nom, 17px);
+  }
+
+  .iz-actifs__texte {
+    font-size: var(--iza-texte, 15px);
+    color: var(--iz-text-2);
+  }
+
+  .iz-actifs__bouton {
+    align-self: flex-start;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Fiche — formule",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Fond et affichage"
+    },
+    {
+      "type": "color",
+      "id": "couleur_fond",
+      "label": "Fond de la section",
+      "info": "Alternez deux tons pour séparer les sections.",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "checkbox",
+      "id": "masquer_mobile",
+      "label": "Masquer sur mobile",
+      "default": false
+    },
+    {
+      "type": "paragraph",
+      "content": "Alimentée par le metafield actifs. Sans actif, la section ne s'affiche pas."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Sur-titre",
+      "default": "Formule"
+    },
+    {
+      "type": "text",
+      "id": "titre",
+      "label": "Titre",
+      "default": "Quelques actifs. Chacun a sa raison."
+    },
+    {
+      "type": "text",
+      "id": "bouton_label",
+      "label": "Libellé du bouton",
+      "default": "Liste INCI complète"
+    },
+    {
+      "type": "text",
+      "id": "accordeon_titre",
+      "label": "Accordéon à ouvrir",
+      "info": "Le bouton ouvre l'accordéon du bloc d'achat dont le titre contient ce texte.",
+      "default": "Ingrédients"
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "range",
+      "id": "largeur_min",
+      "label": "Largeur minimale d'une carte",
+      "min": 160,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 240
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Espace entre les cartes",
+      "min": 8,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_carte",
+      "label": "Marge intérieure des cartes",
+      "min": 12,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale",
+      "label": "Marge verticale — ordinateur",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale_mobile",
+      "label": "Marge verticale — mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Typographie"
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow",
+      "label": "Sur-titre",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_titre",
+      "label": "Titre — ordinateur",
+      "min": 20,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "taille_titre_mobile",
+      "label": "Titre — mobile",
+      "min": 18,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "taille_nom",
+      "label": "Nom d'actif",
+      "min": 12,
+      "max": 26,
+      "step": 1,
+      "unit": "px",
+      "default": 17
+    },
+    {
+      "type": "range",
+      "id": "taille_texte",
+      "label": "Description",
+      "min": 11,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fiche — formule",
+      "blocks": [
+        {
+          "type": "actif"
+        },
+        {
+          "type": "actif"
+        },
+        {
+          "type": "actif"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "actif",
+      "name": "Actif",
+      "settings": [
+        {
+          "type": "text",
+          "id": "nom",
+          "label": "Nom",
+          "default": "Nila"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

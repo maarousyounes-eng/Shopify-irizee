@@ -1,0 +1,9 @@
+extends: theme-check:recommended
+
+# Le thème est délibérément très paramétrable : chaque section expose ses
+# réglages ordinateur et mobile séparément, plus un style de bouton propre.
+# Le seuil par défaut de 40 n'est pas adapté à ce parti pris — il reste
+# surveillé, simplement à un niveau cohérent avec le projet.
+ExcessiveSettingsCount:
+  enabled: true
+  max_settings: 60

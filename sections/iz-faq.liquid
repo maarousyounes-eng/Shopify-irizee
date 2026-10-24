@@ -1,0 +1,344 @@
+{% comment %}
+  Fiche produit — questions fréquentes.
+
+  Titre à gauche, questions à droite. Deux sources : le metafield `faq`
+  (liste de metaobjets question_faq) en priorité, sinon les blocs de la
+  section, pour les questions communes à tous les produits.
+
+  Sans question d'aucun côté, la section ne s'affiche pas.
+{% endcomment %}
+
+{%- assign faq = product.metafields.custom.faq.value -%}
+{%- assign a_du_contenu = false -%}
+{%- if faq != blank and faq.size > 0 -%}
+  {%- assign a_du_contenu = true -%}
+{%- elsif section.blocks.size > 0 -%}
+  {%- assign a_du_contenu = true -%}
+{%- endif -%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --izf-marge: {{ section.settings.marge_verticale }}px;
+    --izf-gap: {{ section.settings.gap }}px;
+    --izf-titre-base: {{ section.settings.titre_base }}px;
+    --izf-liste-base: {{ section.settings.liste_base }}px;
+    --izf-eyebrow: {{ section.settings.taille_eyebrow }}px;
+    --izf-titre: {{ section.settings.taille_titre }}px;
+    --izf-question: {{ section.settings.taille_question }}px;
+    --izf-reponse: {{ section.settings.taille_reponse }}px;
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --izf-marge: {{ section.settings.marge_verticale_mobile }}px;
+      --izf-gap: {{ section.settings.gap_mobile }}px;
+      --izf-titre: {{ section.settings.taille_titre_mobile }}px;
+    }
+  }
+
+  /* Fond et masquage posés sur le conteneur de la section : uniforme d'une
+     section à l'autre, et indépendant de son balisage interne. */
+  #shopify-section-{{ section.id }} {
+    background: {{ section.settings.couleur_fond }};
+  }
+
+  {%- if section.settings.masquer_mobile -%}
+    @media (max-width: 749px) {
+      #shopify-section-{{ section.id }} { display: none; }
+    }
+  {%- endif -%}
+{% endstyle %}
+
+{%- if a_du_contenu -%}
+  <section class="iz-faq full-width">
+    <div class="iz-faq__inner">
+
+      <div class="iz-faq__entete">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="iz-faq__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.titre != blank -%}
+          <h2 class="iz-faq__titre">{{ section.settings.titre }}</h2>
+        {%- endif -%}
+      </div>
+
+      <div class="iz-faq__liste">
+        {%- if faq != blank and faq.size > 0 -%}
+          {%- for q in faq -%}
+            <details class="iz-faq__item">
+              <summary class="iz-faq__question">{{ q.question }}</summary>
+              <div class="iz-faq__reponse">{%- render 'iz-richtext', contenu: q.reponse -%}</div>
+            </details>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for block in section.blocks -%}
+            {%- if block.settings.question != blank -%}
+              <details class="iz-faq__item" {{ block.shopify_attributes }}>
+                <summary class="iz-faq__question">{{ block.settings.question }}</summary>
+                <div class="iz-faq__reponse">{{ block.settings.reponse }}</div>
+              </details>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .iz-faq {
+    border-top: 1px solid var(--iz-line);
+  }
+
+  .iz-faq__inner {
+    max-width: var(--iz-container, 1320px);
+    margin-inline: auto;
+    padding-inline: var(--iz-gutter, 32px);
+    padding-block: var(--izf-marge, 88px);
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--izf-gap, 56px);
+    align-items: flex-start;
+  }
+
+  .iz-faq__entete {
+    flex: 1 1 var(--izf-titre-base, 320px);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .iz-faq__eyebrow {
+    margin: 0;
+    font-size: var(--izf-eyebrow, 12px);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .iz-faq__titre {
+    margin: 0;
+    font-size: var(--izf-titre, 40px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .iz-faq__liste {
+    flex: 2 1 var(--izf-liste-base, 560px);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--iz-line);
+  }
+
+  .iz-faq__item {
+    border-bottom: 1px solid var(--iz-line);
+    padding: 18px 0;
+  }
+
+  .iz-faq__question {
+    font-weight: 700;
+    font-size: var(--izf-question, 16px);
+    cursor: pointer;
+  }
+
+  .iz-faq__reponse {
+    margin: 10px 0 0;
+    font-size: var(--izf-reponse, 15px);
+    color: var(--iz-text-2);
+  }
+
+  /* Le thème remet les marges des paragraphes à zéro : sans cette règle,
+     deux paragraphes d'un texte enrichi se touchent. Constaté sur la
+     section texture du Masque. */
+  .iz-faq__reponse p + p { margin-top: 1em; }
+
+  .iz-faq__reponse > :first-child { margin-top: 0; }
+  .iz-faq__reponse > :last-child { margin-bottom: 0; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Fiche — FAQ",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Fond et affichage"
+    },
+    {
+      "type": "color",
+      "id": "couleur_fond",
+      "label": "Fond de la section",
+      "info": "Alternez deux tons pour séparer les sections.",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "checkbox",
+      "id": "masquer_mobile",
+      "label": "Masquer sur mobile",
+      "default": false
+    },
+    {
+      "type": "paragraph",
+      "content": "Le metafield faq du produit est utilisé en priorité. Sans lui, ce sont les blocs ci-dessous qui s'affichent — pour les questions communes à tous les produits."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Sur-titre",
+      "default": "Questions"
+    },
+    {
+      "type": "text",
+      "id": "titre",
+      "label": "Titre",
+      "default": "Questions fréquentes"
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "range",
+      "id": "titre_base",
+      "label": "Largeur de référence — titre",
+      "min": 200,
+      "max": 600,
+      "step": 20,
+      "unit": "px",
+      "default": 320
+    },
+    {
+      "type": "range",
+      "id": "liste_base",
+      "label": "Largeur de référence — questions",
+      "min": 280,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "default": 560
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Espace entre les colonnes — ordinateur",
+      "min": 16,
+      "max": 96,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Espace entre les colonnes — mobile",
+      "min": 12,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale",
+      "label": "Marge verticale — ordinateur",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale_mobile",
+      "label": "Marge verticale — mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Typographie"
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow",
+      "label": "Sur-titre",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_titre",
+      "label": "Titre — ordinateur",
+      "min": 20,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "taille_titre_mobile",
+      "label": "Titre — mobile",
+      "min": 18,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "taille_question",
+      "label": "Question",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "taille_reponse",
+      "label": "Réponse",
+      "min": 11,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question"
+        },
+        {
+          "type": "richtext",
+          "id": "reponse",
+          "label": "Réponse"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fiche — FAQ"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,54 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "t:general.header",
+  "sections": {
+    "header": {
+      "type": "header",
+      "settings": {
+        "overlay_on_image": true,
+        "logo_color": "white",
+        "scrolled_logo_color": "black",
+        "overlay_text_color": "black",
+        "enable_blur": true,
+        "blur_intensity": 12,
+        "hide_on_scroll": true,
+        "menu_font": "sans_serif_n7",
+        "menu_font_size": 15,
+        "menu_font_size_mobile": 14,
+        "menu_letter_spacing": 0,
+        "menu_letter_spacing_mobile": 0,
+        "menu_item_gap": 24,
+        "menu_item_gap_mobile": 16,
+        "menu_hover_style": "trait",
+        "logo_width": 142,
+        "logo_width_mobile": 84,
+        "icon_size": 22,
+        "icon_size_mobile": 18,
+        "icon_gap": 24,
+        "icon_gap_mobile": 14,
+        "header_column_gap": 16,
+        "header_padding_desktop": 66,
+        "header_padding_mobile": 24,
+        "header_padding_top_desktop": 42,
+        "header_padding_bottom_desktop": 0,
+        "header_padding_top_mobile": 0,
+        "header_padding_bottom_mobile": 0,
+        "menu_text_transform": "none",
+        "menu": "main-menu",
+        "customer_account_menu": "customer-account-main-menu"
+      }
+    }
+  },
+  "order": [
+    "header"
+  ]
+}

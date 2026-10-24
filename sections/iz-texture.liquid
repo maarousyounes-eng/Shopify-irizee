@@ -1,0 +1,375 @@
+{% comment %}
+  Fiche produit — la texture.
+
+  Image d'un côté, texte de l'autre. Le contenu vient des metafields du
+  produit ; les réglages de section servent de repli, vides par défaut.
+
+  Sans titre, la section ne s'affiche pas : c'est lui qui porte le propos,
+  une image seule ne dirait rien.
+{% endcomment %}
+
+{%- assign titre = product.metafields.custom.texture_titre | default: section.settings.titre -%}
+{%- comment -%}
+  Le texte enrichi ne passe pas par `default` : le filtre transforme le
+  metafield en son arbre JSON, qui s'affichait tel quel sur la page.
+{%- endcomment -%}
+{%- assign texte = product.metafields.custom.texture_texte.value -%}
+{%- if texte == blank -%}{%- assign texte = section.settings.texte -%}{%- endif -%}
+{%- assign image = product.metafields.custom.texture_image.value | default: section.settings.image -%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --izt-gap: {{ section.settings.gap }}px;
+    --izt-image-base: {{ section.settings.image_base }}px;
+    --izt-texte-base: {{ section.settings.texte_base }}px;
+    --izt-ratio: {{ section.settings.ratio }};
+    --izt-marge: {{ section.settings.marge_verticale }}px;
+    --izt-eyebrow: {{ section.settings.taille_eyebrow }}px;
+    --izt-titre: {{ section.settings.taille_titre }}px;
+    --izt-texte: {{ section.settings.taille_texte }}px;
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --izt-gap: {{ section.settings.gap_mobile }}px;
+      --izt-marge: {{ section.settings.marge_verticale_mobile }}px;
+      --izt-eyebrow: {{ section.settings.taille_eyebrow_mobile }}px;
+      --izt-titre: {{ section.settings.taille_titre_mobile }}px;
+      --izt-texte: {{ section.settings.taille_texte_mobile }}px;
+    }
+  }
+
+  /* Fond et masquage posés sur le conteneur de la section : uniforme d'une
+     section à l'autre, et indépendant de son balisage interne. */
+  #shopify-section-{{ section.id }} {
+    background: {{ section.settings.couleur_fond }};
+  }
+
+  {%- if section.settings.masquer_mobile -%}
+    @media (max-width: 749px) {
+      #shopify-section-{{ section.id }} { display: none; }
+    }
+  {%- endif -%}
+{% endstyle %}
+
+{%- if titre != blank -%}
+  <section class="iz-texture full-width">
+    <div class="iz-texture__inner{% if section.settings.position_image == 'droite' %} iz-texture__inner--inverse{% endif %}">
+
+      <div class="iz-texture__media">
+        {%- if image != blank -%}
+          <img
+            src="{{ image | image_url: width: 1200 }}"
+            srcset="{{ image | image_url: width: 600 }} 600w, {{ image | image_url: width: 900 }} 900w, {{ image | image_url: width: 1200 }} 1200w"
+            sizes="(min-width: 750px) 46vw, 92vw"
+            alt="{{ image.alt | escape | default: titre | escape }}"
+            width="1200" height="900" loading="lazy"
+          >
+        {%- endif -%}
+      </div>
+
+      <div class="iz-texture__texte">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="iz-texture__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="iz-texture__titre">{{ titre }}</h2>
+        {%- if texte != blank -%}
+          <div class="iz-texture__corps">{%- render 'iz-richtext', contenu: texte -%}</div>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .iz-texture__inner {
+    max-width: var(--iz-container, 1320px);
+    margin-inline: auto;
+    padding-inline: var(--iz-gutter, 32px);
+    padding-block: var(--izt-marge, 88px);
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--izt-gap, 56px);
+    align-items: center;
+  }
+
+  /* L'ordre visuel s'inverse sans toucher à l'ordre du document : le texte
+     reste lu en premier par les lecteurs d'écran et sur mobile, où les deux
+     colonnes s'empilent. */
+  .iz-texture__inner--inverse .iz-texture__media {
+    order: 2;
+  }
+
+  .iz-texture__media {
+    flex: 1 1 var(--izt-image-base, 520px);
+    min-width: 0;
+    aspect-ratio: var(--izt-ratio, 1.333);
+    background: var(--iz-surface);
+    border-radius: var(--iz-radius);
+    overflow: hidden;
+  }
+
+  .iz-texture__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .iz-texture__texte {
+    flex: 1 1 var(--izt-texte-base, 420px);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .iz-texture__eyebrow {
+    margin: 0;
+    font-size: var(--izt-eyebrow, 12px);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .iz-texture__titre {
+    margin: 0;
+    font-size: var(--izt-titre, 40px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+  }
+
+  .iz-texture__corps {
+    font-size: var(--izt-texte, 17px);
+    color: var(--iz-text-2);
+  }
+
+  /* Le thème remet les marges des paragraphes à zéro : sans cette règle,
+     deux paragraphes d'un texte enrichi se touchent. Constaté sur la
+     section texture du Masque. */
+  .iz-texture__corps p + p { margin-top: 1em; }
+
+  .iz-texture__corps > :first-child { margin-top: 0; }
+  .iz-texture__corps > :last-child { margin-bottom: 0; }
+
+  @media (max-width: 749px) {
+    /* Empilé, l'image repasse au-dessus quelle que soit sa position choisie :
+       l'alternance gauche/droite n'a plus de sens sur une seule colonne. */
+    .iz-texture__inner--inverse .iz-texture__media {
+      order: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Fiche — texture",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Fond et affichage"
+    },
+    {
+      "type": "color",
+      "id": "couleur_fond",
+      "label": "Fond de la section",
+      "info": "Alternez deux tons pour séparer les sections.",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "checkbox",
+      "id": "masquer_mobile",
+      "label": "Masquer sur mobile",
+      "default": false
+    },
+    {
+      "type": "paragraph",
+      "content": "Le contenu vient des metafields texture_titre, texture_texte et texture_image. Les champs ci-dessous ne servent que si le metafield correspondant est vide. Sans titre, la section ne s'affiche pas."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Sur-titre",
+      "default": "La texture"
+    },
+    {
+      "type": "text",
+      "id": "titre",
+      "label": "Titre (repli)"
+    },
+    {
+      "type": "richtext",
+      "id": "texte",
+      "label": "Texte (repli)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image (repli)"
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "select",
+      "id": "position_image",
+      "label": "Position de l'image",
+      "options": [
+        {
+          "value": "gauche",
+          "label": "À gauche"
+        },
+        {
+          "value": "droite",
+          "label": "À droite"
+        }
+      ],
+      "default": "gauche"
+    },
+    {
+      "type": "range",
+      "id": "ratio",
+      "label": "Proportion de l'image",
+      "info": "1,33 = 4/3.",
+      "min": 0.6,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.3
+    },
+    {
+      "type": "range",
+      "id": "image_base",
+      "label": "Largeur de référence — image",
+      "min": 280,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "default": 520
+    },
+    {
+      "type": "range",
+      "id": "texte_base",
+      "label": "Largeur de référence — texte",
+      "min": 280,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "default": 420
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Espace entre les colonnes — ordinateur",
+      "min": 16,
+      "max": 96,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Espace entre les colonnes — mobile",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale",
+      "label": "Marge verticale — ordinateur",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale_mobile",
+      "label": "Marge verticale — mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Typographie"
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow",
+      "label": "Sur-titre — ordinateur",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow_mobile",
+      "label": "Sur-titre — mobile",
+      "min": 9,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "taille_titre",
+      "label": "Titre — ordinateur",
+      "min": 20,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "taille_titre_mobile",
+      "label": "Titre — mobile",
+      "min": 18,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "taille_texte",
+      "label": "Texte — ordinateur",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 17
+    },
+    {
+      "type": "range",
+      "id": "taille_texte_mobile",
+      "label": "Texte — mobile",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fiche — texture"
+    }
+  ]
+}
+{% endschema %}

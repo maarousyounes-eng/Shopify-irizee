@@ -1,0 +1,406 @@
+{% comment %}
+  Fiche produit — vidéos créateurs.
+
+  Alimentée par le metafield `videos_ugc` (liste de metaobjets video_ugc :
+  video, pseudo, accroche). Sans vidéo, la section ne s'affiche pas.
+
+  Les vidéos ne se chargent qu'au clic : une grille de 9/16 en lecture
+  automatique coûterait plusieurs mégaoctets sur mobile, où viendra
+  l'essentiel du trafic.
+{% endcomment %}
+
+{%- assign videos = product.metafields.custom.videos_ugc.value -%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --izu-marge: {{ section.settings.marge_verticale }}px;
+    --izu-min: {{ section.settings.largeur_min }}px;
+    --izu-gap: {{ section.settings.gap }}px;
+    --izu-eyebrow: {{ section.settings.taille_eyebrow }}px;
+    --izu-titre: {{ section.settings.taille_titre }}px;
+    --izu-pseudo: {{ section.settings.taille_pseudo }}px;
+    --izu-accroche: {{ section.settings.taille_accroche }}px;
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --izu-marge: {{ section.settings.marge_verticale_mobile }}px;
+      --izu-titre: {{ section.settings.taille_titre_mobile }}px;
+      --izu-eyebrow: {{ section.settings.taille_eyebrow_mobile }}px;
+    }
+  }
+
+  /* Fond et masquage posés sur le conteneur de la section : uniforme d'une
+     section à l'autre, et indépendant de son balisage interne. */
+  #shopify-section-{{ section.id }} {
+    background: {{ section.settings.couleur_fond }};
+  }
+
+  {%- if section.settings.masquer_mobile -%}
+    @media (max-width: 749px) {
+      #shopify-section-{{ section.id }} { display: none; }
+    }
+  {%- endif -%}
+{% endstyle %}
+
+{%- assign a_des_videos = false -%}
+{%- if videos != blank and videos.size > 0 -%}{%- assign a_des_videos = true -%}
+{%- elsif section.blocks.size > 0 -%}{%- assign a_des_videos = true -%}{%- endif -%}
+
+{%- if a_des_videos -%}
+  <section class="iz-ugc full-width">
+    <div class="iz-ugc__inner">
+
+      <div class="iz-ugc__entete">
+        <div class="iz-ugc__titres">
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="iz-ugc__eyebrow">{{ section.settings.eyebrow }}</p>
+          {%- endif -%}
+          {%- if section.settings.titre != blank -%}
+            <h2 class="iz-ugc__titre">{{ section.settings.titre }}</h2>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.lien_label != blank and section.settings.lien != blank -%}
+          <a class="iz-btn iz-btn--secondary" href="{{ section.settings.lien }}">{{ section.settings.lien_label }}</a>
+        {%- endif -%}
+      </div>
+
+      <div class="iz-ugc__grille">
+        {%- if videos != blank and videos.size > 0 -%}
+          {%- for v in videos -%}
+            {%- render 'iz-video', video: v.video, pseudo: v.pseudo, accroche: v.accroche, libelle: section.settings.libelle_lecture -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- for block in section.blocks -%}
+            {%- render 'iz-video', video: block.settings.video, pseudo: block.settings.pseudo, accroche: block.settings.accroche, libelle: section.settings.libelle_lecture, attrs: block.shopify_attributes -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      var root = document.getElementById('shopify-section-{{ section.id }}');
+      if (!root) return;
+      /* La vidéo n'est insérée qu'au clic : la grille ne charge au départ
+         que des images d'aperçu. */
+      root.querySelectorAll('[data-iz-video-src]').forEach(function (bouton) {
+        bouton.addEventListener('click', function () {
+          var video = document.createElement('video');
+          video.src = bouton.dataset.izVideoSrc;
+          video.controls = true;
+          video.autoplay = true;
+          video.playsInline = true;
+          video.className = 'iz-ugc__video';
+          bouton.replaceWith(video);
+        });
+      });
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .iz-ugc__inner {
+    max-width: var(--iz-container, 1320px);
+    margin-inline: auto;
+    padding-inline: var(--iz-gutter, 32px);
+    padding-block: var(--izu-marge, 88px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .iz-ugc__entete {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .iz-ugc__titres {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .iz-ugc__eyebrow {
+    margin: 0;
+    font-size: var(--izu-eyebrow, 12px);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .iz-ugc__titre {
+    margin: 0;
+    font-size: var(--izu-titre, 40px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .iz-ugc__grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--izu-min, 180px), 1fr));
+    gap: var(--izu-gap, 14px);
+  }
+
+  .iz-ugc__item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .iz-ugc__lecteur,
+  .iz-ugc__video {
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    border: 0;
+    border-radius: var(--iz-radius);
+    background: var(--iz-surface) center / cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .iz-ugc__play {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(251, 250, 248, 0.9);
+    color: var(--iz-ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .iz-ugc__legende {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .iz-ugc__pseudo {
+    font-size: var(--izu-pseudo, 12px);
+    font-weight: 700;
+  }
+
+  .iz-ugc__accroche {
+    font-size: var(--izu-accroche, 13px);
+    color: var(--iz-text-2);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Fiche — vidéos",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Fond et affichage"
+    },
+    {
+      "type": "color",
+      "id": "couleur_fond",
+      "label": "Fond de la section",
+      "info": "Alternez deux tons pour séparer les sections.",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "checkbox",
+      "id": "masquer_mobile",
+      "label": "Masquer sur mobile",
+      "default": false
+    },
+    {
+      "type": "paragraph",
+      "content": "Alimentée par le metafield videos_ugc. Sans vidéo, la section ne s'affiche pas."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Sur-titre",
+      "default": "En vidéo"
+    },
+    {
+      "type": "text",
+      "id": "titre",
+      "label": "Titre",
+      "default": "Elles et ils l'ont testé"
+    },
+    {
+      "type": "text",
+      "id": "lien_label",
+      "label": "Libellé du bouton",
+      "default": "Suivre @irizee"
+    },
+    {
+      "type": "url",
+      "id": "lien",
+      "label": "Lien du bouton"
+    },
+    {
+      "type": "text",
+      "id": "libelle_lecture",
+      "label": "Libellé de lecture",
+      "info": "Lu par les lecteurs d'écran.",
+      "default": "Lire la vidéo"
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "range",
+      "id": "largeur_min",
+      "label": "Largeur minimale d'une vidéo",
+      "min": 120,
+      "max": 320,
+      "step": 10,
+      "unit": "px",
+      "default": 160,
+      "info": "À 160, deux vidéos tiennent côte à côte sur un écran de 390 px."
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Espace entre les vidéos",
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale",
+      "label": "Marge verticale — ordinateur",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale_mobile",
+      "label": "Marge verticale — mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Typographie"
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow",
+      "label": "Sur-titre — ordinateur",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow_mobile",
+      "label": "Sur-titre — mobile",
+      "min": 9,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "taille_titre",
+      "label": "Titre — ordinateur",
+      "min": 20,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "taille_titre_mobile",
+      "label": "Titre — mobile",
+      "min": 18,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "taille_pseudo",
+      "label": "Pseudo",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_accroche",
+      "label": "Accroche",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fiche — vidéos",
+      "blocks": [
+        {
+          "type": "video"
+        },
+        {
+          "type": "video"
+        },
+        {
+          "type": "video"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Vidéo",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Vidéo"
+        },
+        {
+          "type": "text",
+          "id": "pseudo",
+          "label": "Pseudo du créateur",
+          "default": "@pseudo"
+        },
+        {
+          "type": "text",
+          "id": "accroche",
+          "label": "Accroche"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

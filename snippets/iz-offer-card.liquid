@@ -1,0 +1,43 @@
+{% doc %}
+  Une ligne du choix de format.
+
+  Chaque offre étant un produit distinct, la ligne est un lien vers sa fiche :
+  l'acheteur voit les photos et les textes de ce qu'il commande réellement.
+  La ligne du produit courant n'est pas un lien et porte l'état sélectionné.
+
+  La pastille reprend l'aspect d'un bouton radio, comme sur la maquette, sans
+  en être un : ce n'est pas un choix dans un formulaire mais une navigation.
+
+  @param {product} offre - Le produit à présenter
+  @param {boolean} courant - Vrai s'il s'agit du produit de la page
+{% enddoc %}
+
+{%- assign libelle = offre.metafields.custom.offre_libelle | default: offre.title -%}
+{%- assign sous_titre = offre.metafields.custom.offre_sous_titre -%}
+{%- assign badge = offre.metafields.custom.offre_badge -%}
+{%- assign v = offre.selected_or_first_available_variant -%}
+
+<{% if courant %}div{% else %}a href="{{ offre.url }}"{% endif %}
+  class="iz-offer{% if courant %} is-current{% endif %}"
+  {% if courant %}aria-current="true"{% endif %}
+>
+  <span class="iz-offer__radio" aria-hidden="true"></span>
+
+  <span class="iz-offer__main">
+    <span class="iz-offer__name">{{ libelle }}</span>
+    {%- if sous_titre != blank -%}
+      <span class="iz-offer__sub">{{ sous_titre }}</span>
+    {%- endif -%}
+  </span>
+
+  <span class="iz-offer__prices">
+    <span class="iz-offer__price">{{ v.price | money }}</span>
+    {%- if v.compare_at_price > v.price -%}
+      <span class="iz-offer__compare">{{ v.compare_at_price | money }}</span>
+    {%- endif -%}
+  </span>
+
+  {%- if badge != blank -%}
+    <span class="iz-offer__badge">{{ badge }}</span>
+  {%- endif -%}
+</{% if courant %}div{% else %}a{% endif %}>
