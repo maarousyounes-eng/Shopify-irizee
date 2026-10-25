@@ -101,6 +101,11 @@ Rien ne presse : ces sections resteront simplement masquées.
 
 ### Le choix du format (quand Le Rituel et Le Coffret existeront)
 
+> **Les quatre champs ci-dessous sont créés** (24/10/2026). Ce qui manque
+> pour que le sélecteur de format s'affiche, c'est un produit à référencer :
+> tant que `offres` est vide sur une fiche, le bloc ne rend rien.
+
+
 Sur **Produits** :
 
 | Nom à afficher | Clé | Type |
