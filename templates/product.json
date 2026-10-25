@@ -14,37 +14,74 @@
       "blocks": {
         "entete": {
           "type": "entete",
-          "settings": {}
-        },
-        "promesse": {
-          "type": "promesse",
-          "settings": {}
-        },
-        "benefices": {
-          "type": "benefices",
-          "settings": {}
-        },
-        "offres": {
-          "type": "offres",
-          "settings": {}
-        },
-        "achat": {
-          "type": "achat",
-          "settings": {}
-        },
-        "jauge": {
-          "type": "jauge",
-          "settings": {}
-        },
-        "accordeons": {
-          "type": "accordeons",
           "settings": {
-            "contenu_4": "<p>Livraison offerte dès 49 € d'achat en France. Retours acceptés sous 14 jours.</p>"
+            "texte": "",
+            "minimum": 5,
+            "libelle_avis": "avis",
+            "ancre": "avis"
           }
         },
         "puces": {
           "type": "puces",
           "settings": {}
+        },
+        "promesse": {
+          "type": "promesse",
+          "settings": {
+            "texte": ""
+          }
+        },
+        "benefices": {
+          "type": "benefices",
+          "settings": {}
+        },
+        "achat": {
+          "type": "achat",
+          "settings": {
+            "afficher_quantite": true,
+            "libelle_ajout": "Ajouter au panier",
+            "libelle_epuise": "Épuisé",
+            "libelle_quantite": "Quantité",
+            "libelle_moins": "Diminuer la quantité",
+            "libelle_plus": "Augmenter la quantité"
+          }
+        },
+        "jauge": {
+          "type": "jauge",
+          "settings": {
+            "seuil": 49,
+            "texte_restant": "Plus que {montant} pour la livraison offerte",
+            "texte_atteint": "Livraison offerte"
+          }
+        },
+        "offres": {
+          "type": "offres",
+          "settings": {
+            "titre": "Disponible en routine",
+            "inclure_courant": false
+          }
+        },
+        "accordeons": {
+          "type": "accordeons",
+          "settings": {
+            "premier_ouvert": true,
+            "titre_1": "Ce qu'il fait pour votre peau",
+            "contenu_1": "",
+            "metafield_1": "",
+            "description_produit_1": true,
+            "titre_2": "Comment l'utiliser",
+            "contenu_2": "",
+            "metafield_2": "utilisation",
+            "description_produit_2": false,
+            "titre_3": "Ingrédients",
+            "contenu_3": "",
+            "metafield_3": "inci",
+            "description_produit_3": false,
+            "titre_4": "Livraison et retours",
+            "contenu_4": "<p>Livraison offerte dès 49 € d'achat en France. Retours acceptés sous 14 jours.</p>",
+            "metafield_4": "",
+            "description_produit_4": false
+          }
         }
       },
       "block_order": [
@@ -57,7 +94,53 @@
         "offres",
         "accordeons"
       ],
-      "settings": {}
+      "settings": {
+        "afficher_fil": true,
+        "libelle_fil": "Fil d'Ariane",
+        "libelle_accueil": "Accueil",
+        "libelle_catalogue": "Catalogue",
+        "show_badge": true,
+        "badge_text": "Best",
+        "ratio": 1,
+        "thumb_count": 5,
+        "libelle_vignette": "Voir le média",
+        "galerie_fixe": true,
+        "galerie_fixe_haut": 24,
+        "column_gap": 56,
+        "gallery_base": 560,
+        "buybox_base": 420,
+        "barre_mobile": true,
+        "barre_mobile_fond": "#fbfaf8",
+        "message_ajout": "Ajouté à votre panier.",
+        "message_erreur": "L'ajout n'a pas abouti. Réessayez.",
+        "taille_fil": 13,
+        "taille_eyebrow": 12,
+        "taille_titre": 44,
+        "taille_note": 14,
+        "taille_promesse": 18,
+        "taille_puces": 12,
+        "taille_benefices": 15,
+        "taille_offre_nom": 15,
+        "taille_offre_sub": 13,
+        "taille_offre_badge": 11,
+        "taille_bouton": 14,
+        "taille_quantite": 18,
+        "taille_jauge": 13,
+        "taille_acc_titre": 15,
+        "taille_acc_texte": 15,
+        "taille_fil_m": 12,
+        "taille_eyebrow_m": 11,
+        "taille_titre_m": 30,
+        "taille_note_m": 13,
+        "taille_promesse_m": 16,
+        "taille_benefices_m": 14,
+        "taille_offre_nom_m": 14,
+        "taille_offre_sub_m": 12,
+        "taille_bouton_m": 13,
+        "taille_jauge_m": 12,
+        "taille_acc_titre_m": 14,
+        "taille_acc_texte_m": 14
+      }
     },
     "engagements": {
       "type": "reassurance",
@@ -146,62 +229,181 @@
     "texture": {
       "type": "iz-texture",
       "settings": {
-        "couleur_fond": "#EBEBEA",
-        "eyebrow": "La texture"
+        "couleur_fond": "#ebebea",
+        "masquer_mobile": false,
+        "eyebrow": "La texture",
+        "titre": "",
+        "texte": "",
+        "image": "shopify://shop_images/irizee_masque-nila_4x5_9bcefd.jpg",
+        "position_image": "gauche",
+        "ratio": 1.4,
+        "image_base": 520,
+        "texte_base": 420,
+        "gap": 56,
+        "gap_mobile": 28,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "taille_eyebrow": 12,
+        "taille_eyebrow_mobile": 11,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_texte": 17,
+        "taille_texte_mobile": 15
       }
     },
     "resultats": {
       "type": "iz-resultats",
       "settings": {
-        "couleur_fond": "#FFFFFF"
+        "couleur_fond": "#ffffff",
+        "masquer_mobile": false,
+        "eyebrow": "Résultats",
+        "titre": "Ce que la peau ressent",
+        "source": "",
+        "largeur_min_carte": 240,
+        "gap": 20,
+        "padding_carte": 32,
+        "padding_carte_mobile": 24,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "couleur_carte": "#fbfaf8",
+        "taille_eyebrow": 12,
+        "taille_eyebrow_mobile": 11,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_chiffre": 56,
+        "taille_chiffre_mobile": 40,
+        "taille_libelle": 16,
+        "taille_libelle_mobile": 15,
+        "taille_source": 13
       }
     },
     "ugc": {
       "type": "iz-ugc",
       "settings": {
-        "couleur_fond": "#FFFFFF"
-      },
-      "blocks": {},
-      "block_order": []
+        "couleur_fond": "#ffffff",
+        "masquer_mobile": false,
+        "eyebrow": "En vidéo",
+        "titre": "Elles et ils l'ont testé",
+        "lien_label": "Suivre @irizee",
+        "lien": "",
+        "libelle_lecture": "Lire la vidéo",
+        "largeur_min": 160,
+        "gap": 14,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "taille_eyebrow": 12,
+        "taille_eyebrow_mobile": 11,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_pseudo": 12,
+        "taille_accroche": 13
+      }
     },
     "rituel": {
       "type": "iz-rituel",
       "settings": {
-        "couleur_fond": "#FFFFFF"
-      },
-      "blocks": {},
-      "block_order": []
+        "couleur_fond": "#ffffff",
+        "masquer_mobile": false,
+        "eyebrow": "Mode d'emploi",
+        "titre": "La routine en 3 étapes",
+        "largeur_min": 240,
+        "gap": 24,
+        "ratio": 1.3,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "taille_eyebrow": 12,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_etape": 20,
+        "taille_etape_mobile": 18,
+        "taille_texte": 15
+      }
     },
     "actifs": {
       "type": "iz-actifs",
       "settings": {
-        "couleur_fond": "#EBEBEA",
-        "titre": "Ce qu'il y a dedans, et pourquoi"
-      },
-      "blocks": {},
-      "block_order": []
+        "couleur_fond": "#ebebea",
+        "masquer_mobile": false,
+        "eyebrow": "Formule",
+        "titre": "Ce qu'il y a dedans, et pourquoi",
+        "bouton_label": "Liste INCI complète",
+        "accordeon_titre": "Ingrédients",
+        "largeur_min": 240,
+        "gap": 20,
+        "padding_carte": 28,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "taille_eyebrow": 12,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_nom": 17,
+        "taille_texte": 15
+      }
     },
     "routine": {
       "type": "iz-routine",
       "settings": {
-        "couleur_fond": "#FFFFFF"
+        "couleur_fond": "#ffffff",
+        "masquer_mobile": false,
+        "eyebrow": "Allez plus loin",
+        "titre": "Complétez votre routine",
+        "bouton_label": "Ajouter",
+        "bouton_ajoute": "Ajouté",
+        "bouton_epuise": "Épuisé",
+        "largeur_min": 260,
+        "gap": 16,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "couleur_carte": "#fbfaf8",
+        "taille_eyebrow": 12,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_nom": 16,
+        "taille_description": 14
       }
     },
     "faq": {
       "type": "iz-faq",
       "settings": {
-        "couleur_fond": "#FFFFFF",
+        "couleur_fond": "#ffffff",
+        "masquer_mobile": false,
         "eyebrow": "Vos questions",
-        "titre": "Ce qu'on nous demande avant d'acheter"
-      },
-      "blocks": {},
-      "block_order": []
+        "titre": "Ce qu'on nous demande avant d'acheter",
+        "titre_base": 320,
+        "liste_base": 560,
+        "gap": 56,
+        "gap_mobile": 24,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "taille_eyebrow": 12,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_question": 16,
+        "taille_reponse": 15
+      }
     },
     "marque": {
       "type": "iz-marque",
       "settings": {
+        "couleur_fond": "#ebebea",
+        "masquer_mobile": false,
+        "eyebrow": "Notre marque",
+        "titre": "Nous avons commencé par retirer, pas par ajouter",
         "texte": "<p>Chaque ingrédient doit justifier sa présence. Si nous ne savons pas l'expliquer en une phrase, il ne rentre pas dans la formule.</p>",
-        "couleur_fond": "#EBEBEA"
+        "bouton_label": "Découvrir",
+        "bouton_lien": "",
+        "position_image": "gauche",
+        "ratio": 1.3,
+        "image_base": 420,
+        "texte_base": 420,
+        "gap": 56,
+        "gap_mobile": 28,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "taille_eyebrow": 12,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_texte": 16
       }
     }
   },
