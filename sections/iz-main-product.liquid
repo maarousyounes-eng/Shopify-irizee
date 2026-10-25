@@ -170,11 +170,19 @@
 
             {%- when 'offres' -%}
               {%- if offres != blank and offres.size > 0 -%}
-                <div class="iz-offers" {{ block.shopify_attributes }}>
+                <div class="iz-offers{% unless block.settings.inclure_courant %} iz-offers--liens{% endunless %}" {{ block.shopify_attributes }}>
                   {%- if block.settings.titre != blank -%}
                     <p class="iz-offers__legend iz-eyebrow">{{ block.settings.titre }}</p>
                   {%- endif -%}
-                  {%- render 'iz-offer-card', offre: p, courant: true -%}
+                  {%- comment -%}
+                    Par défaut le produit de la page n'est pas repris : le bloc
+                    n'est pas un choix entre deux formats mais un renvoi vers
+                    les routines qui le contiennent. Cochez le réglage pour
+                    retrouver le sélecteur à deux lignes.
+                  {%- endcomment -%}
+                  {%- if block.settings.inclure_courant -%}
+                    {%- render 'iz-offer-card', offre: p, courant: true -%}
+                  {%- endif -%}
                   {%- for offre in offres -%}
                     {%- unless offre.id == p.id -%}
                       {%- render 'iz-offer-card', offre: offre, courant: false -%}
@@ -678,6 +686,10 @@
   /* ---------- Sélecteur d'offre ----------
      Le CSS des cartes vit ici : Shopify n'exécute les blocs de style que
      dans les sections, jamais dans les snippets. */
+  /* Sans le produit courant, la pastille n'a plus de sens : il n'y a rien à
+     choisir, seulement une routine à ouvrir. */
+  .iz-offers--liens .iz-offer__radio { display: none; }
+
   .iz-offers {
     display: flex;
     flex-direction: column;
@@ -1448,7 +1460,14 @@
           "type": "text",
           "id": "titre",
           "label": "Sur-titre",
-          "default": "Choisissez votre format"
+          "default": "Disponible en routine"
+        },
+        {
+          "type": "checkbox",
+          "id": "inclure_courant",
+          "label": "Reprendre le produit de la page",
+          "info": "Décoché, le bloc ne montre que les routines qui contiennent ce produit.",
+          "default": false
         },
         {
           "type": "paragraph",
