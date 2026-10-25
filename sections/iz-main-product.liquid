@@ -222,7 +222,7 @@
                   {%- endif -%}
                   <button type="submit" class="iz-btn iz-btn--primary iz-cta__submit" {% unless variant.available %}disabled{% endunless %}>
                     {%- if variant.available -%}
-                      {{ block.settings.libelle_ajout }} — {{ variant.price | money }}
+                      {{ block.settings.libelle_ajout }} · {{ variant.price | money }}
                       {%- comment -%}
                         Prix barré : il ne s'affiche que si un prix de référence
                         plus élevé est renseigné sur le produit. Sur un coffret,
@@ -300,7 +300,7 @@
   {%- if bloc_achat -%}
     <div class="iz-sticky" data-iz-sticky hidden>
       <button type="button" class="iz-btn iz-btn--primary iz-sticky__btn" data-iz-sticky-btn>
-        {{ bloc_achat.settings.libelle_ajout }} — {{ variant.price | money }}
+        {{ bloc_achat.settings.libelle_ajout }} · {{ variant.price | money }}
       </button>
     </div>
   {%- endif -%}
