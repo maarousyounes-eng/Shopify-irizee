@@ -25,6 +25,7 @@
     --izp-titre: {{ section.settings.taille_titre }}px;
     --izp-note: {{ section.settings.taille_note }}px;
     --izp-promesse: {{ section.settings.taille_promesse }}px;
+    --izp-puces: {{ section.settings.taille_puces }}px;
     --izp-benefices: {{ section.settings.taille_benefices }}px;
     --izp-offre-nom: {{ section.settings.taille_offre_nom }}px;
     --izp-offre-sub: {{ section.settings.taille_offre_sub }}px;
@@ -151,6 +152,20 @@
               {%- assign promesse = block.settings.texte | default: p.metafields.custom.promesse -%}
               {%- if promesse != blank -%}
                 <p class="iz-pdp__promise" {{ block.shopify_attributes }}>{{ promesse }}</p>
+              {%- endif -%}
+
+            {%- when 'puces' -%}
+              {%- comment -%}
+                Trois ou quatre mots, pas des phrases : ce que le soin fait,
+                lisible en une seconde avant même la description.
+              {%- endcomment -%}
+              {%- assign puces = p.metafields.custom.puces.value -%}
+              {%- if puces != blank and puces.size > 0 -%}
+                <ul class="iz-pills" role="list" {{ block.shopify_attributes }}>
+                  {%- for puce in puces -%}
+                    <li class="iz-pill">{{ puce }}</li>
+                  {%- endfor -%}
+                </ul>
               {%- endif -%}
 
             {%- when 'benefices' -%}
@@ -660,6 +675,26 @@
     margin: 0;
     font-size: var(--izp-promesse, 18px);
     line-height: 1.5;
+  }
+
+  .iz-pills {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .iz-pill {
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: var(--izp-puces, 12px);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.2;
   }
 
   .iz-benefits {
@@ -1178,6 +1213,16 @@
     },
     {
       "type": "range",
+      "id": "taille_puces",
+      "label": "Puces",
+      "min": 9,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
       "id": "taille_benefices",
       "label": "Bénéfices",
       "min": 11,
@@ -1437,6 +1482,17 @@
           "id": "texte",
           "label": "Texte",
           "info": "Vide : utilise le metafield « promesse »."
+        }
+      ]
+    },
+    {
+      "type": "puces",
+      "name": "Puces",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Alimentées par le metafield « puces ». Trois ou quatre mots, pas des phrases."
         }
       ]
     },

@@ -41,10 +41,15 @@
           "settings": {
             "contenu_4": "<p>Livraison offerte dès 49 € d'achat en France. Retours acceptés sous 14 jours.</p>"
           }
+        },
+        "puces": {
+          "type": "puces",
+          "settings": {}
         }
       },
       "block_order": [
         "entete",
+        "puces",
         "promesse",
         "benefices",
         "achat",
