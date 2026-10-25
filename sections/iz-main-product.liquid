@@ -200,6 +200,14 @@
                   <button type="submit" class="iz-btn iz-btn--primary iz-cta__submit" {% unless variant.available %}disabled{% endunless %}>
                     {%- if variant.available -%}
                       {{ block.settings.libelle_ajout }} — {{ variant.price | money }}
+                      {%- comment -%}
+                        Prix barré : il ne s'affiche que si un prix de référence
+                        plus élevé est renseigné sur le produit. Sur un coffret,
+                        c'est lui qui rend l'économie lisible sans l'écrire.
+                      {%- endcomment -%}
+                      {%- if variant.compare_at_price > variant.price -%}
+                        <s class="iz-cta__compare">{{ variant.compare_at_price | money }}</s>
+                      {%- endif -%}
                     {%- else -%}
                       {{ block.settings.libelle_epuise }}
                     {%- endif -%}
@@ -808,6 +816,12 @@
   }
 
   .iz-cta__submit { flex: 1; }
+
+  .iz-cta__compare {
+    margin-left: 10px;
+    opacity: 0.65;
+    font-weight: 600;
+  }
 
   .iz-cta__feedback {
     margin: 8px 0 0;
