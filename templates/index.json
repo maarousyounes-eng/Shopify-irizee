@@ -151,22 +151,22 @@
         "step_mCzT9M": {
           "type": "step",
           "settings": {
-            "title": "Prenez ou importez une photo",
-            "text": "Depuis votre téléphone ou votre ordinateur, en quelques secondes."
+            "title": "Répondez à cinq questions",
+            "text": "Sur ce que vous voyez et ce que vous ressentez, pas sur ce que vous croyez savoir."
           }
         },
         "step_n34NAF": {
           "type": "step",
           "settings": {
-            "title": "L'analyse examine votre peau",
-            "text": "Hydratation, éclat, imperfections, zones sensibles."
+            "title": "Nous situons votre besoin",
+            "text": "Sébum et impuretés, ou taches et manque d'éclat. Souvent les deux."
           }
         },
         "step_WEmUG7": {
           "type": "step",
           "settings": {
-            "title": "Recevez votre routine",
-            "text": "Une sélection de soins adaptés à ce que révèle votre peau."
+            "title": "Vous repartez avec une routine",
+            "text": "Le soin par lequel commencer, et quand l'appliquer, matin et soir."
           }
         }
       },
@@ -178,11 +178,11 @@
       "name": "Diagnostic de peau",
       "settings": {
         "eyebrow": "Diagnostic de peau",
-        "heading": "Votre peau analysée en une photo",
-        "text": "<p>Prenez une photo ou importez-en une. Notre analyse identifie les besoins réels de votre peau — hydratation, éclat, imperfections — et vous oriente vers les soins qui lui correspondent.</p>",
+        "heading": "Deux minutes pour savoir par où commencer",
+        "text": "<p>Brillances, pores visibles, taches, teint terne : tout ne se traite pas de la même façon ni au même rythme. Cinq questions suffisent à savoir par quel soin commencer.</p>",
         "show_step_numbers": true,
-        "button_label": "Analyser ma peau",
-        "button_link": "",
+        "button_label": "Faire le diagnostic",
+        "button_link": "shopify://pages/diagnostic",
         "button_new_tab": false,
         "button_style": "outline",
         "image": "shopify://shop_images/Hero.png",
