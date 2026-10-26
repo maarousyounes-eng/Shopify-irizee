@@ -240,3 +240,20 @@ s'en charge déjà, ce journal est pour le contexte que le code ne montre pas.
   preprod. En attendant, le gabarit se teste avec `?view=diagnostic`.
 - Le header se posait aussi sur le texte des pages de contenu : la fiche
   produit avait son exception, la condition couvre maintenant les deux.
+- **Trois questions d'hygiène de vie** ajoutées au diagnostic : sommeil,
+  exposition au soleil, alimentation. Le manque de sommeil et le soleil tirent
+  vers le sérum, l'alimentation vers le masque. Huit questions au total.
+- **Le contenu du diagnostic vit dans le préréglage de la section**, pas dans
+  le gabarit. C'est la conséquence directe de la règle ci-dessus : Shopify ne
+  reprend pas un gabarit JSON déjà créé, mais il reprend le Liquid. Pour
+  changer les questions, on modifie le préréglage, on retire la section dans
+  l'éditeur et on la réinsère : les huit questions arrivent d'un coup.
+- **L'analyse photo est branchée.** Le moteur était prévu pour : la photo
+  ajoute ses points au même objet `score`, trois au maximum de chaque côté
+  contre huit pour les réponses. Elle pèse sans décider à la place du
+  questionnaire, et si elle échoue le diagnostic continue sans elle.
+- La clé d'API ne peut pas vivre dans un thème public : l'appel passe par
+  `services/diagnostic-api`, une fonction Vercel qui ne conserve la photo
+  nulle part, borne les notes du modèle et refuse toute origine non déclarée.
+  Ce dernier point n'est pas une formalité : une fonction ouverte est une
+  fonction que n'importe qui fait payer au propriétaire de la clé.
