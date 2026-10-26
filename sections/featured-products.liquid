@@ -91,14 +91,14 @@
           {% elsif product.tags contains 'new' %}
             {% assign badge_text = 'Nouveau' %}
           {% endif %}
-          {% render 'product-card', product: product, badge_text: badge_text, buy_label: section.settings.buy_label %}
+          {% render 'product-card', product: product, badge_text: badge_text, buy_label: section.settings.buy_label, cadrage: section.settings.primary_fit %}
         {% else %}
           <p class="featured-products__empty">Choisis une collection dans les réglages de cette section.</p>
         {% endfor %}
       {% else %}
         {% for block in section.blocks %}
           {% if block.settings.product != blank %}
-            {% render 'product-card', product: block.settings.product, badge_text: block.settings.badge_text, category_label: block.settings.category_label, buy_label: section.settings.buy_label %}
+            {% render 'product-card', product: block.settings.product, badge_text: block.settings.badge_text, category_label: block.settings.category_label, buy_label: section.settings.buy_label, cadrage: section.settings.primary_fit %}
           {% endif %}
         {% endfor %}
       {% endif %}
@@ -321,6 +321,13 @@
   .product-card__image--primary {
     object-fit: contain;
     padding: var(--card-image-inset, 14%) var(--card-image-inset, 14%) calc(var(--card-image-inset, 14%) + 4%);
+  }
+
+  /* Première photo en situation plutôt qu'en packshot : elle doit remplir la
+     carte bord à bord, la marge du packshot n'aurait aucun sens. */
+  .product-card--plein .product-card__image--primary {
+    object-fit: cover;
+    padding: 0;
   }
 
   /* Photo lifestyle au survol : plein cadre, bord à bord */
@@ -550,6 +557,23 @@
       "id": "name_color",
       "label": "Couleur du nom sous la carte",
       "default": "#1A1A1A"
+    },
+    {
+      "type": "select",
+      "id": "primary_fit",
+      "label": "Cadrage de la première photo",
+      "info": "« Entière » convient à un packshot sur fond uni, « Plein cadre » à une photo en situation.",
+      "options": [
+        {
+          "value": "contain",
+          "label": "Entière, avec marge"
+        },
+        {
+          "value": "cover",
+          "label": "Plein cadre"
+        }
+      ],
+      "default": "contain"
     },
     {
       "type": "checkbox",

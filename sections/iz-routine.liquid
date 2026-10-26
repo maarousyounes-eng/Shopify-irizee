@@ -132,6 +132,10 @@
                     var sup = lien.querySelector('sup');
                     if (!sup) { sup = document.createElement('sup'); lien.prepend(sup); }
                     sup.textContent = panier.item_count;
+                    /* Signale l'ajout là où le client regarde rarement : sans ce
+                       clignotement, rien ne dit que le panier a bougé. */
+                    lien.classList.add('is-ajout');
+                    setTimeout(function () { lien.classList.remove('is-ajout'); }, 600);
                   })
                   .catch(function () {});
                 setTimeout(function () { b.textContent = initial; }, 2500);

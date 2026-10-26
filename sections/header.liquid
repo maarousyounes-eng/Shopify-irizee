@@ -113,6 +113,15 @@
       }
     }
 
+    /* Une fiche produit n'a pas de hero sur lequel se superposer. Le fond
+       transparent de la superposition y laissait le contenu défiler sous le
+       menu tant qu'on n'avait pas dépassé le seuil de défilement : le fil
+       d'Ariane passait littéralement derrière les liens. On pose donc un
+       fond dès le repos, la barre translucide prenant le relais au scroll. */
+    #shopify-section-{{ section.id }} .header--pdp:not(.header--scrolled) {
+      background: var(--color-background);
+    }
+
     /* Hors superposition, la couleur vient du thème : il faut donc la poser
        explicitement pour que le réglage serve dans les deux cas. */
     #shopify-section-{{ section.id }} .header--pdp-white:not(.header--scrolled) {
@@ -225,7 +234,7 @@
       </a>
     {% endif %}
 
-    <a href="{{ routes.cart_url }}">
+    <a href="{{ routes.cart_url }}" class="header__cart">
       {% if cart.item_count > 0 %}
         <sup>{{ cart.item_count }}</sup>
       {% endif %}
@@ -549,6 +558,46 @@
 
   .header__icons a {
     flex-shrink: 0;
+  }
+
+  /* Le compteur était un <sup> sans style : minuscule, décalé en exposant,
+     impossible à remarquer. Pastille posée sur le coin de l'icône. */
+  .header__cart {
+    position: relative;
+  }
+
+  .header__cart sup {
+    position: absolute;
+    top: -6px;
+    right: -9px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    background: var(--color-foreground);
+    color: var(--color-background);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    vertical-align: baseline;
+  }
+
+  /* Sans ce signal, rien ne dit que l'ajout a fonctionné quand le bouton est
+     loin du panier. */
+  @keyframes iz-panier-pulse {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+  }
+
+  .header__cart.is-ajout sup {
+    animation: iz-panier-pulse 0.45s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .header__cart.is-ajout sup { animation: none; }
   }
 
   /* Shopify injecte parfois un élément vide (shopify-store) entre les icônes,

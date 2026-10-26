@@ -440,6 +440,10 @@
           if (sup) {
             sup.textContent = panier.item_count;
             sup.hidden = panier.item_count === 0;
+            /* Signale l'ajout là où le client regarde rarement : sans ce
+               clignotement, rien ne dit que le panier a bougé. */
+            lien.classList.add('is-ajout');
+            setTimeout(function () { lien.classList.remove('is-ajout'); }, 600);
           }
         })
         .catch(function () {});
