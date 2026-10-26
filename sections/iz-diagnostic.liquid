@@ -153,7 +153,36 @@
         </button>
       </div>
 
-      {%- comment -%} ---------- Écran 3 : l'email ---------- {%- endcomment -%}
+      {%- comment -%}
+        ---------- Écran 3 : la photo, facultative ----------
+        Masqué tant que l'analyse n'a pas d'adresse : une étape qui échoue
+        vaut moins qu'une étape absente.
+      {%- endcomment -%}
+      {%- if section.settings.photo_active and section.settings.photo_endpoint != blank -%}
+        <div class="izd__ecran" data-izd-ecran="photo" hidden>
+          <h3 class="izd__titre izd__titre--petit">{{ section.settings.photo_titre }}</h3>
+          {%- if section.settings.photo_texte != blank -%}
+            <div class="izd__texte">{{ section.settings.photo_texte }}</div>
+          {%- endif -%}
+
+          <label class="izd__photo-bouton iz-btn iz-btn--primary" for="izd-photo">
+            {{ section.settings.photo_bouton }}
+          </label>
+          <input id="izd-photo" class="izd__photo-champ" type="file" accept="image/jpeg,image/png,image/webp" capture="user" data-izd-photo>
+
+          <p class="izd__photo-etat" data-izd-photo-etat hidden aria-live="polite"></p>
+
+          <button type="button" class="izd__passer" data-izd-photo-passer>
+            {{ section.settings.photo_passer }}
+          </button>
+
+          {%- if section.settings.photo_consentement != blank -%}
+            <div class="izd__mention">{{ section.settings.photo_consentement }}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} ---------- Écran 4 : l'email ---------- {%- endcomment -%}
       <div class="izd__ecran" data-izd-ecran="email" hidden>
         <h3 class="izd__titre izd__titre--petit">{{ section.settings.email_titre }}</h3>
         {%- if section.settings.email_texte != blank -%}
@@ -225,6 +254,9 @@
             {%- endif -%}
 
             <h3 class="izd__titre">{{ bloc.settings.titre }}</h3>
+
+            {%- comment -%} Rempli par l'analyse photo, vide sans elle. {%- endcomment -%}
+            <p class="izd__observation" data-izd-observation hidden></p>
 
             {%- if bloc.settings.texte != blank -%}
               <div class="izd__texte">{{ bloc.settings.texte }}</div>
@@ -316,6 +348,7 @@
       var score = { masque: 0, serum: 0 };
       var historique = [];
       var index = 0;
+      var observation = '';
 
       var afficher = function (nom) {
         Object.keys(ecrans).forEach(function (cle) {
@@ -375,11 +408,19 @@
           blocs[0].hidden = false;
         }
 
+        if (trouve && observation) {
+          var ligne = trouve.querySelector('[data-izd-observation]');
+          if (ligne) {
+            ligne.textContent = observation;
+            ligne.hidden = false;
+          }
+        }
+
         afficher('resultat');
         racine.scrollIntoView({ behavior: 'smooth', block: 'start' });
       };
 
-      var terminer = function () {
+      var apresPhoto = function () {
         if (momentEmail === 'apres') {
           montrerResultat();
           if (ecrans.email) ecrans.email.hidden = false;
@@ -388,6 +429,103 @@
           racine.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       };
+
+      // La photo est une étape de plus, pas un autre moteur : elle ajoute ses
+      // points au même objet `score` que les réponses, puis la suite est
+      // identique. Si elle échoue, le questionnaire décide seul.
+      var terminer = function () {
+        if (ecrans.photo) {
+          afficher('photo');
+          racine.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          apresPhoto();
+        }
+      };
+
+      if (ecrans.photo) {
+        var champPhoto = racine.querySelector('[data-izd-photo]');
+        var etatPhoto = racine.querySelector('[data-izd-photo-etat]');
+        var passerPhoto = racine.querySelector('[data-izd-photo-passer]');
+        var adresse = {{ section.settings.photo_endpoint | json }};
+        var messages = {
+          patience: {{ section.settings.photo_patience | json }},
+          erreur: {{ section.settings.photo_erreur | json }},
+          illisible: {{ section.settings.photo_illisible | json }}
+        };
+
+        if (passerPhoto) passerPhoto.addEventListener('click', apresPhoto);
+
+        var dire = function (texte) {
+          if (!etatPhoto) return;
+          etatPhoto.textContent = texte;
+          etatPhoto.hidden = !texte;
+        };
+
+        // On réduit la photo dans le navigateur avant de l'envoyer : moins
+        // d'octets sur le réseau, et rien d'inutile ne sort du téléphone.
+        var reduire = function (fichier) {
+          return new Promise(function (resoudre, rejeter) {
+            var lecteur = new FileReader();
+            lecteur.onerror = rejeter;
+            lecteur.onload = function () {
+              var img = new Image();
+              img.onerror = rejeter;
+              img.onload = function () {
+                var cote = 1024;
+                var ratio = Math.min(1, cote / Math.max(img.width, img.height));
+                var toile = document.createElement('canvas');
+                toile.width = Math.round(img.width * ratio);
+                toile.height = Math.round(img.height * ratio);
+                toile.getContext('2d').drawImage(img, 0, 0, toile.width, toile.height);
+                var url = toile.toDataURL('image/jpeg', 0.82);
+                resoudre(url.slice(url.indexOf(',') + 1));
+              };
+              img.src = lecteur.result;
+            };
+            lecteur.readAsDataURL(fichier);
+          });
+        };
+
+        champPhoto.addEventListener('change', function () {
+          var fichier = champPhoto.files && champPhoto.files[0];
+          if (!fichier) return;
+
+          dire(messages.patience);
+          champPhoto.disabled = true;
+
+          reduire(fichier)
+            .then(function (base64) {
+              return fetch(adresse, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: base64, type: 'image/jpeg' })
+              });
+            })
+            .then(function (r) {
+              if (!r.ok) throw new Error('analyse');
+              return r.json();
+            })
+            .then(function (a) {
+              if (a.utilisable === false) {
+                dire(messages.illisible);
+                champPhoto.disabled = false;
+                champPhoto.value = '';
+                return;
+              }
+              // Trois points au maximum de chaque côté, contre huit pour les
+              // réponses : la photo pèse sans jamais décider à leur place.
+              score.masque += Math.round(a.sebum || 0);
+              score.serum += Math.round(((a.taches || 0) + (a.eclat || 0)) / 2);
+              observation = a.remarque || '';
+              apresPhoto();
+            })
+            .catch(function () {
+              // Une analyse qui échoue ne doit pas retenir le diagnostic.
+              dire(messages.erreur);
+              setTimeout(apresPhoto, 1200);
+            });
+        });
+      }
 
       var demarrer = racine.querySelector('[data-izd-demarrer]');
       if (demarrer) {
@@ -639,6 +777,40 @@
     cursor: pointer;
   }
 
+  /* ---------- La photo ---------- */
+
+  .izd__photo-champ {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .izd__photo-bouton {
+    display: inline-flex;
+    margin-top: 2.4rem;
+    cursor: pointer;
+  }
+
+  .izd__photo-etat {
+    font-family: var(--izd-texte-famille);
+    font-size: calc(var(--izd-texte) * 0.9);
+    margin-top: 1.4rem;
+    color: color-mix(in srgb, var(--izd-encre) 70%, transparent);
+  }
+
+  .izd__observation {
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+    line-height: 1.5;
+    font-style: italic;
+    margin: 0 0 1.6rem;
+    padding-left: 1.4rem;
+    border-left: 2px solid var(--izd-accent);
+    max-width: 58ch;
+  }
+
   /* ---------- L'email ---------- */
 
   .izd__form { margin-top: 2.4rem; }
@@ -841,6 +1013,71 @@
       "id": "libelle_retour",
       "label": "Retour",
       "default": "Revenir à la question précédente"
+    },
+    {
+      "type": "header",
+      "content": "Photo et analyse"
+    },
+    {
+      "type": "checkbox",
+      "id": "photo_active",
+      "label": "Proposer la photo",
+      "info": "L'étape reste masquée tant qu'une adresse d'analyse n'est pas renseignée.",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "photo_endpoint",
+      "label": "Adresse de l'analyse",
+      "info": "L'URL de la fonction déployée, par exemple https://irizee-diagnostic.vercel.app/api/analyse"
+    },
+    {
+      "type": "text",
+      "id": "photo_titre",
+      "label": "Titre",
+      "default": "Une photo, pour affiner"
+    },
+    {
+      "type": "richtext",
+      "id": "photo_texte",
+      "label": "Texte",
+      "default": "<p>Une photo du visage, à la lumière du jour, sans maquillage. Elle précise ce que vos réponses ont déjà dit. C'est facultatif : le résultat s'affiche sans elle.</p>"
+    },
+    {
+      "type": "text",
+      "id": "photo_bouton",
+      "label": "Bouton",
+      "default": "Prendre ou choisir une photo"
+    },
+    {
+      "type": "text",
+      "id": "photo_passer",
+      "label": "Lien pour passer",
+      "default": "Continuer sans photo"
+    },
+    {
+      "type": "text",
+      "id": "photo_patience",
+      "label": "Pendant l'analyse",
+      "default": "Analyse en cours, quelques secondes..."
+    },
+    {
+      "type": "text",
+      "id": "photo_illisible",
+      "label": "Photo inexploitable",
+      "default": "La photo est trop sombre ou trop floue. Réessayez à la lumière du jour, ou continuez sans."
+    },
+    {
+      "type": "text",
+      "id": "photo_erreur",
+      "label": "Analyse indisponible",
+      "default": "L'analyse n'a pas abouti. Votre résultat s'affiche d'après vos réponses."
+    },
+    {
+      "type": "richtext",
+      "id": "photo_consentement",
+      "label": "Mention sur la photo",
+      "default": "<p>Votre photo n'est pas conservée. Elle sert uniquement à cette analyse, puis elle est oubliée : elle n'est enregistrée sur aucun serveur et ne sert à rien d'autre.</p>"
     },
     {
       "type": "header",
