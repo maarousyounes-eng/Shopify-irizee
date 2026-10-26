@@ -56,8 +56,12 @@
   <section class="iz-texture full-width">
     <div class="iz-texture__inner{% if section.settings.position_image == 'droite' %} iz-texture__inner--inverse{% endif %}">
 
-      <div class="iz-texture__media">
-        {%- if image != blank -%}
+      {%- comment -%}
+        Sans photo, pas de colonne : un bloc gris vide valait moins que le
+        texte en pleine largeur.
+      {%- endcomment -%}
+      {%- if image != blank -%}
+        <div class="iz-texture__media">
           <img
             src="{{ image | image_url: width: 1200 }}"
             srcset="{{ image | image_url: width: 600 }} 600w, {{ image | image_url: width: 900 }} 900w, {{ image | image_url: width: 1200 }} 1200w"
@@ -65,8 +69,8 @@
             alt="{{ image.alt | escape | default: titre | escape }}"
             width="1200" height="900" loading="lazy"
           >
-        {%- endif -%}
-      </div>
+        </div>
+      {%- endif -%}
 
       <div class="iz-texture__texte">
         {%- if section.settings.eyebrow != blank -%}
