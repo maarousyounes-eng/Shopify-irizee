@@ -25,22 +25,6 @@
     --fp-name-family: {{ section.settings.name_font.family }}, {{ section.settings.name_font.fallback_families }};
     --fp-name-size: {{ section.settings.name_size }}px;
     --fp-name-color: {{ section.settings.name_color }};
-    --fp-text-hover: {{ section.settings.text_color_hover }};
-    --fp-voile: {{ section.settings.overlay_strength | divided_by: 100.0 }};
-
-    {%- comment -%}
-      L'ombre portée doit toujours s'opposer à l'encre : noire sous un texte
-      clair, blanche sous un texte foncé. On la déduit de la clarté de la
-      couleur choisie, sinon elle épaissit le texte au lieu de le détacher.
-    {%- endcomment -%}
-    {%- assign force = section.settings.text_shadow | divided_by: 100.0 -%}
-    {%- assign clarte = section.settings.name_color | color_extract: 'lightness' -%}
-    {%- if clarte > 50 -%}{%- assign ombre = '#000000' -%}{%- else -%}{%- assign ombre = '#ffffff' -%}{%- endif -%}
-    --fp-ombre: {{ ombre | color_modify: 'alpha', force }};
-
-    {%- assign clarte_hover = section.settings.text_color_hover | color_extract: 'lightness' -%}
-    {%- if clarte_hover > 50 -%}{%- assign ombre_hover = '#000000' -%}{%- else -%}{%- assign ombre_hover = '#ffffff' -%}{%- endif -%}
-    --fp-ombre-hover: {{ ombre_hover | color_modify: 'alpha', force }};
 
     --fp-subtitle-family: {{ section.settings.subtitle_font.family }}, {{ section.settings.subtitle_font.fallback_families }};
     --fp-subtitle-size: {{ section.settings.subtitle_size }}px;
@@ -289,21 +273,13 @@
   /* ---------- Carte produit ---------- */
 
   .product-card {
-    position: relative;
     display: block;
     flex: 0 0 auto;
     scroll-snap-align: start;
     width: 78vw;
     max-width: 34rem;
-    overflow: hidden;
     text-decoration: none;
     color: inherit;
-    background: var(--card-bg, var(--color-background));
-    /* Confine la fusion des photos au fond de la carte (et pas à la page) */
-    isolation: isolate;
-    border-radius: 1.2rem;
-    aspect-ratio: 449 / 575;
-    transition: transform 0.25s ease;
   }
 
   @media (min-width: 750px) {
@@ -320,10 +296,17 @@
     }
   }
 
-  /* Pas de z-index ici : un contexte d'empilement empêcherait la fusion du fond blanc */
+  /* Le cadre 4:5, et rien d'autre. `isolation` confine la fusion du fond blanc
+     des packshots à ce cadre plutôt qu'à la page. */
   .product-card__media {
-    position: absolute;
-    inset: 0;
+    position: relative;
+    aspect-ratio: 449 / 575;
+    max-width: 100%;
+    overflow: hidden;
+    border-radius: 1.2rem;
+    background: var(--card-bg, var(--color-background));
+    isolation: isolate;
+    transition: transform 0.25s ease;
   }
 
   .product-card__media img {
@@ -346,68 +329,6 @@
     padding: 0;
   }
 
-  /* Un seul voile, en bas, là où le nom et le prix s'accumulent. En haut il
-     n'y a qu'un mot, et le voile y mangeait la photo pour rien. À zéro, il
-     n'existe pas : c'est le réglage par défaut, l'ombre portée du texte
-     suffit dans la plupart des cas et ne touche pas la photo. */
-  .product-card__media::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 38%;
-    pointer-events: none;
-    opacity: var(--fp-voile, 0);
-    z-index: 1;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
-  }
-
-  /* Un filet d'ombre détache le texte de la photo sans l'assombrir. C'est ce
-     qui remplace le voile : la photo reste intacte, seule la lettre gagne un
-     contour. À zéro, l'ombre est transparente et ne coûte rien. */
-  .product-card__type,
-  .product-card__title,
-  .product-card__price,
-  .product-card__subtitle {
-    text-shadow: 0 1px 2px var(--fp-ombre), 0 1px 10px var(--fp-ombre);
-  }
-
-  .product-card--swiped .product-card__type,
-  .product-card--swiped .product-card__title,
-  .product-card--swiped .product-card__price,
-  .product-card--swiped .product-card__subtitle {
-    text-shadow: 0 1px 2px var(--fp-ombre-hover), 0 1px 10px var(--fp-ombre-hover);
-  }
-
-  @media (hover: hover) {
-    .product-card--has-secondary:hover .product-card__type,
-    .product-card--has-secondary:hover .product-card__title,
-    .product-card--has-secondary:hover .product-card__price,
-    .product-card--has-secondary:hover .product-card__subtitle {
-      text-shadow: 0 1px 2px var(--fp-ombre-hover), 0 1px 10px var(--fp-ombre-hover);
-    }
-  }
-
-  /* Quand la photo change, la couleur du texte change avec elle : un packshot
-     clair et une photo en situation n'appellent pas la même encre. Au doigt
-     (carte « swipée ») comme à la souris. */
-  .product-card--swiped .product-card__type,
-  .product-card--swiped .product-card__title,
-  .product-card--swiped .product-card__price,
-  .product-card--swiped .product-card__subtitle {
-    color: var(--fp-text-hover, var(--fp-name-color));
-  }
-
-  @media (hover: hover) {
-    .product-card--has-secondary:hover .product-card__type,
-    .product-card--has-secondary:hover .product-card__title,
-    .product-card--has-secondary:hover .product-card__price,
-    .product-card--has-secondary:hover .product-card__subtitle {
-      color: var(--fp-text-hover, var(--fp-name-color));
-    }
-  }
-
   /* Photo lifestyle au survol : plein cadre, bord à bord */
   .product-card__image--secondary {
     object-fit: cover;
@@ -415,34 +336,27 @@
     transition: opacity 0.35s ease;
   }
 
+  /* Sous la photo, sur le fond de la page : plus rien ne se superpose. */
   .product-card__content {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 1.6rem 1.2rem;
-  }
-
-  .product-card__top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.8rem;
+    padding-top: 1.4rem;
   }
 
   .product-card__type {
     font-family: var(--fp-category-family);
     font-size: var(--fp-category-size);
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     color: var(--fp-category-color);
   }
 
+  /* Le badge garde son fond : il ne dépend d'aucun contraste de photo. */
   .product-card__badge {
-    flex-shrink: 0;
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    z-index: 3;
     background: color-mix(in srgb, var(--color-foreground) 85%, transparent);
     color: var(--color-background);
     font-family: var(--fp-badge-family);
@@ -452,14 +366,6 @@
     padding: 0.4rem 1.1rem;
     border-radius: 999px;
     line-height: 1.4;
-  }
-
-  .product-card__bottom {
-    position: relative;
-  }
-
-  .product-card__info {
-    transition: opacity 0.25s ease;
   }
 
   .product-card__row {
@@ -486,24 +392,25 @@
     color: var(--fp-name-color);
   }
 
-  /* L'accroche suit la couleur du nom, en un ton plus discret : sur une photo
-     plein cadre, une encre fixe deviendrait illisible dès qu'on choisit du
-     blanc pour le reste. */
+  /* L'accroche suit la couleur du nom, en un ton plus discret. */
   .product-card__subtitle {
     font-family: var(--fp-subtitle-family);
     font-size: var(--fp-subtitle-size);
-    color: color-mix(in srgb, var(--fp-name-color) 78%, transparent);
+    color: color-mix(in srgb, var(--fp-name-color) 70%, transparent);
     margin-top: 0.4rem;
   }
 
-  /* Bouton d'achat : caché par défaut, apparaît au survol par-dessus les infos */
+  /* Bandeau d'achat : posé en bas de la photo, caché jusqu'au survol. Il a son
+     propre fond plein, donc il reste lisible sur n'importe quelle image. */
   .product-card__buy {
     position: absolute;
-    inset: auto 0 0 0;
+    left: 1.2rem;
+    right: 1.2rem;
+    bottom: 1.2rem;
+    z-index: 4;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.4rem;
     background: var(--color-background);
     color: var(--color-foreground);
     border-radius: 999px;
@@ -523,26 +430,18 @@
     opacity: 1;
   }
 
-  .product-card--swiped .product-card__info {
-    opacity: 0;
-  }
-
   .product-card--swiped .product-card__buy {
     opacity: 1;
     transform: translateY(0);
   }
 
   @media (hover: hover) {
-    .product-card--has-secondary:hover {
+    .product-card--has-secondary:hover .product-card__media {
       transform: scale(1.02);
     }
 
     .product-card--has-secondary:hover .product-card__image--secondary {
       opacity: 1;
-    }
-
-    .product-card--has-secondary:hover .product-card__info {
-      opacity: 0;
     }
 
     .product-card--has-secondary:hover .product-card__buy {
@@ -630,44 +529,15 @@
     {
       "type": "color",
       "id": "category_color",
-      "label": "Couleur du grand titre sur l'image",
-      "info": "Le nom affiché en grand en haut de la carte.",
+      "label": "Couleur du surtitre",
+      "info": "La petite ligne au-dessus du nom.",
       "default": "#6B6B6B"
     },
     {
       "type": "color",
       "id": "name_color",
-      "label": "Couleur du nom sous la carte",
+      "label": "Couleur du nom et du prix",
       "default": "#1A1A1A"
-    },
-    {
-      "type": "color",
-      "id": "text_color_hover",
-      "label": "Couleur des textes au survol",
-      "info": "S'applique quand la photo en situation prend la place du packshot.",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "range",
-      "id": "text_shadow",
-      "label": "Ombre portée sous le texte",
-      "info": "Détache le texte de la photo sans l'assombrir. À essayer avant le voile.",
-      "min": 0,
-      "max": 80,
-      "step": 5,
-      "unit": "%",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "overlay_strength",
-      "label": "Voile en bas de la photo",
-      "info": "Assombrit le bas de la photo, sous le nom et le prix. 0 = aucun voile.",
-      "min": 0,
-      "max": 80,
-      "step": 5,
-      "unit": "%",
-      "default": 0
     },
     {
       "type": "select",
