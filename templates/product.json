@@ -179,22 +179,13 @@
             "title": "Fabriqué en France",
             "text": "Produit dans nos ateliers partenaires."
           }
-        },
-        "item_maaTrJ": {
-          "type": "item",
-          "settings": {
-            "icon": "rabbit",
-            "title": "Non testé sur les animaux",
-            "text": "Aucune formule testée sur les animaux."
-          }
         }
       },
       "block_order": [
         "item_gzPHcC",
         "item_paiement3x",
         "item_kjwDUC",
-        "item_HDFdbt",
-        "item_maaTrJ"
+        "item_HDFdbt"
       ],
       "settings": {
         "columns": 5,
