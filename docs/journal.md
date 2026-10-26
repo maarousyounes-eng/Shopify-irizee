@@ -149,8 +149,18 @@ s'en charge déjà, ce journal est pour le contexte que le code ne montre pas.
   réglage existait, le voile aussi, mais la page d'accueil n'en portait
   aucun : `overlay_strength` et `text_color_hover` étaient absents de
   `templates/index.json`, donc nuls. Un réglage qu'aucun gabarit ne porte ne
-  sert à rien. L'accueil est désormais en plein cadre, voile à 45 %, encre
-  blanche au repos comme au survol.
+  sert à rien.
+- **Le voile était quand même le mauvais outil.** Il réglait le contraste en
+  abîmant ce qu'il protégeait : il ternissait la photo lifestyle, et en haut
+  de carte il assombrissait toute une bande pour un seul mot. Remplacé par une
+  ombre portée sur le texte, qui ne touche pas l'image. Elle s'oppose toujours
+  à l'encre choisie, noire sous un texte clair et blanche sous un texte foncé,
+  déduite en Liquid de `color_extract: 'lightness'`. Le voile subsiste en
+  option, en bas seulement, à zéro par défaut.
+- La vraie réponse au contraste était déjà là : les packshots sont clairs,
+  donc encre foncée au repos ; la photo lifestyle est bleu profond, donc
+  blanc au survol. Les deux réglages de couleur existaient, ils étaient tous
+  les deux sur blanc.
 - L'accroche et le prix de la carte suivent maintenant la couleur du nom.
   Laisser l'accroche en gris fixe pendant qu'on choisissait du blanc pour le
   titre garantissait qu'une des deux lignes resterait illisible.
