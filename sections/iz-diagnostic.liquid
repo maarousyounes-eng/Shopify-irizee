@@ -1,0 +1,1253 @@
+{% comment %}
+  Diagnostic de peau.
+
+  Un questionnaire, pas une analyse photo : avec deux soins au catalogue, ce
+  qui décide la recommandation tient en cinq questions, et une photo de visage
+  est une donnée personnelle qu'on ne collecte pas sans raison.
+
+  Le moteur est volontairement séparé de la collecte des réponses. Chaque
+  réponse ne fait qu'ajouter des points à `score.masque` et `score.serum` ;
+  une analyse photo, plus tard, n'aura qu'à alimenter le même objet avant
+  l'appel à `choisirCible()`. Rien de ce qui est écrit ici ne sera à jeter.
+
+  Les questions et les résultats sont des blocs : le contenu se change dans
+  l'éditeur, pas dans le code.
+{% endcomment %}
+
+{%- liquid
+  assign questions = section.blocks | where: 'type', 'question'
+  assign resultats = section.blocks | where: 'type', 'resultat'
+-%}
+
+{% style %}
+  {{ section.settings.police_titre | font_face: font_display: 'swap' }}
+  {{ section.settings.police_titre | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+  {{ section.settings.police_texte | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} {
+    --izd-fond: {{ section.settings.couleur_fond }};
+    --izd-encre: {{ section.settings.couleur_encre }};
+    --izd-carte: {{ section.settings.couleur_carte }};
+    --izd-accent: {{ section.settings.couleur_accent }};
+    --izd-rayon: {{ section.settings.rayon }}px;
+    --izd-marge: {{ section.settings.marge_verticale }}px;
+
+    --izd-titre-famille: {{ section.settings.police_titre.family }}, {{ section.settings.police_titre.fallback_families }};
+    --izd-texte-famille: {{ section.settings.police_texte.family }}, {{ section.settings.police_texte.fallback_families }};
+
+    --izd-eyebrow: {{ section.settings.taille_eyebrow }}px;
+    --izd-titre: {{ section.settings.taille_titre }}px;
+    --izd-question: {{ section.settings.taille_question }}px;
+    --izd-texte: {{ section.settings.taille_texte }}px;
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --izd-marge: {{ section.settings.marge_verticale_m }}px;
+      --izd-eyebrow: {{ section.settings.taille_eyebrow_m }}px;
+      --izd-titre: {{ section.settings.taille_titre_m }}px;
+      --izd-question: {{ section.settings.taille_question_m }}px;
+      --izd-texte: {{ section.settings.taille_texte_m }}px;
+    }
+  }
+{% endstyle %}
+
+{%- if questions.size > 0 and resultats.size > 0 -%}
+  <section
+    class="izd"
+    data-izd
+    data-izd-email="{{ section.settings.email_moment }}"
+  >
+    <div class="izd__inner">
+
+      {%- comment -%}
+        Sans JavaScript, le questionnaire ne peut pas fonctionner : plutôt
+        qu'un écran mort, on renvoie vers le catalogue.
+      {%- endcomment -%}
+      <noscript>
+        <p class="izd__eyebrow">{{ section.settings.eyebrow }}</p>
+        <h2 class="izd__titre">{{ section.settings.titre }}</h2>
+        <p class="izd__texte">{{ section.settings.texte_sans_js }}</p>
+        <a class="iz-btn iz-btn--primary" href="{{ routes.all_products_collection_url }}">
+          {{ section.settings.lien_sans_js }}
+        </a>
+      </noscript>
+
+      {%- comment -%} ---------- Écran 1 : l'accueil ---------- {%- endcomment -%}
+      <div class="izd__ecran" data-izd-ecran="intro">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="izd__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.titre != blank -%}
+          <h2 class="izd__titre">{{ section.settings.titre }}</h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <div class="izd__texte">{{ section.settings.intro }}</div>
+        {%- endif -%}
+
+        <p class="izd__duree">
+          {{ section.settings.mention_duree | replace: '[n]', questions.size }}
+        </p>
+
+        <button type="button" class="iz-btn iz-btn--primary" data-izd-demarrer>
+          {{ section.settings.cta_demarrer }}
+        </button>
+      </div>
+
+      {%- comment -%} ---------- Écran 2 : les questions ---------- {%- endcomment -%}
+      <div class="izd__ecran" data-izd-ecran="questions" hidden>
+        {%- if section.settings.afficher_progression -%}
+          <div class="izd__progression">
+            <div class="izd__jauge">
+              <span class="izd__jauge-barre" data-izd-jauge></span>
+            </div>
+            <p class="izd__compteur" data-izd-compteur aria-live="polite"></p>
+          </div>
+        {%- endif -%}
+
+        {%- for bloc in questions -%}
+          <fieldset
+            class="izd__question"
+            data-izd-question="{{ forloop.index0 }}"
+            {% unless forloop.first %}hidden{% endunless %}
+            {{ bloc.shopify_attributes }}
+          >
+            <legend class="izd__libelle">{{ bloc.settings.libelle }}</legend>
+
+            <div class="izd__reponses">
+              {%- for i in (1..4) -%}
+                {%- liquid
+                  case i
+                    when 1
+                      assign texte = bloc.settings.r1
+                      assign cible = bloc.settings.c1
+                    when 2
+                      assign texte = bloc.settings.r2
+                      assign cible = bloc.settings.c2
+                    when 3
+                      assign texte = bloc.settings.r3
+                      assign cible = bloc.settings.c3
+                    when 4
+                      assign texte = bloc.settings.r4
+                      assign cible = bloc.settings.c4
+                  endcase
+                -%}
+                {%- if texte != blank -%}
+                  <button
+                    type="button"
+                    class="izd__reponse"
+                    data-izd-reponse
+                    data-cible="{{ cible }}"
+                  >
+                    <span class="izd__puce" aria-hidden="true"></span>
+                    <span class="izd__reponse-texte">{{ texte }}</span>
+                  </button>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- endfor -%}
+
+        <button type="button" class="izd__retour" data-izd-retour hidden>
+          {{ section.settings.libelle_retour }}
+        </button>
+      </div>
+
+      {%- comment -%} ---------- Écran 3 : l'email ---------- {%- endcomment -%}
+      <div class="izd__ecran" data-izd-ecran="email" hidden>
+        <h3 class="izd__titre izd__titre--petit">{{ section.settings.email_titre }}</h3>
+        {%- if section.settings.email_texte != blank -%}
+          <div class="izd__texte">{{ section.settings.email_texte }}</div>
+        {%- endif -%}
+
+        {%- comment -%}
+          Le formulaire client de Shopify, soumis en arrière-plan : une
+          soumission ordinaire rechargerait la page et perdrait les réponses.
+          Sans JavaScript l'écran n'est jamais atteint.
+        {%- endcomment -%}
+        {%- form 'customer', id: 'izd-email', class: 'izd__form' -%}
+          <input type="hidden" name="contact[tags]" value="diagnostic">
+          <label class="izd__label" for="izd-email-champ">{{ section.settings.email_placeholder }}</label>
+          <div class="izd__champ">
+            <input
+              id="izd-email-champ"
+              type="email"
+              name="contact[email]"
+              placeholder="{{ section.settings.email_placeholder }}"
+              autocomplete="email"
+              required
+            >
+            <button type="submit" class="iz-btn iz-btn--primary">
+              {{ section.settings.email_bouton }}
+            </button>
+          </div>
+          <p class="izd__erreur" data-izd-erreur hidden>{{ section.settings.email_erreur }}</p>
+        {%- endform -%}
+
+        {%- if section.settings.email_moment == 'avant_facultatif' -%}
+          <button type="button" class="izd__passer" data-izd-passer>
+            {{ section.settings.email_passer }}
+          </button>
+        {%- endif -%}
+
+        {%- if section.settings.email_mention != blank -%}
+          <p class="izd__mention">{{ section.settings.email_mention }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} ---------- Écran 4 : le résultat ---------- {%- endcomment -%}
+      <div class="izd__ecran" data-izd-ecran="resultat" hidden>
+        {%- for bloc in resultats -%}
+          {%- assign produit = bloc.settings.produit -%}
+          <div class="izd__resultat" data-izd-resultat="{{ bloc.settings.cible }}" hidden {{ bloc.shopify_attributes }}>
+            {%- if section.settings.resultat_eyebrow != blank -%}
+              <p class="izd__eyebrow">{{ section.settings.resultat_eyebrow }}</p>
+            {%- endif -%}
+
+            <h3 class="izd__titre">{{ bloc.settings.titre }}</h3>
+
+            {%- if bloc.settings.texte != blank -%}
+              <div class="izd__texte">{{ bloc.settings.texte }}</div>
+            {%- endif -%}
+
+            {%- if bloc.settings.matin != blank or bloc.settings.soir != blank -%}
+              <div class="izd__routine">
+                {%- if bloc.settings.matin != blank -%}
+                  <div class="izd__moment">
+                    <p class="izd__moment-titre">{{ section.settings.libelle_matin }}</p>
+                    <p class="izd__moment-texte">{{ bloc.settings.matin }}</p>
+                  </div>
+                {%- endif -%}
+                {%- if bloc.settings.soir != blank -%}
+                  <div class="izd__moment">
+                    <p class="izd__moment-titre">{{ section.settings.libelle_soir }}</p>
+                    <p class="izd__moment-texte">{{ bloc.settings.soir }}</p>
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+            {%- if produit != blank -%}
+              {%- assign v = produit.selected_or_first_available_variant -%}
+              <div class="izd__produit">
+                {%- if produit.featured_image -%}
+                  <a class="izd__produit-media" href="{{ produit.url }}">
+                    {{ produit.featured_image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200, 300, 400', alt: produit.title }}
+                  </a>
+                {%- endif -%}
+
+                <div class="izd__produit-corps">
+                  <a class="izd__produit-nom" href="{{ produit.url }}">{{ produit.title }}</a>
+                  <p class="izd__produit-prix">
+                    {{ v.price | money }}
+                    {%- if v.compare_at_price > v.price -%}
+                      <s class="izd__produit-barre">{{ v.compare_at_price | money }}</s>
+                    {%- endif -%}
+                  </p>
+
+                  {%- if v.available -%}
+                    <form method="post" action="{{ routes.cart_add_url }}" class="izd__achat">
+                      <input type="hidden" name="id" value="{{ v.id }}">
+                      <input type="hidden" name="quantity" value="1">
+                      <button type="submit" class="iz-btn iz-btn--primary">
+                        {{ section.settings.libelle_achat }}
+                      </button>
+                    </form>
+                  {%- else -%}
+                    <p class="izd__epuise">{{ section.settings.libelle_epuise }}</p>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+
+            <button type="button" class="izd__recommencer" data-izd-recommencer>
+              {{ section.settings.libelle_recommencer }}
+            </button>
+          </div>
+        {%- endfor -%}
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      var racine = document.querySelector('#shopify-section-{{ section.id }} [data-izd]');
+      if (!racine) return;
+
+      var ecrans = {};
+      racine.querySelectorAll('[data-izd-ecran]').forEach(function (el) {
+        ecrans[el.getAttribute('data-izd-ecran')] = el;
+      });
+
+      var questions = Array.prototype.slice.call(racine.querySelectorAll('[data-izd-question]'));
+      var jauge = racine.querySelector('[data-izd-jauge]');
+      var compteur = racine.querySelector('[data-izd-compteur]');
+      var retour = racine.querySelector('[data-izd-retour]');
+      var momentEmail = racine.getAttribute('data-izd-email');
+
+      // Les réponses s'accumulent ici, et rien d'autre ne décide du résultat.
+      // Une analyse photo n'aurait qu'à ajouter ses propres points avant
+      // l'appel à choisirCible().
+      var score = { masque: 0, serum: 0 };
+      var historique = [];
+      var index = 0;
+
+      var afficher = function (nom) {
+        Object.keys(ecrans).forEach(function (cle) {
+          ecrans[cle].hidden = cle !== nom;
+        });
+      };
+
+      var majProgression = function () {
+        if (jauge) jauge.style.width = ((index / questions.length) * 100) + '%';
+        if (compteur) {
+          compteur.textContent = {{ section.settings.libelle_compteur | json }}
+            .replace('[n]', index + 1)
+            .replace('[total]', questions.length);
+        }
+        if (retour) retour.hidden = index === 0;
+      };
+
+      var montrerQuestion = function () {
+        questions.forEach(function (q, i) { q.hidden = i !== index; });
+        majProgression();
+      };
+
+      var compter = function (cible) {
+        if (cible === 'masque') score.masque += 1;
+        else if (cible === 'serum') score.serum += 1;
+        else if (cible === 'deux') { score.masque += 1; score.serum += 1; }
+      };
+
+      var decompter = function (cible) {
+        if (cible === 'masque') score.masque -= 1;
+        else if (cible === 'serum') score.serum -= 1;
+        else if (cible === 'deux') { score.masque -= 1; score.serum -= 1; }
+      };
+
+      // À égalité, les deux besoins sont réellement présents : c'est la
+      // routine, pas un tirage au sort.
+      var choisirCible = function () {
+        if (score.masque > score.serum) return 'masque';
+        if (score.serum > score.masque) return 'serum';
+        return 'routine';
+      };
+
+      var montrerResultat = function () {
+        var cible = choisirCible();
+        var blocs = racine.querySelectorAll('[data-izd-resultat]');
+        var trouve = null;
+
+        blocs.forEach(function (b) {
+          var correspond = b.getAttribute('data-izd-resultat') === cible;
+          b.hidden = !correspond;
+          if (correspond) trouve = b;
+        });
+
+        // Un résultat peut manquer si l'éditeur n'a pas de bloc pour cette
+        // cible : on retombe sur le premier plutôt que sur un écran vide.
+        if (!trouve && blocs.length) {
+          blocs[0].hidden = false;
+        }
+
+        afficher('resultat');
+        racine.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
+
+      var terminer = function () {
+        if (momentEmail === 'apres') {
+          montrerResultat();
+          if (ecrans.email) ecrans.email.hidden = false;
+        } else {
+          afficher('email');
+          racine.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+
+      var demarrer = racine.querySelector('[data-izd-demarrer]');
+      if (demarrer) {
+        demarrer.addEventListener('click', function () {
+          index = 0;
+          montrerQuestion();
+          afficher('questions');
+        });
+      }
+
+      racine.querySelectorAll('[data-izd-reponse]').forEach(function (bouton) {
+        bouton.addEventListener('click', function () {
+          var cible = bouton.getAttribute('data-cible');
+          compter(cible);
+          historique.push(cible);
+
+          if (index + 1 < questions.length) {
+            index += 1;
+            montrerQuestion();
+          } else {
+            index = questions.length;
+            majProgression();
+            terminer();
+          }
+        });
+      });
+
+      if (retour) {
+        retour.addEventListener('click', function () {
+          if (index === 0) return;
+          decompter(historique.pop());
+          index -= 1;
+          montrerQuestion();
+        });
+      }
+
+      racine.querySelectorAll('[data-izd-recommencer]').forEach(function (bouton) {
+        bouton.addEventListener('click', function () {
+          score = { masque: 0, serum: 0 };
+          historique = [];
+          index = 0;
+          montrerQuestion();
+          afficher('intro');
+          racine.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      var passer = racine.querySelector('[data-izd-passer]');
+      if (passer) passer.addEventListener('click', montrerResultat);
+
+      // Le formulaire client part en arrière-plan : une soumission ordinaire
+      // rechargerait la page et effacerait les réponses.
+      var form = racine.querySelector('.izd__form');
+      var erreur = racine.querySelector('[data-izd-erreur]');
+
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var bouton = form.querySelector('button[type="submit"]');
+          if (bouton) bouton.disabled = true;
+          if (erreur) erreur.hidden = true;
+
+          fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'text/html' }
+          })
+            .then(function () {
+              if (momentEmail === 'apres') {
+                form.hidden = true;
+              } else {
+                montrerResultat();
+              }
+            })
+            .catch(function () {
+              // Un email qui ne part pas ne doit pas retenir le résultat.
+              if (erreur) erreur.hidden = false;
+              if (momentEmail !== 'apres') montrerResultat();
+            })
+            .then(function () {
+              if (bouton) bouton.disabled = false;
+            });
+        });
+      }
+
+      majProgression();
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .izd {
+    background: var(--izd-fond);
+    padding: var(--izd-marge) var(--page-margin);
+    color: var(--izd-encre);
+  }
+
+  .izd__inner {
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+
+  .izd__eyebrow {
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-eyebrow);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--izd-encre) 60%, transparent);
+    margin-bottom: 1.2rem;
+  }
+
+  .izd__titre {
+    font-family: var(--izd-titre-famille);
+    font-size: var(--izd-titre);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-wrap: balance;
+    margin: 0 0 1.6rem;
+  }
+
+  .izd__titre--petit {
+    font-size: calc(var(--izd-titre) * 0.68);
+  }
+
+  .izd__texte {
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+    line-height: 1.6;
+    max-width: 58ch;
+  }
+
+  .izd__texte p { margin: 0 0 1.2rem; }
+  .izd__texte p:last-child { margin-bottom: 0; }
+
+  .izd__duree {
+    font-family: var(--izd-texte-famille);
+    font-size: calc(var(--izd-texte) * 0.88);
+    color: color-mix(in srgb, var(--izd-encre) 60%, transparent);
+    margin: 2rem 0 2.4rem;
+  }
+
+  /* ---------- Les questions ---------- */
+
+  .izd__progression {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    margin-bottom: 3.2rem;
+  }
+
+  .izd__jauge {
+    flex: 1;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--izd-encre) 12%, transparent);
+    overflow: hidden;
+  }
+
+  .izd__jauge-barre {
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: 999px;
+    background: var(--izd-accent);
+    transition: width 0.3s ease;
+  }
+
+  .izd__compteur {
+    font-family: var(--izd-texte-famille);
+    font-size: calc(var(--izd-texte) * 0.82);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: color-mix(in srgb, var(--izd-encre) 60%, transparent);
+  }
+
+  .izd__question {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+
+  .izd__libelle {
+    font-family: var(--izd-titre-famille);
+    font-size: var(--izd-question);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    text-wrap: balance;
+    padding: 0;
+    margin-bottom: 2.4rem;
+  }
+
+  .izd__reponses {
+    display: grid;
+    gap: 1.2rem;
+  }
+
+  .izd__reponse {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    width: 100%;
+    text-align: left;
+    padding: 1.8rem 2rem;
+    border: 1px solid color-mix(in srgb, var(--izd-encre) 14%, transparent);
+    border-radius: var(--izd-rayon);
+    background: var(--izd-carte);
+    color: inherit;
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.15s ease;
+  }
+
+  .izd__reponse:hover {
+    border-color: var(--izd-accent);
+    transform: translateY(-1px);
+  }
+
+  .izd__puce {
+    flex: none;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--izd-encre) 30%, transparent);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .izd__reponse:hover .izd__puce {
+    border-color: var(--izd-accent);
+    box-shadow: inset 0 0 0 0.4rem var(--izd-accent);
+  }
+
+  .izd__retour,
+  .izd__passer,
+  .izd__recommencer {
+    margin-top: 2.4rem;
+    border: 0;
+    background: none;
+    padding: 0;
+    color: inherit;
+    font-family: var(--izd-texte-famille);
+    font-size: calc(var(--izd-texte) * 0.88);
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    cursor: pointer;
+  }
+
+  /* ---------- L'email ---------- */
+
+  .izd__form { margin-top: 2.4rem; }
+
+  .izd__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .izd__champ {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    max-width: 48rem;
+  }
+
+  .izd__champ input {
+    flex: 1 1 22rem;
+    min-width: 0;
+    padding: 1.4rem 1.8rem;
+    border: 1px solid color-mix(in srgb, var(--izd-encre) 20%, transparent);
+    border-radius: 999px;
+    background: var(--izd-carte);
+    color: inherit;
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+  }
+
+  .izd__erreur,
+  .izd__mention {
+    font-family: var(--izd-texte-famille);
+    font-size: calc(var(--izd-texte) * 0.82);
+    color: color-mix(in srgb, var(--izd-encre) 60%, transparent);
+    margin-top: 1.4rem;
+    max-width: 48rem;
+  }
+
+  /* ---------- Le résultat ---------- */
+
+  .izd__routine {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+    gap: 1.6rem;
+    margin: 3.2rem 0;
+  }
+
+  .izd__moment {
+    min-width: 0;
+    padding: 2rem;
+    border-radius: var(--izd-rayon);
+    background: var(--izd-carte);
+  }
+
+  .izd__moment-titre {
+    font-family: var(--izd-texte-famille);
+    font-size: calc(var(--izd-texte) * 0.78);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--izd-encre) 60%, transparent);
+    margin-bottom: 0.8rem;
+  }
+
+  .izd__moment-texte {
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+    line-height: 1.5;
+  }
+
+  .izd__produit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    border-radius: var(--izd-rayon);
+    background: var(--izd-carte);
+  }
+
+  .izd__produit-media {
+    flex: none;
+    width: 10rem;
+    aspect-ratio: 0.8;
+    border-radius: calc(var(--izd-rayon) * 0.6);
+    overflow: hidden;
+    background: var(--izd-fond);
+  }
+
+  .izd__produit-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .izd__produit-corps {
+    flex: 1 1 24rem;
+    min-width: 0;
+  }
+
+  .izd__produit-nom {
+    display: block;
+    font-family: var(--izd-titre-famille);
+    font-size: calc(var(--izd-texte) * 1.1);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .izd__produit-prix {
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+    font-weight: 700;
+    margin: 0.4rem 0 1.6rem;
+  }
+
+  .izd__produit-barre {
+    font-weight: 400;
+    margin-left: 0.8rem;
+    color: color-mix(in srgb, var(--izd-encre) 55%, transparent);
+  }
+
+  .izd__epuise {
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+    color: color-mix(in srgb, var(--izd-encre) 60%, transparent);
+  }
+
+  @media (max-width: 749px) {
+    .izd__produit-media { width: 8rem; }
+    .izd__achat .iz-btn { width: 100%; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Diagnostic de peau",
+  "tag": "section",
+  "class": "section-iz-diagnostic",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Écran d'accueil"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Surtitre",
+      "default": "Diagnostic de peau"
+    },
+    {
+      "type": "text",
+      "id": "titre",
+      "label": "Titre",
+      "default": "Quel soin pour votre peau ?"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "<p>Cinq questions sur ce que vous observez sur votre peau, et nous vous disons par quel soin commencer. Aucune photo, aucune analyse automatique : vos réponses suffisent.</p>"
+    },
+    {
+      "type": "text",
+      "id": "mention_duree",
+      "label": "Mention de durée",
+      "info": "[n] est remplacé par le nombre de questions.",
+      "default": "[n] questions, moins d'une minute."
+    },
+    {
+      "type": "text",
+      "id": "cta_demarrer",
+      "label": "Bouton de départ",
+      "default": "Commencer"
+    },
+    {
+      "type": "header",
+      "content": "Questions"
+    },
+    {
+      "type": "checkbox",
+      "id": "afficher_progression",
+      "label": "Afficher la progression",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "libelle_compteur",
+      "label": "Compteur",
+      "info": "[n] et [total] sont remplacés par les numéros.",
+      "default": "Question [n] sur [total]"
+    },
+    {
+      "type": "text",
+      "id": "libelle_retour",
+      "label": "Retour",
+      "default": "Revenir à la question précédente"
+    },
+    {
+      "type": "header",
+      "content": "Email"
+    },
+    {
+      "type": "select",
+      "id": "email_moment",
+      "label": "Quand demander l'email",
+      "info": "Demandé avant, il remplit mieux la liste mais il bloque aussi le bouton d'achat : une partie des visiteurs abandonne sans voir le résultat.",
+      "options": [
+        {
+          "value": "avant_obligatoire",
+          "label": "Avant le résultat, obligatoire"
+        },
+        {
+          "value": "avant_facultatif",
+          "label": "Avant, avec un lien pour passer"
+        },
+        {
+          "value": "apres",
+          "label": "Après le résultat"
+        }
+      ],
+      "default": "avant_obligatoire"
+    },
+    {
+      "type": "text",
+      "id": "email_titre",
+      "label": "Titre",
+      "default": "Où envoyons-nous votre résultat ?"
+    },
+    {
+      "type": "richtext",
+      "id": "email_texte",
+      "label": "Texte",
+      "default": "<p>Vous recevez votre routine par email, et vous la retrouvez même si vous fermez la page.</p>"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Champ email",
+      "default": "Votre adresse email"
+    },
+    {
+      "type": "text",
+      "id": "email_bouton",
+      "label": "Bouton",
+      "default": "Voir mon résultat"
+    },
+    {
+      "type": "text",
+      "id": "email_passer",
+      "label": "Lien pour passer",
+      "default": "Voir mon résultat sans donner mon email"
+    },
+    {
+      "type": "text",
+      "id": "email_erreur",
+      "label": "Message d'erreur",
+      "default": "L'envoi n'a pas abouti, mais votre résultat s'affiche quand même."
+    },
+    {
+      "type": "richtext",
+      "id": "email_mention",
+      "label": "Mention légale",
+      "default": "<p>Votre adresse sert à vous envoyer ce résultat et nos nouveautés. Vous pouvez vous désabonner à tout moment.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Résultat"
+    },
+    {
+      "type": "text",
+      "id": "resultat_eyebrow",
+      "label": "Surtitre",
+      "default": "Votre résultat"
+    },
+    {
+      "type": "text",
+      "id": "libelle_matin",
+      "label": "Libellé matin",
+      "default": "Le matin"
+    },
+    {
+      "type": "text",
+      "id": "libelle_soir",
+      "label": "Libellé soir",
+      "default": "Le soir"
+    },
+    {
+      "type": "text",
+      "id": "libelle_achat",
+      "label": "Bouton d'achat",
+      "default": "Ajouter au panier"
+    },
+    {
+      "type": "text",
+      "id": "libelle_epuise",
+      "label": "Produit épuisé",
+      "default": "Momentanément épuisé"
+    },
+    {
+      "type": "text",
+      "id": "libelle_recommencer",
+      "label": "Recommencer",
+      "default": "Refaire le diagnostic"
+    },
+    {
+      "type": "header",
+      "content": "Sans JavaScript"
+    },
+    {
+      "type": "text",
+      "id": "texte_sans_js",
+      "label": "Texte",
+      "default": "Le diagnostic a besoin de JavaScript pour fonctionner. En attendant, nos soins sont dans le catalogue."
+    },
+    {
+      "type": "text",
+      "id": "lien_sans_js",
+      "label": "Lien",
+      "default": "Voir les soins"
+    },
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "type": "color",
+      "id": "couleur_fond",
+      "label": "Fond",
+      "default": "#FBFAF8"
+    },
+    {
+      "type": "color",
+      "id": "couleur_encre",
+      "label": "Texte",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "couleur_carte",
+      "label": "Fond des réponses",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "couleur_accent",
+      "label": "Accent",
+      "default": "#214975"
+    },
+    {
+      "type": "range",
+      "id": "rayon",
+      "label": "Arrondi",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale",
+      "label": "Marge — ordinateur",
+      "min": 32,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale_m",
+      "label": "Marge — mobile",
+      "min": 24,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Typographie"
+    },
+    {
+      "type": "font_picker",
+      "id": "police_titre",
+      "label": "Police des titres",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "police_texte",
+      "label": "Police du texte",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow",
+      "label": "Surtitre — ordinateur",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow_m",
+      "label": "Surtitre — mobile",
+      "min": 9,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "taille_titre",
+      "label": "Titre — ordinateur",
+      "min": 20,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "default": 38
+    },
+    {
+      "type": "range",
+      "id": "taille_titre_m",
+      "label": "Titre — mobile",
+      "min": 18,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "taille_question",
+      "label": "Question — ordinateur",
+      "min": 16,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "taille_question_m",
+      "label": "Question — mobile",
+      "min": 15,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "taille_texte",
+      "label": "Texte — ordinateur",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "taille_texte_m",
+      "label": "Texte — mobile",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "text",
+          "id": "libelle",
+          "label": "La question",
+          "default": "En fin de journée, votre peau est plutôt..."
+        },
+        {
+          "type": "header",
+          "content": "Réponse 1"
+        },
+        {
+          "type": "text",
+          "id": "r1",
+          "label": "Texte",
+          "default": "Brillante sur le front et le nez"
+        },
+        {
+          "type": "select",
+          "id": "c1",
+          "label": "Oriente vers",
+          "options": [
+            { "value": "masque", "label": "Le masque" },
+            { "value": "serum", "label": "Le sérum" },
+            { "value": "deux", "label": "Les deux" },
+            { "value": "aucun", "label": "Ni l'un ni l'autre" }
+          ],
+          "default": "masque"
+        },
+        {
+          "type": "header",
+          "content": "Réponse 2"
+        },
+        {
+          "type": "text",
+          "id": "r2",
+          "label": "Texte",
+          "default": "Terne, sans relief"
+        },
+        {
+          "type": "select",
+          "id": "c2",
+          "label": "Oriente vers",
+          "options": [
+            { "value": "masque", "label": "Le masque" },
+            { "value": "serum", "label": "Le sérum" },
+            { "value": "deux", "label": "Les deux" },
+            { "value": "aucun", "label": "Ni l'un ni l'autre" }
+          ],
+          "default": "serum"
+        },
+        {
+          "type": "header",
+          "content": "Réponse 3"
+        },
+        {
+          "type": "text",
+          "id": "r3",
+          "label": "Texte",
+          "default": "Les deux, selon les zones"
+        },
+        {
+          "type": "select",
+          "id": "c3",
+          "label": "Oriente vers",
+          "options": [
+            { "value": "masque", "label": "Le masque" },
+            { "value": "serum", "label": "Le sérum" },
+            { "value": "deux", "label": "Les deux" },
+            { "value": "aucun", "label": "Ni l'un ni l'autre" }
+          ],
+          "default": "deux"
+        },
+        {
+          "type": "header",
+          "content": "Réponse 4"
+        },
+        {
+          "type": "text",
+          "id": "r4",
+          "label": "Texte",
+          "info": "Laissez vide pour n'afficher que trois réponses."
+        },
+        {
+          "type": "select",
+          "id": "c4",
+          "label": "Oriente vers",
+          "options": [
+            { "value": "masque", "label": "Le masque" },
+            { "value": "serum", "label": "Le sérum" },
+            { "value": "deux", "label": "Les deux" },
+            { "value": "aucun", "label": "Ni l'un ni l'autre" }
+          ],
+          "default": "aucun"
+        }
+      ]
+    },
+    {
+      "type": "resultat",
+      "name": "Résultat",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "select",
+          "id": "cible",
+          "label": "S'affiche pour",
+          "info": "Prévoyez un bloc pour chacune des trois cibles.",
+          "options": [
+            { "value": "masque", "label": "Le masque l'emporte" },
+            { "value": "serum", "label": "Le sérum l'emporte" },
+            { "value": "routine", "label": "À égalité" }
+          ],
+          "default": "routine"
+        },
+        {
+          "type": "text",
+          "id": "titre",
+          "label": "Titre",
+          "default": "Vos deux besoins arrivent ensemble"
+        },
+        {
+          "type": "richtext",
+          "id": "texte",
+          "label": "Explication"
+        },
+        {
+          "type": "text",
+          "id": "matin",
+          "label": "Le matin"
+        },
+        {
+          "type": "text",
+          "id": "soir",
+          "label": "Le soir"
+        },
+        {
+          "type": "product",
+          "id": "produit",
+          "label": "Produit recommandé"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Diagnostic de peau"
+    }
+  ]
+}
+{% endschema %}

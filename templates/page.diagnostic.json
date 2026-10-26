@@ -1,0 +1,177 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "diagnostic": {
+      "type": "iz-diagnostic",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "libelle": "En fin de journée, votre peau est plutôt...",
+            "r1": "Brillante sur le front et le nez",
+            "c1": "masque",
+            "r2": "Terne, sans éclat",
+            "c2": "serum",
+            "r3": "Les deux, selon les zones",
+            "c3": "deux",
+            "r4": "Ni l'une ni l'autre",
+            "c4": "aucun"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "libelle": "Qu'est-ce qui vous gêne le plus aujourd'hui ?",
+            "r1": "Des pores visibles, un grain irrégulier",
+            "c1": "masque",
+            "r2": "Des taches ou des marques qui restent",
+            "c2": "serum",
+            "r3": "Un teint qui manque d'uniformité",
+            "c3": "serum",
+            "r4": "Des imperfections qui reviennent",
+            "c4": "masque"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "libelle": "Avez-vous des marques laissées par d'anciens boutons ?",
+            "r1": "Oui, plusieurs",
+            "c1": "serum",
+            "r2": "Une ou deux",
+            "c2": "serum",
+            "r3": "Aucune",
+            "c3": "aucun",
+            "r4": "",
+            "c4": "aucun"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "libelle": "Aujourd'hui, votre routine comporte...",
+            "r1": "Rien, ou juste un nettoyant",
+            "c1": "deux",
+            "r2": "Un nettoyant et une crème",
+            "c2": "deux",
+            "r3": "Déjà un sérum",
+            "c3": "masque",
+            "r4": "Déjà un masque",
+            "c4": "serum"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "libelle": "Combien de temps pouvez-vous y consacrer ?",
+            "r1": "Deux minutes, matin et soir",
+            "c1": "serum",
+            "r2": "Un vrai moment, une fois par semaine",
+            "c2": "masque",
+            "r3": "Les deux me vont",
+            "c3": "deux",
+            "r4": "",
+            "c4": "aucun"
+          }
+        },
+        "res_masque": {
+          "type": "resultat",
+          "settings": {
+            "cible": "masque",
+            "titre": "Commencez par désencombrer votre peau",
+            "texte": "<p>Vos réponses décrivent une peau qui produit du sébum et dont le grain s'irrégularise : ce sont les impuretés et l'excès de sébum qu'il faut traiter en premier. Un sérum posé sur une peau encombrée travaille moins bien.</p><p>Le Masque Rituel Nila absorbe l'excès de sébum et les impuretés. L'huile d'argan et le beurre de karité gardent la peau souple pendant toute la pose.</p>",
+            "matin": "Nettoyant doux, puis votre crème habituelle.",
+            "soir": "Une à deux fois par semaine, le masque pendant dix à quinze minutes, puis votre crème.",
+            "produit": ""
+          }
+        },
+        "res_serum": {
+          "type": "resultat",
+          "settings": {
+            "cible": "serum",
+            "titre": "Commencez par unifier votre teint",
+            "texte": "<p>Vos réponses décrivent des taches, des marques ou un teint qui manque d'uniformité. C'est un travail de fond, quotidien, qui demande des actifs appliqués tous les jours plutôt qu'un soin hebdomadaire.</p><p>Le Sérum Correcteur &amp; Éclat associe la vitamine C, l'alpha-arbutine et l'acide hyaluronique : la luminosité, les taches et l'hydratation, dans la même formule.</p>",
+            "matin": "Quelques gouttes sur peau propre, puis la crème et une protection solaire.",
+            "soir": "Quelques gouttes sur peau propre, puis la crème.",
+            "produit": ""
+          }
+        },
+        "res_routine": {
+          "type": "resultat",
+          "settings": {
+            "cible": "routine",
+            "titre": "Vos deux besoins arrivent ensemble",
+            "texte": "<p>Vos réponses pointent autant vers le sébum et les impuretés que vers les taches et le manque d'éclat. Les traiter l'un après l'autre ferait perdre des semaines : les deux soins ne jouent pas sur le même terrain et ne se gênent pas.</p><p>Le masque prépare la peau une à deux fois par semaine, le sérum prend le relais au quotidien.</p>",
+            "matin": "Le sérum sur peau propre, puis la crème et une protection solaire.",
+            "soir": "Le sérum tous les soirs. Une à deux fois par semaine, le masque avant le sérum.",
+            "produit": ""
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "res_masque",
+        "res_serum",
+        "res_routine"
+      ],
+      "settings": {
+        "eyebrow": "Diagnostic de peau",
+        "titre": "Quel soin pour votre peau ?",
+        "intro": "<p>Cinq questions sur ce que vous observez sur votre peau, et nous vous disons par quel soin commencer. Aucune photo, aucune analyse automatique : vos réponses suffisent.</p>",
+        "mention_duree": "[n] questions, moins d'une minute.",
+        "cta_demarrer": "Commencer",
+        "afficher_progression": true,
+        "libelle_compteur": "Question [n] sur [total]",
+        "libelle_retour": "Revenir à la question précédente",
+        "email_moment": "avant_obligatoire",
+        "email_titre": "Où envoyons-nous votre résultat ?",
+        "email_texte": "<p>Vous recevez votre routine par email, et vous la retrouvez même si vous fermez la page.</p>",
+        "email_placeholder": "Votre adresse email",
+        "email_bouton": "Voir mon résultat",
+        "email_passer": "Voir mon résultat sans donner mon email",
+        "email_erreur": "L'envoi n'a pas abouti, mais votre résultat s'affiche quand même.",
+        "email_mention": "<p>Votre adresse sert à vous envoyer ce résultat et nos nouveautés. Vous pouvez vous désabonner à tout moment.</p>",
+        "resultat_eyebrow": "Votre résultat",
+        "libelle_matin": "Le matin",
+        "libelle_soir": "Le soir",
+        "libelle_achat": "Ajouter au panier",
+        "libelle_epuise": "Momentanément épuisé",
+        "libelle_recommencer": "Refaire le diagnostic",
+        "texte_sans_js": "Le diagnostic a besoin de JavaScript pour fonctionner. En attendant, nos soins sont dans le catalogue.",
+        "lien_sans_js": "Voir les soins",
+        "couleur_fond": "#fbfaf8",
+        "couleur_encre": "#1a1a1a",
+        "couleur_carte": "#ffffff",
+        "couleur_accent": "#214975",
+        "rayon": 14,
+        "marge_verticale": 88,
+        "marge_verticale_m": 56,
+        "police_titre": "work_sans_n4",
+        "police_texte": "work_sans_n4",
+        "taille_eyebrow": 12,
+        "taille_eyebrow_m": 11,
+        "taille_titre": 38,
+        "taille_titre_m": 26,
+        "taille_question": 26,
+        "taille_question_m": 20,
+        "taille_texte": 16,
+        "taille_texte_m": 15
+      }
+    }
+  },
+  "order": [
+    "diagnostic"
+  ]
+}
