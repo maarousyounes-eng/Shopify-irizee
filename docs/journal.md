@@ -179,3 +179,20 @@ s'en charge déjà, ce journal est pour le contexte que le code ne montre pas.
 - **Le volume du Sérum est réglé** : 30 ml, lu sur le flacon dans le packshot,
   pas sur la fiche technique qui ne le porte toujours pas. La mention
   obligatoire est en ligne.
+
+- **Le texte est passé sous la photo, et c'était ça le vrai correctif.** Le
+  nom et le prix ne manquaient pas de contraste : ils tombaient sur le tube,
+  au milieu du cadre. Trois tentatives successives ont traité le symptôme
+  (encre, voile, ombre portée) avant qu'une maquette comparative ne montre
+  que le défaut était géométrique, pas chromatique.
+- Le cadre 4:5 est donc descendu de `.product-card` vers
+  `.product-card__media`, et le bloc de texte vit sur le fond de la page.
+  Trois réglages disparaissent avec le problème : l'encre de survol, l'ombre
+  portée et le voile. Seuls le badge et le bandeau d'achat restent sur la
+  photo, et ils ont leur propre fond.
+- **Le gabarit `templates/index.json` ne redescend pas de GitHub vers
+  Shopify** quand l'éditeur de thème tient ce fichier : le Liquid et le CSS
+  se synchronisent en secondes, la valeur du réglage non. Contourné en
+  renommant l'identifiant (`category_size` → `eyebrow_size`) : la valeur
+  stockée devient orpheline et le défaut du schéma s'applique. À retenir pour
+  tout changement de réglage par défaut.

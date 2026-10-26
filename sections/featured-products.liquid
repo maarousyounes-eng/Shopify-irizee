@@ -257,6 +257,9 @@
     overscroll-behavior-x: contain;
     scroll-snap-type: x proximity;
     justify-content: safe center;
+    /* Les cartes n'ont plus toutes la même hauteur : un nom qui passe sur deux
+       lignes ne doit pas étirer ses voisines. */
+    align-items: flex-start;
     padding-bottom: 0.4rem;
     scrollbar-width: none;
   }
