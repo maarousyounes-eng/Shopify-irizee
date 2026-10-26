@@ -358,9 +358,16 @@
     background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
   }
 
-  /* Au survol, la photo change : la couleur du texte doit pouvoir changer
-     avec elle, un packshot clair et une photo en situation n'appelant pas
-     la même encre. */
+  /* Quand la photo change, la couleur du texte change avec elle : un packshot
+     clair et une photo en situation n'appellent pas la même encre. Au doigt
+     (carte « swipée ») comme à la souris. */
+  .product-card--swiped .product-card__type,
+  .product-card--swiped .product-card__title,
+  .product-card--swiped .product-card__price,
+  .product-card--swiped .product-card__subtitle {
+    color: var(--fp-text-hover, var(--fp-name-color));
+  }
+
   @media (hover: hover) {
     .product-card--has-secondary:hover .product-card__type,
     .product-card--has-secondary:hover .product-card__title,
@@ -445,12 +452,16 @@
     font-size: var(--fp-name-size);
     font-weight: 700;
     white-space: nowrap;
+    color: var(--fp-name-color);
   }
 
+  /* L'accroche suit la couleur du nom, en un ton plus discret : sur une photo
+     plein cadre, une encre fixe deviendrait illisible dès qu'on choisit du
+     blanc pour le reste. */
   .product-card__subtitle {
     font-family: var(--fp-subtitle-family);
     font-size: var(--fp-subtitle-size);
-    color: color-mix(in srgb, var(--color-foreground) 65%, transparent);
+    color: color-mix(in srgb, var(--fp-name-color) 78%, transparent);
     margin-top: 0.4rem;
   }
 
