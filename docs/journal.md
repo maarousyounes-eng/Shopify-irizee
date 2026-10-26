@@ -142,3 +142,30 @@ s'en charge déjà, ce journal est pour le contexte que le code ne montre pas.
 - Le contenu de démonstration du gabarit (vidéos, rituel, actifs, FAQ) a été
   retiré. L'une des accroches annonçait « Avant / après 4 semaines », un
   résultat daté que rien n'étaye.
+
+## 2026-10-26
+
+- **Le plein cadre rendait le texte des cartes d'accueil illisible.** Le
+  réglage existait, le voile aussi, mais la page d'accueil n'en portait
+  aucun : `overlay_strength` et `text_color_hover` étaient absents de
+  `templates/index.json`, donc nuls. Un réglage qu'aucun gabarit ne porte ne
+  sert à rien. L'accueil est désormais en plein cadre, voile à 45 %, encre
+  blanche au repos comme au survol.
+- L'accroche et le prix de la carte suivent maintenant la couleur du nom.
+  Laisser l'accroche en gris fixe pendant qu'on choisissait du blanc pour le
+  titre garantissait qu'une des deux lignes resterait illisible.
+- **Le changement d'encre au survol valait aussi au doigt.** La règle vivait
+  sous `@media (hover: hover)` : sur mobile, la carte « swipée » montrait la
+  photo lifestyle avec l'encre du packshot. Le sélecteur `.product-card--swiped`
+  a été ajouté.
+- Nouveau champ `custom.carte_accroche`. Sans lui, la vignette affichait les
+  soixante premiers caractères de la description, soit « Appliqué une à deux
+  fois par semaine, ce masque absorbe l… ». Les deux produits ont leur
+  accroche.
+- **Les descriptions des deux produits ont été réécrites** : elles ouvraient
+  sur le mode d'emploi, elles ouvrent sur le problème. Le Sérum ne nommait
+  aucun actif, ce qui le privait de tout référencement sur « vitamine C » et
+  « alpha-arbutine ».
+- **Le volume du Sérum est réglé** : 30 ml, lu sur le flacon dans le packshot,
+  pas sur la fiche technique qui ne le porte toujours pas. La mention
+  obligatoire est en ligne.

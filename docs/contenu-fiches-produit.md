@@ -142,11 +142,11 @@ Texture onctueuse, sensation de confort dès la pose
 
 ## Référencement
 
-**Titre de la page** (57 caractères)
-`Sérum Correcteur & Éclat — vitamine C | Irizée`
+**Titre de la page** (60 caractères)
+`Sérum vitamine C et alpha-arbutine, taches et éclat | Irizée`
 
-**Méta-description** (154 caractères)
-`Sérum visage à la vitamine C, l'alpha-arbutine et l'acide hyaluronique. Aide à unifier le teint et à révéler l'éclat. Texture légère, sans effet gras.`
+**Méta-description** (156 caractères)
+`Sérum visage à la vitamine C, l'alpha-arbutine et l'acide hyaluronique. Aide à estomper les taches et à unifier le teint. Texture légère, non grasse. 30 ml.`
 
 **Handle** : `serum-correcteur-eclat`
 
@@ -157,14 +157,14 @@ cohérente avec la promesse d'uniformité du teint.
 ## Bloc d'achat
 
 **Format**
-`Sérum visage · [volume à confirmer]`
+`Sérum visage · 30 ml`
 
-> ⚠ **Toujours en attente au 24/10/2026.** Le volume ne figure pas sur la
-> fiche technique BIOCYLAB, et le champ `format` du produit est resté vide
-> plutôt que de porter une valeur inventée. C'est une mention obligatoire :
-> rien ne part en ligne sans elle.
+> Résolu le 26/10/2026. Le volume ne figure pas sur la fiche technique
+> BIOCYLAB, mais il est imprimé sur le flacon : « 30ml - 1 fl oz », lisible
+> sur le packshot `irizee_s-rum-correcteur-clat_4x5_c8a15d`. Le champ est
+> rempli.
 >
-> Le « 250 » communiqué le 24/10 est la quantité en stock, pas le contenant.
+> Le « 250 » communiqué le 24/10 était la quantité en stock, pas le contenant.
 
 **Promesse**
 `Un sérum concentré en vitamine C et alpha-arbutine, pour unifier le teint et révéler l'éclat naturel de la peau.`
@@ -275,4 +275,53 @@ d'usage, source affichée.
    premier frein, devant le texte.
 2. **Les avis** — la note en haut de fiche est la preuve sociale la plus
    efficace. Elle attend l'app d'avis.
-3. **Le volume du Sérum** — mention obligatoire, absente de la fiche technique.
+3. ~~**Le volume du Sérum**~~ — réglé le 26/10 : 30 ml, lu sur le flacon.
+
+---
+
+# Description Shopify et accroche de carte
+
+Deux champs distincts, souvent confondus :
+
+- La **description** du produit (champ natif Shopify) sert la fiche et le
+  référencement. Elle ouvre sur le problème, pas sur le mode d'emploi.
+- L'**accroche de carte** (`custom.carte_accroche`, texte sur une seule
+  ligne) sert la vignette de la page d'accueil. Sans elle, la carte affichait
+  les soixante premiers caractères de la description, c'est-à-dire le début
+  d'une phrase coupée en deux.
+
+## Masque Rituel Nila
+
+**Description**
+
+> Pores visibles, zones brillantes, teint terne : ce masque à la poudre de
+> nila purifie en profondeur et remet de l'éclat, sans agresser. Le nila
+> absorbe l'excès de sébum et les impuretés, l'huile d'argan et le beurre de
+> karité gardent la peau souple et confortable pendant toute la pose.
+>
+> Une à deux fois par semaine, dix à quinze minutes de pose. Au fil des
+> applications, le teint paraît plus net, plus lumineux et plus uniforme.
+>
+> Convient à toutes les peaux. Sans parfum ajouté. pH 5,0 à 6,0, proche de
+> celui de la peau.
+
+**Accroche de carte**
+`Purifie en douceur et réveille l'éclat du teint`
+
+## Sérum Correcteur & Éclat
+
+**Description**
+
+> Taches, marques laissées par les boutons, teint qui manque d'éclat : ce
+> sérum concentré en vitamine C, alpha-arbutine et acide hyaluronique
+> travaille l'uniformité du teint jour après jour. La vitamine C ravive la
+> luminosité, l'alpha-arbutine cible les taches et les marques, l'acide
+> hyaluronique garde la peau hydratée et repulpée.
+>
+> Sa texture légère pénètre en quelques secondes, sans film gras. Elle se
+> porte matin et soir, sous la crème ou sous le maquillage.
+>
+> Convient à toutes les peaux. pH 5,5 à 6,0.
+
+**Accroche de carte**
+`Unifie le teint et ravive l'éclat, matin et soir`
