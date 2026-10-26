@@ -38,32 +38,16 @@
           "type": "product",
           "settings": {
             "product": "masque-rituel-nila",
-            "badge_text": "Best",
+            "badge_text": "New",
             "category_label": "Masque"
-          }
-        },
-        "product_C3EFeh": {
-          "type": "product",
-          "settings": {
-            "product": "masque-rituel-nila",
-            "badge_text": "",
-            "category_label": ""
-          }
-        },
-        "product_nLALKQ": {
-          "type": "product",
-          "settings": {
-            "product": "masque-rituel-nila",
-            "badge_text": "",
-            "category_label": ""
           }
         },
         "product_FWzcgW": {
           "type": "product",
           "settings": {
-            "product": "masque-rituel-nila",
-            "badge_text": "",
-            "category_label": ""
+            "product": "serum-correcteur-eclat",
+            "badge_text": "New",
+            "category_label": "Serum"
           }
         },
         "p1": {
@@ -101,8 +85,6 @@
       },
       "block_order": [
         "product_Wamkke",
-        "product_C3EFeh",
-        "product_nLALKQ",
         "product_FWzcgW",
         "p1",
         "p2",
@@ -117,8 +99,9 @@
         "card_background": "#f0eff2",
         "category_color": "#6b6b6b",
         "name_color": "#1a1a1a",
+        "primary_fit": "cover",
         "blend_white_bg": false,
-        "image_inset": 14,
+        "image_inset": 15,
         "buy_label": "Acheter",
         "button_label": "Tout voir",
         "button_link": "",
@@ -150,8 +133,7 @@
         "button_padding_x": 26,
         "button_font_weight": 700,
         "button_letter_spacing": 1,
-        "button_text_transform": "uppercase",
-        "primary_fit": "contain"
+        "button_text_transform": "uppercase"
       }
     },
     "skin_diagnostic_PYwfF7": {
