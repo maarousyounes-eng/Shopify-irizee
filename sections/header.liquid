@@ -3,12 +3,16 @@
   pas de « header de la page produit » à régler à part. On détecte donc le type
   de page et on applique des valeurs alternatives pour ce qui doit différer.
 
-  Sur une fiche produit il n'y a pas de hero : la superposition y est désactivée
-  par défaut, ce qui remet aussi le header en position collante plutôt que fixe.
+  La superposition suppose une grande image en haut de page. Une fiche produit
+  n'en a pas, une page de contenu non plus : dans les deux cas le header se
+  posait sur le texte. Même traitement, même chemin de code, le header
+  redevient collant plutôt que fixe.
 {% endcomment %}
 {% assign reglages_pdp = false %}
-{% if request.page_type == 'product' and section.settings.pdp_override %}
-  {% assign reglages_pdp = true %}
+{% if section.settings.pdp_override %}
+  {% if request.page_type == 'product' or request.page_type == 'page' %}
+    {% assign reglages_pdp = true %}
+  {% endif %}
 {% endif %}
 
 {% assign is_overlay = section.settings.overlay_on_image %}
