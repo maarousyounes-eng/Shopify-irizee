@@ -4,13 +4,30 @@
   Shopify n'exécute {% stylesheet %} que dans les sections et les blocks, pas dans les snippets.
 {% endcomment %}
 {% assign display_category = category_label | default: product.type %}
+
+{%- comment -%}
+  Les deux photos de la carte se choisissent produit par produit : la
+  première photo du produit sert la fiche, pas forcément la carte. Sans
+  metafield, on retombe sur l'ordre des médias comme avant.
+
+  Pas de filtre `default` ici : il transforme la référence de fichier en
+  chaîne et casse `image_url`.
+{%- endcomment -%}
+{% assign photo_carte = product.featured_image %}
+{% if product.metafields.custom.carte_photo.value != blank %}
+  {% assign photo_carte = product.metafields.custom.carte_photo.value %}
+{% endif %}
+
 {% assign secondary_image = product.images[1] %}
+{% if product.metafields.custom.carte_photo_survol.value != blank %}
+  {% assign secondary_image = product.metafields.custom.carte_photo_survol.value %}
+{% endif %}
 {% assign cta_label = buy_label | default: 'Acheter' %}
 
 <a href="{{ product.url }}" class="product-card{% if secondary_image %} product-card--has-secondary{% endif %}{% if cadrage == 'cover' %} product-card--plein{% endif %}">
   <div class="product-card__media"{% if secondary_image %} data-swipe-media{% endif %}>
-    {% if product.featured_image %}
-      {{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 30vw, 78vw', widths: '400, 600, 900', class: 'product-card__image product-card__image--primary' }}
+    {% if photo_carte %}
+      {{ photo_carte | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 30vw, 78vw', widths: '400, 600, 900', class: 'product-card__image product-card__image--primary' }}
     {% endif %}
     {% if secondary_image %}
       {{ secondary_image | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 30vw, 78vw', widths: '400, 600, 900', class: 'product-card__image product-card__image--secondary' }}

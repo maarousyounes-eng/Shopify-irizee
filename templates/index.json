@@ -151,7 +151,7 @@
         "button_font_weight": 700,
         "button_letter_spacing": 1,
         "button_text_transform": "uppercase",
-        "primary_fit": "cover"
+        "primary_fit": "contain"
       }
     },
     "skin_diagnostic_PYwfF7": {
