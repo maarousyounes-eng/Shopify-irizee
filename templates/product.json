@@ -101,7 +101,7 @@
         "libelle_catalogue": "Catalogue",
         "show_badge": true,
         "badge_text": "Best",
-        "ratio": 1,
+        "ratio": 0.8,
         "thumb_count": 5,
         "libelle_vignette": "Voir le média",
         "galerie_fixe": true,
