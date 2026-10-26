@@ -245,7 +245,6 @@
                 data-seuil="{{ block.settings.seuil | times: 100 }}"
                 data-restant="{{ block.settings.texte_restant | escape }}"
                 data-atteint="{{ block.settings.texte_atteint | escape }}"
-                data-vide="{{ block.settings.texte_vide | escape }}"
                 {{ block.shopify_attributes }}>
                 <p class="iz-gauge__text" data-iz-gauge-text></p>
                 <div class="iz-gauge__track"><span class="iz-gauge__fill" data-iz-gauge-fill></span></div>
@@ -390,24 +389,11 @@
           var total = panier.total_price || 0;
           var texte = jauge.querySelector('[data-iz-gauge-text]');
           var fill = jauge.querySelector('[data-iz-gauge-fill]');
-          var enEuros = function (centimes) {
-            return (centimes / 100).toFixed(2).replace('.', ',').replace(/,00$/, '');
-          };
-          /* Panier vide : une barre à zéro annonce ce qu'on n'a pas encore.
-             On énonce simplement le seuil, et la jauge n'apparaît qu'une fois
-             qu'il y a quelque chose à faire progresser. */
-          if (total === 0 && jauge.dataset.vide) {
-            jauge.classList.add('iz-gauge--vide');
-            texte.innerHTML = jauge.dataset.vide.replace(
-              '{montant}', '<strong>' + enEuros(seuil) + ' €</strong>');
-            fill.style.width = '0%';
-          } else if (total >= seuil) {
-            jauge.classList.remove('iz-gauge--vide');
+          if (total >= seuil) {
             texte.textContent = jauge.dataset.atteint;
             fill.style.width = '100%';
           } else {
-            jauge.classList.remove('iz-gauge--vide');
-            var reste = enEuros(seuil - total);
+            var reste = ((seuil - total) / 100).toFixed(2).replace('.', ',').replace(/,00$/, '');
             texte.innerHTML = jauge.dataset.restant.replace('{montant}', '<strong>' + reste + ' €</strong>');
             fill.style.width = Math.max(2, (total / seuil) * 100) + '%';
           }
@@ -928,8 +914,6 @@
   }
 
   .iz-gauge__text:empty { display: none; }
-
-  .iz-gauge--vide .iz-gauge__track { display: none; }
 
   .iz-gauge__track {
     height: 4px;
@@ -1655,13 +1639,6 @@
           "step": 1,
           "unit": "€",
           "default": 49
-        },
-        {
-          "type": "text",
-          "id": "texte_vide",
-          "label": "Texte, panier vide",
-          "info": "{montant} est remplacé par le seuil. Laissez vide pour afficher la jauge dès l'arrivée.",
-          "default": "Livraison offerte dès {montant} d'achat"
         },
         {
           "type": "text",
