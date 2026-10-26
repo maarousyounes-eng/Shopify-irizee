@@ -261,7 +261,7 @@ de liste correspond à une raison concrète de ne pas acheter : « ça va tacher
 « je ne sais pas quand l'utiliser », « est-ce que ça va m'irriter ».
 
 **Les deux fiches se renvoient l'une à l'autre.** Une question de chaque FAQ
-mentionne l'autre produit : c'est ce qui prépare l'offre « Le Rituel » sans
+mentionne l'autre produit : c'est ce qui prépare l'offre « La Routine » sans
 rien forcer.
 
 **L'absence de chiffre est un parti pris.** Sans étude, annoncer « 92 % de
@@ -325,3 +325,50 @@ Deux champs distincts, souvent confondus :
 
 **Accroche de carte**
 `Unifie le teint et ravive l'éclat, matin et soir`
+
+
+---
+
+# LA ROUTINE (le lot)
+
+Renommé le 26/10/2026 : « Le Rituel » est devenu « La Routine », et le pinceau
+ne fait plus partie du lot. L'ancienne adresse `products/le-rituel` redirige
+vers `products/la-routine`.
+
+**Titre de la page** (56 caractères)
+`La Routine : masque au nila et sérum vitamine C | Irizée`
+
+**Méta-description** (148 caractères)
+`Le Masque Rituel Nila et le Sérum Correcteur & Éclat réunis. Purifie une à deux fois par semaine, unifie le teint matin et soir. Les deux pour 45 €.`
+
+**Handle** : `la-routine`
+
+**Description**
+
+> Taches, teint terne, pores visibles : les deux soins qui s'en occupent,
+> réunis. Le Masque Rituel Nila purifie une à deux fois par semaine, le Sérum
+> Correcteur & Éclat unifie le teint matin et soir.
+>
+> Le masque prépare la peau, le sérum prend le relais au quotidien. Les deux se
+> complètent, et l'ensemble revient moins cher que les soins achetés séparément.
+
+**Carte d'offre sur les deux fiches**
+
+| Champ | Valeur |
+|---|---|
+| `offre_libelle` | La Routine |
+| `offre_sous_titre` | Masque + Sérum |
+| `format` | Routine · Masque + Sérum |
+
+**Promesse**
+`La routine complète : le masque prépare la peau une à deux fois par semaine, le sérum prend le relais au quotidien pour unifier le teint et raviver l'éclat.`
+
+**Bénéfices**
+```
+Le Masque Rituel Nila, pour purifier une à deux fois par semaine
+Le Sérum Correcteur & Éclat, pour unifier le teint matin et soir
+Les deux soins réunis, moins chers qu'achetés séparément
+```
+
+> L'économie annoncée est vérifiable : 25,00 € + 24,90 € = 49,90 €, contre
+> 45,00 € le lot. C'est le prix barré affiché sur la carte d'offre.

@@ -99,11 +99,12 @@ Puis, de retour dans **Produits**, trois définitions de plus :
 
 Rien ne presse : ces sections resteront simplement masquées.
 
-### Le choix du format (quand Le Rituel et Le Coffret existeront)
+### Le choix du format
 
-> **Les quatre champs ci-dessous sont créés** (24/10/2026). Ce qui manque
-> pour que le sélecteur de format s'affiche, c'est un produit à référencer :
-> tant que `offres` est vide sur une fiche, le bloc ne rend rien.
+> **Les quatre champs ci-dessous sont créés** (24/10/2026) et remplis
+> (26/10/2026). Le Masque et le Sérum pointent tous les deux vers
+> « La Routine », qui porte son propre libellé et son sous-titre. Tant que
+> `offres` est vide sur une fiche, le bloc ne rend rien.
 
 
 Sur **Produits** :
@@ -115,9 +116,9 @@ Sur **Produits** :
 | Sous-titre d'offre | `offre_sous_titre` | Texte · Une ligne |
 | Badge d'offre | `offre_badge` | Texte · Une ligne |
 
-`offres` se remplit sur **chaque** produit : sur le Masque, tu listes Le Rituel
-et Le Coffret. Les trois autres se remplissent sur le produit **cible** — c'est
-lui qui porte son propre libellé.
+`offres` se remplit sur **chaque** produit : sur le Masque comme sur le Sérum,
+tu listes La Routine. Les trois autres se remplissent sur le produit **cible**,
+c'est lui qui porte son propre libellé.
 
 ### Produits complémentaires
 

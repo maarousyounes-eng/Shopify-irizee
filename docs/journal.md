@@ -196,3 +196,14 @@ s'en charge déjà, ce journal est pour le contexte que le code ne montre pas.
   renommant l'identifiant (`category_size` → `eyebrow_size`) : la valeur
   stockée devient orpheline et le défaut du schéma s'applique. À retenir pour
   tout changement de réglage par défaut.
+- **Le lot s'appelle « La Routine », et le pinceau en sort.** Renommage
+  complet : titre, libellé et sous-titre d'offre, promesse, bénéfices, format,
+  description, titre et description de référencement, et le handle. Shopify a
+  créé la redirection `le-rituel` → `la-routine` tout seul, case cochée par
+  défaut. Le troisième bénéfice ne pouvait pas rester vide : il annonce
+  maintenant l'économie, vérifiable au centime (49,90 € contre 45,00 €).
+- **Les flèches du carrousel ne disparaissaient jamais.** Le script les
+  marquait bien `hidden`, mais `.featured-products__arrow` pose
+  `display: flex`, et un sélecteur de classe bat le `[hidden] { display: none }`
+  du navigateur, qui n'est qu'un sélecteur d'attribut. Le symptôme ressemblait
+  à une erreur de logique, c'était une question de spécificité.
