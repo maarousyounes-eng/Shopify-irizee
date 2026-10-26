@@ -199,7 +199,7 @@
       <div class="izd__ecran" data-izd-ecran="resultat" hidden>
         {%- for bloc in resultats -%}
           {%- assign produit = bloc.settings.produit -%}
-          <div class="izd__resultat" data-izd-resultat="{{ bloc.settings.cible }}" hidden {{ bloc.shopify_attributes }}>
+          <div class="izd__resultat" data-izd-resultat="{{ bloc.settings.cible }}" data-sonde-brut="{{ bloc.settings.produit }}" data-sonde-id="{{ bloc.settings.produit.id }}" data-sonde-titre="{{ bloc.settings.produit.title }}" hidden {{ bloc.shopify_attributes }}>
             {%- if section.settings.resultat_eyebrow != blank -%}
               <p class="izd__eyebrow">{{ section.settings.resultat_eyebrow }}</p>
             {%- endif -%}
