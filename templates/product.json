@@ -175,9 +175,9 @@
         "item_HDFdbt": {
           "type": "item",
           "settings": {
-            "icon": "france",
-            "title": "Fabriqué en France",
-            "text": "Produit dans nos ateliers partenaires."
+            "icon": "return",
+            "title": "Retours sous 14 jours",
+            "text": "Produit non ouvert, retour accepté."
           }
         }
       },
@@ -188,7 +188,7 @@
         "item_HDFdbt"
       ],
       "settings": {
-        "columns": 5,
+        "columns": 4,
         "columns_mobile": "2",
         "alignment": "left",
         "show_numbers": false,
