@@ -25,6 +25,8 @@
     --fp-name-family: {{ section.settings.name_font.family }}, {{ section.settings.name_font.fallback_families }};
     --fp-name-size: {{ section.settings.name_size }}px;
     --fp-name-color: {{ section.settings.name_color }};
+    --fp-text-hover: {{ section.settings.text_color_hover }};
+    --fp-voile: {{ section.settings.overlay_strength | divided_by: 100.0 }};
 
     --fp-subtitle-family: {{ section.settings.subtitle_font.family }}, {{ section.settings.subtitle_font.fallback_families }};
     --fp-subtitle-size: {{ section.settings.subtitle_size }}px;
@@ -330,6 +332,44 @@
     padding: 0;
   }
 
+  /* Le texte de la carte est posé sur la photo. Sur un packshot il a le fond
+     uni pour lui ; sur une photo en situation, rien ne garantit le contraste.
+     Deux voiles dégradés, en haut et en bas, exactement là où il y a du
+     texte. À zéro, ils n'existent pas. */
+  .product-card__media::before,
+  .product-card__media::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 38%;
+    pointer-events: none;
+    opacity: var(--fp-voile, 0);
+    z-index: 1;
+  }
+
+  .product-card__media::before {
+    top: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent);
+  }
+
+  .product-card__media::after {
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  }
+
+  /* Au survol, la photo change : la couleur du texte doit pouvoir changer
+     avec elle, un packshot clair et une photo en situation n'appelant pas
+     la même encre. */
+  @media (hover: hover) {
+    .product-card--has-secondary:hover .product-card__type,
+    .product-card--has-secondary:hover .product-card__title,
+    .product-card--has-secondary:hover .product-card__price,
+    .product-card--has-secondary:hover .product-card__subtitle {
+      color: var(--fp-text-hover, var(--fp-name-color));
+    }
+  }
+
   /* Photo lifestyle au survol : plein cadre, bord à bord */
   .product-card__image--secondary {
     object-fit: cover;
@@ -557,6 +597,24 @@
       "id": "name_color",
       "label": "Couleur du nom sous la carte",
       "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "text_color_hover",
+      "label": "Couleur des textes au survol",
+      "info": "S'applique quand la photo en situation prend la place du packshot.",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "overlay_strength",
+      "label": "Voile derrière le texte",
+      "info": "Assombrit le haut et le bas de la photo pour rendre le texte lisible. 0 = aucun voile.",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 0
     },
     {
       "type": "select",

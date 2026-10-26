@@ -22,6 +22,16 @@
 {% if product.metafields.custom.carte_photo_survol.value != blank %}
   {% assign secondary_image = product.metafields.custom.carte_photo_survol.value %}
 {% endif %}
+
+{%- comment -%}
+  La description du produit, tronquée, commence par le mode d'emploi : sur
+  une carte on veut une accroche, pas les trois premiers mots d'un
+  paragraphe. Un champ dédié la remplace quand il est rempli.
+{%- endcomment -%}
+{% capture accroche %}{{ product.metafields.custom.carte_accroche }}{% endcapture %}
+{% if accroche == blank %}
+  {% assign accroche = product.description | strip_html | truncate: 60 %}
+{% endif %}
 {% assign cta_label = buy_label | default: 'Acheter' %}
 
 <a href="{{ product.url }}" class="product-card{% if secondary_image %} product-card--has-secondary{% endif %}{% if cadrage == 'cover' %} product-card--plein{% endif %}">
@@ -50,8 +60,8 @@
           <p class="product-card__title">{{ product.title }}</p>
           <p class="product-card__price">{{ product.price | money }}</p>
         </div>
-        {% if product.description != blank %}
-          <p class="product-card__subtitle">{{ product.description | strip_html | truncate: 60 }}</p>
+        {% if accroche != blank %}
+          <p class="product-card__subtitle">{{ accroche }}</p>
         {% endif %}
       </div>
 
