@@ -151,8 +151,8 @@
         "step_mCzT9M": {
           "type": "step",
           "settings": {
-            "title": "Répondez à cinq questions",
-            "text": "Sur ce que vous voyez et ce que vous ressentez, pas sur ce que vous croyez savoir."
+            "title": "Répondez à huit questions",
+            "text": "Sur votre peau, mais aussi sur votre sommeil, le soleil et votre alimentation."
           }
         },
         "step_n34NAF": {
@@ -179,7 +179,7 @@
       "settings": {
         "eyebrow": "Diagnostic de peau",
         "heading": "Deux minutes pour savoir par où commencer",
-        "text": "<p>Brillances, pores visibles, taches, teint terne : tout ne se traite pas de la même façon ni au même rythme. Cinq questions suffisent à savoir par quel soin commencer.</p>",
+        "text": "<p>Brillances, pores visibles, taches, teint terne : tout ne se traite pas de la même façon ni au même rythme. Huit questions sur votre peau et vos habitudes suffisent à savoir par où commencer.</p>",
         "show_step_numbers": true,
         "button_label": "Faire le diagnostic",
         "button_link": "shopify://pages/diagnostic",
