@@ -207,3 +207,36 @@ s'en charge déjà, ce journal est pour le contexte que le code ne montre pas.
   `display: flex`, et un sélecteur de classe bat le `[hidden] { display: none }`
   du navigateur, qui n'est qu'un sélecteur d'attribut. Le symptôme ressemblait
   à une erreur de logique, c'était une question de spécificité.
+
+## 2026-10-26 (suite) — Diagnostic de peau
+
+- **La section d'accueil était une vitrine sans rien derrière** : elle
+  promettait une analyse photo et son bouton pointait sur une ancre vide.
+  Remplacée par un vrai questionnaire, `sections/iz-diagnostic.liquid`, servi
+  par `templates/page.diagnostic.json` sur `/pages/diagnostic`.
+- **Pas d'analyse photo, et c'est un choix.** Avec deux soins au catalogue, ce
+  qui décide la recommandation tient en cinq questions. Une photo de visage
+  est une donnée personnelle : la collecter demanderait un service externe
+  pour la clé d'API, un budget par analyse, un consentement et une durée de
+  conservation, pour un gain nul sur un catalogue de deux produits.
+- **Le moteur est séparé de la collecte**, exprès. Chaque réponse n'ajoute que
+  des points à `score.masque` et `score.serum`, et `choisirCible()` tranche.
+  Une analyse photo, plus tard, alimentera le même objet : rien de ce qui est
+  écrit ne sera à jeter. À égalité, c'est la routine qui sort, parce que les
+  deux besoins sont alors réellement présents.
+- **Shopify ne reprend un gabarit JSON de GitHub qu'à sa création.** Les
+  trois produits des résultats, ajoutés au JSON après coup, ne sont jamais
+  arrivés, et le `templates/index.json` de l'accueil était figé depuis des
+  heures. Pire : Shopify a ensuite réécrit `page.diagnostic.json` dans le
+  dépôt en vidant les trois valeurs. Sa copie fait foi, point final.
+- **Deux parades, selon la nature du réglage.** Pour un réglage technique, un
+  identifiant neuf dans le schéma : la clé absente du JSON stocké fait
+  s'appliquer la valeur par défaut (`eyebrow_size`, puis `handle_masque`,
+  `handle_serum`, `handle_routine`). Pour du contenu, il n'y a pas de
+  raccourci : il faut l'écrire dans l'éditeur de thème, qui écrit côté
+  Shopify et le renvoie ensuite dans le dépôt.
+- **Le sélecteur de gabarit d'une page ne liste que les gabarits du thème
+  publié.** `page.diagnostic` n'y apparaîtra donc qu'après la publication de
+  preprod. En attendant, le gabarit se teste avec `?view=diagnostic`.
+- Le header se posait aussi sur le texte des pages de contenu : la fiche
+  produit avait son exception, la condition couvre maintenant les deux.
