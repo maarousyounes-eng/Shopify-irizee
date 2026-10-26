@@ -78,7 +78,7 @@
       </div>
 
       {%- if section.settings.bouton_label != blank -%}
-        <button type="button" class="iz-btn iz-btn--secondary iz-actifs__bouton" data-iz-inci>
+        <button type="button" class="iz-btn iz-btn--primary iz-actifs__bouton" data-iz-achat>
           {{ section.settings.bouton_label }}
         </button>
       {%- endif -%}
@@ -88,21 +88,18 @@
 
   <script>
     (function () {
-      var bouton = document.querySelector('[data-iz-inci]');
+      /* Le bouton ne renvoie plus vers la liste INCI : arrivé ici, le client
+         a lu la formule, c'est le moment de lui proposer d'acheter. On
+         déclenche le formulaire du bloc d'achat plutôt que d'en créer un
+         second, pour que quantité et variante ne puissent pas diverger. */
+      var bouton = document.querySelector('[data-iz-achat]');
       if (!bouton) return;
       bouton.addEventListener('click', function () {
-        /* On cherche l'accordéon dont le titre correspond, plutôt qu'un
-           identifiant : l'ordre et le libellé des accordéons se règlent dans
-           l'éditeur et ne peuvent pas être présumés ici. */
-        var cible = {{ section.settings.accordeon_titre | json }}.toLowerCase();
-        var trouve = null;
-        document.querySelectorAll('.iz-accordion').forEach(function (d) {
-          var s = d.querySelector('summary');
-          if (s && s.textContent.trim().toLowerCase().indexOf(cible) !== -1) trouve = d;
-        });
-        if (!trouve) return;
-        trouve.open = true;
-        trouve.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        var principal = document.querySelector('.iz-cta__submit');
+        if (!principal) return;
+        var boite = document.querySelector('.iz-pdp__buybox');
+        if (boite) boite.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        principal.click();
       });
     })();
   </script>
@@ -214,14 +211,8 @@
       "type": "text",
       "id": "bouton_label",
       "label": "Libellé du bouton",
-      "default": "Liste INCI complète"
-    },
-    {
-      "type": "text",
-      "id": "accordeon_titre",
-      "label": "Accordéon à ouvrir",
-      "info": "Le bouton ouvre l'accordéon du bloc d'achat dont le titre contient ce texte.",
-      "default": "Ingrédients"
+      "default": "Ajouter au panier",
+      "info": "Déclenche l'ajout au panier du bloc d'achat."
     },
     {
       "type": "header",

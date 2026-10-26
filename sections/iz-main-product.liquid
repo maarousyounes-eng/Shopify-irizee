@@ -16,6 +16,7 @@
 {% style %}
   #shopify-section-{{ section.id }} {
     --izp-ratio: {{ section.settings.ratio }};
+    --izp-vignette-largeur: {{ section.settings.vignette_largeur }}px;
     --izp-sticky-bg: {{ section.settings.barre_mobile_fond }};
     --izp-sticky-haut: {{ section.settings.galerie_fixe_haut }}px;
 
@@ -74,7 +75,7 @@
     <div class="iz-pdp__cols">
 
       {%- comment -%} ---------- Galerie ---------- {%- endcomment -%}
-      <div class="iz-pdp__gallery">
+      <div class="iz-pdp__gallery{% if section.settings.vignettes_position == 'droite' %} iz-pdp__gallery--cote{% endif %}">
         <div class="iz-gallery__stage" data-iz-stage>
           {%- for media in p.media -%}
             <figure class="iz-gallery__slide{% if forloop.first %} is-active{% endif %}" data-iz-slide="{{ forloop.index0 }}">
@@ -274,7 +275,7 @@
                   {%- if titre != blank and contenu != blank -%}
                     <details class="iz-accordion"{% if forloop.first and block.settings.premier_ouvert %} open{% endif %}>
                       <summary class="iz-accordion__summary">{{ titre }}</summary>
-                      <div class="iz-accordion__body">{{ contenu }}</div>
+                      <div class="iz-accordion__body">{%- render 'iz-texte-accordeon', contenu: contenu -%}</div>
                     </details>
                   {%- endif -%}
                 {%- endfor -%}
@@ -615,6 +616,26 @@
   .iz-gallery__dot.is-active {
     width: 18px;
     background: var(--iz-ink);
+  }
+
+  /* Vignettes en colonne, à droite de la photo principale. En dessous, elles
+     repoussaient le bloc d'achat vers le bas sur les écrans courts. */
+  @media (min-width: 750px) {
+    .iz-pdp__gallery--cote {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+
+    .iz-pdp__gallery--cote .iz-gallery__stage {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .iz-pdp__gallery--cote .iz-gallery__thumbs {
+      flex: 0 0 auto;
+      width: var(--izp-vignette-largeur, 88px);
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 
   .iz-gallery__thumbs {
@@ -1066,6 +1087,33 @@
       "max": 8,
       "step": 1,
       "default": 5
+    },
+    {
+      "type": "select",
+      "id": "vignettes_position",
+      "label": "Position des vignettes",
+      "options": [
+        {
+          "value": "dessous",
+          "label": "Sous la photo"
+        },
+        {
+          "value": "droite",
+          "label": "À droite de la photo"
+        }
+      ],
+      "default": "droite"
+    },
+    {
+      "type": "range",
+      "id": "vignette_largeur",
+      "label": "Largeur des vignettes",
+      "min": 56,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "default": 88,
+      "info": "Sans effet si les vignettes sont sous la photo."
     },
     {
       "type": "text",

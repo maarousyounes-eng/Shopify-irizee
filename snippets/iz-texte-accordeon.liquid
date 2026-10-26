@@ -1,0 +1,26 @@
+{% doc %}
+  Corps d'un accordéon de fiche produit.
+
+  Une liste INCI est rédigée en capitales : c'est la forme réglementaire, et
+  c'est ainsi qu'elle arrive du laboratoire. À l'écran elle devient un mur
+  illisible. On la repasse donc en casse normale, ingrédient par ingrédient,
+  sans rien retirer ni réordonner.
+
+  La règle ne s'applique qu'à un texte entièrement en capitales et séparé par
+  des virgules : une phrase ordinaire ressort telle quelle.
+
+  @param {string} contenu - Le texte à afficher
+{% enddoc %}
+
+{%- capture texte -%}{{ contenu }}{%- endcapture -%}
+{%- assign majuscules = texte | upcase -%}
+
+{%- if texte == majuscules and texte contains ', ' -%}
+  {%- assign morceaux = texte | split: ', ' -%}
+  {%- for morceau in morceaux -%}
+    {{- morceau | strip | capitalize -}}
+    {%- unless forloop.last -%}, {% endunless -%}
+  {%- endfor -%}
+{%- else -%}
+  {{ texte }}
+{%- endif -%}

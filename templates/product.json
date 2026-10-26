@@ -89,9 +89,9 @@
         "puces",
         "promesse",
         "benefices",
+        "offres",
         "achat",
         "jauge",
-        "offres",
         "accordeons"
       ],
       "settings": {
@@ -139,7 +139,8 @@
         "taille_bouton_m": 13,
         "taille_jauge_m": 12,
         "taille_acc_titre_m": 14,
-        "taille_acc_texte_m": 14
+        "taille_acc_texte_m": 14,
+        "vignettes_position": "droite"
       }
     },
     "engagements": {
@@ -326,8 +327,7 @@
         "masquer_mobile": false,
         "eyebrow": "Formule",
         "titre": "Ce qu'il y a dedans, et pourquoi",
-        "bouton_label": "Liste INCI complète",
-        "accordeon_titre": "Ingrédients",
+        "bouton_label": "Ajouter au panier",
         "largeur_min": 240,
         "gap": 20,
         "padding_carte": 28,
