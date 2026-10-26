@@ -109,6 +109,7 @@
         "galerie_fixe": true,
         "galerie_fixe_haut": 24,
         "column_gap": 80,
+        "column_gap_mobile": 28,
         "gallery_base": 640,
         "buybox_base": 420,
         "barre_mobile": true,
@@ -313,6 +314,31 @@
         "taille_texte": 15
       }
     },
+    "marque": {
+      "type": "iz-marque",
+      "settings": {
+        "couleur_fond": "#ebebea",
+        "masquer_mobile": false,
+        "eyebrow": "Notre marque",
+        "titre": "Nous avons commencé par retirer, pas par ajouter",
+        "texte": "<p>Chaque ingrédient doit justifier sa présence. Si nous ne savons pas l'expliquer en une phrase, il ne rentre pas dans la formule.</p>",
+        "image": "shopify://shop_images/irizee_masque-nila_4x5_b5ae02_1.jpg",
+        "bouton_label": "Découvrir",
+        "bouton_lien": "",
+        "position_image": "gauche",
+        "ratio": 1,
+        "image_base": 420,
+        "texte_base": 420,
+        "gap": 56,
+        "gap_mobile": 28,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "taille_eyebrow": 12,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_texte": 16
+      }
+    },
     "actifs": {
       "type": "iz-actifs",
       "settings": {
@@ -374,30 +400,6 @@
         "taille_question": 16,
         "taille_reponse": 15
       }
-    },
-    "marque": {
-      "type": "iz-marque",
-      "settings": {
-        "couleur_fond": "#ebebea",
-        "masquer_mobile": false,
-        "eyebrow": "Notre marque",
-        "titre": "Nous avons commencé par retirer, pas par ajouter",
-        "texte": "<p>Chaque ingrédient doit justifier sa présence. Si nous ne savons pas l'expliquer en une phrase, il ne rentre pas dans la formule.</p>",
-        "bouton_label": "Découvrir",
-        "bouton_lien": "",
-        "position_image": "gauche",
-        "ratio": 1.3,
-        "image_base": 420,
-        "texte_base": 420,
-        "gap": 56,
-        "gap_mobile": 28,
-        "marge_verticale": 88,
-        "marge_verticale_mobile": 56,
-        "taille_eyebrow": 12,
-        "taille_titre": 40,
-        "taille_titre_mobile": 28,
-        "taille_texte": 16
-      }
     }
   },
   "order": [
@@ -407,9 +409,9 @@
     "resultats",
     "ugc",
     "rituel",
+    "marque",
     "actifs",
     "routine",
-    "faq",
-    "marque"
+    "faq"
   ]
 }
