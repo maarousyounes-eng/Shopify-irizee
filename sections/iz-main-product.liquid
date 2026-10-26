@@ -299,10 +299,29 @@
     {%- if b.type == 'achat' -%}{%- assign bloc_achat = b -%}{%- endif -%}
   {%- endfor -%}
   {%- if bloc_achat -%}
-    <div class="iz-sticky" data-iz-sticky hidden>
-      <button type="button" class="iz-btn iz-btn--primary iz-sticky__btn" data-iz-sticky-btn>
-        {{ bloc_achat.settings.libelle_ajout }} · {{ variant.price | money }}
-      </button>
+    <div class="iz-sticky{% if section.settings.barre_bureau %} iz-sticky--bureau{% endif %}" data-iz-sticky hidden>
+      <div class="iz-sticky__inner">
+        <div class="iz-sticky__produit">
+          {%- if p.featured_image -%}
+            <img class="iz-sticky__vignette"
+              src="{{ p.featured_image | image_url: width: 160 }}"
+              alt="" width="160" height="200" loading="lazy">
+          {%- endif -%}
+          <span class="iz-sticky__textes">
+            <span class="iz-sticky__nom">{{ p.title }}</span>
+            <span class="iz-sticky__prix">
+              {{ variant.price | money }}
+              {%- if variant.compare_at_price > variant.price -%}
+                <s class="iz-sticky__compare">{{ variant.compare_at_price | money }}</s>
+              {%- endif -%}
+            </span>
+          </span>
+        </div>
+        <button type="button" class="iz-btn iz-btn--primary iz-sticky__btn" data-iz-sticky-btn>
+          {{- bloc_achat.settings.libelle_ajout -}}
+          <span class="iz-sticky__prix-btn"> · {{ variant.price | money }}</span>
+        </button>
+      </div>
     </div>
   {%- endif -%}
 {%- endif -%}
@@ -988,9 +1007,97 @@
     }
   }
 
+  .iz-sticky__inner {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  /* Le produit n'apparaît que sur ordinateur : sur un écran de téléphone, la
+     barre doit rester un bouton, pas une fiche miniature. */
+  .iz-sticky__produit { display: none; }
+
   .iz-sticky__btn {
     width: 100%;
     min-height: 52px;
+  }
+
+  /* Barre d'achat fixe sur ordinateur : une fois le bloc d'achat dépassé,
+     le prix et le bouton restent à portée sans remonter. */
+  @media (min-width: 750px) {
+    .iz-sticky--bureau {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20;
+      display: block;
+      padding-block: 12px;
+      background: var(--izp-sticky-bg, var(--iz-bg));
+      border-top: 1px solid var(--iz-line);
+    }
+
+    .iz-sticky--bureau[hidden] { display: none; }
+
+    .iz-sticky--bureau .iz-sticky__inner {
+      max-width: var(--iz-container, 1320px);
+      margin-inline: auto;
+      padding-inline: var(--iz-gutter, 32px);
+      box-sizing: border-box;
+      justify-content: space-between;
+    }
+
+    .iz-sticky--bureau .iz-sticky__produit {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .iz-sticky--bureau .iz-sticky__btn {
+      width: auto;
+      flex: 0 0 auto;
+      min-width: 280px;
+    }
+
+    /* Le prix est déjà lisible à gauche : inutile de le répéter. */
+    .iz-sticky--bureau .iz-sticky__prix-btn { display: none; }
+  }
+
+  .iz-sticky__vignette {
+    width: 44px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: var(--iz-radius-inner);
+    background: var(--iz-surface);
+    flex: 0 0 auto;
+  }
+
+  .iz-sticky__textes {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .iz-sticky__nom {
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .iz-sticky__prix {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .iz-sticky__compare {
+    margin-left: 8px;
+    opacity: 0.6;
+    font-weight: 600;
   }
 
   .iz-visually-hidden {
@@ -1183,6 +1290,13 @@
       "id": "barre_mobile",
       "label": "Afficher la barre fixe",
       "info": "Mobile uniquement. Apparaît dès que le bouton principal sort de l'écran.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "barre_bureau",
+      "label": "Barre d'achat fixe sur ordinateur",
+      "info": "Photo, nom et prix du produit avec le bouton. Apparaît dès que le bloc d'achat sort de l'écran.",
       "default": true
     },
     {
