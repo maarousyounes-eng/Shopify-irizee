@@ -50,6 +50,14 @@
             "category_label": "Serum"
           }
         },
+        "product_z4qLYi": {
+          "type": "product",
+          "settings": {
+            "product": "la-routine",
+            "badge_text": "",
+            "category_label": ""
+          }
+        },
         "p1": {
           "type": "product",
           "settings": {
@@ -86,6 +94,7 @@
       "block_order": [
         "product_Wamkke",
         "product_FWzcgW",
+        "product_z4qLYi",
         "p1",
         "p2",
         "p3",
@@ -97,7 +106,7 @@
         "collection": "",
         "products_count": 3,
         "card_background": "#f0eff2",
-        "category_color": "#6b6b6b",
+        "category_color": "#1a1a1a",
         "name_color": "#1a1a1a",
         "primary_fit": "cover",
         "blend_white_bg": false,
@@ -109,8 +118,8 @@
         "heading_size": 34,
         "heading_size_mobile": 26,
         "category_font": "work_sans_n4",
-        "category_size": 12,
-        "category_size_mobile": 11,
+        "eyebrow_size": 12,
+        "eyebrow_size_mobile": 11,
         "name_font": "work_sans_n4",
         "name_size": 19,
         "name_size_mobile": 14,
