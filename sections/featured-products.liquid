@@ -228,6 +228,13 @@
     transition: transform 0.15s ease;
   }
 
+  /* `display: flex` ci-dessus l'emporte sur la règle `[hidden] { display: none }`
+     du navigateur, qui n'est qu'un sélecteur d'attribut. Sans cette ligne, le
+     script masquait les flèches et elles restaient à l'écran. */
+  .featured-products__arrow[hidden] {
+    display: none;
+  }
+
   .featured-products__arrow--next {
     right: -1.6rem;
   }
