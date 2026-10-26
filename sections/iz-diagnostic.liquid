@@ -198,8 +198,28 @@
       {%- comment -%} ---------- Écran 4 : le résultat ---------- {%- endcomment -%}
       <div class="izd__ecran" data-izd-ecran="resultat" hidden>
         {%- for bloc in resultats -%}
-          {%- assign produit = bloc.settings.produit -%}
-          <div class="izd__resultat" data-izd-resultat="{{ bloc.settings.cible }}" data-sonde-brut="{{ bloc.settings.produit }}" data-sonde-id="{{ bloc.settings.produit.id }}" data-sonde-titre="{{ bloc.settings.produit.title }}" hidden {{ bloc.shopify_attributes }}>
+          {%- liquid
+            comment
+              Shopify ne reprend un gabarit JSON de GitHub qu'à sa création :
+              les mises à jour suivantes sont ignorées tant que le thème n'est
+              pas publié. Le choix du produit ne peut donc pas dépendre du seul
+              sélecteur, qui vit dans ce JSON. Les identifiants de repli vivent
+              dans le schéma, dont la valeur par défaut s'applique tout de
+              suite. Le sélecteur garde la priorité dès qu'il est renseigné.
+            endcomment
+            assign produit = bloc.settings.produit
+            if produit.id == blank
+              case bloc.settings.cible
+                when 'masque'
+                  assign produit = all_products[section.settings.handle_masque]
+                when 'serum'
+                  assign produit = all_products[section.settings.handle_serum]
+                else
+                  assign produit = all_products[section.settings.handle_routine]
+              endcase
+            endif
+          -%}
+          <div class="izd__resultat" data-izd-resultat="{{ bloc.settings.cible }}" hidden {{ bloc.shopify_attributes }}>
             {%- if section.settings.resultat_eyebrow != blank -%}
               <p class="izd__eyebrow">{{ section.settings.resultat_eyebrow }}</p>
             {%- endif -%}
@@ -928,6 +948,25 @@
       "id": "libelle_recommencer",
       "label": "Recommencer",
       "default": "Refaire le diagnostic"
+    },
+    {
+      "type": "text",
+      "id": "handle_masque",
+      "label": "Produit de repli — masque",
+      "info": "Identifiant d'URL du produit, utilisé quand le bloc Résultat n'a pas de produit choisi.",
+      "default": "masque-rituel-nila"
+    },
+    {
+      "type": "text",
+      "id": "handle_serum",
+      "label": "Produit de repli — sérum",
+      "default": "serum-correcteur-eclat"
+    },
+    {
+      "type": "text",
+      "id": "handle_routine",
+      "label": "Produit de repli — routine",
+      "default": "la-routine"
     },
     {
       "type": "header",
