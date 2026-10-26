@@ -35,6 +35,13 @@
           "type": "benefices",
           "settings": {}
         },
+        "offres": {
+          "type": "offres",
+          "settings": {
+            "titre": "Disponible en routine",
+            "inclure_courant": false
+          }
+        },
         "achat": {
           "type": "achat",
           "settings": {
@@ -52,13 +59,6 @@
             "seuil": 49,
             "texte_restant": "Plus que {montant} pour la livraison offerte",
             "texte_atteint": "Livraison offerte"
-          }
-        },
-        "offres": {
-          "type": "offres",
-          "settings": {
-            "titre": "Disponible en routine",
-            "inclure_courant": false
           }
         },
         "accordeons": {
@@ -103,6 +103,8 @@
         "badge_text": "Best",
         "ratio": 0.8,
         "thumb_count": 5,
+        "vignettes_position": "droite",
+        "vignette_largeur": 88,
         "libelle_vignette": "Voir le média",
         "galerie_fixe": true,
         "galerie_fixe_haut": 24,
@@ -139,8 +141,7 @@
         "taille_bouton_m": 13,
         "taille_jauge_m": 12,
         "taille_acc_titre_m": 14,
-        "taille_acc_texte_m": 14,
-        "vignettes_position": "droite"
+        "taille_acc_texte_m": 14
       }
     },
     "engagements": {
@@ -237,7 +238,7 @@
         "texte": "",
         "image": "shopify://shop_images/irizee_masque-nila_4x5_9bcefd.jpg",
         "position_image": "gauche",
-        "ratio": 1.4,
+        "ratio": 1,
         "image_base": 520,
         "texte_base": 420,
         "gap": 56,
