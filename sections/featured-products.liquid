@@ -28,6 +28,20 @@
     --fp-text-hover: {{ section.settings.text_color_hover }};
     --fp-voile: {{ section.settings.overlay_strength | divided_by: 100.0 }};
 
+    {%- comment -%}
+      L'ombre portée doit toujours s'opposer à l'encre : noire sous un texte
+      clair, blanche sous un texte foncé. On la déduit de la clarté de la
+      couleur choisie, sinon elle épaissit le texte au lieu de le détacher.
+    {%- endcomment -%}
+    {%- assign force = section.settings.text_shadow | divided_by: 100.0 -%}
+    {%- assign clarte = section.settings.name_color | color_extract: 'lightness' -%}
+    {%- if clarte > 50 -%}{%- assign ombre = '#000000' -%}{%- else -%}{%- assign ombre = '#ffffff' -%}{%- endif -%}
+    --fp-ombre: {{ ombre | color_modify: 'alpha', force }};
+
+    {%- assign clarte_hover = section.settings.text_color_hover | color_extract: 'lightness' -%}
+    {%- if clarte_hover > 50 -%}{%- assign ombre_hover = '#000000' -%}{%- else -%}{%- assign ombre_hover = '#ffffff' -%}{%- endif -%}
+    --fp-ombre-hover: {{ ombre_hover | color_modify: 'alpha', force }};
+
     --fp-subtitle-family: {{ section.settings.subtitle_font.family }}, {{ section.settings.subtitle_font.fallback_families }};
     --fp-subtitle-size: {{ section.settings.subtitle_size }}px;
 
@@ -332,30 +346,47 @@
     padding: 0;
   }
 
-  /* Le texte de la carte est posé sur la photo. Sur un packshot il a le fond
-     uni pour lui ; sur une photo en situation, rien ne garantit le contraste.
-     Deux voiles dégradés, en haut et en bas, exactement là où il y a du
-     texte. À zéro, ils n'existent pas. */
-  .product-card__media::before,
+  /* Un seul voile, en bas, là où le nom et le prix s'accumulent. En haut il
+     n'y a qu'un mot, et le voile y mangeait la photo pour rien. À zéro, il
+     n'existe pas : c'est le réglage par défaut, l'ombre portée du texte
+     suffit dans la plupart des cas et ne touche pas la photo. */
   .product-card__media::after {
     content: "";
     position: absolute;
     left: 0;
     right: 0;
+    bottom: 0;
     height: 38%;
     pointer-events: none;
     opacity: var(--fp-voile, 0);
     z-index: 1;
-  }
-
-  .product-card__media::before {
-    top: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent);
-  }
-
-  .product-card__media::after {
-    bottom: 0;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  }
+
+  /* Un filet d'ombre détache le texte de la photo sans l'assombrir. C'est ce
+     qui remplace le voile : la photo reste intacte, seule la lettre gagne un
+     contour. À zéro, l'ombre est transparente et ne coûte rien. */
+  .product-card__type,
+  .product-card__title,
+  .product-card__price,
+  .product-card__subtitle {
+    text-shadow: 0 1px 2px var(--fp-ombre), 0 1px 10px var(--fp-ombre);
+  }
+
+  .product-card--swiped .product-card__type,
+  .product-card--swiped .product-card__title,
+  .product-card--swiped .product-card__price,
+  .product-card--swiped .product-card__subtitle {
+    text-shadow: 0 1px 2px var(--fp-ombre-hover), 0 1px 10px var(--fp-ombre-hover);
+  }
+
+  @media (hover: hover) {
+    .product-card--has-secondary:hover .product-card__type,
+    .product-card--has-secondary:hover .product-card__title,
+    .product-card--has-secondary:hover .product-card__price,
+    .product-card--has-secondary:hover .product-card__subtitle {
+      text-shadow: 0 1px 2px var(--fp-ombre-hover), 0 1px 10px var(--fp-ombre-hover);
+    }
   }
 
   /* Quand la photo change, la couleur du texte change avec elle : un packshot
@@ -618,9 +649,20 @@
     },
     {
       "type": "range",
+      "id": "text_shadow",
+      "label": "Ombre portée sous le texte",
+      "info": "Détache le texte de la photo sans l'assombrir. À essayer avant le voile.",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 40
+    },
+    {
+      "type": "range",
       "id": "overlay_strength",
-      "label": "Voile derrière le texte",
-      "info": "Assombrit le haut et le bas de la photo pour rendre le texte lisible. 0 = aucun voile.",
+      "label": "Voile en bas de la photo",
+      "info": "Assombrit le bas de la photo, sous le nom et le prix. 0 = aucun voile.",
       "min": 0,
       "max": 80,
       "step": 5,
