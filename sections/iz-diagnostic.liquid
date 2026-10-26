@@ -227,7 +227,11 @@
               </div>
             {%- endif -%}
 
-            {%- if produit != blank -%}
+            {%- comment -%}
+              `produit.id` plutôt que `!= blank` : un réglage produit vide rend
+              nil, et comparer un drop à blank n'est pas fiable.
+            {%- endcomment -%}
+            {%- if produit.id != blank -%}
               {%- assign v = produit.selected_or_first_available_variant -%}
               <div class="izd__produit">
                 {%- if produit.featured_image -%}
