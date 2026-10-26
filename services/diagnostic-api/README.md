@@ -3,6 +3,15 @@
 Une seule fonction, `api/analyse.js`. Elle existe parce que la clé d'API ne
 peut pas vivre dans le thème Shopify, qui est public.
 
+## État
+
+Déployé le 26/10/2026 sur le projet Vercel `irizee-diagnostic` :
+`https://irizee-diagnostic.vercel.app/api/analyse`
+
+`ORIGINES_AUTORISEES` et `MODELE` sont posées. Il manque `ANTHROPIC_API_KEY`,
+que le propriétaire du compte pose lui-même : une clé ne se colle pas dans une
+conversation ni dans un dépôt.
+
 ## Mise en service
 
 1. Créer une clé sur console.anthropic.com.
