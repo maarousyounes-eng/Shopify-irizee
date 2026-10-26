@@ -37,6 +37,7 @@
     --izp-acc-titre: {{ section.settings.taille_acc_titre }}px;
     --izp-acc-texte: {{ section.settings.taille_acc_texte }}px;
     --izp-gap: {{ section.settings.column_gap }}px;
+    --izp-gap-mobile: {{ section.settings.column_gap_mobile }}px;
     --izp-gallery-base: {{ section.settings.gallery_base }}px;
     --izp-buybox-base: {{ section.settings.buybox_base }}px;
   }
@@ -319,7 +320,7 @@
         </div>
         <button type="button" class="iz-btn iz-btn--primary iz-sticky__btn" data-iz-sticky-btn>
           {{- bloc_achat.settings.libelle_ajout -}}
-          <span class="iz-sticky__prix-btn"> · {{ variant.price | money }}</span>
+          <span class="iz-sticky__prix-btn">&nbsp;· {{ variant.price | money }}</span>
         </button>
       </div>
     </div>
@@ -459,7 +460,10 @@
       function majSticky() {
         enAttente = false;
         var b = cta.getBoundingClientRect();
-        sticky.hidden = b.bottom > 0 && b.top < window.innerHeight;
+        /* Uniquement quand le bloc d'achat est passé au-dessus de l'écran.
+           Tester l'intersection affichait la barre dès l'arrivée sur mobile,
+           où le bloc d'achat se trouve sous la galerie. */
+        sticky.hidden = b.bottom > 0;
       }
 
       function planifier() {
@@ -542,6 +546,12 @@
     flex-wrap: wrap;
     gap: var(--izp-gap, 56px);
     align-items: flex-start;
+  }
+
+  /* Empilées, les deux colonnes n'ont pas besoin du même écart que côte à
+     côte : celui de l'ordinateur laissait un trou sous la galerie. */
+  @media (max-width: 749px) {
+    .iz-pdp__cols { gap: var(--izp-gap-mobile, 28px); }
   }
 
   .iz-pdp__gallery {
@@ -1259,6 +1269,16 @@
       "step": 4,
       "unit": "px",
       "default": 80
+    },
+    {
+      "type": "range",
+      "id": "column_gap_mobile",
+      "label": "Écart entre les colonnes — mobile",
+      "min": 12,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 28
     },
     {
       "type": "range",
