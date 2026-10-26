@@ -19,7 +19,7 @@
     --fp-heading-size: {{ section.settings.heading_size }}px;
 
     --fp-category-family: {{ section.settings.category_font.family }}, {{ section.settings.category_font.fallback_families }};
-    --fp-category-size: {{ section.settings.category_size }}px;
+    --fp-category-size: {{ section.settings.eyebrow_size }}px;
     --fp-category-color: {{ section.settings.category_color }};
 
     --fp-name-family: {{ section.settings.name_font.family }}, {{ section.settings.name_font.fallback_families }};
@@ -43,7 +43,7 @@
   @media (max-width: 749px) {
     #shopify-section-{{ section.id }} {
       --fp-heading-size: {{ section.settings.heading_size_mobile }}px;
-      --fp-category-size: {{ section.settings.category_size_mobile }}px;
+      --fp-category-size: {{ section.settings.eyebrow_size_mobile }}px;
       --fp-name-size: {{ section.settings.name_size_mobile }}px;
       --fp-subtitle-size: {{ section.settings.subtitle_size_mobile }}px;
       --fp-badge-size: {{ section.settings.badge_size_mobile }}px;
@@ -623,7 +623,7 @@
     },
     {
       "type": "header",
-      "content": "Typographie — Catégorie (gros texte)"
+      "content": "Typographie — Surtitre"
     },
     {
       "type": "font_picker",
@@ -633,23 +633,23 @@
     },
     {
       "type": "range",
-      "id": "category_size",
+      "id": "eyebrow_size",
       "label": "Taille — ordinateur",
-      "min": 16,
-      "max": 72,
+      "min": 9,
+      "max": 24,
       "step": 1,
       "unit": "px",
-      "default": 40
+      "default": 12
     },
     {
       "type": "range",
-      "id": "category_size_mobile",
+      "id": "eyebrow_size_mobile",
       "label": "Taille — mobile",
-      "min": 14,
-      "max": 48,
+      "min": 9,
+      "max": 20,
       "step": 1,
       "unit": "px",
-      "default": 28
+      "default": 11
     },
     {
       "type": "header",
