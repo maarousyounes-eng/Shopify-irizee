@@ -11,6 +11,7 @@
   "sections": {
     "main": {
       "type": "collection",
+      "disabled": true,
       "settings": {}
     },
     "iz_catalogue_8KBd6m": {
