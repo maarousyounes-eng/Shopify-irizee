@@ -119,6 +119,34 @@ n'est pas celle-là.
 
 ---
 
+## État du scénario dans Klaviyo
+
+Monté le 27/10/2026, **laissé en brouillon**. L'activation déclenche de vrais
+envois : elle revient au propriétaire du compte.
+
+- **Segment** « Diagnostic de peau » : `Shopify Tags` contient `diagnostic`.
+- **Scénario** « Diagnostic de peau — résultat », déclencheur *Ajout au
+  segment*, sans réintégration.
+- **Fractionnement** « Résultat du diagnostic », trois chemins :
+  `diagnostic-serum`, `diagnostic-masque`, puis tous les autres.
+- **Trois emails** nommés, avec objet et texte d'aperçu, chacun sur sa branche.
+
+Ce qui reste à faire dans Klaviyo :
+
+1. Configurer l'adresse d'expédition et vérifier le domaine d'envoi. Sans ça,
+   rien ne part, et partir depuis une adresse gmail.com ferait tomber les
+   messages en indésirables.
+2. Coller le corps des trois emails depuis ce document.
+3. Activer le scénario.
+
+**La propriété des étiquettes s'appelle `Shopify Tags`** et contient un
+tableau, par exemple `["diagnostic","diagnostic-serum"]`. C'est lu sur un
+profil synchronisé, pas deviné.
+
+**Une limite assumée** : sans réintégration, une personne qui refait le
+diagnostic plus tard ne recevra pas de second email, puisqu'elle n'a jamais
+quitté le segment. C'est le prix à payer pour ne pas réexpédier en boucle.
+
 ## Le scénario dans Klaviyo
 
 Un seul scénario, trois embranchements, plutôt que trois scénarios : la
