@@ -257,3 +257,32 @@ s'en charge déjà, ce journal est pour le contexte que le code ne montre pas.
   nulle part, borne les notes du modèle et refuse toute origine non déclarée.
   Ce dernier point n'est pas une formalité : une fonction ouverte est une
   fonction que n'importe qui fait payer au propriétaire de la clé.
+
+## 2026-10-27 — L'analyse photo en service
+
+- **Deux symptômes, deux causes sans rapport.** L'étape photo n'apparaissait
+  pas parce que son réglage était à non par défaut ; l'email ne « marchait
+  pas » parce que rien n'envoyait d'email. Chercher une cause unique aurait
+  fait perdre du temps.
+- **La réponse du modèle arrivait tronquée.** `max_tokens` à 400 coupait le
+  JSON avant l'accolade fermante, et le parseur rendait « reponse_illisible ».
+  Le code ne disait rien de ce qui se passait : c'est en journalisant la
+  raison d'arrêt, la longueur et la fin du texte qu'on l'a vu en une lecture.
+  Porté à 1024. **Leçon : devant un format de sortie, journaliser le texte
+  brut avant de spéculer.**
+- **Le formulaire inscrit, il n'expédie pas.** `{% form 'customer' %}` crée
+  une cliente marquée `diagnostic`, rien de plus. Le texte promettait l'envoi
+  de la routine : il a été corrigé. L'étiquette du résultat part désormais
+  avec l'inscription (`diagnostic-masque`, `diagnostic-serum`,
+  `diagnostic-routine`) pour qu'un outil d'emailing puisse viser la bonne
+  routine le jour où il y en aura un.
+- Un refus de Shopify (adresse invalide, 400) était avalé : le résultat
+  s'affichait comme si l'inscription avait eu lieu. Corrigé.
+- **Les réglages d'une section insérée depuis un préréglage sont écrits en
+  dur dans le gabarit.** Changer la valeur par défaut du schéma n'a alors plus
+  aucun effet : il faut passer par l'éditeur. Seuls les réglages ajoutés
+  *après* l'insertion retombent sur leur défaut, ce qui a permis d'activer
+  l'étape photo sans toucher à l'éditeur.
+- Parcours vérifié de bout en bout avec une vraie photo : analyse, points
+  ajoutés au score, phrase d'observation affichée au-dessus du résultat,
+  produit et bouton d'achat.
