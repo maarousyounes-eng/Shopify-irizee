@@ -21,7 +21,7 @@
         "enable_blur": true,
         "blur_intensity": 12,
         "hide_on_scroll": true,
-        "menu_font": "sans_serif_n7",
+        "menu_font": "work_sans_n4",
         "menu_font_size": 15,
         "menu_font_size_mobile": 14,
         "menu_letter_spacing": 0,
@@ -42,9 +42,22 @@
         "header_padding_bottom_desktop": 0,
         "header_padding_top_mobile": 0,
         "header_padding_bottom_mobile": 0,
+        "scrolled_height": 72,
+        "scrolled_height_mobile": 60,
+        "scrolled_logo_width": 84,
+        "scrolled_logo_width_mobile": 68,
         "menu_text_transform": "none",
         "menu": "main-menu",
-        "customer_account_menu": "customer-account-main-menu"
+        "customer_account_menu": "customer-account-main-menu",
+        "pdp_override": true,
+        "pdp_height": 80,
+        "pdp_height_mobile": 64,
+        "pdp_logo_width": 110,
+        "pdp_logo_width_mobile": 84,
+        "pdp_text_color": "black",
+        "pdp_logo_color": "black",
+        "pdp_border": true,
+        "pdp_border_color": "#e2e2df"
       }
     }
   },
