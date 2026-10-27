@@ -296,3 +296,73 @@ s'en charge déjà, ce journal est pour le contexte que le code ne montre pas.
 - À la publication, deux options : attacher `page.diagnostic` à la page et
   retirer la section du gabarit ordinaire, ou ne rien changer. Les deux
   tiennent, la première est plus propre.
+
+## SEO, ordre de l'accueil, précommande (27 octobre 2026)
+
+### Les alternatives d'images étaient toutes vides
+
+`{{ image | image_url: width: 900 | image_tag }}` ne sort **aucun** alt.
+`image_url` rend une chaîne de caractères : `image_tag` n'a plus d'objet image
+où lire l'alternative, et il n'invente rien. Toutes les cartes produit, le
+hero, le collage de la marque, le teaser du diagnostic et les visuels du blog
+étaient concernés, c'est-à-dire presque chaque image de l'accueil.
+
+**Leçon : dès qu'on passe par `image_url`, l'alt se passe à la main**
+(`image_tag: alt: mon_alt`). Les balises `<img>` écrites à la main, elles,
+étaient correctes depuis le début.
+
+Attention au piège de la boucle : patcher trois lignes identiques avec
+`str.find` a collé deux alternatives sur la même image et aucune sur la
+troisième. Vérifier le résultat ligne par ligne, pas le compte de
+remplacements.
+
+### Le texte alternatif vit sur le fichier, pas sur le produit
+
+Les trente médias des trois produits ont reçu leur alternative dans l'admin.
+Les fichiers partagés entre produits (La Routine réutilise des photos du
+masque et du sérum) portent **une seule** alternative : renseignée une fois,
+elle vaut partout. Neuf des médias de La Routine étaient donc déjà couverts.
+
+Dans l'éditeur de fichiers, la flèche « suivant » ne répond pas tant qu'une
+modification n'est pas enregistrée, et un clic par coordonnées sur
+« Enregistrer » rate si on n'attend pas que React ait pris la saisie. Le
+rythme qui marche : saisir, attendre deux secondes, enregistrer, attendre,
+passer au suivant.
+
+### La boutique ne s'appelle pas comme son domaine
+
+L'admin répondait « un problème technique lié à Shopify » sur toutes les URL
+en `/store/atelier-irizee/`. Ce n'était pas une panne : la boutique s'appelle
+`0nz0p1-61`. **Leçon : lire le handle dans l'URL de l'admin avant de conclure
+à une panne de Shopify.**
+
+### Un préréglage peut livrer ses blocs déjà remplis
+
+La section FAQ tire ses questions du metafield du produit ; sur l'accueil il
+n'y a pas de produit, et son préréglage arrive vide. Plutôt que saisir cinq
+questions à l'écran, un second préréglage « FAQ boutique » porte les questions
+dans le schéma : Shopify crée les blocs d'un préréglage à l'insertion, donc la
+section arrive remplie.
+
+**Leçon : pour poser du contenu répétitif dans l'éditeur, le faire passer par
+un préréglage plutôt que par la saisie.**
+
+### Ce qui bloque encore sur la publication
+
+Le thème publié est toujours celui de Shopify par défaut ; `preprod` est un
+brouillon. C'est pour cette raison que le sélecteur de modèle d'une page ne
+propose que `contact` : il ne liste que les modèles du thème publié. Le
+modèle `page.diagnostic` reste donc inattachable jusqu'à la publication.
+
+### Corrections de fond
+
+- **« Vous n'êtes débité qu'aujourd'hui »** : la tournure restrictive disait
+  « uniquement aujourd'hui » et transformait une information de paiement en
+  énigme. Remplacée par « Le paiement est encaissé à la commande. »
+- **Pastille « Best »** sur la photo principale : la boutique n'a pas vendu un
+  article, l'argument n'était soutenu par rien, et il était en anglais.
+  Devient « Nouveau ».
+- **Format monétaire** : les prix sortaient en `€24,90`. Passés en
+  `24,90 €` dans les quatre champs (HTML et e-mail, avec et sans devise).
+- **Collection « Les soins »** créée (`/collections/les-soins`) avec les trois
+  produits : il n'existait qu'une collection « Page d'accueil » à un produit.
