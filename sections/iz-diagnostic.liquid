@@ -17,6 +17,20 @@
 {%- liquid
   assign questions = section.blocks | where: 'type', 'question'
   assign resultats = section.blocks | where: 'type', 'resultat'
+
+  comment
+    Le sélecteur de gabarit d'une page ne liste que les gabarits du thème
+    publié : `page.diagnostic` n'y apparaîtra qu'après la mise en ligne. En
+    attendant, la section peut vivre dans le gabarit de page ordinaire, à
+    condition de ne se montrer que sur la bonne page. D'où ce garde-fou.
+
+    Vide, il ne filtre rien : la section s'affiche partout où on la pose.
+  endcomment
+  assign page_attendue = section.settings.handle_page | strip
+  assign bonne_page = true
+  if page_attendue != blank and page.handle != page_attendue
+    assign bonne_page = false
+  endif
 -%}
 
 {% style %}
@@ -52,7 +66,7 @@
   }
 {% endstyle %}
 
-{%- if questions.size > 0 and resultats.size > 0 -%}
+{%- if bonne_page and questions.size > 0 and resultats.size > 0 -%}
   <section
     class="izd"
     data-izd
@@ -1035,6 +1049,13 @@
       "id": "libelle_retour",
       "label": "Retour",
       "default": "Revenir à la question précédente"
+    },
+    {
+      "type": "text",
+      "id": "handle_page",
+      "label": "N'afficher que sur la page",
+      "info": "Identifiant d'URL de la page, par exemple diagnostic. Laissez vide pour afficher la section partout où elle est posée.",
+      "default": "diagnostic"
     },
     {
       "type": "header",
