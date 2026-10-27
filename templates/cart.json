@@ -11,10 +11,66 @@
   "sections": {
     "main": {
       "type": "cart",
+      "disabled": true,
       "settings": {}
+    },
+    "iz_panier_dwzLcd": {
+      "type": "iz-panier",
+      "blocks": {
+        "rassurance_Cm4yyR": {
+          "type": "rassurance",
+          "settings": {
+            "texte": "Paiement sécurisé"
+          }
+        },
+        "rassurance_h9xHP9": {
+          "type": "rassurance",
+          "settings": {
+            "texte": "Débit aujourd'hui, expédition en décembre"
+          }
+        },
+        "rassurance_FNYbwf": {
+          "type": "rassurance",
+          "settings": {
+            "texte": "Retours sous 14 jours, produit non ouvert"
+          }
+        }
+      },
+      "block_order": [
+        "rassurance_Cm4yyR",
+        "rassurance_h9xHP9",
+        "rassurance_FNYbwf"
+      ],
+      "name": "Panier",
+      "settings": {
+        "titre": "Votre panier",
+        "texte_vide": "Votre panier est vide pour le moment.",
+        "libelle_vide": "Voir les soins",
+        "libelle_moins": "Retirer un article",
+        "libelle_plus": "Ajouter un article",
+        "libelle_retirer": "Retirer",
+        "libelle_total": "Total",
+        "mention_total": "Taxes incluses. Livraison calculée à l'étape suivante.",
+        "libelle_commander": "Commander",
+        "libelle_continuer": "Continuer mes achats",
+        "seuil_livraison": 49,
+        "texte_restant": "Plus que [montant] pour la livraison offerte",
+        "texte_atteint": "Livraison offerte",
+        "couleur_carte": "#F4F3F1",
+        "rayon": 14,
+        "marge_verticale": 72,
+        "marge_verticale_m": 48,
+        "police_titre": "work_sans_n4",
+        "police_texte": "work_sans_n4",
+        "taille_titre": 38,
+        "taille_titre_m": 28,
+        "taille_texte": 16,
+        "taille_nom": 16
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "iz_panier_dwzLcd"
   ]
 }
