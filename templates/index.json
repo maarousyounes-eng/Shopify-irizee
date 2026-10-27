@@ -75,7 +75,7 @@
       ],
       "name": "Bandeau de réassurance",
       "settings": {
-        "columns": 5,
+        "columns": 4,
         "columns_mobile": "2",
         "alignment": "left",
         "show_numbers": false,
