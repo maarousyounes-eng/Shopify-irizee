@@ -26,7 +26,7 @@
         "rassurance_h9xHP9": {
           "type": "rassurance",
           "settings": {
-            "texte": "Débit aujourd'hui, expédition en décembre"
+            "texte": "Commande réservée, expédition en décembre"
           }
         },
         "rassurance_FNYbwf": {
@@ -56,7 +56,7 @@
         "seuil_livraison": 49,
         "texte_restant": "Plus que [montant] pour la livraison offerte",
         "texte_atteint": "Livraison offerte",
-        "couleur_carte": "#F4F3F1",
+        "couleur_carte": "#f4f3f1",
         "rayon": 14,
         "marge_verticale": 72,
         "marge_verticale_m": 48,
