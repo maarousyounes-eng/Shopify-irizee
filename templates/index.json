@@ -101,7 +101,7 @@
         "p4"
       ],
       "settings": {
-        "heading": "Sélection de rentrée",
+        "heading": "Deux soins, et la routine qui les réunit",
         "source": "manual",
         "collection": "",
         "products_count": 3,
@@ -354,9 +354,9 @@
   },
   "order": [
     "hero",
+    "reassurance_L9RciR",
     "featured_products",
     "skin_diagnostic_PYwfF7",
-    "brand_commitments_NCVAJB",
-    "reassurance_L9RciR"
+    "brand_commitments_NCVAJB"
   ]
 }
