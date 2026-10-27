@@ -97,7 +97,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: process.env.MODELE || MODELE_PAR_DEFAUT,
-        max_tokens: 400,
+        max_tokens: 1024,
         system: CONSIGNE,
         messages: [
           {
@@ -123,6 +123,10 @@ export default async function handler(req, res) {
       .filter((b) => b.type === 'text')
       .map((b) => b.text)
       .join('')
+      .trim()
+      // Le modèle enrobe parfois sa réponse dans une clôture Markdown.
+      .replace(/^```(?:json)?/i, '')
+      .replace(/```$/, '')
       .trim();
 
     // Le modèle a pour consigne de ne renvoyer que du JSON, mais on ne lui
@@ -132,7 +136,11 @@ export default async function handler(req, res) {
     if (debut === -1 || fin === -1) {
       // Le texte part dans les journaux, jamais dans la réponse HTTP : c'est
       // le seul endroit où on peut comprendre un refus du modèle.
-      console.error('Pas de JSON dans la réponse :', texte.slice(0, 600));
+      console.error(
+        'Pas de JSON. arret=' + donnees.stop_reason +
+        ' longueur=' + texte.length +
+        ' fin=' + JSON.stringify(texte.slice(-80))
+      );
       return res.status(502).json({ erreur: 'reponse_illisible' });
     }
 
@@ -140,7 +148,11 @@ export default async function handler(req, res) {
     try {
       brut = JSON.parse(texte.slice(debut, fin + 1));
     } catch (e) {
-      console.error('JSON invalide :', texte.slice(0, 600));
+      console.error(
+        'JSON invalide. arret=' + donnees.stop_reason +
+        ' longueur=' + texte.length +
+        ' fin=' + JSON.stringify(texte.slice(-80))
+      );
       return res.status(502).json({ erreur: 'reponse_illisible' });
     }
 
