@@ -31,6 +31,91 @@
         "button_text_transform": "uppercase"
       }
     },
+    "reassurance_L9RciR": {
+      "type": "reassurance",
+      "blocks": {
+        "item_gzPHcC": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison offerte",
+            "text": "Dès 49 € d'achat en France."
+          }
+        },
+        "item_paiement3x": {
+          "type": "item",
+          "settings": {
+            "icon": "split",
+            "title": "Payez en 3 fois",
+            "text": "Sans frais, dès 60 € d'achat."
+          }
+        },
+        "item_kjwDUC": {
+          "type": "item",
+          "settings": {
+            "icon": "leaf",
+            "title": "Formules naturelles",
+            "text": "Des ingrédients choisis, sans compromis."
+          }
+        },
+        "item_HDFdbt": {
+          "type": "item",
+          "settings": {
+            "icon": "france",
+            "title": "Fabriqué en France",
+            "text": "Produit dans nos ateliers partenaires."
+          }
+        },
+        "item_maaTrJ": {
+          "type": "item",
+          "settings": {
+            "icon": "rabbit",
+            "title": "Non testé sur les animaux",
+            "text": "Aucune formule testée sur les animaux."
+          }
+        }
+      },
+      "block_order": [
+        "item_gzPHcC",
+        "item_paiement3x",
+        "item_kjwDUC",
+        "item_HDFdbt",
+        "item_maaTrJ"
+      ],
+      "name": "Bandeau de réassurance",
+      "settings": {
+        "columns": 5,
+        "columns_mobile": "2",
+        "alignment": "left",
+        "show_numbers": false,
+        "show_separators": true,
+        "cell_padding": 20,
+        "cell_padding_mobile": 16,
+        "column_gap": 32,
+        "column_gap_mobile": 16,
+        "row_gap": 32,
+        "row_gap_mobile": 24,
+        "margin_top": 64,
+        "margin_top_mobile": 40,
+        "margin_bottom": 64,
+        "margin_bottom_mobile": 40,
+        "background_color": "#ffffff",
+        "text_color": "#1a1a1a",
+        "line_color": "#ddd9d7",
+        "hover_color": "#e8e6e5",
+        "icon_color": "#1a1a1a",
+        "icon_size": 24,
+        "icon_size_mobile": 20,
+        "title_font": "work_sans_n4",
+        "title_size": 16,
+        "title_size_mobile": 15,
+        "text_font": "work_sans_n4",
+        "text_size": 13,
+        "text_size_mobile": 12,
+        "kicker_size": 12,
+        "kicker_size_mobile": 11
+      }
+    },
     "featured_products": {
       "type": "featured-products",
       "blocks": {
@@ -266,89 +351,69 @@
         "button_text_transform": "uppercase"
       }
     },
-    "reassurance_L9RciR": {
-      "type": "reassurance",
+    "iz_faq_XEeggT": {
+      "type": "iz-faq",
       "blocks": {
-        "item_gzPHcC": {
-          "type": "item",
+        "question_jMWqiw": {
+          "type": "question",
           "settings": {
-            "icon": "truck",
-            "title": "Livraison offerte",
-            "text": "Dès 49 € d'achat en France."
+            "question": "Quand ma commande sera-t-elle expédiée ?",
+            "reponse": "<p>Les soins sont en précommande : la production arrive et les premières expéditions partent à partir de décembre 2026. Vous recevez un email avec le numéro de suivi le jour où votre colis part.</p>"
           }
         },
-        "item_paiement3x": {
-          "type": "item",
+        "question_jxhTdA": {
+          "type": "question",
           "settings": {
-            "icon": "split",
-            "title": "Payez en 3 fois",
-            "text": "Sans frais, dès 60 € d'achat."
+            "question": "Pourquoi précommander plutôt qu'attendre ?",
+            "reponse": "<p>La première série est produite en quantité limitée. Précommander réserve la vôtre et vous place en tête des expéditions, au prix de lancement.</p>"
           }
         },
-        "item_kjwDUC": {
-          "type": "item",
+        "question_gGNj3Y": {
+          "type": "question",
           "settings": {
-            "icon": "leaf",
-            "title": "Formules naturelles",
-            "text": "Des ingrédients choisis, sans compromis."
+            "question": "Comment savoir quel soin me convient ?",
+            "reponse": "<p>Le diagnostic en ligne pose huit questions sur votre peau et vos habitudes, puis vous dit par où commencer : le masque, le sérum, ou les deux. Il prend moins d'une minute.</p>"
           }
         },
-        "item_HDFdbt": {
-          "type": "item",
+        "question_iLUMcX": {
+          "type": "question",
           "settings": {
-            "icon": "france",
-            "title": "Fabriqué en France",
-            "text": "Produit dans nos ateliers partenaires."
+            "question": "Le masque et le sérum s'utilisent-ils ensemble ?",
+            "reponse": "<p>Oui, et ils ne se gênent pas : le masque purifie une à deux fois par semaine, le sérum s'applique matin et soir. L'un prépare la peau, l'autre prend le relais au quotidien.</p>"
           }
         },
-        "item_maaTrJ": {
-          "type": "item",
+        "question_bMeTBJ": {
+          "type": "question",
           "settings": {
-            "icon": "rabbit",
-            "title": "Non testé sur les animaux",
-            "text": "Aucune formule testée sur les animaux."
+            "question": "Et si ma peau est sensible ?",
+            "reponse": "<p>Les deux formules conviennent à toutes les peaux et sont sans parfum ajouté, avec un pH proche de celui de la peau. Comme pour tout nouveau soin, faites un essai au creux du coude avant la première application.</p>"
           }
         }
       },
       "block_order": [
-        "item_gzPHcC",
-        "item_paiement3x",
-        "item_kjwDUC",
-        "item_HDFdbt",
-        "item_maaTrJ"
+        "question_jMWqiw",
+        "question_jxhTdA",
+        "question_gGNj3Y",
+        "question_iLUMcX",
+        "question_bMeTBJ"
       ],
-      "name": "Bandeau de réassurance",
+      "name": "FAQ boutique",
       "settings": {
-        "columns": 5,
-        "columns_mobile": "2",
-        "alignment": "left",
-        "show_numbers": false,
-        "show_separators": true,
-        "cell_padding": 20,
-        "cell_padding_mobile": 16,
-        "column_gap": 32,
-        "column_gap_mobile": 16,
-        "row_gap": 32,
-        "row_gap_mobile": 24,
-        "margin_top": 64,
-        "margin_top_mobile": 40,
-        "margin_bottom": 64,
-        "margin_bottom_mobile": 40,
-        "background_color": "#ffffff",
-        "text_color": "#1a1a1a",
-        "line_color": "#ddd9d7",
-        "hover_color": "#e8e6e5",
-        "icon_color": "#1a1a1a",
-        "icon_size": 24,
-        "icon_size_mobile": 20,
-        "title_font": "work_sans_n4",
-        "title_size": 16,
-        "title_size_mobile": 15,
-        "text_font": "work_sans_n4",
-        "text_size": 13,
-        "text_size_mobile": 12,
-        "kicker_size": 12,
-        "kicker_size_mobile": 11
+        "couleur_fond": "#FFFFFF",
+        "masquer_mobile": false,
+        "eyebrow": "Questions fréquentes",
+        "titre": "Ce qu'on nous demande le plus",
+        "titre_base": 320,
+        "liste_base": 560,
+        "gap": 56,
+        "gap_mobile": 24,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "taille_eyebrow": 12,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_question": 16,
+        "taille_reponse": 15
       }
     }
   },
@@ -357,6 +422,7 @@
     "reassurance_L9RciR",
     "featured_products",
     "skin_diagnostic_PYwfF7",
-    "brand_commitments_NCVAJB"
+    "brand_commitments_NCVAJB",
+    "iz_faq_XEeggT"
   ]
 }
