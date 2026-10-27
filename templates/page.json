@@ -12,9 +12,232 @@
     "main": {
       "type": "page",
       "settings": {}
+    },
+    "iz_diagnostic_4yzr3c": {
+      "type": "iz-diagnostic",
+      "blocks": {
+        "question_N9Kfja": {
+          "type": "question",
+          "settings": {
+            "libelle": "En fin de journée, votre peau est plutôt...",
+            "r1": "Brillante sur le front et le nez",
+            "c1": "masque",
+            "r2": "Terne, sans éclat",
+            "c2": "serum",
+            "r3": "Les deux, selon les zones",
+            "c3": "deux",
+            "r4": "Ni l'une ni l'autre",
+            "c4": "aucun"
+          }
+        },
+        "question_Rq9CdU": {
+          "type": "question",
+          "settings": {
+            "libelle": "Qu'est-ce qui vous gêne le plus aujourd'hui ?",
+            "r1": "Des pores visibles, un grain irrégulier",
+            "c1": "masque",
+            "r2": "Des taches ou des marques qui restent",
+            "c2": "serum",
+            "r3": "Un teint qui manque d'uniformité",
+            "c3": "serum",
+            "r4": "Des imperfections qui reviennent",
+            "c4": "masque"
+          }
+        },
+        "question_R4YQgx": {
+          "type": "question",
+          "settings": {
+            "libelle": "Avez-vous des marques laissées par d'anciens boutons ?",
+            "r1": "Oui, plusieurs",
+            "c1": "serum",
+            "r2": "Une ou deux",
+            "c2": "serum",
+            "r3": "Aucune",
+            "c3": "aucun",
+            "r4": "",
+            "c4": "aucun"
+          }
+        },
+        "question_PKxRmF": {
+          "type": "question",
+          "settings": {
+            "libelle": "Comment dormez-vous en ce moment ?",
+            "r1": "Moins de six heures, ou mal",
+            "c1": "serum",
+            "r2": "Sept à huit heures, sans souci",
+            "c2": "aucun",
+            "r3": "Ça dépend des semaines",
+            "c3": "serum",
+            "r4": "",
+            "c4": "aucun"
+          }
+        },
+        "question_DHqCFP": {
+          "type": "question",
+          "settings": {
+            "libelle": "Votre peau voit-elle le soleil sans protection ?",
+            "r1": "Souvent, je n'en mets pas",
+            "c1": "serum",
+            "r2": "L'été seulement",
+            "c2": "serum",
+            "r3": "J'en mets toute l'année",
+            "c3": "aucun",
+            "r4": "",
+            "c4": "aucun"
+          }
+        },
+        "question_VAWhW6": {
+          "type": "question",
+          "settings": {
+            "libelle": "Et votre alimentation, en ce moment ?",
+            "r1": "Beaucoup de sucre et de plats tout prêts",
+            "c1": "masque",
+            "r2": "Plutôt équilibrée",
+            "c2": "aucun",
+            "r3": "Ça dépend des périodes",
+            "c3": "masque",
+            "r4": "",
+            "c4": "aucun"
+          }
+        },
+        "question_AQ69EL": {
+          "type": "question",
+          "settings": {
+            "libelle": "Aujourd'hui, votre routine comporte...",
+            "r1": "Rien, ou juste un nettoyant",
+            "c1": "deux",
+            "r2": "Un nettoyant et une crème",
+            "c2": "deux",
+            "r3": "Déjà un sérum",
+            "c3": "masque",
+            "r4": "Déjà un masque",
+            "c4": "serum"
+          }
+        },
+        "question_Yrqw3Y": {
+          "type": "question",
+          "settings": {
+            "libelle": "Combien de temps pouvez-vous y consacrer ?",
+            "r1": "Deux minutes, matin et soir",
+            "c1": "serum",
+            "r2": "Un vrai moment, une fois par semaine",
+            "c2": "masque",
+            "r3": "Les deux me vont",
+            "c3": "deux",
+            "r4": "",
+            "c4": "aucun"
+          }
+        },
+        "resultat_fgdgCk": {
+          "type": "resultat",
+          "settings": {
+            "cible": "masque",
+            "titre": "Commencez par désencombrer votre peau",
+            "texte": "<p>Vos réponses décrivent une peau qui produit du sébum et dont le grain s'irrégularise : ce sont les impuretés et l'excès de sébum qu'il faut traiter en premier. Un sérum posé sur une peau encombrée travaille moins bien.</p><p>Le Masque Rituel Nila absorbe l'excès de sébum et les impuretés. L'huile d'argan et le beurre de karité gardent la peau souple pendant toute la pose.</p>",
+            "matin": "Nettoyant doux, puis votre crème habituelle.",
+            "soir": "Une à deux fois par semaine, le masque pendant dix à quinze minutes, puis votre crème.",
+            "produit": ""
+          }
+        },
+        "resultat_EUafqy": {
+          "type": "resultat",
+          "settings": {
+            "cible": "serum",
+            "titre": "Commencez par unifier votre teint",
+            "texte": "<p>Vos réponses décrivent des taches, des marques ou un teint qui manque d'uniformité. C'est un travail de fond, quotidien, qui demande des actifs appliqués tous les jours plutôt qu'un soin hebdomadaire.</p><p>Le Sérum Correcteur &amp; Éclat associe la vitamine C, l'alpha-arbutine et l'acide hyaluronique : la luminosité, les taches et l'hydratation, dans la même formule.</p>",
+            "matin": "Quelques gouttes sur peau propre, puis la crème et une protection solaire.",
+            "soir": "Quelques gouttes sur peau propre, puis la crème.",
+            "produit": ""
+          }
+        },
+        "resultat_baQixp": {
+          "type": "resultat",
+          "settings": {
+            "cible": "routine",
+            "titre": "Vos deux besoins arrivent ensemble",
+            "texte": "<p>Vos réponses pointent autant vers le sébum et les impuretés que vers les taches et le manque d'éclat. Les traiter l'un après l'autre ferait perdre des semaines : les deux soins ne jouent pas sur le même terrain et ne se gênent pas.</p><p>Le masque prépare la peau une à deux fois par semaine, le sérum prend le relais au quotidien.</p>",
+            "matin": "Le sérum sur peau propre, puis la crème et une protection solaire.",
+            "soir": "Le sérum tous les soirs. Une à deux fois par semaine, le masque avant le sérum.",
+            "produit": ""
+          }
+        }
+      },
+      "block_order": [
+        "question_N9Kfja",
+        "question_Rq9CdU",
+        "question_R4YQgx",
+        "question_PKxRmF",
+        "question_DHqCFP",
+        "question_VAWhW6",
+        "question_AQ69EL",
+        "question_Yrqw3Y",
+        "resultat_fgdgCk",
+        "resultat_EUafqy",
+        "resultat_baQixp"
+      ],
+      "name": "Diagnostic de peau",
+      "settings": {
+        "eyebrow": "Diagnostic de peau",
+        "titre": "Quel soin pour votre peau ?",
+        "intro": "<p>Huit questions sur ce que vous voyez sur votre peau et sur vos habitudes : sommeil, soleil, alimentation. La peau ne réagit pas qu'aux soins qu'on lui applique.</p>",
+        "mention_duree": "[n] questions, moins d'une minute.",
+        "cta_demarrer": "Commencer",
+        "afficher_progression": true,
+        "libelle_compteur": "Question [n] sur [total]",
+        "libelle_retour": "Revenir à la question précédente",
+        "handle_page": "diagnostic",
+        "photo_active": true,
+        "photo_endpoint": "https://irizee-diagnostic.vercel.app/api/analyse",
+        "photo_titre": "Une photo, pour affiner",
+        "photo_texte": "<p>Une photo du visage, à la lumière du jour, sans maquillage. Elle précise ce que vos réponses ont déjà dit. C'est facultatif : le résultat s'affiche sans elle.</p>",
+        "photo_bouton": "Prendre ou choisir une photo",
+        "photo_passer": "Continuer sans photo",
+        "photo_patience": "Analyse en cours, quelques secondes...",
+        "photo_illisible": "La photo est trop sombre ou trop floue. Réessayez à la lumière du jour, ou continuez sans.",
+        "photo_erreur": "L'analyse n'a pas abouti. Votre résultat s'affiche d'après vos réponses.",
+        "photo_consentement": "<p>Votre photo n'est pas conservée. Elle sert uniquement à cette analyse, puis elle est oubliée : elle n'est enregistrée sur aucun serveur et ne sert à rien d'autre.</p>",
+        "email_moment": "avant_obligatoire",
+        "email_titre": "Votre adresse, et on y va",
+        "email_texte": "<p>Nous gardons votre résultat de côté et vous envoyons nos conseils. Votre routine s'affiche juste après, sur cette page.</p>",
+        "email_placeholder": "Votre adresse email",
+        "email_bouton": "Voir mon résultat",
+        "email_passer": "Voir mon résultat sans donner mon email",
+        "email_invalide": "Cette adresse n'a pas été acceptée. Vérifiez-la et réessayez.",
+        "email_erreur": "L'envoi n'a pas abouti, mais votre résultat s'affiche quand même.",
+        "email_mention": "<p>Votre adresse sert à vous envoyer ce résultat et nos nouveautés. Vous pouvez vous désabonner à tout moment.</p>",
+        "resultat_eyebrow": "Votre résultat",
+        "libelle_matin": "Le matin",
+        "libelle_soir": "Le soir",
+        "libelle_achat": "Ajouter au panier",
+        "libelle_epuise": "Momentanément épuisé",
+        "libelle_recommencer": "Refaire le diagnostic",
+        "handle_masque": "masque-rituel-nila",
+        "handle_serum": "serum-correcteur-eclat",
+        "handle_routine": "la-routine",
+        "texte_sans_js": "Le diagnostic a besoin de JavaScript pour fonctionner. En attendant, nos soins sont dans le catalogue.",
+        "lien_sans_js": "Voir les soins",
+        "couleur_fond": "#FBFAF8",
+        "couleur_encre": "#1A1A1A",
+        "couleur_carte": "#FFFFFF",
+        "couleur_accent": "#214975",
+        "rayon": 14,
+        "marge_verticale": 88,
+        "marge_verticale_m": 56,
+        "police_titre": "work_sans_n4",
+        "police_texte": "work_sans_n4",
+        "taille_eyebrow": 12,
+        "taille_eyebrow_m": 11,
+        "taille_titre": 38,
+        "taille_titre_m": 26,
+        "taille_question": 26,
+        "taille_question_m": 20,
+        "taille_texte": 16,
+        "taille_texte_m": 15
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "iz_diagnostic_4yzr3c"
   ]
 }
