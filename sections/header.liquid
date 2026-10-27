@@ -13,7 +13,16 @@
   {% assign reglages_pdp = true %}
 {% endif %}
 
-{% assign is_overlay = section.settings.overlay_on_image %}
+{%- comment -%}
+  La superposition passe le header en `position: fixed` : il sort du flux et
+  la page démarre derrière lui. Seul l'accueil a une image prévue pour le
+  recevoir. Partout ailleurs le header redevient `sticky`, donc il occupe sa
+  place et ne mange plus le premier titre de la page.
+{%- endcomment -%}
+{% assign is_overlay = false %}
+{% if section.settings.overlay_on_image and request.page_type == 'index' %}
+  {% assign is_overlay = true %}
+{% endif %}
 {% assign couleur_texte = section.settings.overlay_text_color %}
 {% assign couleur_logo = section.settings.logo_color %}
 

@@ -76,13 +76,6 @@
         <div class="izc__texte">{{ section.settings.intro }}</div>
       {%- endif -%}
 
-      {%- comment -%}
-        Pendant la précommande, l'annoncer dès le catalogue évite la déception
-        au moment du panier. On ne le découvre pas à la dernière étape.
-      {%- endcomment -%}
-      {%- if settings.precommande_active and settings.precommande_mention != blank -%}
-        <p class="izc__precommande">{{ settings.precommande_mention }}</p>
-      {%- endif -%}
     </header>
 
     {%- comment -%}
@@ -160,16 +153,6 @@
   .izc__texte p { margin: 0 0 1.2rem; }
   .izc__texte p:last-child { margin-bottom: 0; }
 
-  .izc__precommande {
-    display: inline-block;
-    margin-top: 2rem;
-    padding: 0.8rem 1.6rem;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--color-foreground) 8%, transparent);
-    font-family: var(--izc-texte-famille);
-    font-size: calc(var(--izc-texte) * 0.88);
-    font-weight: 600;
-  }
 
   /* La carte vient de product-card : ici on ne fait que la poser en grille.
      Sa largeur est fixée en vw pour le carrousel de l'accueil, on la
