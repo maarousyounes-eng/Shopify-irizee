@@ -131,13 +131,23 @@ envois : elle revient au propriétaire du compte.
   `diagnostic-serum`, `diagnostic-masque`, puis tous les autres.
 - **Trois emails** nommés, avec objet et texte d'aperçu, chacun sur sa branche.
 
+Les **trois emails sont écrits** dans Klaviyo : objet, texte d'aperçu et
+contenu. L'expéditeur est provisoirement `maarous.younes@gmail.com`, celui du
+compte.
+
 Ce qui reste à faire dans Klaviyo :
 
-1. Configurer l'adresse d'expédition et vérifier le domaine d'envoi. Sans ça,
-   rien ne part, et partir depuis une adresse gmail.com ferait tomber les
-   messages en indésirables.
-2. Coller le corps des trois emails depuis ce document.
-3. Activer le scénario.
+1. **Vérifier un domaine d'envoi** et basculer l'expéditeur dessus. Partir
+   d'une adresse gmail.com fait tomber les messages en indésirables : c'est
+   le point le plus coûteux à négliger.
+2. **Activer le scénario.**
+
+**Piège à connaître pour tester.** Le déclencheur est l'entrée dans le
+segment, et la réintégration est désactivée. Une adresse déjà étiquetée
+`diagnostic` ne déclenchera donc rien, même après activation : elle n'a jamais
+quitté le segment. Pour un test de bout en bout, il faut une adresse neuve, ou
+retirer les étiquettes `diagnostic` de la cliente dans Shopify avant de
+recommencer.
 
 **La propriété des étiquettes s'appelle `Shopify Tags`** et contient un
 tableau, par exemple `["diagnostic","diagnostic-serum"]`. C'est lu sur un
