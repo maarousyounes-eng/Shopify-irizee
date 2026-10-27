@@ -64,11 +64,12 @@
 <div class="skin-diag full-width">
   <div class="skin-diag__inner skin-diag__inner--media-{{ section.settings.image_position }} skin-diag__inner--align-{{ section.settings.text_alignment }}">
     {% if section.settings.image != blank %}
+      {% assign alt_diag = section.settings.image.alt | default: section.settings.heading | default: shop.name %}
       <div class="skin-diag__media">
         {{
           section.settings.image
           | image_url: width: 1400
-          | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 50vw, 100vw', widths: '500, 750, 1000, 1400', class: 'skin-diag__image'
+          | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 50vw, 100vw', widths: '500, 750, 1000, 1400', class: 'skin-diag__image', alt: alt_diag
         }}
       </div>
     {% endif %}

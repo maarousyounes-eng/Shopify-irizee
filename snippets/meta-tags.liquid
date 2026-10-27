@@ -1,3 +1,15 @@
+{% comment %}
+  Titre, description, canonique, Open Graph, Twitter.
+
+  Deux pieges corriges ici :
+
+  - sans `page_image`, Shopify n'envoie aucune image de partage : un lien
+    colle sur WhatsApp ou Instagram sortait tout gris. Un reglage de theme
+    sert de secours pour toutes les pages qui n'ont pas d'image propre.
+  - le panier, la recherche et les pages de compte n'ont rien a faire dans
+    Google : elles sont en noindex, le reste du site non.
+{% endcomment %}
+
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -15,46 +27,40 @@
   elsif request.page_type == 'password'
     assign og_url = request.origin
   endif
-%}
 
-<meta
-  property="og:site_name"
-  content="{{ shop.name }}"
->
-<meta
-  property="og:url"
-  content="{{ og_url }}"
->
-<meta
-  property="og:title"
-  content="{{ og_title | escape }}"
->
-<meta
-  property="og:type"
-  content="{{ og_type }}"
->
-<meta
-  property="og:description"
-  content="{{ og_description | escape }}"
->
+  assign image_partage = page_image | default: settings.image_partage
 
-{%- if page_image -%}
-  <meta
-    property="og:image"
-    content="http:{{ page_image | image_url }}"
-  >
-  <meta
-    property="og:image:secure_url"
-    content="https:{{ page_image | image_url }}"
-  >
-  <meta
-    property="og:image:width"
-    content="{{ page_image.width }}"
-  >
-  <meta
-    property="og:image:height"
-    content="{{ page_image.height }}"
-  >
+  assign pages_hors_index = 'search,cart,customers/account,customers/login,customers/register,customers/order,customers/addresses,customers/reset_password,customers/activate_account,password,gift_card'
+  assign pages_hors_index = pages_hors_index | split: ','
+  assign hors_index = false
+  if pages_hors_index contains request.page_type
+    assign hors_index = true
+  endif
+-%}
+
+<title>{{ og_title }}{% if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif %}{% if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %}{% unless og_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}</title>
+
+<link rel="canonical" href="{{ canonical_url }}">
+
+<meta name="description" content="{{ og_description | strip_html | strip_newlines | truncate: 320 | escape }}">
+
+{%- if hors_index -%}
+  <meta name="robots" content="noindex, follow">
+{%- endif -%}
+
+<meta property="og:site_name" content="{{ shop.name }}">
+<meta property="og:url" content="{{ og_url }}">
+<meta property="og:title" content="{{ og_title | escape }}">
+<meta property="og:type" content="{{ og_type }}">
+<meta property="og:description" content="{{ og_description | strip_html | strip_newlines | truncate: 320 | escape }}">
+<meta property="og:locale" content="{{ request.locale.iso_code }}">
+
+{%- if image_partage != blank -%}
+  <meta property="og:image" content="https:{{ image_partage | image_url: width: 1200 }}">
+  <meta property="og:image:secure_url" content="https:{{ image_partage | image_url: width: 1200 }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="{{ 1200 | times: image_partage.height | divided_by: image_partage.width }}">
+  <meta property="og:image:alt" content="{{ image_partage.alt | default: og_title | escape }}">
 {%- endif -%}
 
 {%- if request.page_type == 'product' -%}
@@ -62,44 +68,13 @@
     {{ product | structured_data }}
   </script>
 
-  <meta
-    property="og:price:amount"
-    content="{{ product.price | money_without_currency | strip_html }}"
-  >
-  <meta
-    property="og:price:currency"
-    content="{{ cart.currency.iso_code }}"
-  >
+  <meta property="og:price:amount" content="{{ product.price | money_without_currency | strip_html }}">
+  <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
 {%- endif -%}
 
-<meta
-  name="twitter:card"
-  content="summary_large_image"
->
-<meta
-  name="twitter:title"
-  content="{{ og_title | escape }}"
->
-<meta
-  name="twitter:description"
-  content="{{ og_description | escape }}"
->
-
-<title>
-  {{ page_title }}
-  {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
-  {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
-  {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
-</title>
-
-<link
-  rel="canonical"
-  href="{{ canonical_url }}"
->
-
-{% if page_description %}
-  <meta
-    name="description"
-    content="{{ page_description | escape }}"
-  >
-{% endif %}
+<meta name="twitter:card" content="{% if image_partage != blank %}summary_large_image{% else %}summary{% endif %}">
+<meta name="twitter:title" content="{{ og_title | escape }}">
+<meta name="twitter:description" content="{{ og_description | strip_html | strip_newlines | truncate: 200 | escape }}">
+{%- if image_partage != blank -%}
+  <meta name="twitter:image" content="https:{{ image_partage | image_url: width: 1200 }}">
+{%- endif -%}

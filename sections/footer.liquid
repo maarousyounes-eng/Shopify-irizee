@@ -140,6 +140,53 @@
       </div>
     {% endif %}
 
+    {%- comment -%}
+      Carte d'identite de la marque pour Google. Elle vit ici et pas dans
+      l'en-tete parce que les liens des reseaux sont des reglages de cette
+      section : un snippet de layout ne peut pas les lire. Un bloc JSON-LD
+      est valide n'importe ou dans la page.
+    {%- endcomment -%}
+    {%- liquid
+      assign reseaux = ''
+      if section.settings.instagram != blank
+        assign reseaux = reseaux | append: section.settings.instagram | append: '|'
+      endif
+      if section.settings.tiktok != blank
+        assign reseaux = reseaux | append: section.settings.tiktok | append: '|'
+      endif
+      if section.settings.facebook != blank
+        assign reseaux = reseaux | append: section.settings.facebook | append: '|'
+      endif
+      if section.settings.pinterest != blank
+        assign reseaux = reseaux | append: section.settings.pinterest | append: '|'
+      endif
+      assign reseaux = reseaux | split: '|'
+
+      assign logo_seo = 'irizee-logo.png' | asset_url | prepend: 'https:'
+      if section.settings.logo != blank
+        assign logo_seo = section.settings.logo | image_url: width: 600 | prepend: 'https:'
+      endif
+    -%}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": {{ shop.name | json }},
+        "url": {{ request.origin | json }},
+        "logo": {{ logo_seo | json }}
+        {%- if shop.description != blank -%}
+          , "description": {{ shop.description | strip_html | json }}
+        {%- endif -%}
+        {%- if reseaux.size > 0 -%}
+          , "sameAs": [
+            {%- for lien in reseaux -%}
+              {{ lien | json }}{%- unless forloop.last -%},{%- endunless -%}
+            {%- endfor -%}
+          ]
+        {%- endif -%}
+      }
+    </script>
+
     <div class="footer__legal">
       <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
 

@@ -37,6 +37,17 @@
   {% assign accroche = product.description | strip_html | truncate: 60 %}
 {% endif %}
 {% assign cta_label = buy_label | default: 'Acheter' %}
+
+{%- comment -%}
+  `image_url` rend une chaine : `image_tag` n'a plus d'objet image ou lire
+  l'alternative, il faut donc la lui passer. Sans ca, les cartes de l'accueil
+  et du catalogue sortent sans alt du tout.
+{%- endcomment -%}
+{% assign alt_photo = photo_carte.alt | default: product.title %}
+{% assign alt_survol = secondary_image.alt %}
+{% if alt_survol == blank %}
+  {% assign alt_survol = product.title | append: ', en situation' %}
+{% endif %}
 {%- capture precommande -%}
   {%- render 'iz-precommande', variante: product.selected_or_first_available_variant -%}
 {%- endcapture -%}
@@ -51,10 +62,10 @@
   {%- endcomment -%}
   <div class="product-card__media"{% if secondary_image %} data-swipe-media{% endif %}>
     {% if photo_carte %}
-      {{ photo_carte | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 30vw, 78vw', widths: '400, 600, 900', class: 'product-card__image product-card__image--primary' }}
+      {{ photo_carte | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 30vw, 78vw', widths: '400, 600, 900', class: 'product-card__image product-card__image--primary', alt: alt_photo }}
     {% endif %}
     {% if secondary_image %}
-      {{ secondary_image | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 30vw, 78vw', widths: '400, 600, 900', class: 'product-card__image product-card__image--secondary' }}
+      {{ secondary_image | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 30vw, 78vw', widths: '400, 600, 900', class: 'product-card__image product-card__image--secondary', alt: alt_survol }}
     {% endif %}
 
     {% if badge_text != blank %}

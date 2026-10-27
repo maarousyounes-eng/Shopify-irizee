@@ -206,5 +206,19 @@
         "default": "Vous n'êtes débité qu'aujourd'hui, et prévenu par email dès l'expédition."
       }
     ]
+  },
+  {
+    "name": "Partage et SEO",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "L'image ci-dessous s'affiche quand un lien du site est partagé sur WhatsApp, Instagram, Facebook ou envoyé par message. Sans elle, le lien sort gris et sans visuel. Format conseillé : 1200 x 630 px."
+      },
+      {
+        "type": "image_picker",
+        "id": "image_partage",
+        "label": "Image de partage par défaut"
+      }
+    ]
   }
 ]

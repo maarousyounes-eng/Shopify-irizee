@@ -55,6 +55,14 @@
 {% endstyle %}
 
 <div class="brand full-width">
+{%- comment -%}
+  Trois alternatives distinctes : trois photos differentes, trois descriptions.
+  Celle de la bibliotheque passe devant, le titre de la section sert de filet.
+{%- endcomment -%}
+{% assign alt_image_main = section.settings.image_main.alt | default: section.settings.heading | default: shop.name %}
+{% assign alt_image_top = section.settings.image_top.alt | default: section.settings.heading | default: shop.name %}
+{% assign alt_image_bottom = section.settings.image_bottom.alt | default: section.settings.heading | default: shop.name %}
+
   <div class="brand__inner brand__inner--media-{{ section.settings.media_position }}">
     <div class="brand__collage">
       <div class="brand__photo brand__photo--tall">
@@ -62,7 +70,7 @@
           {{
             section.settings.image_main
             | image_url: width: 900
-            | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 26vw, 50vw', widths: '300, 600, 900', class: 'brand__img'
+            | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 26vw, 50vw', widths: '300, 600, 900', class: 'brand__img', alt: alt_image_main
           }}
         {% endif %}
       </div>
@@ -71,7 +79,7 @@
           {{
             section.settings.image_top
             | image_url: width: 700
-            | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 26vw, 50vw', widths: '300, 500, 700', class: 'brand__img'
+            | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 26vw, 50vw', widths: '300, 500, 700', class: 'brand__img', alt: alt_image_top
           }}
         {% endif %}
       </div>
@@ -80,7 +88,7 @@
           {{
             section.settings.image_bottom
             | image_url: width: 700
-            | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 26vw, 50vw', widths: '300, 500, 700', class: 'brand__img'
+            | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 26vw, 50vw', widths: '300, 500, 700', class: 'brand__img', alt: alt_image_bottom
           }}
         {% endif %}
       </div>
