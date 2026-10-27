@@ -8,13 +8,6 @@
   ils seraient du bruit. La pagination n'apparaît qu'au-delà de la limite.
 {% endcomment %}
 
-{%- liquid
-  assign liste = collection.products
-  if liste.size == 0
-    assign liste = collections.all.products
-  endif
--%}
-
 {% style %}
   {{ section.settings.police_titre | font_face: font_display: 'swap' }}
   {{ section.settings.police_titre | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
@@ -92,10 +85,15 @@
       {%- endif -%}
     </header>
 
-    {%- if liste.size > 0 -%}
-      {%- paginate liste by section.settings.par_page -%}
+    {%- comment -%}
+      `paginate` n'accepte qu'une vraie collection, pas un tableau assigné :
+      d'où `collection.products` écrit en toutes lettres. Sur une page sans
+      collection, la taille est nulle et c'est le texte de repli qui sort.
+    {%- endcomment -%}
+    {%- if collection.products.size > 0 -%}
+      {%- paginate collection.products by section.settings.par_page -%}
         <div class="izc__grille">
-          {%- for produit in liste -%}
+          {%- for produit in collection.products -%}
             {%- render 'product-card',
               product: produit,
               buy_label: section.settings.libelle_achat,
