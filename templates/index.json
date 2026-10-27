@@ -415,6 +415,61 @@
         "taille_question": 16,
         "taille_reponse": 15
       }
+    },
+    "newsletter_HyFQ6r": {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "settings": {
+        "eyebrow": "Newsletter",
+        "heading": "Prévenez-moi quand les colis partent",
+        "text": "<p>Vous saurez en premier quand les premières expéditions démarrent, et vous recevrez nos conseils de soin. Un e-mail par mois, pas plus.</p>",
+        "form_style": "pill",
+        "show_first_name": false,
+        "name_placeholder": "Votre prénom",
+        "email_placeholder": "Votre adresse e-mail",
+        "button_label": "Je m'inscris",
+        "success_message": "Merci, votre inscription est confirmée.",
+        "require_consent": true,
+        "consent_text": "J'accepte de recevoir les e-mails d'Irizée et je peux me désinscrire à tout moment.",
+        "legal_text": "<p>Vos données sont utilisées uniquement pour vous envoyer nos e-mails. Consultez notre politique de confidentialité.</p>",
+        "layout": "centered",
+        "text_alignment": "center",
+        "image_position": "left",
+        "image_ratio": "4 / 5",
+        "image_ratio_mobile": "1 / 1",
+        "field_radius": 8,
+        "padding_desktop": 80,
+        "padding_mobile": 48,
+        "column_gap": 56,
+        "column_gap_mobile": 28,
+        "background_color": "#E8E6E5",
+        "text_color": "#1A1A1A",
+        "field_background": "#FFFFFF",
+        "field_border_color": "#D5D2D0",
+        "button_background": "#214975",
+        "button_text_color": "#FFFFFF",
+        "eyebrow_font": "work_sans_n4",
+        "eyebrow_size": 12,
+        "eyebrow_size_mobile": 11,
+        "heading_font": "work_sans_n4",
+        "heading_size": 34,
+        "heading_size_mobile": 25,
+        "text_font": "work_sans_n4",
+        "text_size": 15,
+        "text_size_mobile": 14,
+        "legal_size": 12,
+        "legal_size_mobile": 11,
+        "button_font": "work_sans_n4",
+        "button_size": 13,
+        "button_size_mobile": 12,
+        "button_custom": false,
+        "button_radius": 100,
+        "button_padding_y": 13,
+        "button_padding_x": 26,
+        "button_font_weight": 700,
+        "button_letter_spacing": 1,
+        "button_text_transform": "uppercase"
+      }
     }
   },
   "order": [
@@ -423,6 +478,7 @@
     "featured_products",
     "skin_diagnostic_PYwfF7",
     "brand_commitments_NCVAJB",
-    "iz_faq_XEeggT"
+    "iz_faq_XEeggT",
+    "newsletter_HyFQ6r"
   ]
 }
