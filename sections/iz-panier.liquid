@@ -1,0 +1,669 @@
+{% comment %}
+  Panier.
+
+  Trois choses décident ici : savoir ce qu'on achète, savoir ce qu'on paie, et
+  savoir quand on sera livré. Le reste est du décor.
+
+  La mention de précommande est répétée ligne par ligne : c'est la dernière
+  marche avant le paiement, et découvrir le délai après avoir payé est la
+  meilleure façon de récolter un litige.
+{% endcomment %}
+
+{% style %}
+  {{ section.settings.police_titre | font_face: font_display: 'swap' }}
+  {{ section.settings.police_titre | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+  {{ section.settings.police_texte | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} {
+    --izp-marge: {{ section.settings.marge_verticale }}px;
+    --izp-carte: {{ section.settings.couleur_carte }};
+    --izp-rayon: {{ section.settings.rayon }}px;
+
+    --izp-titre-famille: {{ section.settings.police_titre.family }}, {{ section.settings.police_titre.fallback_families }};
+    --izp-texte-famille: {{ section.settings.police_texte.family }}, {{ section.settings.police_texte.fallback_families }};
+
+    --izp-titre: {{ section.settings.taille_titre }}px;
+    --izp-texte: {{ section.settings.taille_texte }}px;
+    --izp-nom: {{ section.settings.taille_nom }}px;
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --izp-marge: {{ section.settings.marge_verticale_m }}px;
+      --izp-titre: {{ section.settings.taille_titre_m }}px;
+    }
+  }
+{% endstyle %}
+
+<section class="izp" data-iz-panier>
+  <div class="izp__inner">
+
+    <h1 class="izp__titre">{{ section.settings.titre }}</h1>
+
+    {%- if cart.item_count == 0 -%}
+      <div class="izp__vide">
+        <p class="izp__texte">{{ section.settings.texte_vide }}</p>
+        <a class="iz-btn iz-btn--primary" href="{{ routes.all_products_collection_url }}">
+          {{ section.settings.libelle_vide }}
+        </a>
+      </div>
+    {%- else -%}
+
+      <div class="izp__corps">
+
+        <div class="izp__lignes">
+          {%- for item in cart.items -%}
+            {%- capture precommande -%}
+              {%- render 'iz-precommande', variante: item.variant -%}
+            {%- endcapture -%}
+
+            <article class="izp__ligne">
+              {%- if item.image -%}
+                <a class="izp__media" href="{{ item.url }}">
+                  {{ item.image | image_url: width: 300 | image_tag:
+                      loading: 'lazy', widths: '150, 300',
+                      alt: item.product.title, class: 'izp__image' }}
+                </a>
+              {%- endif -%}
+
+              <div class="izp__infos">
+                <a class="izp__nom" href="{{ item.url }}">{{ item.product.title }}</a>
+
+                {%- unless item.product.has_only_default_variant -%}
+                  <p class="izp__variante">{{ item.variant.title }}</p>
+                {%- endunless -%}
+
+                {%- if item.product.metafields.custom.format != blank -%}
+                  <p class="izp__variante">{{ item.product.metafields.custom.format }}</p>
+                {%- endif -%}
+
+                {%- if precommande != blank and settings.precommande_mention != blank -%}
+                  <p class="izp__precommande">{{ settings.precommande_mention }}</p>
+                {%- endif -%}
+
+                <div class="izp__ligne-bas">
+                  <div class="izp__qty">
+                    <button type="button" class="izp__qty-btn" data-iz-ligne="{{ forloop.index }}" data-iz-delta="-1" aria-label="{{ section.settings.libelle_moins }}">−</button>
+                    <span class="izp__qty-val">{{ item.quantity }}</span>
+                    <button type="button" class="izp__qty-btn" data-iz-ligne="{{ forloop.index }}" data-iz-delta="1" aria-label="{{ section.settings.libelle_plus }}">+</button>
+                  </div>
+
+                  <a class="izp__retirer" href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity=0">
+                    {{ section.settings.libelle_retirer }}
+                  </a>
+                </div>
+              </div>
+
+              <p class="izp__prix">
+                {{ item.final_line_price | money }}
+                {%- if item.original_line_price > item.final_line_price -%}
+                  <s class="izp__barre">{{ item.original_line_price | money }}</s>
+                {%- endif -%}
+              </p>
+            </article>
+          {%- endfor -%}
+        </div>
+
+        <aside class="izp__resume">
+          {%- comment -%}
+            La jauge de livraison offerte : la même mécanique que sur la fiche
+            produit, au moment où elle pèse le plus.
+          {%- endcomment -%}
+          {%- if section.settings.seuil_livraison > 0 -%}
+            {%- assign seuil = section.settings.seuil_livraison | times: 100 -%}
+            {%- if cart.total_price < seuil -%}
+              {%- assign restant = seuil | minus: cart.total_price -%}
+              <p class="izp__jauge-texte">
+                {{ section.settings.texte_restant | replace: '[montant]', restant | money }}
+              </p>
+            {%- else -%}
+              <p class="izp__jauge-texte izp__jauge-texte--atteint">{{ section.settings.texte_atteint }}</p>
+            {%- endif -%}
+            <div class="izp__jauge">
+              {%- assign pourcent = cart.total_price | times: 100 | divided_by: seuil -%}
+              {%- if pourcent > 100 -%}{%- assign pourcent = 100 -%}{%- endif -%}
+              <span class="izp__jauge-barre" style="width: {{ pourcent }}%"></span>
+            </div>
+          {%- endif -%}
+
+          <div class="izp__total">
+            <span>{{ section.settings.libelle_total }}</span>
+            <strong>{{ cart.total_price | money }}</strong>
+          </div>
+
+          {%- if section.settings.mention_total != blank -%}
+            <p class="izp__mention">{{ section.settings.mention_total }}</p>
+          {%- endif -%}
+
+          <form action="{{ routes.cart_url }}" method="post">
+            <button type="submit" name="checkout" class="iz-btn iz-btn--primary izp__commander">
+              {{ section.settings.libelle_commander }}
+            </button>
+          </form>
+
+          {%- if section.blocks.size > 0 -%}
+            <ul class="izp__rassurance">
+              {%- for bloc in section.blocks -%}
+                <li {{ bloc.shopify_attributes }}>{{ bloc.settings.texte }}</li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
+          <a class="izp__continuer" href="{{ routes.all_products_collection_url }}">
+            {{ section.settings.libelle_continuer }}
+          </a>
+        </aside>
+
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+  (function () {
+    var racine = document.querySelector('#shopify-section-{{ section.id }} [data-iz-panier]');
+    if (!racine) return;
+
+    // Les quantités passent par l'API du panier plutôt que par un bouton
+    // « mettre à jour » : personne ne pense à le cliquer, et un panier qui
+    // ment sur son contenu coûte la commande.
+    racine.querySelectorAll('[data-iz-delta]').forEach(function (bouton) {
+      bouton.addEventListener('click', function () {
+        var ligne = parseInt(bouton.getAttribute('data-iz-ligne'), 10);
+        var delta = parseInt(bouton.getAttribute('data-iz-delta'), 10);
+        var affichage = bouton.parentNode.querySelector('.izp__qty-val');
+        var actuelle = parseInt(affichage.textContent.trim(), 10) || 0;
+        var voulue = actuelle + delta;
+        if (voulue < 0) return;
+
+        racine.querySelectorAll('[data-iz-delta]').forEach(function (b) { b.disabled = true; });
+
+        fetch('{{ routes.cart_change_url }}.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ line: ligne, quantity: voulue })
+        })
+          .then(function () { window.location.reload(); })
+          .catch(function () {
+            racine.querySelectorAll('[data-iz-delta]').forEach(function (b) { b.disabled = false; });
+          });
+      });
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .izp {
+    padding: var(--izp-marge) var(--page-margin);
+  }
+
+  .izp__inner {
+    max-width: 110rem;
+    margin: 0 auto;
+  }
+
+  .izp__titre {
+    font-family: var(--izp-titre-famille);
+    font-size: var(--izp-titre);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin: 0 0 3.2rem;
+  }
+
+  .izp__texte {
+    font-family: var(--izp-texte-famille);
+    font-size: var(--izp-texte);
+    line-height: 1.6;
+    margin-bottom: 2.4rem;
+  }
+
+  .izp__vide {
+    max-width: 48ch;
+  }
+
+  .izp__corps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(28rem, 36rem);
+    gap: 4rem;
+    align-items: start;
+  }
+
+  @media (max-width: 899px) {
+    .izp__corps { grid-template-columns: 1fr; gap: 3.2rem; }
+  }
+
+  .izp__lignes {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  .izp__ligne {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem;
+    border-radius: var(--izp-rayon);
+    background: var(--izp-carte);
+  }
+
+  .izp__media {
+    flex: none;
+    width: 9rem;
+    aspect-ratio: 0.8;
+    border-radius: calc(var(--izp-rayon) * 0.6);
+    overflow: hidden;
+    background: var(--color-background);
+  }
+
+  .izp__image { width: 100%; height: 100%; object-fit: cover; }
+
+  .izp__infos { flex: 1 1 auto; min-width: 0; }
+
+  .izp__nom {
+    font-family: var(--izp-titre-famille);
+    font-size: var(--izp-nom);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .izp__variante {
+    font-family: var(--izp-texte-famille);
+    font-size: calc(var(--izp-texte) * 0.88);
+    color: color-mix(in srgb, var(--color-foreground) 60%, transparent);
+    margin-top: 0.4rem;
+  }
+
+  .izp__precommande {
+    font-family: var(--izp-texte-famille);
+    font-size: calc(var(--izp-texte) * 0.88);
+    font-weight: 600;
+    margin-top: 0.8rem;
+  }
+
+  .izp__ligne-bas {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    margin-top: 1.6rem;
+    flex-wrap: wrap;
+  }
+
+  .izp__qty {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--color-foreground) 18%, transparent);
+    border-radius: 999px;
+  }
+
+  .izp__qty-btn {
+    border: 0;
+    background: none;
+    padding: 0.2rem 0.4rem;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    color: inherit;
+  }
+
+  .izp__qty-btn[disabled] { opacity: 0.4; cursor: default; }
+
+  .izp__qty-val {
+    font-family: var(--izp-texte-famille);
+    font-size: var(--izp-texte);
+    font-variant-numeric: tabular-nums;
+    min-width: 2ch;
+    text-align: center;
+  }
+
+  .izp__retirer,
+  .izp__continuer {
+    font-family: var(--izp-texte-famille);
+    font-size: calc(var(--izp-texte) * 0.88);
+    color: color-mix(in srgb, var(--color-foreground) 65%, transparent);
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+
+  .izp__prix {
+    flex: none;
+    font-family: var(--izp-texte-famille);
+    font-size: var(--izp-texte);
+    font-weight: 700;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .izp__barre {
+    display: block;
+    font-weight: 400;
+    color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
+  }
+
+  .izp__resume {
+    padding: 2.4rem;
+    border-radius: var(--izp-rayon);
+    background: var(--izp-carte);
+    position: sticky;
+    top: 2rem;
+  }
+
+  @media (max-width: 899px) {
+    .izp__resume { position: static; }
+  }
+
+  .izp__jauge-texte {
+    font-family: var(--izp-texte-famille);
+    font-size: calc(var(--izp-texte) * 0.9);
+    margin-bottom: 0.8rem;
+  }
+
+  .izp__jauge-texte--atteint { font-weight: 700; }
+
+  .izp__jauge {
+    height: 0.4rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-foreground) 12%, transparent);
+    overflow: hidden;
+    margin-bottom: 2.4rem;
+  }
+
+  .izp__jauge-barre {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--color-foreground);
+  }
+
+  .izp__total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.6rem;
+    font-family: var(--izp-texte-famille);
+    font-size: var(--izp-texte);
+    padding-top: 1.6rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-foreground) 12%, transparent);
+  }
+
+  .izp__total strong {
+    font-size: calc(var(--izp-texte) * 1.3);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .izp__mention {
+    font-family: var(--izp-texte-famille);
+    font-size: calc(var(--izp-texte) * 0.82);
+    color: color-mix(in srgb, var(--color-foreground) 60%, transparent);
+    margin: 0.8rem 0 2rem;
+  }
+
+  .izp__commander { width: 100%; }
+
+  .izp__rassurance {
+    list-style: none;
+    padding: 0;
+    margin: 2.4rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    font-family: var(--izp-texte-famille);
+    font-size: calc(var(--izp-texte) * 0.88);
+  }
+
+  .izp__rassurance li {
+    padding-left: 2rem;
+    position: relative;
+  }
+
+  .izp__rassurance li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 999px;
+    background: var(--color-foreground);
+  }
+
+  .izp__continuer {
+    display: inline-block;
+    margin-top: 2.4rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Panier",
+  "tag": "section",
+  "class": "section-iz-panier",
+  "settings": [
+    {
+      "type": "text",
+      "id": "titre",
+      "label": "Titre",
+      "default": "Votre panier"
+    },
+    {
+      "type": "text",
+      "id": "texte_vide",
+      "label": "Panier vide",
+      "default": "Votre panier est vide pour le moment."
+    },
+    {
+      "type": "text",
+      "id": "libelle_vide",
+      "label": "Bouton du panier vide",
+      "default": "Voir les soins"
+    },
+    {
+      "type": "header",
+      "content": "Lignes"
+    },
+    {
+      "type": "text",
+      "id": "libelle_moins",
+      "label": "Retirer un article",
+      "default": "Retirer un article"
+    },
+    {
+      "type": "text",
+      "id": "libelle_plus",
+      "label": "Ajouter un article",
+      "default": "Ajouter un article"
+    },
+    {
+      "type": "text",
+      "id": "libelle_retirer",
+      "label": "Supprimer la ligne",
+      "default": "Retirer"
+    },
+    {
+      "type": "header",
+      "content": "Résumé"
+    },
+    {
+      "type": "text",
+      "id": "libelle_total",
+      "label": "Libellé du total",
+      "default": "Total"
+    },
+    {
+      "type": "text",
+      "id": "mention_total",
+      "label": "Mention sous le total",
+      "default": "Taxes incluses. Livraison calculée à l'étape suivante."
+    },
+    {
+      "type": "text",
+      "id": "libelle_commander",
+      "label": "Bouton de commande",
+      "default": "Commander"
+    },
+    {
+      "type": "text",
+      "id": "libelle_continuer",
+      "label": "Continuer mes achats",
+      "default": "Continuer mes achats"
+    },
+    {
+      "type": "header",
+      "content": "Livraison offerte"
+    },
+    {
+      "type": "range",
+      "id": "seuil_livraison",
+      "label": "Seuil",
+      "info": "0 pour masquer la jauge.",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "€",
+      "default": 49
+    },
+    {
+      "type": "text",
+      "id": "texte_restant",
+      "label": "Avant le seuil",
+      "info": "[montant] est remplacé par ce qu'il reste.",
+      "default": "Plus que [montant] pour la livraison offerte"
+    },
+    {
+      "type": "text",
+      "id": "texte_atteint",
+      "label": "Seuil atteint",
+      "default": "Livraison offerte"
+    },
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "type": "color",
+      "id": "couleur_carte",
+      "label": "Fond des blocs",
+      "default": "#F4F3F1"
+    },
+    {
+      "type": "range",
+      "id": "rayon",
+      "label": "Arrondi",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale",
+      "label": "Marge — ordinateur",
+      "min": 32,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale_m",
+      "label": "Marge — mobile",
+      "min": 24,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Typographie"
+    },
+    {
+      "type": "font_picker",
+      "id": "police_titre",
+      "label": "Police des titres",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "police_texte",
+      "label": "Police du texte",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "taille_titre",
+      "label": "Titre — ordinateur",
+      "min": 22,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "default": 38
+    },
+    {
+      "type": "range",
+      "id": "taille_titre_m",
+      "label": "Titre — mobile",
+      "min": 18,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "taille_texte",
+      "label": "Texte",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "taille_nom",
+      "label": "Nom du produit",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    }
+  ],
+  "blocks": [
+    {
+      "type": "rassurance",
+      "name": "Point de réassurance",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "text",
+          "id": "texte",
+          "label": "Texte",
+          "default": "Paiement sécurisé"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Panier",
+      "blocks": [
+        { "type": "rassurance", "settings": { "texte": "Paiement sécurisé" } },
+        { "type": "rassurance", "settings": { "texte": "Débit aujourd'hui, expédition en décembre" } },
+        { "type": "rassurance", "settings": { "texte": "Retours sous 14 jours, produit non ouvert" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

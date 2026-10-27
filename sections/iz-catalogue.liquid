@@ -1,0 +1,471 @@
+{% comment %}
+  Catalogue.
+
+  La grille réutilise `product-card`, la même carte que l'accueil : deux
+  catalogues qui ne se ressemblent pas donnent l'impression de deux boutiques.
+
+  Avec trois références, la pagination et les filtres n'ont rien à filtrer :
+  ils seraient du bruit. La pagination n'apparaît qu'au-delà de la limite.
+{% endcomment %}
+
+{%- liquid
+  assign liste = collection.products
+  if liste.size == 0
+    assign liste = collections.all.products
+  endif
+-%}
+
+{% style %}
+  {{ section.settings.police_titre | font_face: font_display: 'swap' }}
+  {{ section.settings.police_titre | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+  {{ section.settings.police_texte | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} {
+    --izc-marge: {{ section.settings.marge_verticale }}px;
+    --izc-gap: {{ section.settings.gap }}px;
+    --izc-min: {{ section.settings.largeur_min }}px;
+
+    --izc-titre-famille: {{ section.settings.police_titre.family }}, {{ section.settings.police_titre.fallback_families }};
+    --izc-texte-famille: {{ section.settings.police_texte.family }}, {{ section.settings.police_texte.fallback_families }};
+
+    --izc-eyebrow: {{ section.settings.taille_eyebrow }}px;
+    --izc-titre: {{ section.settings.taille_titre }}px;
+    --izc-texte: {{ section.settings.taille_texte }}px;
+
+    --card-bg: {{ section.settings.couleur_carte }};
+    --card-image-inset: {{ section.settings.marge_image }}%;
+    --badge-nudge: 0px;
+
+    --fp-category-family: var(--izc-texte-famille);
+    --fp-category-size: {{ section.settings.taille_surtitre }}px;
+    --fp-category-color: {{ section.settings.couleur_surtitre }};
+
+    --fp-name-family: var(--izc-titre-famille);
+    --fp-name-size: {{ section.settings.taille_nom }}px;
+    --fp-name-color: {{ section.settings.couleur_nom }};
+
+    --fp-subtitle-family: var(--izc-texte-famille);
+    --fp-subtitle-size: {{ section.settings.taille_accroche }}px;
+
+    --fp-badge-family: var(--izc-texte-famille);
+    --fp-badge-size: 11px;
+
+    --fp-buy-family: var(--izc-texte-famille);
+    --fp-buy-size: 14px;
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --izc-marge: {{ section.settings.marge_verticale_m }}px;
+      --izc-titre: {{ section.settings.taille_titre_m }}px;
+      --izc-texte: {{ section.settings.taille_texte_m }}px;
+      --fp-category-size: {{ section.settings.taille_surtitre_m }}px;
+      --fp-name-size: {{ section.settings.taille_nom_m }}px;
+    }
+  }
+{% endstyle %}
+
+<section class="izc">
+  <div class="izc__inner">
+
+    <header class="izc__entete">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="izc__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+
+      <h1 class="izc__titre">
+        {%- if collection.title != blank -%}{{ collection.title }}{%- else -%}{{ section.settings.titre }}{%- endif -%}
+      </h1>
+
+      {%- if collection.description != blank -%}
+        <div class="izc__texte">{{ collection.description }}</div>
+      {%- elsif section.settings.intro != blank -%}
+        <div class="izc__texte">{{ section.settings.intro }}</div>
+      {%- endif -%}
+
+      {%- comment -%}
+        Pendant la précommande, l'annoncer dès le catalogue évite la déception
+        au moment du panier. On ne le découvre pas à la dernière étape.
+      {%- endcomment -%}
+      {%- if settings.precommande_active and settings.precommande_mention != blank -%}
+        <p class="izc__precommande">{{ settings.precommande_mention }}</p>
+      {%- endif -%}
+    </header>
+
+    {%- if liste.size > 0 -%}
+      {%- paginate liste by section.settings.par_page -%}
+        <div class="izc__grille">
+          {%- for produit in liste -%}
+            {%- render 'product-card',
+              product: produit,
+              buy_label: section.settings.libelle_achat,
+              cadrage: section.settings.cadrage
+            -%}
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="izc__pagination" aria-label="{{ section.settings.libelle_pagination }}">
+            {{ paginate | default_pagination }}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- else -%}
+      <p class="izc__texte">{{ section.settings.texte_vide }}</p>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .izc {
+    padding: var(--izc-marge) var(--page-margin);
+  }
+
+  .izc__inner {
+    max-width: var(--page-width, 140rem);
+    margin: 0 auto;
+  }
+
+  .izc__entete {
+    max-width: 62ch;
+    margin-bottom: calc(var(--izc-marge) * 0.5);
+  }
+
+  .izc__eyebrow {
+    font-family: var(--izc-texte-famille);
+    font-size: var(--izc-eyebrow);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-foreground) 60%, transparent);
+    margin-bottom: 1.2rem;
+  }
+
+  .izc__titre {
+    font-family: var(--izc-titre-famille);
+    font-size: var(--izc-titre);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    text-wrap: balance;
+    margin: 0 0 1.6rem;
+  }
+
+  .izc__texte {
+    font-family: var(--izc-texte-famille);
+    font-size: var(--izc-texte);
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-foreground) 78%, transparent);
+  }
+
+  .izc__texte p { margin: 0 0 1.2rem; }
+  .izc__texte p:last-child { margin-bottom: 0; }
+
+  .izc__precommande {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.8rem 1.6rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-foreground) 8%, transparent);
+    font-family: var(--izc-texte-famille);
+    font-size: calc(var(--izc-texte) * 0.88);
+    font-weight: 600;
+  }
+
+  /* La carte vient de product-card : ici on ne fait que la poser en grille.
+     Sa largeur est fixée en vw pour le carrousel de l'accueil, on la
+     neutralise. */
+  .izc__grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--izc-min, 280px), 1fr));
+    gap: var(--izc-gap);
+  }
+
+  .izc__grille .product-card {
+    width: auto;
+    max-width: none;
+    flex: initial;
+  }
+
+  .izc__pagination {
+    margin-top: calc(var(--izc-marge) * 0.5);
+    font-family: var(--izc-texte-famille);
+    font-size: var(--izc-texte);
+    display: flex;
+    justify-content: center;
+    gap: 1.6rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Catalogue",
+  "tag": "section",
+  "class": "section-iz-catalogue",
+  "settings": [
+    {
+      "type": "header",
+      "content": "En-tête"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Surtitre",
+      "default": "Les soins"
+    },
+    {
+      "type": "text",
+      "id": "titre",
+      "label": "Titre de repli",
+      "info": "Utilisé quand la page n'est pas une collection.",
+      "default": "Deux soins, et une routine"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introduction de repli",
+      "default": "<p>Deux formules, pas trente. Chacune répond à un besoin précis, et nous savons expliquer pourquoi chaque ingrédient est là.</p>"
+    },
+    {
+      "type": "text",
+      "id": "texte_vide",
+      "label": "Catalogue vide",
+      "default": "Les soins arrivent bientôt."
+    },
+    {
+      "type": "header",
+      "content": "Grille"
+    },
+    {
+      "type": "select",
+      "id": "cadrage",
+      "label": "Cadrage des photos",
+      "options": [
+        { "value": "contain", "label": "Entière, avec marge" },
+        { "value": "cover", "label": "Plein cadre" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "text",
+      "id": "libelle_achat",
+      "label": "Bouton au survol",
+      "default": "Acheter"
+    },
+    {
+      "type": "range",
+      "id": "par_page",
+      "label": "Produits par page",
+      "min": 6,
+      "max": 48,
+      "step": 2,
+      "default": 24
+    },
+    {
+      "type": "text",
+      "id": "libelle_pagination",
+      "label": "Libellé de la pagination",
+      "default": "Pages du catalogue"
+    },
+    {
+      "type": "range",
+      "id": "largeur_min",
+      "label": "Largeur minimale d'une carte",
+      "min": 200,
+      "max": 420,
+      "step": 10,
+      "unit": "px",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Espacement",
+      "min": 8,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "marge_image",
+      "label": "Marge autour du produit",
+      "info": "Sans effet en plein cadre.",
+      "min": 4,
+      "max": 26,
+      "step": 1,
+      "unit": "%",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Couleurs"
+    },
+    {
+      "type": "color",
+      "id": "couleur_carte",
+      "label": "Fond des cartes",
+      "default": "#F0EFF2"
+    },
+    {
+      "type": "color",
+      "id": "couleur_surtitre",
+      "label": "Surtitre des cartes",
+      "default": "#6B6B6B"
+    },
+    {
+      "type": "color",
+      "id": "couleur_nom",
+      "label": "Nom et prix",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "header",
+      "content": "Typographie"
+    },
+    {
+      "type": "font_picker",
+      "id": "police_titre",
+      "label": "Police des titres",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "police_texte",
+      "label": "Police du texte",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow",
+      "label": "Surtitre de page",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_titre",
+      "label": "Titre — ordinateur",
+      "min": 24,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "taille_titre_m",
+      "label": "Titre — mobile",
+      "min": 20,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "taille_texte",
+      "label": "Texte — ordinateur",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 17
+    },
+    {
+      "type": "range",
+      "id": "taille_texte_m",
+      "label": "Texte — mobile",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "taille_surtitre",
+      "label": "Surtitre des cartes — ordinateur",
+      "min": 9,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_surtitre_m",
+      "label": "Surtitre des cartes — mobile",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "taille_nom",
+      "label": "Nom — ordinateur",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "taille_nom_m",
+      "label": "Nom — mobile",
+      "min": 11,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "taille_accroche",
+      "label": "Accroche des cartes",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale",
+      "label": "Marge — ordinateur",
+      "min": 32,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale_m",
+      "label": "Marge — mobile",
+      "min": 24,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    }
+  ],
+  "presets": [
+    {
+      "name": "Catalogue"
+    }
+  ]
+}
+{% endschema %}
