@@ -58,14 +58,6 @@
             "text": "Des ingrédients choisis, sans compromis."
           }
         },
-        "item_HDFdbt": {
-          "type": "item",
-          "settings": {
-            "icon": "france",
-            "title": "Fabriqué en France",
-            "text": "Produit dans nos ateliers partenaires."
-          }
-        },
         "item_maaTrJ": {
           "type": "item",
           "settings": {
@@ -79,7 +71,6 @@
         "item_gzPHcC",
         "item_paiement3x",
         "item_kjwDUC",
-        "item_HDFdbt",
         "item_maaTrJ"
       ],
       "name": "Bandeau de réassurance",
