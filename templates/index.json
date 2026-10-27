@@ -12,14 +12,14 @@
     "hero": {
       "type": "hero",
       "settings": {
-        "image": "shopify://shop_images/Hero.png",
+        "image": "shopify://shop_images/Hero_1.png",
         "text_color": "black",
         "position_vertical": "bottom",
         "position_horizontal": "left",
         "show_overlay": true,
         "overlay_opacity": 10,
         "eyebrow": "Soins naturels",
-        "heading": "Des soins naturels pensés <br>pour votre peau",
+        "heading": "Des soins naturels pensés pour votre peau",
         "button_label": "Découvrir",
         "button_link": "shopify://collections/all",
         "button_custom": false,
