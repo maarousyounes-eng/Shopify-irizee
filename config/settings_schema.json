@@ -203,7 +203,7 @@
         "type": "text",
         "id": "precommande_rassurance",
         "label": "Réassurance",
-        "default": "Vous n'êtes débité qu'aujourd'hui, et prévenu par email dès l'expédition."
+        "default": "Le paiement est encaissé à la commande. Vous êtes prévenu par email dès l'expédition."
       }
     ]
   },
