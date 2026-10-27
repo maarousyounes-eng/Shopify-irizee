@@ -195,7 +195,7 @@
           Sans JavaScript l'écran n'est jamais atteint.
         {%- endcomment -%}
         {%- form 'customer', id: 'izd-email', class: 'izd__form' -%}
-          <input type="hidden" name="contact[tags]" value="diagnostic">
+          <input type="hidden" name="contact[tags]" value="diagnostic" data-izd-tags>
           <label class="izd__label" for="izd-email-champ">{{ section.settings.email_placeholder }}</label>
           <div class="izd__champ">
             <input
@@ -580,6 +580,10 @@
       // rechargerait la page et effacerait les réponses.
       var form = racine.querySelector('.izd__form');
       var erreur = racine.querySelector('[data-izd-erreur]');
+      var messagesEmail = {
+        invalide: {{ section.settings.email_invalide | json }},
+        panne: {{ section.settings.email_erreur | json }}
+      };
 
       if (form) {
         form.addEventListener('submit', function (e) {
@@ -588,12 +592,27 @@
           if (bouton) bouton.disabled = true;
           if (erreur) erreur.hidden = true;
 
+          // L'étiquette du résultat part avec l'inscription : un outil
+          // d'emailing peut alors envoyer la bonne routine, ce que Shopify
+          // seul ne sait pas faire.
+          var etiquettes = form.querySelector('[data-izd-tags]');
+          if (etiquettes) etiquettes.value = 'diagnostic,diagnostic-' + choisirCible();
+
           fetch(form.action, {
             method: 'POST',
             body: new FormData(form),
             headers: { 'Accept': 'text/html' }
           })
-            .then(function () {
+            .then(function (r) {
+              // Shopify répond 400 sur une adresse invalide. Enchaîner quand
+              // même afficherait le résultat sans avoir rien enregistré.
+              if (!r.ok) {
+                if (erreur) {
+                  erreur.textContent = messagesEmail.invalide;
+                  erreur.hidden = false;
+                }
+                return;
+              }
               if (momentEmail === 'apres') {
                 form.hidden = true;
               } else {
@@ -601,8 +620,11 @@
               }
             })
             .catch(function () {
-              // Un email qui ne part pas ne doit pas retenir le résultat.
-              if (erreur) erreur.hidden = false;
+              // Une panne de notre côté ne doit pas retenir le résultat.
+              if (erreur) {
+                erreur.textContent = messagesEmail.panne;
+                erreur.hidden = false;
+              }
               if (momentEmail !== 'apres') montrerResultat();
             })
             .then(function () {
@@ -1023,7 +1045,7 @@
       "id": "photo_active",
       "label": "Proposer la photo",
       "info": "L'étape reste masquée tant qu'une adresse d'analyse n'est pas renseignée.",
-      "default": false
+      "default": true
     },
     {
       "type": "text",
@@ -1109,13 +1131,13 @@
       "type": "text",
       "id": "email_titre",
       "label": "Titre",
-      "default": "Où envoyons-nous votre résultat ?"
+      "default": "Votre adresse, et on y va"
     },
     {
       "type": "richtext",
       "id": "email_texte",
       "label": "Texte",
-      "default": "<p>Vous recevez votre routine par email, et vous la retrouvez même si vous fermez la page.</p>"
+      "default": "<p>Nous gardons votre résultat de côté et vous envoyons nos conseils. Votre routine s'affiche juste après, sur cette page.</p>"
     },
     {
       "type": "text",
@@ -1134,6 +1156,12 @@
       "id": "email_passer",
       "label": "Lien pour passer",
       "default": "Voir mon résultat sans donner mon email"
+    },
+    {
+      "type": "text",
+      "id": "email_invalide",
+      "label": "Adresse refusée",
+      "default": "Cette adresse n'a pas été acceptée. Vérifiez-la et réessayez."
     },
     {
       "type": "text",

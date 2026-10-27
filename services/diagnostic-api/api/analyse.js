@@ -130,6 +130,9 @@ export default async function handler(req, res) {
     const debut = texte.indexOf('{');
     const fin = texte.lastIndexOf('}');
     if (debut === -1 || fin === -1) {
+      // Le texte part dans les journaux, jamais dans la réponse HTTP : c'est
+      // le seul endroit où on peut comprendre un refus du modèle.
+      console.error('Pas de JSON dans la réponse :', texte.slice(0, 600));
       return res.status(502).json({ erreur: 'reponse_illisible' });
     }
 
@@ -137,6 +140,7 @@ export default async function handler(req, res) {
     try {
       brut = JSON.parse(texte.slice(debut, fin + 1));
     } catch (e) {
+      console.error('JSON invalide :', texte.slice(0, 600));
       return res.status(502).json({ erreur: 'reponse_illisible' });
     }
 
