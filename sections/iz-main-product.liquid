@@ -16,6 +16,9 @@
 
 {% style %}
   #shopify-section-{{ section.id }} {
+    /* Le bloc d'achat se détache du beige du reste du site : c'est la zone
+       où l'on décide, elle mérite son propre fond. */
+    background: {{ section.settings.fond_section }};
     --izp-ratio: {{ section.settings.ratio }};
     --izp-vignette-largeur: {{ section.settings.vignette_largeur }}px;
     --izp-sticky-bg: {{ section.settings.barre_mobile_fond }};
@@ -1316,6 +1319,13 @@
     {
       "type": "header",
       "content": "Mise en page"
+    },
+    {
+      "type": "color",
+      "id": "fond_section",
+      "label": "Fond de la section",
+      "info": "Le reste du site est sur un beige clair. Le blanc isole le bloc d'achat.",
+      "default": "#FFFFFF"
     },
     {
       "type": "checkbox",
