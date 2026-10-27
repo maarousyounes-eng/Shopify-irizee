@@ -286,3 +286,13 @@ s'en charge déjà, ce journal est pour le contexte que le code ne montre pas.
 - Parcours vérifié de bout en bout avec une vraie photo : analyse, points
   ajoutés au score, phrase d'observation affichée au-dessus du résultat,
   produit et bouton d'achat.
+- **`/pages/diagnostic` fonctionne enfin sans paramètre.** Le gabarit
+  `page.diagnostic` ne peut pas être attaché à la page avant la publication,
+  et obliger à ouvrir `?view=diagnostic` à chaque essai n'était pas une
+  réponse tenable pour une page qu'on teste tous les jours. La section est
+  donc posée dans le gabarit de page ordinaire, avec un garde-fou sur
+  l'identifiant de la page : elle ne se montre que sur `diagnostic` et reste
+  muette ailleurs. Vérifié sur `/pages/contact`, qui n'en rend rien.
+- À la publication, deux options : attacher `page.diagnostic` à la page et
+  retirer la section du gabarit ordinaire, ou ne rien changer. Les deux
+  tiennent, la première est plus propre.
