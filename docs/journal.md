@@ -366,3 +366,52 @@ modèle `page.diagnostic` reste donc inattachable jusqu'à la publication.
   `24,90 €` dans les quatre champs (HTML et e-mail, avec et sans devise).
 - **Collection « Les soins »** créée (`/collections/les-soins`) avec les trois
   produits : il n'existait qu'une collection « Page d'accueil » à un produit.
+
+## Le pack prend un nom, et l'en-tête rend sa place (27 octobre 2026)
+
+### « Votre panier » était coupé en deux
+
+`is_overlay` ne regardait pas la page : le header passait en
+`position: fixed` **partout**. Il sortait donc du flux et chaque page
+démarrait derrière lui. L'accueil n'y voyait rien parce que son hero est
+justement fait pour passer dessous ; le panier, lui, perdait le haut de son
+titre malgré ses 72 px de marge.
+
+**Leçon : un réglage qui change le mode de positionnement doit porter sa
+condition de page, pas seulement les styles qui l'accompagnent.** La
+correction précédente (`reglages_pdp`) ne gouvernait que les couleurs.
+
+### La typo du menu n'était pas la bonne police
+
+Le menu était réglé sur **Helvetica** quand tout le reste du site est en Work
+Sans. L'œil attrape la rupture sans pouvoir la nommer. Repassé en Work Sans.
+
+**Leçon : avant de retoucher taille, graisse et espacement, vérifier que
+c'est bien la même famille que le reste.**
+
+### Le pack s'appelle Routine Anti-Taches & Éclat
+
+Le nom est passé du descriptif (« La Routine ») au problème qu'il règle.
+L'identifiant d'URL reste `la-routine` : le diagnostic le référence par
+`handle_routine`, le changer casserait le résultat « les deux ». Mis à jour :
+titre, `offre_libelle`, balise SEO, accroche de carte, hero de l'accueil.
+
+Note : « anti-taches » est une allégation cosmétique. Le choix est assumé
+côté marque, mais il demande un dossier qui le justifie, pas seulement la
+présence d'alpha-arbutine dans la formule.
+
+### Autres corrections
+
+- **« Fabriqué en France »** retiré du bandeau de réassurance : la production
+  n'est pas française. Le bandeau passe de cinq à quatre colonnes, sinon il
+  gardait une case vide.
+- **« Débit aujourd'hui, expédition en décembre »** menait par le débit, la
+  partie la moins engageante. Devient « Commande réservée, expédition en
+  décembre » ; le détail du paiement reste sous le bouton d'achat.
+- **Le bloc d'achat de la fiche** a son propre fond, blanc, pour se détacher
+  du beige du reste du site. Réglage neuf, donc le défaut s'applique sans
+  passer par l'éditeur.
+- **La date d'expédition** disparaît du catalogue : déjà portée par le bouton
+  de chaque carte et par la fiche.
+- **La newsletter** promet maintenant du contenu, pas une alerte de
+  lancement, et elle existe aussi en bas de la fiche produit.
