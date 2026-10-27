@@ -12,9 +12,44 @@
     "main": {
       "type": "collection",
       "settings": {}
+    },
+    "iz_catalogue_8KBd6m": {
+      "type": "iz-catalogue",
+      "name": "Catalogue",
+      "settings": {
+        "eyebrow": "Les soins",
+        "titre": "Deux soins, et une routine",
+        "intro": "<p>Deux formules, pas trente. Chacune répond à un besoin précis, et nous savons expliquer pourquoi chaque ingrédient est là.</p>",
+        "texte_vide": "Les soins arrivent bientôt.",
+        "cadrage": "cover",
+        "libelle_achat": "Acheter",
+        "par_page": 24,
+        "libelle_pagination": "Pages du catalogue",
+        "largeur_min": 300,
+        "gap": 28,
+        "marge_image": 15,
+        "couleur_carte": "#F0EFF2",
+        "couleur_surtitre": "#6B6B6B",
+        "couleur_nom": "#1A1A1A",
+        "police_titre": "work_sans_n4",
+        "police_texte": "work_sans_n4",
+        "taille_eyebrow": 12,
+        "taille_titre": 44,
+        "taille_titre_m": 30,
+        "taille_texte": 17,
+        "taille_texte_m": 15,
+        "taille_surtitre": 12,
+        "taille_surtitre_m": 11,
+        "taille_nom": 18,
+        "taille_nom_m": 15,
+        "taille_accroche": 14,
+        "marge_verticale": 88,
+        "marge_verticale_m": 56
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "iz_catalogue_8KBd6m"
   ]
 }
