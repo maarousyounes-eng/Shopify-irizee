@@ -11,6 +11,7 @@
 
 {%- assign p = product -%}
 {%- assign variant = p.selected_or_first_available_variant -%}
+{%- capture precommande -%}{%- render 'iz-precommande', variante: variant -%}{%- endcapture -%}
 {%- assign offres = p.metafields.custom.offres.value -%}
 
 {% style %}
@@ -224,7 +225,11 @@
                   {%- endif -%}
                   <button type="submit" class="iz-btn iz-btn--primary iz-cta__submit" {% unless variant.available %}disabled{% endunless %}>
                     {%- if variant.available -%}
-                      {{ block.settings.libelle_ajout }} · {{ variant.price | money }}
+                      {%- if precommande != blank -%}
+                        {{- settings.precommande_libelle -}}
+                      {%- else -%}
+                        {{- block.settings.libelle_ajout -}}
+                      {%- endif %} · {{ variant.price | money }}
                       {%- comment -%}
                         Prix barré : il ne s'affiche que si un prix de référence
                         plus élevé est renseigné sur le produit. Sur un coffret,
@@ -238,6 +243,21 @@
                     {%- endif -%}
                   </button>
                 </form>
+                {%- comment -%}
+                  La date d'expédition est une mention obligatoire sur une
+                  précommande, et c'est aussi ce qui décide l'achat. Elle vit
+                  dans les réglages du thème : une seule date à changer le jour
+                  où elle bouge.
+                {%- endcomment -%}
+                {%- if precommande != blank and settings.precommande_mention != blank -%}
+                  <p class="iz-cta__precommande">
+                    <strong>{{ settings.precommande_mention }}</strong>
+                    {%- if settings.precommande_rassurance != blank %}
+                      <span>{{ settings.precommande_rassurance }}</span>
+                    {%- endif -%}
+                  </p>
+                {%- endif -%}
+
                 <p class="iz-cta__feedback" data-iz-feedback role="status" aria-live="polite"></p>
               </div>
 
@@ -319,7 +339,11 @@
           </span>
         </div>
         <button type="button" class="iz-btn iz-btn--primary iz-sticky__btn" data-iz-sticky-btn>
-          {{- bloc_achat.settings.libelle_ajout -}}
+          {%- if precommande != blank -%}
+            {{- settings.precommande_libelle -}}
+          {%- else -%}
+            {{- bloc_achat.settings.libelle_ajout -}}
+          {%- endif -%}
           <span class="iz-sticky__prix-btn">&nbsp;· {{ variant.price | money }}</span>
         </button>
       </div>
@@ -924,6 +948,20 @@
     margin-left: 10px;
     opacity: 0.65;
     font-weight: 600;
+  }
+
+  .iz-cta__precommande {
+    margin-top: 1.2rem;
+    font-size: 1.4rem;
+    line-height: 1.5;
+  }
+
+  .iz-cta__precommande strong {
+    font-weight: 700;
+  }
+
+  .iz-cta__precommande span {
+    color: color-mix(in srgb, var(--color-foreground) 65%, transparent);
   }
 
   .iz-cta__feedback {

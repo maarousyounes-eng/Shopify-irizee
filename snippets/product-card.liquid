@@ -37,6 +37,12 @@
   {% assign accroche = product.description | strip_html | truncate: 60 %}
 {% endif %}
 {% assign cta_label = buy_label | default: 'Acheter' %}
+{%- capture precommande -%}
+  {%- render 'iz-precommande', variante: product.selected_or_first_available_variant -%}
+{%- endcapture -%}
+{% if precommande != blank %}
+  {% assign cta_label = settings.precommande_libelle %}
+{% endif %}
 
 <a href="{{ product.url }}" class="product-card{% if secondary_image %} product-card--has-secondary{% endif %}{% if cadrage == 'cover' %} product-card--plein{% endif %}">
   {%- comment -%}

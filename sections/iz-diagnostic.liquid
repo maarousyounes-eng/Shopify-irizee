@@ -316,13 +316,21 @@
                   </p>
 
                   {%- if v.available -%}
+                    {%- capture precommande -%}{%- render 'iz-precommande', variante: v -%}{%- endcapture -%}
                     <form method="post" action="{{ routes.cart_add_url }}" class="izd__achat">
                       <input type="hidden" name="id" value="{{ v.id }}">
                       <input type="hidden" name="quantity" value="1">
                       <button type="submit" class="iz-btn iz-btn--primary">
-                        {{ section.settings.libelle_achat }}
+                        {%- if precommande != blank -%}
+                          {{- settings.precommande_libelle -}}
+                        {%- else -%}
+                          {{- section.settings.libelle_achat -}}
+                        {%- endif -%}
                       </button>
                     </form>
+                    {%- if precommande != blank and settings.precommande_mention != blank -%}
+                      <p class="izd__precommande">{{ settings.precommande_mention }}</p>
+                    {%- endif -%}
                   {%- else -%}
                     <p class="izd__epuise">{{ section.settings.libelle_epuise }}</p>
                   {%- endif -%}
@@ -972,6 +980,13 @@
     font-weight: 400;
     margin-left: 0.8rem;
     color: color-mix(in srgb, var(--izd-encre) 55%, transparent);
+  }
+
+  .izd__precommande {
+    font-family: var(--izd-texte-famille);
+    font-size: calc(var(--izd-texte) * 0.85);
+    font-weight: 600;
+    margin-top: 1rem;
   }
 
   .izd__epuise {

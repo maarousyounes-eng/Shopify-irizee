@@ -1,0 +1,28 @@
+{% doc %}
+  Dit si une variante se vend en précommande.
+
+  Sort `1` quand c'est le cas, rien sinon, pour qu'on puisse écrire :
+
+      {%- capture precommande -%}
+        {%- render 'iz-precommande', variante: v -%}
+      {%- endcapture -%}
+      {%- if precommande != blank -%} ... {%- endif -%}
+
+  La précommande n'est pas un réglage de produit chez Shopify, c'est une
+  combinaison : un stock suivi, tombé à zéro ou moins, et l'autorisation de
+  continuer à vendre. Les trois conditions comptent. Un produit dont le stock
+  n'est pas suivi n'est jamais en précommande, il est simplement toujours
+  disponible.
+
+  @param {variant} variante - La variante à examiner
+{% enddoc %}
+
+{%- liquid
+  if settings.precommande_active
+    if variante.inventory_management != blank
+      if variante.inventory_quantity <= 0 and variante.inventory_policy == 'continue'
+        echo '1'
+      endif
+    endif
+  endif
+-%}

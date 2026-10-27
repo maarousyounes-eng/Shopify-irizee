@@ -165,5 +165,46 @@
         "default": "uppercase"
       }
     ]
+  },
+  {
+    "name": "Précommande",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Un produit passe en précommande tout seul dès que son stock suivi tombe à zéro et que la vente reste autorisée. Rien à cocher produit par produit."
+      },
+      {
+        "type": "checkbox",
+        "id": "precommande_active",
+        "label": "Activer la précommande",
+        "info": "Décochez le jour où le stock arrive : les boutons et les mentions redeviennent normaux partout.",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "precommande_libelle",
+        "label": "Bouton",
+        "default": "Précommander"
+      },
+      {
+        "type": "text",
+        "id": "precommande_badge",
+        "label": "Pastille",
+        "default": "Précommande"
+      },
+      {
+        "type": "text",
+        "id": "precommande_mention",
+        "label": "Date d'expédition",
+        "info": "Mention obligatoire. Elle s'affiche sous le bouton d'achat et dans le panier.",
+        "default": "Expédition à partir de décembre 2026"
+      },
+      {
+        "type": "text",
+        "id": "precommande_rassurance",
+        "label": "Réassurance",
+        "default": "Vous n'êtes débité qu'aujourd'hui, et prévenu par email dès l'expédition."
+      }
+    ]
   }
 ]
