@@ -3,16 +3,14 @@
   pas de « header de la page produit » à régler à part. On détecte donc le type
   de page et on applique des valeurs alternatives pour ce qui doit différer.
 
-  La superposition suppose une grande image en haut de page. Une fiche produit
-  n'en a pas, une page de contenu non plus : dans les deux cas le header se
-  posait sur le texte. Même traitement, même chemin de code, le header
-  redevient collant plutôt que fixe.
+  La superposition suppose une grande image en haut de page. Seul l'accueil en
+  a une. Partout ailleurs, fiche produit, page, catalogue, panier, recherche,
+  le header se posait sur le premier titre. Énumérer les pages concernées
+  revenait à en oublier une à chaque nouveau gabarit : on inverse la règle.
 {% endcomment %}
 {% assign reglages_pdp = false %}
-{% if section.settings.pdp_override %}
-  {% if request.page_type == 'product' or request.page_type == 'page' %}
-    {% assign reglages_pdp = true %}
-  {% endif %}
+{% if section.settings.pdp_override and request.page_type != 'index' %}
+  {% assign reglages_pdp = true %}
 {% endif %}
 
 {% assign is_overlay = section.settings.overlay_on_image %}
