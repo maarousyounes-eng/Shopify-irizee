@@ -412,8 +412,8 @@
       "name": "Newsletter",
       "settings": {
         "eyebrow": "Newsletter",
-        "heading": "Prévenez-moi quand les colis partent",
-        "text": "<p>Vous saurez en premier quand les premières expéditions démarrent, et vous recevrez nos conseils de soin. Un e-mail par mois, pas plus.</p>",
+        "heading": "Des conseils de peau, une fois par mois",
+        "text": "<p>Ce que votre peau essaie de vous dire, les gestes qui changent vraiment quelque chose, et nos nouveautés avant tout le monde. Un e-mail par mois, pas plus.</p>",
         "form_style": "pill",
         "show_first_name": false,
         "name_placeholder": "Votre prénom",
