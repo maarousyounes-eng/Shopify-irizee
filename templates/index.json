@@ -123,7 +123,7 @@
           "type": "product",
           "settings": {
             "product": "masque-rituel-nila",
-            "badge_text": "New",
+            "badge_text": "Nouveau",
             "category_label": "Masque"
           }
         },
@@ -131,7 +131,7 @@
           "type": "product",
           "settings": {
             "product": "serum-correcteur-eclat",
-            "badge_text": "New",
+            "badge_text": "Nouveau",
             "category_label": "Serum"
           }
         },
@@ -139,8 +139,8 @@
           "type": "product",
           "settings": {
             "product": "la-routine",
-            "badge_text": "",
-            "category_label": ""
+            "badge_text": "Économisez 6,80 €",
+            "category_label": "Routine"
           }
         },
         "p1": {
