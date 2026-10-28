@@ -415,3 +415,46 @@ présence d'alpha-arbutine dans la formule.
   de chaque carte et par la fiche.
 - **La newsletter** promet maintenant du contenu, pas une alerte de
   lancement, et elle existe aussi en bas de la fiche produit.
+
+## Correction d'une leçon fausse, et le pack prend sa place (28 octobre 2026)
+
+### Shopify **accepte** bien les gabarits venus de git
+
+Depuis le début de ce projet, une note disait que Shopify n'ingérait un
+fichier `templates/*.json` qu'à sa création et ignorait les modifications
+suivantes. **C'est faux.** Testé en changeant un seul chiffre
+(`seuil` 49 → 39 dans `templates/product.json`) : la jauge de la fiche
+affichait 39 € après synchronisation.
+
+Ce qui est vrai, et qui avait sans doute produit la confusion : **une valeur
+déjà stockée dans le gabarit gagne toujours sur le défaut du schéma.** Changer
+`"default"` dans le `{% schema %}` d'une section déjà posée ne fait rien. Mais
+changer la valeur dans le gabarit lui-même fonctionne.
+
+**Conséquence pratique : tout le travail de copie se fait dans le dépôt**,
+pas section par section dans l'éditeur. Il faut seulement `git fetch` avant
+chaque modification, parce que Shopify réécrit ces fichiers de son côté.
+
+### Deux régressions de ma main
+
+- **Le défilement du menu avait disparu** hors accueil. Le script qui pose
+  `header--scrolled` était enfermé dans `{% if is_overlay %}`, et j'avais
+  réservé la superposition à l'accueil la veille. Le script tourne maintenant
+  sur toutes les pages et vise `.header`, pas `.header--overlay`.
+- **La police du menu** était passée de Helvetica Bold à Work Sans. Le
+  diagnostic était juste (le menu ne partageait pas la police du site) mais le
+  changement n'avait pas été demandé. Remis en état.
+
+### Attention aux clés homonymes dans un gabarit
+
+`templates/product.json` contient deux `titre_1` : celui du **bloc**
+`accordeons`, qui s'affiche, et un réglage de section du même nom qui ne sert
+à rien ici. J'ai modifié le mauvais et le titre n'a pas bougé. **Vérifier quel
+porteur de la clé est réellement rendu avant de conclure que la synchro a
+échoué.**
+
+### Ce qui reste vide sur la fiche du pack
+
+Étapes, FAQ et mode d'emploi sont remplis. Texture, résultats, vidéos, actifs,
+INCI et puces ne le sont pas : ces sections ne s'affichent donc pas sur
+`/products/la-routine`.
