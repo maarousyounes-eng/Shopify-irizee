@@ -13,7 +13,46 @@
   "sections": {
     "footer": {
       "type": "footer",
-      "settings": {}
+      "settings": {
+        "show_logo": true,
+        "columns": 3,
+        "columns_mobile": "2",
+        "background_color": "#FFFFFF",
+        "text_color": "#1A1A1A",
+        "muted_color": "#7A7672",
+        "line_color": "#E2E2DF",
+        "show_payment_icons": true,
+        "padding_top": 72,
+        "padding_top_mobile": 48
+      },
+      "blocks": {
+        "marque": {
+          "type": "brand",
+          "settings": {
+            "heading": "Irizée",
+            "text": "Deux soins pour les taches, les marques et le teint terne. Sans parfum ajouté, un pH proche de celui de la peau, et des formules qui conviennent à toutes les peaux."
+          }
+        },
+        "soins": {
+          "type": "menu",
+          "settings": {
+            "heading": "Nos soins",
+            "menu": "nos-soins"
+          }
+        },
+        "aide": {
+          "type": "menu",
+          "settings": {
+            "heading": "Aide",
+            "menu": "aide"
+          }
+        }
+      },
+      "block_order": [
+        "marque",
+        "soins",
+        "aide"
+      ]
     }
   },
   "order": [
