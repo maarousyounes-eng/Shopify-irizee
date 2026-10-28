@@ -197,7 +197,7 @@
         "email_placeholder": "Votre adresse email",
         "email_bouton": "Voir mon résultat",
         "email_passer": "Voir mon résultat sans donner mon email",
-        "email_invalide": "Cette adresse n'a pas été acceptée. Vérifiez-la et réessayez.",
+        "email_invalide": "Votre adresse n'a pas pu être enregistrée. Voici tout de même votre résultat.",
         "email_erreur": "L'envoi n'a pas abouti, mais votre résultat s'affiche quand même.",
         "email_mention": "<p>Votre adresse sert à vous envoyer ce résultat et nos nouveautés. Vous pouvez vous désabonner à tout moment.</p>",
         "resultat_eyebrow": "Votre résultat",
