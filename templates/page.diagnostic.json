@@ -185,7 +185,7 @@
         "photo_endpoint": "https://irizee-diagnostic.vercel.app/api/analyse",
         "photo_titre": "Une photo, pour affiner",
         "photo_texte": "<p>Une photo du visage, à la lumière du jour, sans maquillage. Elle précise ce que vos réponses ont déjà dit. C'est facultatif : le résultat s'affiche sans elle.</p>",
-        "photo_bouton": "Prendre ou choisir une photo",
+        "photo_bouton": "Prendre une photo",
         "photo_passer": "Continuer sans photo",
         "photo_patience": "Analyse en cours, quelques secondes...",
         "photo_illisible": "La photo est trop sombre ou trop floue. Réessayez à la lumière du jour, ou continuez sans.",

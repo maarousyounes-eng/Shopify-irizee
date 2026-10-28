@@ -179,10 +179,32 @@
             <div class="izd__texte">{{ section.settings.photo_texte }}</div>
           {%- endif -%}
 
-          <label class="izd__photo-bouton iz-btn iz-btn--primary" for="izd-photo">
-            {{ section.settings.photo_bouton }}
-          </label>
-          <input id="izd-photo" class="izd__photo-champ" type="file" accept="image/jpeg,image/png,image/webp" capture="user" data-izd-photo>
+          {%- comment -%}
+            Deux chemins, parce qu'ils ne se remplacent pas : la caméra pour
+            photographier sur-le-champ, le fichier pour une photo déjà prise.
+            `capture` sur un seul champ supprimait le choix au lieu de l'offrir.
+          {%- endcomment -%}
+          <div class="izd__photo-actions">
+            <button type="button" class="iz-btn iz-btn--primary" data-izd-camera-ouvrir>
+              {{ section.settings.photo_bouton }}
+            </button>
+            <label class="iz-btn iz-btn--secondary izd__photo-label" for="izd-photo">
+              {{ section.settings.photo_bouton_fichier }}
+            </label>
+          </div>
+          <input id="izd-photo" class="izd__photo-champ" type="file" accept="image/jpeg,image/png,image/webp" data-izd-photo>
+
+          <div class="izd__camera" data-izd-camera hidden>
+            <video class="izd__camera-video" data-izd-video playsinline muted autoplay></video>
+            <div class="izd__photo-actions">
+              <button type="button" class="iz-btn iz-btn--primary" data-izd-declencher>
+                {{ section.settings.photo_camera_prendre }}
+              </button>
+              <button type="button" class="iz-btn iz-btn--secondary" data-izd-camera-fermer>
+                {{ section.settings.photo_camera_annuler }}
+              </button>
+            </div>
+          </div>
 
           <p class="izd__photo-etat" data-izd-photo-etat hidden aria-live="polite"></p>
 
@@ -472,6 +494,7 @@
         var messages = {
           patience: {{ section.settings.photo_patience | json }},
           erreur: {{ section.settings.photo_erreur | json }},
+          cameraRefus: {{ section.settings.photo_camera_refus | json }},
           illisible: {{ section.settings.photo_illisible | json }}
         };
 
@@ -508,14 +531,13 @@
           });
         };
 
-        champPhoto.addEventListener('change', function () {
-          var fichier = champPhoto.files && champPhoto.files[0];
-          if (!fichier) return;
-
+        // Le fichier et la caméra aboutissent au même endroit : une image
+        // réduite en base64. Tout ce qui suit est commun aux deux.
+        var analyser = function (base64) {
           dire(messages.patience);
           champPhoto.disabled = true;
 
-          reduire(fichier)
+          Promise.resolve(base64)
             .then(function (base64) {
               return fetch(adresse, {
                 method: 'POST',
@@ -546,7 +568,75 @@
               dire(messages.erreur);
               setTimeout(apresPhoto, 1200);
             });
+        };
+
+        champPhoto.addEventListener('change', function () {
+          var fichier = champPhoto.files && champPhoto.files[0];
+          if (!fichier) return;
+          reduire(fichier).then(analyser).catch(function () {
+            dire(messages.erreur);
+          });
         });
+
+        // ---- La caméra, quand le navigateur la propose ----
+        var zoneCamera = racine.querySelector('[data-izd-camera]');
+        var video = racine.querySelector('[data-izd-video]');
+        var ouvrir = racine.querySelector('[data-izd-camera-ouvrir]');
+        var declencher = racine.querySelector('[data-izd-declencher]');
+        var fermer = racine.querySelector('[data-izd-camera-fermer]');
+        var flux = null;
+
+        var couperCamera = function () {
+          if (flux) {
+            flux.getTracks().forEach(function (piste) { piste.stop(); });
+            flux = null;
+          }
+          if (video) video.srcObject = null;
+          if (zoneCamera) zoneCamera.hidden = true;
+        };
+
+        if (ouvrir) {
+          ouvrir.addEventListener('click', function () {
+            var media = navigator.mediaDevices;
+            if (!media || !media.getUserMedia) {
+              // Pas de caméra accessible : on bascule sur le choix de fichier
+              // plutôt que de laisser un bouton qui ne fait rien.
+              dire(messages.cameraRefus);
+              champPhoto.click();
+              return;
+            }
+            dire('');
+            media.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+              .then(function (f) {
+                flux = f;
+                if (video) video.srcObject = f;
+                if (zoneCamera) zoneCamera.hidden = false;
+              })
+              .catch(function () {
+                dire(messages.cameraRefus);
+              });
+          });
+        }
+
+        if (fermer) fermer.addEventListener('click', couperCamera);
+
+        if (declencher) {
+          declencher.addEventListener('click', function () {
+            if (!video || !video.videoWidth) return;
+            var cote = 1024;
+            var ratio = Math.min(1, cote / Math.max(video.videoWidth, video.videoHeight));
+            var toile = document.createElement('canvas');
+            toile.width = Math.round(video.videoWidth * ratio);
+            toile.height = Math.round(video.videoHeight * ratio);
+            toile.getContext('2d').drawImage(video, 0, 0, toile.width, toile.height);
+            var url = toile.toDataURL('image/jpeg', 0.82);
+            couperCamera();
+            analyser(url.slice(url.indexOf(',') + 1));
+          });
+        }
+
+        // La caméra reste allumée si l'on quitte l'étape autrement.
+        if (passerPhoto) passerPhoto.addEventListener('click', couperCamera);
       }
 
       var demarrer = racine.querySelector('[data-izd-demarrer]');
@@ -628,11 +718,16 @@
             .then(function (r) {
               // Shopify répond 400 sur une adresse invalide. Enchaîner quand
               // même afficherait le résultat sans avoir rien enregistré.
+              // Shopify peut refuser l'inscription (adresse déjà connue,
+              // validation côté boutique). Le résultat du diagnostic ne lui
+              // appartient pas : il s'affiche quand même, et la cliente est
+              // prévenue que l'envoi, lui, n'a pas abouti.
               if (!r.ok) {
                 if (erreur) {
                   erreur.textContent = messagesEmail.invalide;
                   erreur.hidden = false;
                 }
+                if (momentEmail !== 'apres') montrerResultat();
                 return;
               }
               if (momentEmail === 'apres') {
@@ -887,6 +982,35 @@
     font-size: var(--izd-texte);
   }
 
+  .izd__photo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: center;
+  }
+
+  .izd__photo-label {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .izd__camera {
+    margin-top: 2rem;
+    display: grid;
+    gap: 1.6rem;
+    justify-items: center;
+  }
+
+  .izd__camera-video {
+    width: 100%;
+    max-width: 36rem;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: var(--izd-rayon);
+    background: #000;
+    transform: scaleX(-1); /* miroir : on se voit comme dans une glace */
+  }
+
   .izd__erreur,
   .izd__mention {
     font-family: var(--izd-texte-famille);
@@ -1105,8 +1229,33 @@
     {
       "type": "text",
       "id": "photo_bouton",
-      "label": "Bouton",
-      "default": "Prendre ou choisir une photo"
+      "label": "Bouton — caméra",
+      "default": "Prendre une photo"
+    },
+    {
+      "type": "text",
+      "id": "photo_bouton_fichier",
+      "label": "Bouton — fichier",
+      "default": "Choisir une photo"
+    },
+    {
+      "type": "text",
+      "id": "photo_camera_prendre",
+      "label": "Déclencheur",
+      "default": "Prendre la photo"
+    },
+    {
+      "type": "text",
+      "id": "photo_camera_annuler",
+      "label": "Annuler la caméra",
+      "default": "Annuler"
+    },
+    {
+      "type": "text",
+      "id": "photo_camera_refus",
+      "label": "Caméra indisponible",
+      "info": "Affiché si le navigateur refuse la caméra ou n'en propose pas.",
+      "default": "La caméra n'est pas accessible. Choisissez une photo déjà prise."
     },
     {
       "type": "text",
@@ -1468,10 +1617,22 @@
           "id": "c1",
           "label": "Oriente vers",
           "options": [
-            { "value": "masque", "label": "Le masque" },
-            { "value": "serum", "label": "Le sérum" },
-            { "value": "deux", "label": "Les deux" },
-            { "value": "aucun", "label": "Ni l'un ni l'autre" }
+            {
+              "value": "masque",
+              "label": "Le masque"
+            },
+            {
+              "value": "serum",
+              "label": "Le sérum"
+            },
+            {
+              "value": "deux",
+              "label": "Les deux"
+            },
+            {
+              "value": "aucun",
+              "label": "Ni l'un ni l'autre"
+            }
           ],
           "default": "masque"
         },
@@ -1490,10 +1651,22 @@
           "id": "c2",
           "label": "Oriente vers",
           "options": [
-            { "value": "masque", "label": "Le masque" },
-            { "value": "serum", "label": "Le sérum" },
-            { "value": "deux", "label": "Les deux" },
-            { "value": "aucun", "label": "Ni l'un ni l'autre" }
+            {
+              "value": "masque",
+              "label": "Le masque"
+            },
+            {
+              "value": "serum",
+              "label": "Le sérum"
+            },
+            {
+              "value": "deux",
+              "label": "Les deux"
+            },
+            {
+              "value": "aucun",
+              "label": "Ni l'un ni l'autre"
+            }
           ],
           "default": "serum"
         },
@@ -1512,10 +1685,22 @@
           "id": "c3",
           "label": "Oriente vers",
           "options": [
-            { "value": "masque", "label": "Le masque" },
-            { "value": "serum", "label": "Le sérum" },
-            { "value": "deux", "label": "Les deux" },
-            { "value": "aucun", "label": "Ni l'un ni l'autre" }
+            {
+              "value": "masque",
+              "label": "Le masque"
+            },
+            {
+              "value": "serum",
+              "label": "Le sérum"
+            },
+            {
+              "value": "deux",
+              "label": "Les deux"
+            },
+            {
+              "value": "aucun",
+              "label": "Ni l'un ni l'autre"
+            }
           ],
           "default": "deux"
         },
@@ -1534,10 +1719,22 @@
           "id": "c4",
           "label": "Oriente vers",
           "options": [
-            { "value": "masque", "label": "Le masque" },
-            { "value": "serum", "label": "Le sérum" },
-            { "value": "deux", "label": "Les deux" },
-            { "value": "aucun", "label": "Ni l'un ni l'autre" }
+            {
+              "value": "masque",
+              "label": "Le masque"
+            },
+            {
+              "value": "serum",
+              "label": "Le sérum"
+            },
+            {
+              "value": "deux",
+              "label": "Les deux"
+            },
+            {
+              "value": "aucun",
+              "label": "Ni l'un ni l'autre"
+            }
           ],
           "default": "aucun"
         }
@@ -1554,9 +1751,18 @@
           "label": "S'affiche pour",
           "info": "Prévoyez un bloc pour chacune des trois cibles.",
           "options": [
-            { "value": "masque", "label": "Le masque l'emporte" },
-            { "value": "serum", "label": "Le sérum l'emporte" },
-            { "value": "routine", "label": "À égalité" }
+            {
+              "value": "masque",
+              "label": "Le masque l'emporte"
+            },
+            {
+              "value": "serum",
+              "label": "Le sérum l'emporte"
+            },
+            {
+              "value": "routine",
+              "label": "À égalité"
+            }
           ],
           "default": "routine"
         },
