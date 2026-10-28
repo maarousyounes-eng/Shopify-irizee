@@ -16,9 +16,9 @@
     },
     "iz_catalogue_8KBd6m": {
       "type": "iz-catalogue",
-      "name": "Catalogue",
+      "name": "Nos soins",
       "settings": {
-        "eyebrow": "Les soins",
+        "eyebrow": "",
         "titre": "Nos soins",
         "intro": "<p>Des soins ciblés, pensés pour agir ensemble. Chaque formule répond à un besoin précis, et nous savons dire pourquoi chaque ingrédient y est.</p>",
         "texte_vide": "Les soins arrivent bientôt.",
