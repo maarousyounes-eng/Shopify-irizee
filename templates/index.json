@@ -339,7 +339,10 @@
         "button_padding_x": 26,
         "button_font_weight": 700,
         "button_letter_spacing": 1,
-        "button_text_transform": "uppercase"
+        "button_text_transform": "uppercase",
+        "image_main": "shopify://shop_images/irizee_masque-nila_4x5_635a3a.jpg",
+        "image_top": "shopify://shop_images/irizee_s-rum-correcteur-clat_4x5_c8a15d.jpg",
+        "image_bottom": "shopify://shop_images/irizee_masque-nila_4x5_efdb9f.jpg"
       }
     },
     "iz_faq_XEeggT": {
