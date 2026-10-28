@@ -494,3 +494,34 @@ le même flacon », et son bouton mène au catalogue plutôt qu'au pack : c'est 
 porte d'entrée de la marque, pas la vitrine d'un produit. Le teaser du
 diagnostic, lui, énumère volontiers brillances, pores, taches et teint terne —
 il parle au visiteur de ses symptômes, c'est son rôle.
+
+## Diagnostic : la caméra et le cul-de-sac de l'email (28 octobre 2026)
+
+### `capture` ne s'ajoute pas au choix, il le remplace
+
+L'étape photo n'avait qu'un champ de fichier portant `capture="user"`. Cet
+attribut dit au navigateur « ouvre l'appareil photo **au lieu de** la
+galerie ». Là où il s'applique, on ne peut plus reprendre une photo déjà
+prise ; là où il est ignoré (ordinateur), on ne peut que choisir un fichier.
+Dans les deux cas une moitié de la fonction manque.
+
+**Leçon : pour offrir les deux, il faut deux chemins.** Un bouton ouvre
+maintenant la caméra par `getUserMedia`, avec aperçu vidéo en miroir et
+déclencheur qui dessine l'image sur un canvas ; un second bouton garde le
+champ de fichier, sans `capture`. Les deux produisent la même image réduite
+en base64 et passent par la même fonction d'analyse. Si le navigateur n'a
+pas de caméra ou la refuse, le choix de fichier s'ouvre : pas de bouton mort.
+
+### Un envoi d'email ne doit jamais retenir le résultat
+
+À l'écran de l'email, un refus de Shopify affichait le message d'erreur puis
+faisait `return`. La cliente venait de répondre à huit questions et
+n'obtenait rien. **Le résultat du diagnostic ne dépend pas de l'inscription :
+il s'affiche dans tous les cas**, et le message dit seulement que l'envoi n'a
+pas abouti. Le texte disait « vérifiez et réessayez », ce qui contredisait le
+résultat affiché juste après ; il a été réécrit.
+
+Reste à identifier *pourquoi* Shopify refuse. Piste à vérifier : dans
+l'aperçu de l'éditeur, la page vit sur un domaine `shopifypreview.com` et le
+formulaire client part en requête croisée. L'erreur pourrait n'exister que
+dans l'aperçu et pas sur la boutique. À confirmer en testant sur l'URL réelle.
