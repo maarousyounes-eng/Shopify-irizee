@@ -65,7 +65,7 @@
           "type": "accordeons",
           "settings": {
             "premier_ouvert": true,
-            "titre_1": "Ce qu'il fait pour votre peau",
+            "titre_1": "En détail",
             "contenu_1": "",
             "metafield_1": "",
             "description_produit_1": true,
@@ -145,7 +145,7 @@
         "taille_jauge_m": 12,
         "taille_acc_titre_m": 14,
         "taille_acc_texte_m": 14,
-        "titre_1": "En détail"
+        "titre_1": "Ce qu'il fait pour votre peau"
       }
     },
     "engagements": {
