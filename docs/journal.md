@@ -458,3 +458,20 @@ porteur de la clé est réellement rendu avant de conclure que la synchro a
 Étapes, FAQ et mode d'emploi sont remplis. Texture, résultats, vidéos, actifs,
 INCI et puces ne le sont pas : ces sections ne s'affichent donc pas sur
 `/products/la-routine`.
+
+### Le discours ne doit pas compter les produits
+
+Tout le positionnement que j'avais écrit reposait sur un nombre : « Deux
+soins, parce que deux suffisent », « Un soin, ou les deux », « Deux formules,
+pas trente ». Un compte fige le catalogue : le jour où une gamme s'ajoute,
+chaque phrase de l'accueil ment.
+
+Le reproche avait déjà été formulé une fois, à propos de la description du
+catalogue. Je l'y ai appliqué et j'ai écrit l'inverse ailleurs dans la même
+session. **Quand une remarque porte sur un parti pris de discours, la passer
+sur tout le site, pas sur l'endroit cité.**
+
+L'argument porte maintenant sur la méthode : chaque soin naît d'un besoin
+précis, chaque actif doit justifier sa place. Les « deux » qui décrivent les
+besoins d'une cliente ou les formules existantes restent, ils énoncent un
+fait et non une promesse de marque.
