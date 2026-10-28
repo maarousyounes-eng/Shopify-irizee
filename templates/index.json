@@ -19,7 +19,7 @@
         "show_overlay": true,
         "overlay_opacity": 10,
         "eyebrow": "Routine Anti-Taches & Éclat",
-        "heading": "Taches, marques, teint terne : deux soins dans le bon ordre",
+        "heading": "Taches et teint terne : la routine qui s'y prend dans le bon ordre",
         "button_label": "Précommander la routine",
         "button_link": "shopify://products/la-routine",
         "button_custom": false,
@@ -177,7 +177,7 @@
         "p4"
       ],
       "settings": {
-        "heading": "Un soin, ou les deux",
+        "heading": "Commencez ici",
         "source": "manual",
         "collection": "",
         "products_count": 3,
@@ -304,8 +304,8 @@
       "name": "Marque et engagements",
       "settings": {
         "eyebrow": "Notre marque",
-        "heading": "Deux soins, parce que deux suffisent",
-        "text": "<p>Une tache ne s'efface pas en une semaine. Tout le monde le sait dans ce métier, personne ne le dit : il est plus simple de vendre sept flacons et un calendrier que d'expliquer combien de temps la peau met à changer.</p><p>Nous avons pris le problème dans l'autre sens. Un masque pour désencombrer la peau une à deux fois par semaine, un sérum pour travailler le teint tous les jours. Deux gestes, pas sept. Et chaque actif devait justifier sa place : la vitamine C pour la luminosité, l'alpha-arbutine pour les taches, l'acide hyaluronique pour l'hydratation.</p><p>Sans parfum ajouté, un pH proche de celui de la peau, des formules qui conviennent à toutes les peaux. Ce qui reste dans le tube, c'est ce qui travaille.</p>",
+        "heading": "Ce qui reste dans le tube, c'est ce qui travaille",
+        "text": "<p>Une tache ne s'efface pas en une semaine. Tout le monde le sait dans ce métier, personne ne le dit : il est plus simple de vendre un rayon entier et un calendrier que d'expliquer combien de temps la peau met à changer.</p><p>Nous prenons le problème dans l'autre sens. Chaque soin naît d'un besoin précis, et chaque actif doit justifier sa place : la vitamine C pour la luminosité, l'alpha-arbutine pour les taches, l'acide hyaluronique pour l'hydratation. Si nous ne savons pas dire pourquoi un ingrédient est là, il n'entre pas dans la formule.</p><p>Sans parfum ajouté, un pH proche de celui de la peau, des formules qui conviennent à toutes les peaux. Rien pour faire joli sur l'étiquette.</p>",
         "button_label": "",
         "button_link": "",
         "media_position": "left",
@@ -366,7 +366,7 @@
           "type": "question",
           "settings": {
             "question": "Comment savoir quel soin me convient ?",
-            "reponse": "<p>Le diagnostic en ligne pose huit questions sur votre peau et vos habitudes, puis vous dit par où commencer : le masque, le sérum, ou les deux. Il prend moins d'une minute.</p>"
+            "reponse": "<p>Le diagnostic en ligne pose huit questions sur votre peau et vos habitudes, puis vous dit par où commencer, et avec quel soin. Il prend moins d'une minute.</p>"
           }
         },
         "question_iLUMcX": {
