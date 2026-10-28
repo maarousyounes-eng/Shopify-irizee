@@ -475,3 +475,22 @@ L'argument porte maintenant sur la méthode : chaque soin naît d'un besoin
 précis, chaque actif doit justifier sa place. Les « deux » qui décrivent les
 besoins d'une cliente ou les formules existantes restent, ils énoncent un
 fait et non une promesse de marque.
+
+### Deux niveaux de discours, à ne pas mélanger
+
+Le site parlait des taches partout, jusque dans le hero et la section marque.
+Nommer un problème au niveau de la marque revient à enfermer la gamme dedans :
+la prochaine problématique rendrait l'accueil faux.
+
+**La règle, désormais :**
+
+| Niveau | Où | Ce qu'il dit |
+|---|---|---|
+| Marque | hero, section marque, pied de page, catalogue, SEO de l'accueil | la méthode : un besoin, un soin, et des actifs choisis pour ce besoin-là |
+| Produit et vente | fiches, cartes, accroches, pack | le problème précis que ce soin règle, pour quelqu'un qui a ce problème |
+
+Le hero est passé de « Taches et teint terne… » à « On ne traite pas tout avec
+le même flacon », et son bouton mène au catalogue plutôt qu'au pack : c'est la
+porte d'entrée de la marque, pas la vitrine d'un produit. Le teaser du
+diagnostic, lui, énumère volontiers brillances, pores, taches et teint terne —
+il parle au visiteur de ses symptômes, c'est son rôle.
