@@ -255,49 +255,54 @@
   </div>
 </header>
 
-{% if is_overlay %}
-  <script>
-    (function () {
-      var header = document.querySelector('.header--overlay');
-      if (!header) return;
-      var threshold = 80;
-      var hideOnScrollDown = {{ section.settings.hide_on_scroll | json }};
-      var lastScrollY = window.scrollY;
-      var ticking = false;
+{%- comment -%}
+  Le comportement au défilement (barre compacte, masquage vers le bas) vaut
+  sur toutes les pages. Il était enfermé dans la condition de superposition,
+  qui elle ne concerne que l'accueil : le menu perdait donc son état scrollé
+  dès qu'on quittait l'accueil.
+{%- endcomment -%}
+<script>
+  (function () {
+    var header = document.querySelector('.header');
+    if (!header) return;
+    var threshold = 80;
+    var hideOnScrollDown = {{ section.settings.hide_on_scroll | json }};
+    var lastScrollY = window.scrollY;
+    var ticking = false;
 
-      function updateHeader() {
-        var currentScrollY = window.scrollY;
+    function updateHeader() {
+      var currentScrollY = window.scrollY;
 
-        if (currentScrollY > threshold) {
-          header.classList.add('header--scrolled');
+      if (currentScrollY > threshold) {
+        header.classList.add('header--scrolled');
+      } else {
+        header.classList.remove('header--scrolled');
+      }
+
+      if (hideOnScrollDown) {
+        if (currentScrollY > lastScrollY && currentScrollY > threshold) {
+          header.classList.add('header--hidden');
         } else {
-          header.classList.remove('header--scrolled');
-        }
-
-        if (hideOnScrollDown) {
-          if (currentScrollY > lastScrollY && currentScrollY > threshold) {
-            header.classList.add('header--hidden');
-          } else {
-            header.classList.remove('header--hidden');
-          }
-        }
-
-        lastScrollY = currentScrollY;
-        ticking = false;
-      }
-
-      function onScroll() {
-        if (!ticking) {
-          window.requestAnimationFrame(updateHeader);
-          ticking = true;
+          header.classList.remove('header--hidden');
         }
       }
 
-      window.addEventListener('scroll', onScroll, { passive: true });
-      updateHeader();
+      lastScrollY = currentScrollY;
+      ticking = false;
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(updateHeader);
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    updateHeader();
     })();
   </script>
-{% endif %}
+
 
 {% stylesheet %}
   /* min-height et non height : sans ça la marge verticale serait absorbée

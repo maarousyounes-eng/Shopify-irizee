@@ -56,7 +56,7 @@
         "jauge": {
           "type": "jauge",
           "settings": {
-            "seuil": 49,
+            "seuil": 39,
             "texte_restant": "Plus que {montant} pour la livraison offerte",
             "texte_atteint": "Livraison offerte"
           }
