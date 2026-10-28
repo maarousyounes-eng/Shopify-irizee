@@ -98,7 +98,7 @@
         "afficher_fil": true,
         "libelle_fil": "Fil d'Ariane",
         "libelle_accueil": "Accueil",
-        "libelle_catalogue": "Catalogue",
+        "libelle_catalogue": "Nos soins",
         "show_badge": true,
         "badge_text": "Nouveau",
         "ratio": 0.8,
@@ -144,7 +144,8 @@
         "taille_bouton_m": 13,
         "taille_jauge_m": 12,
         "taille_acc_titre_m": 14,
-        "taille_acc_texte_m": 14
+        "taille_acc_texte_m": 14,
+        "titre_1": "En détail"
       }
     },
     "engagements": {
@@ -155,7 +156,7 @@
           "settings": {
             "icon": "truck",
             "title": "Livraison offerte",
-            "text": "Dès 49 € d'achat en France."
+            "text": "Dès 39 € d'achat en France."
           }
         },
         "item_paiement3x": {
@@ -407,8 +408,8 @@
       "name": "Newsletter",
       "settings": {
         "eyebrow": "Newsletter",
-        "heading": "Des conseils de peau, une fois par mois",
-        "text": "<p>Ce que votre peau essaie de vous dire, les gestes qui changent vraiment quelque chose, et nos nouveautés avant tout le monde. Un e-mail par mois, pas plus.</p>",
+        "heading": "Apprenez à lire votre peau",
+        "text": "<p>Ce que votre peau essaie de vous dire, les gestes qui changent vraiment quelque chose, et nos nouveautés avant tout le monde.</p>",
         "form_style": "pill",
         "show_first_name": false,
         "name_placeholder": "Votre prénom",

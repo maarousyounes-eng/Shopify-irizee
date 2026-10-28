@@ -53,7 +53,7 @@
         "mention_total": "Taxes incluses. Livraison calculée à l'étape suivante.",
         "libelle_commander": "Commander",
         "libelle_continuer": "Continuer mes achats",
-        "seuil_livraison": 49,
+        "seuil_livraison": 39,
         "texte_restant": "Plus que [montant] pour la livraison offerte",
         "texte_atteint": "Livraison offerte",
         "couleur_carte": "#f4f3f1",

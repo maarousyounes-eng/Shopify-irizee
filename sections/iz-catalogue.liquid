@@ -119,7 +119,9 @@
   }
 
   .izc__entete {
-    max-width: 62ch;
+    /* L'intro tenait sur quatre lignes étroites et mangeait le haut de page.
+       L'en-tête respire plus large, le texte garde sa longueur de lecture. */
+    max-width: 86ch;
     margin-bottom: calc(var(--izc-marge) * 0.5);
   }
 
@@ -144,6 +146,7 @@
   }
 
   .izc__texte {
+    max-width: 62ch;
     font-family: var(--izc-texte-famille);
     font-size: var(--izc-texte);
     line-height: 1.6;
@@ -181,7 +184,7 @@
 
 {% schema %}
 {
-  "name": "Catalogue",
+  "name": "Nos soins",
   "tag": "section",
   "class": "section-iz-catalogue",
   "settings": [
@@ -445,7 +448,7 @@
   ],
   "presets": [
     {
-      "name": "Catalogue"
+      "name": "Nos soins"
     }
   ]
 }

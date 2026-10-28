@@ -19,7 +19,7 @@
         "show_overlay": true,
         "overlay_opacity": 10,
         "eyebrow": "Routine Anti-Taches & Éclat",
-        "heading": "Deux soins qui se complètent, une seule routine",
+        "heading": "Taches, marques, teint terne : deux soins dans le bon ordre",
         "button_label": "Précommander la routine",
         "button_link": "shopify://products/la-routine",
         "button_custom": false,
@@ -39,7 +39,7 @@
           "settings": {
             "icon": "truck",
             "title": "Livraison offerte",
-            "text": "Dès 49 € d'achat en France."
+            "text": "Dès 39 € d'achat en France."
           }
         },
         "item_paiement3x": {
@@ -177,7 +177,7 @@
         "p4"
       ],
       "settings": {
-        "heading": "Deux soins, et la routine qui les réunit",
+        "heading": "Un soin, ou les deux",
         "source": "manual",
         "collection": "",
         "products_count": 3,
@@ -304,8 +304,8 @@
       "name": "Marque et engagements",
       "settings": {
         "eyebrow": "Notre marque",
-        "heading": "Nous avons commencé par retirer, pas par ajouter",
-        "text": "<p>Irizée est née d'un constat simple : la plupart des soins promettent beaucoup et contiennent peu de ce qui compte vraiment.</p><p>Une formule, quelques actifs, une raison d'être pour chacun.</p>",
+        "heading": "Deux soins, parce que deux suffisent",
+        "text": "<p>Une tache ne s'efface pas en une semaine. Tout le monde le sait dans ce métier, personne ne le dit : il est plus simple de vendre sept flacons et un calendrier que d'expliquer combien de temps la peau met à changer.</p><p>Nous avons pris le problème dans l'autre sens. Un masque pour désencombrer la peau une à deux fois par semaine, un sérum pour travailler le teint tous les jours. Deux gestes, pas sept. Et chaque actif devait justifier sa place : la vitamine C pour la luminosité, l'alpha-arbutine pour les taches, l'acide hyaluronique pour l'hydratation.</p><p>Sans parfum ajouté, un pH proche de celui de la peau, des formules qui conviennent à toutes les peaux. Ce qui reste dans le tube, c'est ce qui travaille.</p>",
         "button_label": "",
         "button_link": "",
         "media_position": "left",
@@ -412,8 +412,8 @@
       "name": "Newsletter",
       "settings": {
         "eyebrow": "Newsletter",
-        "heading": "Des conseils de peau, une fois par mois",
-        "text": "<p>Ce que votre peau essaie de vous dire, les gestes qui changent vraiment quelque chose, et nos nouveautés avant tout le monde. Un e-mail par mois, pas plus.</p>",
+        "heading": "Apprenez à lire votre peau",
+        "text": "<p>Ce que votre peau essaie de vous dire, les gestes qui changent vraiment quelque chose, et nos nouveautés avant tout le monde.</p>",
         "form_style": "pill",
         "show_first_name": false,
         "name_placeholder": "Votre prénom",
