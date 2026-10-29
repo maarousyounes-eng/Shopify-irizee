@@ -386,10 +386,15 @@
                     <div class="izd__produit-texte">
                       <a class="izd__produit-nom" href="{{ produit.url }}">{{ produit.title }}</a>
                       {%- comment -%}
-                        Couper au mot laissait « La vitamine… » en suspens. On
-                        coupe à la phrase : la première dit ce que fait le soin.
+                        L'argument écrit pour ce résultat passe avant la fiche
+                        produit : il relie le soin à ce que la personne vient
+                        de décrire. À défaut, on reprend la première phrase de
+                        la description — couper au mot laissait « La vitamine… »
+                        en suspens.
                       {%- endcomment -%}
-                      {%- if produit.description != blank -%}
+                      {%- if bloc.settings.argument != blank -%}
+                        <p class="izd__produit-resume">{{ bloc.settings.argument }}</p>
+                      {%- elsif produit.description != blank -%}
                         {%- assign phrases = produit.description | strip_html | strip_newlines | split: '. ' -%}
                         <p class="izd__produit-resume">{{ phrases | first | strip | append: '.' | replace: '..', '.' }}</p>
                       {%- endif -%}
@@ -2461,6 +2466,12 @@
         },
         {
           "type": "richtext",
+          "id": "argument",
+          "label": "Argument du soin",
+          "info": "Pourquoi ce soin répond à ce résultat. S'affiche sous le nom du produit."
+        },
+        {
+          "type": "textarea",
           "id": "texte",
           "label": "Explication"
         },
