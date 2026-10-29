@@ -1,0 +1,384 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "iz-main-product",
+      "blocks": {
+        "entete": {
+          "type": "entete",
+          "settings": {
+            "texte": "",
+            "minimum": 5,
+            "libelle_avis": "avis",
+            "ancre": "avis"
+          }
+        },
+        "puces": {
+          "type": "puces",
+          "settings": {}
+        },
+        "promesse": {
+          "type": "promesse",
+          "settings": {
+            "texte": ""
+          }
+        },
+        "benefices": {
+          "type": "benefices",
+          "settings": {}
+        },
+        "offres": {
+          "type": "offres",
+          "settings": {
+            "titre": "Disponible en routine",
+            "inclure_courant": false
+          }
+        },
+        "achat": {
+          "type": "achat",
+          "settings": {
+            "afficher_quantite": true,
+            "libelle_ajout": "Ajouter au panier",
+            "libelle_epuise": "Épuisé",
+            "libelle_quantite": "Quantité",
+            "libelle_moins": "Diminuer la quantité",
+            "libelle_plus": "Augmenter la quantité"
+          }
+        },
+        "jauge": {
+          "type": "jauge",
+          "settings": {
+            "seuil": 39,
+            "texte_restant": "Plus que {montant} pour la livraison offerte",
+            "texte_atteint": "Livraison offerte"
+          }
+        },
+        "accordeons": {
+          "type": "accordeons",
+          "settings": {
+            "premier_ouvert": true,
+            "titre_1": "Description du soin",
+            "contenu_1": "",
+            "metafield_1": "",
+            "description_produit_1": true,
+            "titre_2": "Comment l'utiliser",
+            "contenu_2": "",
+            "metafield_2": "utilisation",
+            "description_produit_2": false,
+            "titre_3": "Ingrédients",
+            "contenu_3": "",
+            "metafield_3": "inci",
+            "description_produit_3": false,
+            "titre_4": "Livraison et retours",
+            "contenu_4": "<p>Livraison offerte dès 39 € d'achat en France. Retours acceptés sous 14 jours.</p>",
+            "metafield_4": "",
+            "description_produit_4": false
+          }
+        }
+      },
+      "block_order": [
+        "entete",
+        "puces",
+        "promesse",
+        "benefices",
+        "offres",
+        "achat",
+        "jauge",
+        "accordeons"
+      ],
+      "settings": {
+        "afficher_fil": true,
+        "libelle_fil": "Fil d'Ariane",
+        "libelle_accueil": "Accueil",
+        "libelle_catalogue": "Nos soins",
+        "show_badge": true,
+        "badge_text": "Nouveau",
+        "ratio": 0.8,
+        "thumb_count": 5,
+        "vignettes_position": "droite",
+        "vignette_largeur": 88,
+        "libelle_vignette": "Voir le média",
+        "fond_section": "#ffffff",
+        "galerie_fixe": true,
+        "galerie_fixe_haut": 24,
+        "column_gap": 80,
+        "column_gap_mobile": 28,
+        "gallery_base": 640,
+        "buybox_base": 420,
+        "barre_mobile": true,
+        "barre_bureau": true,
+        "barre_mobile_fond": "#fbfaf8",
+        "message_ajout": "Ajouté à votre panier.",
+        "message_erreur": "L'ajout n'a pas abouti. Réessayez.",
+        "taille_fil": 13,
+        "taille_eyebrow": 12,
+        "taille_titre": 44,
+        "taille_note": 14,
+        "taille_promesse": 18,
+        "taille_puces": 12,
+        "taille_benefices": 15,
+        "taille_offre_nom": 15,
+        "taille_offre_sub": 13,
+        "taille_offre_badge": 11,
+        "taille_bouton": 14,
+        "taille_quantite": 18,
+        "taille_jauge": 13,
+        "taille_acc_titre": 15,
+        "taille_acc_texte": 15,
+        "taille_fil_m": 12,
+        "taille_eyebrow_m": 11,
+        "taille_titre_m": 30,
+        "taille_note_m": 13,
+        "taille_promesse_m": 16,
+        "taille_benefices_m": 14,
+        "taille_offre_nom_m": 14,
+        "taille_offre_sub_m": 12,
+        "taille_bouton_m": 13,
+        "taille_jauge_m": 12,
+        "taille_acc_titre_m": 14,
+        "taille_acc_texte_m": 14
+      }
+    },
+    "engagements": {
+      "type": "reassurance",
+      "blocks": {
+        "item_gzPHcC": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison offerte",
+            "text": "Dès 39 € d'achat en France."
+          }
+        },
+        "item_paiement3x": {
+          "type": "item",
+          "settings": {
+            "icon": "split",
+            "title": "Payez en 3 fois",
+            "text": "Sans frais, dès 60 € d'achat."
+          }
+        },
+        "item_kjwDUC": {
+          "type": "item",
+          "settings": {
+            "icon": "leaf",
+            "title": "Formules naturelles",
+            "text": "Des ingrédients choisis, sans compromis."
+          }
+        },
+        "item_HDFdbt": {
+          "type": "item",
+          "settings": {
+            "icon": "return",
+            "title": "Retours sous 14 jours",
+            "text": "Produit non ouvert, retour accepté."
+          }
+        }
+      },
+      "block_order": [
+        "item_gzPHcC",
+        "item_paiement3x",
+        "item_kjwDUC",
+        "item_HDFdbt"
+      ],
+      "settings": {
+        "columns": 4,
+        "columns_mobile": "2",
+        "alignment": "left",
+        "show_numbers": false,
+        "show_separators": true,
+        "cell_padding": 20,
+        "cell_padding_mobile": 16,
+        "column_gap": 32,
+        "column_gap_mobile": 16,
+        "row_gap": 32,
+        "row_gap_mobile": 24,
+        "margin_top": 64,
+        "margin_top_mobile": 40,
+        "margin_bottom": 64,
+        "margin_bottom_mobile": 40,
+        "background_color": "#ffffff",
+        "text_color": "#1a1a1a",
+        "line_color": "#ddd9d7",
+        "hover_color": "#e8e6e5",
+        "icon_color": "#1a1a1a",
+        "icon_size": 24,
+        "icon_size_mobile": 20,
+        "title_font": "work_sans_n4",
+        "title_size": 16,
+        "title_size_mobile": 15,
+        "text_font": "work_sans_n4",
+        "text_size": 13,
+        "text_size_mobile": 12,
+        "kicker_size": 12,
+        "kicker_size_mobile": 11
+      }
+    },
+    "rituel": {
+      "type": "iz-rituel",
+      "settings": {
+        "couleur_fond": "#ffffff",
+        "masquer_mobile": false,
+        "eyebrow": "Mode d'emploi",
+        "titre": "La routine en 3 étapes",
+        "largeur_min": 240,
+        "gap": 24,
+        "ratio": 1.3,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "taille_eyebrow": 12,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_etape": 20,
+        "taille_etape_mobile": 18,
+        "taille_texte": 15
+      }
+    },
+    "marque": {
+      "type": "iz-marque",
+      "settings": {
+        "couleur_fond": "#ebebea",
+        "masquer_mobile": false,
+        "eyebrow": "Notre marque",
+        "titre": "Ce que nous mettons, et ce que nous ne mettons pas",
+        "texte": "<p>Un besoin, un soin. Chaque formule vise un problème précis, avec les actifs qui le traitent et rien d'autre : si nous ne savons pas dire pourquoi un ingrédient est là, il n'y entre pas.</p><p>Sans parfum ajouté, à un pH proche de celui de la peau. Nous annonçons ce que chaque actif fait et à quel rythme.</p>",
+        "image": "shopify://shop_images/irizee_s-rum-correcteur-clat_4x5_6a4f98.jpg",
+        "bouton_label": "Découvrir",
+        "bouton_lien": "",
+        "position_image": "gauche",
+        "ratio": 1,
+        "image_base": 420,
+        "texte_base": 420,
+        "gap": 56,
+        "gap_mobile": 28,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "taille_eyebrow": 12,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_texte": 16
+      }
+    },
+    "faq": {
+      "type": "iz-faq",
+      "settings": {
+        "couleur_fond": "#ffffff",
+        "masquer_mobile": false,
+        "eyebrow": "Vos questions",
+        "titre": "Ce qu'on nous demande avant d'acheter",
+        "titre_base": 320,
+        "liste_base": 560,
+        "gap": 56,
+        "gap_mobile": 24,
+        "marge_verticale": 88,
+        "marge_verticale_mobile": 56,
+        "taille_eyebrow": 12,
+        "taille_titre": 40,
+        "taille_titre_mobile": 28,
+        "taille_question": 16,
+        "taille_reponse": 15
+      }
+    },
+    "newsletter_UgMPLK": {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "settings": {
+        "eyebrow": "Newsletter",
+        "heading": "Ce que votre peau essaie de vous dire",
+        "text": "<p>Des conseils fondés sur ce que font réellement les actifs, les erreurs courantes qui entretiennent un problème, et nos nouveautés en avant-première.</p>",
+        "form_style": "pill",
+        "show_first_name": false,
+        "name_placeholder": "Votre prénom",
+        "email_placeholder": "Votre adresse e-mail",
+        "button_label": "Je m'inscris",
+        "success_message": "Merci, votre inscription est confirmée.",
+        "require_consent": true,
+        "consent_text": "J'accepte de recevoir les e-mails d'Irizée et je peux me désinscrire à tout moment.",
+        "legal_text": "<p>Vos données sont utilisées uniquement pour vous envoyer nos e-mails. Consultez notre politique de confidentialité.</p>",
+        "layout": "centered",
+        "text_alignment": "center",
+        "image_position": "left",
+        "image_ratio": "4 / 5",
+        "image_ratio_mobile": "1 / 1",
+        "field_radius": 8,
+        "padding_desktop": 80,
+        "padding_mobile": 48,
+        "column_gap": 56,
+        "column_gap_mobile": 28,
+        "background_color": "#E8E6E5",
+        "text_color": "#1A1A1A",
+        "field_background": "#FFFFFF",
+        "field_border_color": "#D5D2D0",
+        "button_background": "#214975",
+        "button_text_color": "#FFFFFF",
+        "eyebrow_font": "work_sans_n4",
+        "eyebrow_size": 12,
+        "eyebrow_size_mobile": 11,
+        "heading_font": "work_sans_n4",
+        "heading_size": 34,
+        "heading_size_mobile": 25,
+        "text_font": "work_sans_n4",
+        "text_size": 15,
+        "text_size_mobile": 14,
+        "legal_size": 12,
+        "legal_size_mobile": 11,
+        "button_font": "work_sans_n4",
+        "button_size": 13,
+        "button_size_mobile": 12,
+        "button_custom": false,
+        "button_radius": 100,
+        "button_padding_y": 13,
+        "button_padding_x": 26,
+        "button_font_weight": 700,
+        "button_letter_spacing": 1,
+        "button_text_transform": "uppercase"
+      }
+    },
+    "contenu": {
+      "type": "featured-products",
+      "blocks": {
+        "soin_1": {
+          "type": "product",
+          "settings": {
+            "product": "la-routine-masque",
+            "category_label": "Une à deux fois par semaine"
+          }
+        },
+        "soin_2": {
+          "type": "product",
+          "settings": {
+            "product": "la-routine-serum",
+            "category_label": "Matin et soir"
+          }
+        }
+      },
+      "block_order": [
+        "soin_1",
+        "soin_2"
+      ],
+      "settings": {
+        "heading": "Ce que contient la routine",
+        "source": "manual",
+        "buy_label": "Voir le soin",
+        "button_label": "Tout voir"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "engagements",
+    "contenu",
+    "rituel",
+    "marque",
+    "faq",
+    "newsletter_UgMPLK"
+  ]
+}
