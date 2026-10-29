@@ -19,6 +19,7 @@
         "scrolled_logo_color": "black",
         "overlay_text_color": "black",
         "enable_blur": true,
+        "barre_bordure": "#e2e2df",
         "blur_intensity": 12,
         "hide_on_scroll": true,
         "menu_font": "helvetica_n7",
@@ -57,8 +58,7 @@
         "pdp_text_color": "black",
         "pdp_logo_color": "black",
         "pdp_border": true,
-        "pdp_border_color": "#e2e2df",
-        "barre_bordure": "#e2e2df"
+        "pdp_border_color": "#e2e2df"
       }
     }
   },
