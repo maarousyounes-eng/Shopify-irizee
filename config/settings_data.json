@@ -12,6 +12,13 @@
     "background_color": "#FBFAF8",
     "foreground_color": "#1A1A1A",
     "image_partage": "shopify://shop_images/generated-image_c8b43a07-5ec6-4646-9916-5c4df2f555f4.png",
-    "content_for_index": []
+    "content_for_index": [],
+    "blocks": {
+      "855628211100114053": {
+        "type": "shopify://apps/klaviyo-email-marketing-sms/blocks/klaviyo-onsite-embed/2632fe16-c075-4321-a88b-50b567f42507",
+        "disabled": false,
+        "settings": {}
+      }
+    }
   }
 }
