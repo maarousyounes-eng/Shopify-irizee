@@ -769,16 +769,25 @@
           // Sans rien, on ne retient personne : le résultat s'affiche,
           // simplement aucune adresse n'est enregistrée.
           var onsite = window.klaviyo;
-          var appeler = function (nom, charge) {
-            if (!onsite) return;
-            if (typeof onsite[nom] === 'function') onsite[nom](charge);
-            else if (typeof onsite.push === 'function') onsite.push([nom, charge]);
-          };
 
           if (!cleKlaviyo || !listeKlaviyo) {
             if (onsite) {
-              appeler('identify', { $email: adresse, Diagnostic: choisirCible() });
-              appeler('track', { event: 'Diagnostic terminé', Diagnostic: choisirCible() });
+              var cible = choisirCible();
+
+              // `identify` prend un objet, `track` prend un nom puis ses
+              // propriétés : deux signatures différentes, et les confondre
+              // vaut un 400 silencieux côté Klaviyo.
+              if (typeof onsite.identify === 'function') {
+                onsite.identify({ $email: adresse, Diagnostic: cible });
+              } else if (typeof onsite.push === 'function') {
+                onsite.push(['identify', { $email: adresse, Diagnostic: cible }]);
+              }
+
+              if (typeof onsite.track === 'function') {
+                onsite.track('Diagnostic terminé', { Diagnostic: cible });
+              } else if (typeof onsite.push === 'function') {
+                onsite.push(['track', 'Diagnostic terminé', { Diagnostic: cible }]);
+              }
             }
             suiteEmail(bouton);
             return;
