@@ -18,8 +18,8 @@
         "position_horizontal": "left",
         "show_overlay": true,
         "overlay_opacity": 10,
-        "eyebrow": "Soins ciblés",
-        "heading": "On ne traite pas tout avec le même flacon",
+        "eyebrow": "Soins visage ciblés",
+        "heading": "Un besoin, un soin, une formule qui l'explique",
         "button_label": "Découvrir nos soins",
         "button_link": "shopify://collections/les-soins",
         "button_custom": false,
@@ -28,7 +28,8 @@
         "button_padding_x": 18,
         "button_font_weight": 600,
         "button_letter_spacing": 1,
-        "button_text_transform": "uppercase"
+        "button_text_transform": "uppercase",
+        "text": "<p>Brillance, taches, marques d'anciens boutons, teint terne : chaque formule vise un besoin précis, sans parfum ajouté et à un pH proche de celui de la peau. Vous savez ce que vous appliquez, et pourquoi.</p>"
       }
     },
     "reassurance_L9RciR": {
@@ -177,7 +178,7 @@
         "p4"
       ],
       "settings": {
-        "heading": "Commencez ici",
+        "heading": "Nos soins",
         "source": "manual",
         "collection": "",
         "products_count": 3,
@@ -304,8 +305,8 @@
       "name": "Marque et engagements",
       "settings": {
         "eyebrow": "Notre marque",
-        "heading": "Ce qui reste dans le tube, c'est ce qui travaille",
-        "text": "<p>Un problème de peau ne se règle pas en une semaine. Tout le monde le sait dans ce métier, personne ne le dit : il est plus simple de vendre un rayon entier et un calendrier que d'expliquer combien de temps la peau met à changer.</p><p>Nous prenons le problème dans l'autre sens. Un besoin, un soin, et des actifs choisis pour ce besoin-là. Si nous ne savons pas dire pourquoi un ingrédient est dans la formule, il n'y entre pas.</p><p>Sans parfum ajouté, un pH proche de celui de la peau, des formules qui conviennent à toutes les peaux. Rien pour faire joli sur l'étiquette.</p>",
+        "heading": "Ce que nous mettons, et ce que nous ne mettons pas",
+        "text": "<p>Un besoin, un soin. Chaque formule vise un problème précis, avec les actifs qui le traitent et rien d'autre : si nous ne savons pas dire pourquoi un ingrédient est là, il n'y entre pas.</p><p>Nous annonçons ce que chaque actif fait et à quel rythme. Une peau ne change pas en une semaine, et le dire fait partie du soin.</p>",
         "button_label": "",
         "button_link": "",
         "media_position": "left",
@@ -343,7 +344,39 @@
         "image_main": "shopify://shop_images/irizee_masque-nila_4x5_635a3a.jpg",
         "image_top": "shopify://shop_images/irizee_s-rum-correcteur-clat_4x5_c8a15d.jpg",
         "image_bottom": "shopify://shop_images/irizee_masque-nila_4x5_efdb9f.jpg"
-      }
+      },
+      "blocks": {
+        "valeur_1": {
+          "type": "tag",
+          "settings": {
+            "label": "Un besoin, un soin"
+          }
+        },
+        "valeur_2": {
+          "type": "tag",
+          "settings": {
+            "label": "Sans parfum ajouté"
+          }
+        },
+        "valeur_3": {
+          "type": "tag",
+          "settings": {
+            "label": "pH proche de la peau"
+          }
+        },
+        "valeur_4": {
+          "type": "tag",
+          "settings": {
+            "label": "Actifs dosés et annoncés"
+          }
+        }
+      },
+      "block_order": [
+        "valeur_1",
+        "valeur_2",
+        "valeur_3",
+        "valeur_4"
+      ]
     },
     "iz_faq_XEeggT": {
       "type": "iz-faq",
@@ -415,8 +448,8 @@
       "name": "Newsletter",
       "settings": {
         "eyebrow": "Newsletter",
-        "heading": "Apprenez à lire votre peau",
-        "text": "<p>Ce que votre peau essaie de vous dire, les gestes qui changent vraiment quelque chose, et nos nouveautés avant tout le monde.</p>",
+        "heading": "Ce que votre peau essaie de vous dire",
+        "text": "<p>Des conseils fondés sur ce que font réellement les actifs, les erreurs courantes qui entretiennent un problème, et nos nouveautés en avant-première.</p>",
         "form_style": "pill",
         "show_first_name": false,
         "name_placeholder": "Votre prénom",
