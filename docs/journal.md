@@ -609,3 +609,51 @@ puis ses propriétés**. Corrigé, les deux répondent 202.
 test enveloppait `klaviyo.identify` pour compter les appels ; le script de
 Klaviyo réécrit ses méthodes après coup et l'enveloppe avait disparu, ce qui
 m'a fait conclure à tort qu'aucun appel ne partait.
+
+## L'analyse de la photo devient une vraie lecture (29 octobre 2026)
+
+### Cinq axes au lieu de trois notes
+
+Le modèle rendait `sebum`, `taches`, `eclat`. Il observe maintenant la
+**brillance**, le **grain de peau**, les **taches pigmentaires**, les
+**marques** et le **manque d'éclat**, plus la **zone** où cela se concentre
+et la **qualité de la photo** elle-même.
+
+Trois conséquences :
+
+- les axes nourrissent séparément le masque (brillance, grain) et le sérum
+  (taches, marques, éclat), au lieu d'une moyenne approximative ;
+- une photo que le modèle juge faible pèse **moitié moins** : une photo au
+  jugé ne vaut pas une photo nette ;
+- la lecture **s'affiche** sur le résultat, axe par axe avec une jauge. Une
+  analyse qu'on ne voit pas ne vaut pas qu'on la fasse.
+
+### Les taches de rousseur ne sont pas un défaut
+
+Sur la même photo, avant : `taches: 2`. Après : `taches_pigmentaires: 0` et
+`taches_rousseur: true`, avec une remarque qui les nomme comme un trait.
+La consigne les exclut explicitement des taches pigmentaires. Recommander un
+sérum anti-taches à quelqu'un qui a des taches de rousseur, c'était lui
+proposer d'effacer ce qui n'est pas à corriger.
+
+### Deux déploiements ratés, production cassée une fois
+
+À consigner parce que c'est évitable :
+
+1. **Premier envoi sans le fichier de la fonction.** J'ai passé `package.json`
+   et `vercel.json` mais pas `api/analyse.js`, trop gros pour être recopié à
+   la main dans l'appel. Vercel a échoué (`unused_function`) — et un
+   déploiement en échec ne prend pas l'alias, donc la production a tenu.
+2. **Second envoi sans `rootDirectory`.** Parti de la racine du dépôt, donc
+   aucun `api/` : build réussi, alias pris, **endpoint en 404**. Là, la
+   production était bien cassée.
+
+**Leçon : ce service se déploie depuis git, jamais par envoi de fichiers**
+(`gitSource` + `rootDirectory: services/diagnostic-api`), et on vérifie
+l'endpoint après chaque déploiement, pas seulement l'état du build.
+
+### Mesures
+
+Analyse réelle vérifiée sur photo : **200 en 7 à 8 secondes**. C'est long pour
+quelqu'un qui attend. Piste si besoin : réduire la photo à 768 px au lieu de
+1024.
