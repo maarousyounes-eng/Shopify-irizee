@@ -496,8 +496,19 @@
         var blocSynthese = trouve && trouve.querySelector('[data-izd-synthese]');
         if (signaux) {
           signaux.innerHTML = '';
-          declare.forEach(function (r) {
-            if (!r.cible || r.cible === 'aucun' || !r.texte) return;
+
+          // Une synthèse choisit. On retient d'abord ce qui fonde la
+          // recommandation faite, puis le reste si c'est trop maigre, et
+          // jamais plus de cinq lignes : au-delà on relit son questionnaire.
+          var retenus = declare.filter(function (r) {
+            return r.texte && (r.cible === cible || r.cible === 'deux');
+          });
+          if (retenus.length < 2) {
+            retenus = declare.filter(function (r) {
+              return r.texte && r.cible && r.cible !== 'aucun';
+            });
+          }
+          retenus.slice(0, 5).forEach(function (r) {
             var li = document.createElement('li');
             li.className = 'izd__signal';
             li.textContent = r.texte;
