@@ -1043,7 +1043,7 @@
   }
 
   .izd__inner {
-    max-width: 72rem;
+    max-width: var(--page-width, 140rem);
     margin: 0 auto;
   }
 
@@ -1183,6 +1183,7 @@
      grand que les titres d'étape, qui vivent au-dessus d'une liste. */
   .izd__hero .izd__titre {
     font-size: calc(var(--izd-titre) * 1.22);
+    max-width: 18ch;
     margin-bottom: 2rem;
   }
 
@@ -1513,6 +1514,7 @@
 
   .izd__resultat-tete .izd__titre {
     font-size: calc(var(--izd-titre) * 1.22);
+    max-width: 20ch;
     margin-bottom: 2rem;
   }
 
@@ -1561,6 +1563,7 @@
     padding: 0;
     display: grid;
     gap: 0.9rem;
+    max-width: 56ch;
   }
 
   .izd__signal {
@@ -1603,8 +1606,8 @@
 
   .izd__produit-corps {
     display: grid;
-    grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
-    gap: clamp(2rem, 3.5vw, 3.6rem);
+    grid-template-columns: minmax(0, 34rem) minmax(0, 1fr);
+    gap: clamp(2rem, 3.5vw, 4.8rem);
     align-items: start;
     min-width: 0;
   }
