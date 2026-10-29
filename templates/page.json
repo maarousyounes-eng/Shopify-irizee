@@ -145,7 +145,8 @@
             "matin": "Nettoyant doux, puis votre crème habituelle.",
             "soir": "Une à deux fois par semaine, le masque pendant dix à quinze minutes, puis votre crème.",
             "produit": "",
-            "argument": "Le Masque Rituel Nila absorbe l'excès de sébum et les impuretés. L'huile d'argan et le beurre de karité gardent la peau souple pendant toute la pose."
+            "argument": "Le Masque Rituel Nila absorbe l'excès de sébum et les impuretés. L'huile d'argan et le beurre de karité gardent la peau souple pendant toute la pose.",
+            "conseil": "Entre deux poses, ne multipliez pas les soins : une peau qui brille n'est pas une peau à décaper. Un nettoyant doux le soir suffit à préparer le terrain, et une crème légère évite que la peau compense en produisant davantage."
           }
         },
         "resultat_EUafqy": {
@@ -157,7 +158,8 @@
             "matin": "Quelques gouttes sur peau propre, puis la crème et une protection solaire.",
             "soir": "Quelques gouttes sur peau propre, puis la crème.",
             "produit": "",
-            "argument": "Le Sérum Correcteur & Éclat associe la vitamine C, l'alpha-arbutine et l'acide hyaluronique : la luminosité, les taches et l'hydratation, dans la même formule."
+            "argument": "Le Sérum Correcteur & Éclat associe la vitamine C, l'alpha-arbutine et l'acide hyaluronique : la luminosité, les taches et l'hydratation, dans la même formule.",
+            "conseil": "Appliquez le sérum tous les jours, matin et soir, sans sauter de semaine : c'est la régularité qui fait le travail, pas la quantité. Et mettez une protection solaire le matin, même en hiver : face aux taches, c'est le geste qui compte le plus, avant n'importe quel soin."
           }
         },
         "resultat_baQixp": {
@@ -169,7 +171,8 @@
             "matin": "Le sérum sur peau propre, puis la crème et une protection solaire.",
             "soir": "Le sérum tous les soirs. Une à deux fois par semaine, le masque avant le sérum.",
             "produit": "",
-            "argument": "Le masque prépare la peau une à deux fois par semaine, le sérum prend le relais au quotidien."
+            "argument": "Le masque prépare la peau une à deux fois par semaine, le sérum prend le relais au quotidien.",
+            "conseil": "Prenez les deux habitudes l'une après l'autre. Le sérum d'abord, tous les jours, le temps qu'il devienne un réflexe. Le masque ensuite, une à deux fois par semaine. Deux gestes installés tiennent mieux qu'un rituel complet abandonné au bout de dix jours."
           }
         }
       },
