@@ -40,6 +40,14 @@
       <h1 class="hero__heading">{{ section.settings.heading }}</h1>
     {% endif %}
 
+    {%- comment -%}
+      Le hero n'avait qu'un titre : rien pour dire ce que la marque apporte.
+      Une accroche sans proposition de valeur se lit et s'oublie.
+    {%- endcomment -%}
+    {% if section.settings.text != blank %}
+      <div class="hero__text">{{ section.settings.text }}</div>
+    {% endif %}
+
     {% if section.settings.button_label != blank %}
       <a href="{{ section.settings.button_link | default: '#' }}" class="hero__button">
         {{ section.settings.button_label }}
@@ -144,6 +152,19 @@
     font-weight: 600;
     max-width: 34ch;
   }
+
+  .hero__text {
+    margin-top: 1.2rem;
+    font-size: clamp(1.4rem, 1.2vw, 1.6rem);
+    line-height: 1.55;
+    max-width: 46ch;
+  }
+
+  .hero__text p { margin: 0; }
+  .hero__text p + p { margin-top: 0.8rem; }
+
+  .hero__content--h-right .hero__text { margin-left: auto; }
+  .hero__content--h-center .hero__text { margin-inline: auto; }
 
   .hero__content--h-right .hero__heading {
     margin-left: auto;
@@ -286,6 +307,12 @@
       "id": "heading",
       "label": "Heading",
       "default": "Des soins naturels pensés pour votre peau"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Proposition de valeur",
+      "default": "<p>Des formules courtes, un actif par besoin, et la raison pour laquelle il est là.</p>"
     },
     {
       "type": "text",
