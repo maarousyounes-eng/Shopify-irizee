@@ -175,6 +175,7 @@
           <fieldset
             class="izd__question"
             data-izd-question="{{ forloop.index0 }}"
+            data-famille="{{ bloc.settings.famille | default: 'peau' }}"
             {% unless forloop.first %}hidden{% endunless %}
             {{ bloc.shopify_attributes }}
           >
@@ -447,11 +448,25 @@
                 </div>
               </div>
 
+              {%- comment -%}
+                Ce qu'on observe sur la peau et ce qui l'entoure ne se lisent
+                pas pareil : le sommeil ou le soleil expliquent, ils ne se
+                constatent pas sur le visage. Deux constats, deux blocs.
+              {%- endcomment -%}
+              <div class="izd__synthese" data-izd-bloc-vie hidden>
+                <p class="izd__synthese-titre">{{ section.settings.libelle_vos_habitudes }}</p>
+                <div class="izd__synthese-corps">
+                  <ul class="izd__signaux" data-izd-signaux-vie></ul>
+                </div>
+              </div>
+
               <div class="izd__synthese" data-izd-bloc-photo hidden>
                 <p class="izd__synthese-titre">{{ section.settings.libelle_la_photo }}</p>
                 <div class="izd__synthese-corps">
                   <p class="izd__observation" data-izd-observation hidden></p>
                   <ul class="izd__lecture" data-izd-lecture hidden></ul>
+                  <p class="izd__photo-zone" data-izd-zone hidden></p>
+                  <p class="izd__photo-note" data-izd-note-photo hidden></p>
                 </div>
               </div>
 
@@ -507,6 +522,11 @@
       var index = 0;
       var observation = '';
       var lecture = [];
+      // L'API renvoie aussi où ça se concentre, ce qu'elle a pu voir et si
+      // elle a repéré des taches de rousseur. On jetait les trois.
+      var zonePhoto = '';
+      var qualitePhoto = '';
+      var rousseur = false;
       var declare = [];
 
       var afficher = function (nom) {
@@ -575,43 +595,54 @@
           }
         }
 
-        // Ce que la personne a décrit. On ne garde que les réponses qui ont
-        // pesé : « rien de particulier » n'a rien à faire dans une synthèse.
-        var signaux = trouve && trouve.querySelector('[data-izd-signaux]');
-        var blocSynthese = trouve && trouve.querySelector('[data-izd-synthese]');
-        if (signaux) {
-          signaux.innerHTML = '';
+        // Ce que la personne a décrit, en deux constats. Ce qu'on observe sur
+        // la peau d'un côté, ce qui l'entoure de l'autre : le sommeil ou le
+        // soleil expliquent un terrain, ils ne se constatent pas sur un
+        // visage. Les mélanger faisait une liste, pas une analyse.
+        var remplirConstat = function (selListe, selBloc, famille, maximum) {
+          var liste = trouve && trouve.querySelector(selListe);
+          var bloc = trouve && trouve.querySelector(selBloc);
+          if (!liste) return;
+          liste.innerHTML = '';
 
-          // Une synthèse choisit. On retient d'abord ce qui fonde la
-          // recommandation faite, puis le reste si c'est trop maigre, et
-          // jamais plus de cinq lignes : au-delà on relit son questionnaire.
-          var retenus = declare.filter(function (r) {
-            return r.texte && (r.cible === cible || r.cible === 'deux');
+          var dits = declare.filter(function (r) {
+            return r.texte && r.famille === famille && r.cible && r.cible !== 'aucun';
           });
-          if (retenus.length < 2) {
-            retenus = declare.filter(function (r) {
-              return r.texte && r.cible && r.cible !== 'aucun';
+
+          // Dans la peau, ce qui fonde la recommandation passe devant : on
+          // relit d'abord ce qui a décidé du soin proposé.
+          if (famille === 'peau') {
+            dits.sort(function (x, y) {
+              var px = (x.cible === cible || x.cible === 'deux') ? 0 : 1;
+              var py = (y.cible === cible || y.cible === 'deux') ? 0 : 1;
+              return px - py;
             });
           }
-          retenus.slice(0, 5).forEach(function (r) {
+
+          dits.slice(0, maximum).forEach(function (r) {
             var li = document.createElement('li');
             li.className = 'izd__signal';
             li.textContent = r.texte;
-            signaux.appendChild(li);
+            liste.appendChild(li);
           });
-          if (blocSynthese) blocSynthese.hidden = signaux.children.length === 0;
-        }
+          if (bloc) bloc.hidden = liste.children.length === 0;
+        };
 
-        // Ce que la photo a montré, axe par axe. On ne liste que ce qui est
-        // réellement visible : une ligne « rien à signaler » n'apprend rien.
+        remplirConstat('[data-izd-signaux]', '[data-izd-synthese]', 'peau', 3);
+        remplirConstat('[data-izd-signaux-vie]', '[data-izd-bloc-vie]', 'vie', 4);
+
+        // Ce que la photo a montré, axe par axe. On les donne tous, y compris
+        // ceux où il n'y a rien : savoir qu'un axe a été regardé et jugé calme
+        // fait partie de l'analyse. Les cacher donnait une liste d'alertes.
         var liste = trouve && trouve.querySelector('[data-izd-lecture]');
         if (liste) {
           liste.innerHTML = '';
-          var niveaux = ['', 'léger', 'modéré', 'marqué'];
+          var rienVu = {{ section.settings.libelle_rien_vu | json }};
+          var niveaux = [rienVu, 'léger', 'modéré', 'marqué'];
           lecture.forEach(function (axe) {
-            if (!axe.note) return;
             var li = document.createElement('li');
             li.className = 'izd__lecture-ligne';
+            if (!axe.note) li.className += ' izd__lecture-ligne--calme';
             li.innerHTML = '<span class="izd__lecture-nom"></span>' +
                            '<span class="izd__lecture-jauge" aria-hidden="true">' +
                            '<i style="width:' + (axe.note / 3 * 100) + '%"></i></span>' +
@@ -621,6 +652,27 @@
             liste.appendChild(li);
           });
           liste.hidden = liste.children.length === 0;
+        }
+
+        // Où ça se concentre. L'API le disait depuis le début, on le jetait.
+        var ligneZone = trouve && trouve.querySelector('[data-izd-zone]');
+        if (ligneZone) {
+          var libelleZone = {{ section.settings.libelle_zone | json }};
+          ligneZone.textContent = zonePhoto ? (libelleZone + ' ' + zonePhoto + '.') : '';
+          ligneZone.hidden = !zonePhoto;
+        }
+
+        // Deux réserves, qui valent mieux qu'une fausse assurance : une photo
+        // moyenne le dit, et des taches de rousseur ne sont pas un défaut.
+        var note = trouve && trouve.querySelector('[data-izd-note-photo]');
+        if (note) {
+          var mentions = [];
+          if (rousseur) mentions.push({{ section.settings.mention_rousseur | json }});
+          if (qualitePhoto && qualitePhoto !== 'bonne') {
+            mentions.push({{ section.settings.mention_photo_moyenne | json }});
+          }
+          note.textContent = mentions.join(' ');
+          note.hidden = mentions.length === 0;
         }
 
         var blocPhoto = trouve && trouve.querySelector('[data-izd-bloc-photo]');
@@ -758,6 +810,9 @@
               score.serum += Math.min(3, Math.round(cotSerum * poids));
 
               observation = a.remarque || '';
+              zonePhoto = a.zone || '';
+              qualitePhoto = a.qualite || '';
+              rousseur = a.taches_rousseur === true;
               lecture = [
                 { nom: 'Brillance', note: n(a.brillance) },
                 { nom: 'Grain de peau', note: n(a.pores) },
@@ -878,7 +933,9 @@
           // On garde le libellé choisi : la synthèse rendra ses propres mots
           // à la personne, pas une paraphrase écrite à l'avance.
           var libelle = (bouton.querySelector('.izd__reponse-texte') || bouton).textContent.trim();
-          declare.push({ texte: libelle, cible: cible });
+          var fieldset = bouton.closest('[data-izd-question]');
+          var famille = (fieldset && fieldset.getAttribute('data-famille')) || 'peau';
+          declare.push({ texte: libelle, cible: cible, famille: famille });
 
           if (index + 1 < questions.length) {
             index += 1;
@@ -1442,6 +1499,27 @@
     color: color-mix(in srgb, var(--izd-encre) 70%, transparent);
   }
 
+  /* Un axe regardé et jugé calme compte dans l'analyse, mais ne doit pas
+     peser autant à l'œil qu'un axe marqué. */
+  .izd__lecture-ligne--calme { opacity: 0.55; }
+
+  .izd__photo-zone {
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+    margin: 1.6rem 0 0;
+  }
+
+  .izd__photo-note {
+    font-family: var(--izd-texte-famille);
+    font-size: calc(var(--izd-texte) * 0.88);
+    line-height: 1.5;
+    margin: 1.2rem 0 0;
+    color: color-mix(in srgb, var(--izd-encre) 62%, transparent);
+  }
+
+  .izd__photo-zone[hidden],
+  .izd__photo-note[hidden] { display: none; }
+
   .izd__photo-actions {
     display: flex;
     flex-wrap: wrap;
@@ -1531,6 +1609,22 @@
 
   .izd__resultat-corps,
   .izd__resultat-notes { min-width: 0; }
+
+  /* Le verdict et son soin restent sous les yeux pendant qu'on déroule
+     l'analyse : on lit ce qui justifie sans perdre de vue ce qu'on propose.
+     `align-items: start` sur la grille est ce qui rend le collant possible ;
+     sans lui la colonne ferait toute la hauteur et n'aurait pas de quoi
+     glisser. Le décalage laisse passer l'en-tête. */
+  @media (min-width: 990px) {
+    .izd__resultat-corps {
+      position: sticky;
+      top: 10rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .izd__resultat-corps { position: static; }
+  }
 
   .izd__resultat-corps .izd__titre {
     font-size: clamp(calc(var(--izd-titre) * 1.1), 3.4vw, calc(var(--izd-titre) * 1.6));
@@ -2047,8 +2141,38 @@
     {
       "type": "text",
       "id": "libelle_vos_reponses",
-      "label": "Titre : vos réponses",
-      "default": "Ce que vous avez décrit"
+      "label": "Titre : ce que vous observez",
+      "default": "Ce que vous observez"
+    },
+    {
+      "type": "text",
+      "id": "libelle_vos_habitudes",
+      "label": "Titre : ce qui l'entoure",
+      "default": "Ce qui l'entoure"
+    },
+    {
+      "type": "text",
+      "id": "libelle_zone",
+      "label": "Mention : zone",
+      "default": "Surtout visible sur"
+    },
+    {
+      "type": "text",
+      "id": "mention_rousseur",
+      "label": "Mention : taches de rousseur",
+      "default": "Vos taches de rousseur sont un trait, pas une tache à corriger : elles ne comptent pas dans l'analyse."
+    },
+    {
+      "type": "text",
+      "id": "mention_photo_moyenne",
+      "label": "Mention : photo peu nette",
+      "default": "La photo manquait de lumière ou de netteté : cette lecture reste indicative."
+    },
+    {
+      "type": "text",
+      "id": "libelle_rien_vu",
+      "label": "Niveau : rien de visible",
+      "default": "rien de visible"
     },
     {
       "type": "text",
@@ -2293,6 +2417,16 @@
           "id": "libelle",
           "label": "La question",
           "default": "En fin de journée, votre peau est plutôt..."
+        },
+        {
+          "type": "select",
+          "id": "famille",
+          "label": "Ce que la question observe",
+          "options": [
+            { "value": "peau", "label": "La peau elle-même" },
+            { "value": "vie", "label": "Ce qui l'entoure" }
+          ],
+          "default": "peau"
         },
         {
           "type": "header",
