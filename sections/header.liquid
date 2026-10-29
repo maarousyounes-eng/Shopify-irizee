@@ -420,7 +420,7 @@
     min-height: var(--header-scrolled-height, 64px);
     padding-top: 0;
     padding-bottom: 0;
-    border-bottom: 1px solid {{ section.settings.barre_bordure }};
+    border-bottom: 1px solid {{ section.settings.barre_bordure | default: '#e2e2df' }};
   }
 
   /* Se cache en scrollant vers le bas, réapparaît dès qu'on remonte. */
