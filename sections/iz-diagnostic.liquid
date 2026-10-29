@@ -710,6 +710,17 @@
       var erreur = racine.querySelector('[data-izd-erreur]');
       var cleKlaviyo = racine.getAttribute('data-izd-klaviyo-cle') || '';
       var listeKlaviyo = racine.getAttribute('data-izd-klaviyo-liste') || '';
+
+      // Si l'application Klaviyo est activée sur le thème, son script est
+      // déjà sur la page et porte la clé de la boutique dans son adresse.
+      // On la lit plutôt que de demander de la recopier dans un réglage.
+      if (!cleKlaviyo) {
+        var scripts = document.querySelectorAll('script[src*="klaviyo"]');
+        for (var s = 0; s < scripts.length; s++) {
+          var trouve = /company_id=([A-Za-z0-9]+)/.exec(scripts[s].src);
+          if (trouve) { cleKlaviyo = trouve[1]; break; }
+        }
+      }
       var messagesEmail = {
         invalide: {{ section.settings.email_invalide | json }},
         panne: {{ section.settings.email_erreur | json }}
@@ -746,9 +757,29 @@
           if (bouton) bouton.disabled = true;
           if (erreur) erreur.hidden = true;
 
-          // Sans identifiants renseignés, on ne retient personne : le
-          // résultat s'affiche, simplement rien n'est enregistré.
+          // Trois chemins, du plus complet au plus simple.
+          //
+          // Avec une clé et une liste, on inscrit vraiment : Klaviyo
+          // enregistre le consentement, ce qu'un simple profil ne fait pas.
+          //
+          // Sans liste, mais avec le script de l'application sur la page, on
+          // se contente de créer le profil et de signaler l'événement : un
+          // flux peut s'y accrocher.
+          //
+          // Sans rien, on ne retient personne : le résultat s'affiche,
+          // simplement aucune adresse n'est enregistrée.
+          var onsite = window.klaviyo;
+          var appeler = function (nom, charge) {
+            if (!onsite) return;
+            if (typeof onsite[nom] === 'function') onsite[nom](charge);
+            else if (typeof onsite.push === 'function') onsite.push([nom, charge]);
+          };
+
           if (!cleKlaviyo || !listeKlaviyo) {
+            if (onsite) {
+              appeler('identify', { $email: adresse, Diagnostic: choisirCible() });
+              appeler('track', { event: 'Diagnostic terminé', Diagnostic: choisirCible() });
+            }
             suiteEmail(bouton);
             return;
           }
@@ -1337,14 +1368,14 @@
     {
       "type": "text",
       "id": "klaviyo_cle",
-      "label": "Clé publique",
-      "info": "Klaviyo, Settings puis API keys : la « Public API key / Site ID », six caractères. Elle est faite pour vivre dans la page, ce n'est pas un secret."
+      "label": "Clé publique (facultatif)",
+      "info": "Inutile si l'application Klaviyo est activée sur le thème : son script porte déjà la clé et le diagnostic la lit tout seul. À remplir seulement si vous ne voulez pas activer l'application."
     },
     {
       "type": "text",
       "id": "klaviyo_liste",
       "label": "Identifiant de la liste",
-      "info": "Klaviyo, Lists & segments, ouvrez la liste : l'identifiant est dans l'adresse. Sans ces deux champs le diagnostic fonctionne, mais aucune adresse n'est enregistrée."
+      "info": "Klaviyo, Lists & segments, ouvrez la liste : l'identifiant est dans l'adresse. Avec une liste, Klaviyo enregistre le consentement. Sans elle, le diagnostic crée seulement le profil et signale l'événement."
     },
     {
       "type": "select",
