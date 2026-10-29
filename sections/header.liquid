@@ -154,6 +154,27 @@
     display: block;
   }
 
+  {%- unless is_overlay -%}
+    /* Un élément collant colle à l'intérieur de son parent. Le conteneur que
+       Shopify met autour de la section fait exactement la hauteur du menu :
+       `position: sticky` sur .header n'avait donc aucune course, et le menu
+       partait avec la page sans jamais revenir. C'est le conteneur qui colle,
+       le menu se contente de glisser dedans.
+
+       L'accueil est à part : la superposition y passe le menu en
+       `position: fixed`, et un conteneur collant lui réserverait une hauteur
+       qui décollerait le hero du haut de page. */
+    #shopify-section-{{ section.id }} {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    #shopify-section-{{ section.id }} .header {
+      position: static;
+    }
+  {%- endunless -%}
+
   /* Réglages mobiles : indépendants des valeurs ordinateur ci-dessus */
   @media (max-width: 749px) {
     #shopify-section-{{ section.id }} .header {
