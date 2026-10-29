@@ -65,7 +65,7 @@
           "type": "accordeons",
           "settings": {
             "premier_ouvert": true,
-            "titre_1": "En détail",
+            "titre_1": "Description du soin",
             "contenu_1": "",
             "metafield_1": "",
             "description_produit_1": true,
@@ -78,7 +78,7 @@
             "metafield_3": "inci",
             "description_produit_3": false,
             "titre_4": "Livraison et retours",
-            "contenu_4": "<p>Livraison offerte dès 49 € d'achat en France. Retours acceptés sous 14 jours.</p>",
+            "contenu_4": "<p>Livraison offerte dès 39 € d'achat en France. Retours acceptés sous 14 jours.</p>",
             "metafield_4": "",
             "description_produit_4": false
           }
@@ -144,8 +144,7 @@
         "taille_bouton_m": 13,
         "taille_jauge_m": 12,
         "taille_acc_titre_m": 14,
-        "taille_acc_texte_m": 14,
-        "titre_1": "Ce qu'il fait pour votre peau"
+        "taille_acc_texte_m": 14
       }
     },
     "engagements": {
@@ -322,8 +321,8 @@
         "couleur_fond": "#ebebea",
         "masquer_mobile": false,
         "eyebrow": "Notre marque",
-        "titre": "Nous avons commencé par retirer, pas par ajouter",
-        "texte": "<p>Chaque ingrédient doit justifier sa présence. Si nous ne savons pas l'expliquer en une phrase, il ne rentre pas dans la formule.</p>",
+        "titre": "Ce que nous mettons, et ce que nous ne mettons pas",
+        "texte": "<p>Un besoin, un soin. Chaque formule vise un problème précis, avec les actifs qui le traitent et rien d'autre : si nous ne savons pas dire pourquoi un ingrédient est là, il n'y entre pas.</p><p>Sans parfum ajouté, à un pH proche de celui de la peau. Nous annonçons ce que chaque actif fait et à quel rythme.</p>",
         "image": "shopify://shop_images/irizee_s-rum-correcteur-clat_4x5_6a4f98.jpg",
         "bouton_label": "Découvrir",
         "bouton_lien": "",
@@ -408,8 +407,8 @@
       "name": "Newsletter",
       "settings": {
         "eyebrow": "Newsletter",
-        "heading": "Apprenez à lire votre peau",
-        "text": "<p>Ce que votre peau essaie de vous dire, les gestes qui changent vraiment quelque chose, et nos nouveautés avant tout le monde.</p>",
+        "heading": "Ce que votre peau essaie de vous dire",
+        "text": "<p>Des conseils fondés sur ce que font réellement les actifs, les erreurs courantes qui entretiennent un problème, et nos nouveautés en avant-première.</p>",
         "form_style": "pill",
         "show_first_name": false,
         "name_placeholder": "Votre prénom",
