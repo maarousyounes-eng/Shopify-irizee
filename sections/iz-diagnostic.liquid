@@ -186,7 +186,7 @@
             photographier sur-le-champ, le fichier pour une photo déjà prise.
             `capture` sur un seul champ supprimait le choix au lieu de l'offrir.
           {%- endcomment -%}
-          <div class="izd__photo-actions">
+          <div class="izd__photo-actions" data-izd-photo-choix>
             <button type="button" class="iz-btn iz-btn--primary" data-izd-camera-ouvrir>
               {{ section.settings.photo_bouton }}
             </button>
@@ -196,8 +196,13 @@
           </div>
           <input id="izd-photo" class="izd__photo-champ" type="file" accept="image/jpeg,image/png,image/webp" data-izd-photo>
 
-          <div class="izd__camera" data-izd-camera hidden>
-            <video class="izd__camera-video" data-izd-video playsinline muted autoplay></video>
+          {%- comment -%}
+            Le cadre n'apparaît qu'une fois l'image réellement là. Montré plus
+            tôt, il n'offrait qu'un grand rectangle noir, ce qui ressemble à
+            une panne alors que tout va bien.
+          {%- endcomment -%}
+          <figure class="izd__cadre" data-izd-camera hidden>
+            <video class="izd__cadre-media izd__cadre-media--miroir" data-izd-video playsinline muted></video>
             <div class="izd__photo-actions">
               <button type="button" class="iz-btn iz-btn--primary" data-izd-declencher>
                 {{ section.settings.photo_camera_prendre }}
@@ -206,9 +211,12 @@
                 {{ section.settings.photo_camera_annuler }}
               </button>
             </div>
-          </div>
+          </figure>
 
-          <p class="izd__photo-etat" data-izd-photo-etat hidden aria-live="polite"></p>
+          <figure class="izd__cadre" data-izd-apercu hidden>
+            <img class="izd__cadre-media" data-izd-apercu-img alt="" width="600" height="800">
+            <figcaption class="izd__photo-etat" data-izd-photo-etat aria-live="polite"></figcaption>
+          </figure>
 
           <button type="button" class="izd__passer" data-izd-photo-passer>
             {{ section.settings.photo_passer }}
@@ -562,6 +570,23 @@
 
         // Le fichier et la caméra aboutissent au même endroit : une image
         // réduite en base64. Tout ce qui suit est commun aux deux.
+        var choix = racine.querySelector('[data-izd-photo-choix]');
+        var apercu = racine.querySelector('[data-izd-apercu]');
+        var apercuImg = racine.querySelector('[data-izd-apercu-img]');
+
+        // Pendant l'analyse on montre la photo retenue : l'attente est plus
+        // facile quand on voit ce qu'on attend.
+        var montrerApercu = function (dataUrl) {
+          if (apercuImg) apercuImg.src = dataUrl;
+          if (apercu) apercu.hidden = false;
+          if (choix) choix.hidden = true;
+        };
+
+        var rendreLaMain = function () {
+          if (apercu) apercu.hidden = true;
+          if (choix) choix.hidden = false;
+        };
+
         var analyser = function (base64) {
           dire(messages.patience);
           champPhoto.disabled = true;
@@ -583,6 +608,7 @@
                 dire(messages.illisible);
                 champPhoto.disabled = false;
                 champPhoto.value = '';
+                rendreLaMain();
                 return;
               }
               // Une photo au jugé ne doit pas peser autant qu'une photo nette :
@@ -620,8 +646,12 @@
         champPhoto.addEventListener('change', function () {
           var fichier = champPhoto.files && champPhoto.files[0];
           if (!fichier) return;
+          var lecteurApercu = new FileReader();
+          lecteurApercu.onload = function () { montrerApercu(lecteurApercu.result); };
+          lecteurApercu.readAsDataURL(fichier);
           reduire(fichier).then(analyser).catch(function () {
             dire(messages.erreur);
+            rendreLaMain();
           });
         });
 
@@ -642,6 +672,8 @@
           if (zoneCamera) zoneCamera.hidden = true;
         };
 
+        if (fermer) fermer.addEventListener('click', rendreLaMain);
+
         if (ouvrir) {
           ouvrir.addEventListener('click', function () {
             var media = navigator.mediaDevices;
@@ -656,14 +688,17 @@
             media.getUserMedia({ video: { facingMode: 'user' }, audio: false })
               .then(function (f) {
                 flux = f;
-                if (zoneCamera) zoneCamera.hidden = false;
-                if (video) {
-                  video.srcObject = f;
-                  // `autoplay` ne suffit pas : l'élément était masqué quand le
-                  // flux lui a été donné, et il reste sur une image noire tant
-                  // qu'on ne lance pas la lecture à la main.
-                  var lecture = video.play();
-                  if (lecture && lecture.catch) lecture.catch(function () {});
+                if (!video) return;
+                // On attend que l'image coule avant de montrer le cadre :
+                // sinon on affiche un rectangle noir qui ressemble à une panne.
+                video.addEventListener('playing', function () {
+                  if (zoneCamera) zoneCamera.hidden = false;
+                  if (choix) choix.hidden = true;
+                }, { once: true });
+                video.srcObject = f;
+                var lecture = video.play();
+                if (lecture && lecture.catch) {
+                  lecture.catch(function () { dire(messages.cameraRefus); });
                 }
               })
               .catch(function () {
@@ -685,6 +720,7 @@
             toile.getContext('2d').drawImage(video, 0, 0, toile.width, toile.height);
             var url = toile.toDataURL('image/jpeg', 0.82);
             couperCamera();
+            montrerApercu(url);
             analyser(url.slice(url.indexOf(',') + 1));
           });
         }
@@ -928,6 +964,39 @@
     margin: 2rem 0 2.4rem;
   }
 
+  /* ---------- La tenue générale du parcours ----------
+
+     Deux régimes. Les écrans qui annoncent ou qui font patienter sont
+     centrés : rien à lire vite, tout à regarder. Les écrans où l'on répond
+     restent alignés à gauche sur une colonne étroite, parce qu'on y balaie
+     une liste et que l'œil a besoin d'un bord fixe. */
+
+  [data-izd-ecran="intro"],
+  [data-izd-ecran="photo"],
+  [data-izd-ecran="email"] {
+    text-align: center;
+    max-width: 58rem;
+    margin: 0 auto;
+  }
+
+  [data-izd-ecran="intro"] .izd__texte,
+  [data-izd-ecran="photo"] .izd__texte,
+  [data-izd-ecran="email"] .izd__texte,
+  [data-izd-ecran="email"] .izd__mention,
+  [data-izd-ecran="photo"] .izd__mention {
+    margin-inline: auto;
+  }
+
+  [data-izd-ecran="questions"] {
+    max-width: 54rem;
+    margin: 0 auto;
+  }
+
+  [data-izd-ecran="resultat"] {
+    max-width: 62rem;
+    margin: 0 auto;
+  }
+
   /* ---------- Les questions ---------- */
 
   .izd__progression {
@@ -1055,9 +1124,12 @@
   .izd__photo-etat {
     font-family: var(--izd-texte-famille);
     font-size: calc(var(--izd-texte) * 0.9);
-    margin-top: 1.4rem;
+    margin: 0;
+    text-align: center;
     color: color-mix(in srgb, var(--izd-encre) 70%, transparent);
   }
+
+  .izd__photo-etat:empty { display: none; }
 
   .izd__observation {
     font-family: var(--izd-texte-famille);
@@ -1157,21 +1229,42 @@
     align-items: center;
   }
 
-  .izd__camera {
-    margin-top: 2rem;
+  /* Le cadre sert deux fois : l'aperçu de la caméra, puis la photo retenue
+     pendant l'analyse. Même forme, donc aucun saut de mise en page. */
+  .izd__cadre {
+    margin: 2.4rem 0 0;
     display: grid;
     gap: 1.6rem;
     justify-items: center;
   }
 
-  .izd__camera-video {
+  .izd__cadre-media {
     width: 100%;
-    max-width: 36rem;
+    max-width: 30rem;
     aspect-ratio: 3 / 4;
     object-fit: cover;
     border-radius: var(--izd-rayon);
-    background: #000;
-    transform: scaleX(-1); /* miroir : on se voit comme dans une glace */
+    background: color-mix(in srgb, var(--izd-encre) 8%, transparent);
+    display: block;
+  }
+
+  /* On se voit comme dans une glace, mais la photo prise, elle, garde son
+     sens de lecture. */
+  .izd__cadre-media--miroir { transform: scaleX(-1); }
+
+  /* Pendant les quelques secondes d'analyse, la photo respire doucement :
+     c'est le seul signe qu'il se passe quelque chose. */
+  [data-izd-apercu]:not([hidden]) .izd__cadre-media {
+    animation: izd-respire 1.8s ease-in-out infinite;
+  }
+
+  @keyframes izd-respire {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-izd-apercu]:not([hidden]) .izd__cadre-media { animation: none; }
   }
 
   .izd__erreur,
@@ -1184,6 +1277,17 @@
   }
 
   /* ---------- Le résultat ---------- */
+
+  /* Le résultat n'est plus une suite de paragraphes : c'est un panneau
+     posé sur le fond, qui se lit comme une fiche. */
+  .izd__resultat {
+    background: var(--izd-carte);
+    border: 1px solid color-mix(in srgb, var(--izd-encre) 10%, transparent);
+    border-radius: calc(var(--izd-rayon) * 1.6);
+    padding: clamp(2.4rem, 4vw, 4rem);
+  }
+
+  .izd__resultat > .izd__titre { margin-bottom: 2rem; }
 
   .izd__routine {
     display: grid;
