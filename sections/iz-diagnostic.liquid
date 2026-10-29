@@ -91,10 +91,16 @@
 
       {%- comment -%} ---------- Écran 1 : l'accueil ---------- {%- endcomment -%}
       <div class="izd__ecran izd__hero" data-izd-ecran="intro">
+        {%- comment -%}
+          Le surtitre sort de la colonne de gauche et prend la largeur : le
+          filet qu'il pose sert de ligne de départ aux deux colonnes, qui
+          sinon commençaient à deux hauteurs différentes.
+        {%- endcomment -%}
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="izd__eyebrow izd__hero-sur">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+
         <div class="izd__hero-texte">
-          {%- if section.settings.eyebrow != blank -%}
-            <p class="izd__eyebrow">{{ section.settings.eyebrow }}</p>
-          {%- endif -%}
           {%- if section.settings.titre != blank -%}
             <h2 class="izd__titre">{{ section.settings.titre }}</h2>
           {%- endif -%}
@@ -110,6 +116,7 @@
               {{ section.settings.mention_duree | replace: '[n]', questions.size }}
             </p>
           </div>
+
         </div>
 
         {%- comment -%}
@@ -1113,9 +1120,18 @@
 
   .izd__hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    gap: clamp(3rem, 6vw, 7rem);
-    align-items: center;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    column-gap: clamp(3rem, 6vw, 7rem);
+    row-gap: clamp(2.4rem, 4vw, 3.6rem);
+    align-items: start;
+  }
+
+  /* Le surtitre barre la page et pose la ligne de départ commune. */
+  .izd__hero-sur {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding-bottom: 1.6rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--izd-encre) 16%, transparent);
   }
 
   .izd__etapes {
@@ -1124,6 +1140,7 @@
     padding: 0;
     display: grid;
     gap: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--izd-encre) 16%, transparent);
   }
 
   .izd__etape {
@@ -1131,11 +1148,13 @@
     grid-template-columns: 2.6rem minmax(0, 1fr);
     gap: 1.6rem;
     align-items: baseline;
-    border-top: 1px solid color-mix(in srgb, var(--izd-encre) 16%, transparent);
-    padding: 1.8rem 0;
+    padding: 0 0 1.8rem;
   }
 
-  .izd__etape:last-child { border-bottom: 1px solid color-mix(in srgb, var(--izd-encre) 16%, transparent); }
+  .izd__etape + .izd__etape {
+    border-top: 1px solid color-mix(in srgb, var(--izd-encre) 16%, transparent);
+    padding-top: 1.8rem;
+  }
 
   .izd__etape-rang {
     font-family: var(--izd-titre-famille);
@@ -1175,15 +1194,15 @@
     border-radius: var(--izd-rayon);
   }
 
+  /* Le bouton et sa mention forment un bloc : la durée se lit sous le geste
+     qu'elle qualifie, pas à trois centimètres sur le côté. */
   .izd__hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1.6rem 2.4rem;
-    margin-top: 3.2rem;
+    margin-top: clamp(2.4rem, 4vw, 3.2rem);
   }
 
-  .izd__hero-actions .izd__duree { margin: 0; }
+  .izd__hero-actions .izd__duree {
+    margin: 1.2rem 0 0;
+  }
 
   /* ---------- Les questions ---------- */
 
@@ -1697,13 +1716,13 @@
       "type": "text",
       "id": "titre",
       "label": "Titre",
-      "default": "Quel soin pour votre peau ?"
+      "default": "Votre peau n'a pas besoin de dix produits"
     },
     {
       "type": "richtext",
       "id": "intro",
       "label": "Introduction",
-      "default": "<p>Huit questions sur ce que vous voyez sur votre peau et sur vos habitudes : sommeil, soleil, alimentation. La peau ne réagit pas qu'aux soins qu'on lui applique.</p>"
+      "default": "<p>Elle a besoin du bon. Brillance, marques, taches, tiraillements, teint terne : dites-nous ce que vous voyez, on vous dit par quoi commencer — et par quoi ne pas commencer.</p>"
     },
     {
       "type": "image_picker",
@@ -1721,7 +1740,7 @@
       "type": "text",
       "id": "etape_1_texte",
       "label": "Étape 1 — texte",
-      "default": "Ce que vous voyez sur votre peau, et comment vous vivez."
+      "default": "Ce que vous voyez, et ce qui l'entoure : sommeil, soleil, alimentation."
     },
     {
       "type": "text",
@@ -1733,7 +1752,7 @@
       "type": "text",
       "id": "etape_2_texte",
       "label": "Étape 2 — texte",
-      "default": "Elle précise le résultat. Elle n'est jamais conservée."
+      "default": "Elle affine le résultat. Elle n'est ni conservée ni partagée."
     },
     {
       "type": "text",
@@ -1745,7 +1764,7 @@
       "type": "text",
       "id": "etape_3_texte",
       "label": "Étape 3 — texte",
-      "default": "Un geste du matin, un geste du soir, et le soin qui va avec."
+      "default": "Un geste le matin, un le soir, et le soin qui correspond."
     },
     {
       "type": "text",
