@@ -414,8 +414,13 @@
 
                 <div class="izd__produit-texte">
                   <a class="izd__produit-nom" href="{{ produit.url }}">{{ produit.title }}</a>
+                  {%- comment -%}
+                    Couper au mot laissait « La vitamine… » en suspens. On coupe
+                    à la phrase : la première suffit à dire ce que fait le soin.
+                  {%- endcomment -%}
                   {%- if produit.description != blank -%}
-                    <p class="izd__produit-resume">{{ produit.description | strip_html | truncatewords: 30 }}</p>
+                    {%- assign phrases = produit.description | strip_html | strip_newlines | split: '. ' -%}
+                    <p class="izd__produit-resume">{{ phrases | first | strip | append: '.' | replace: '..', '.' }}</p>
                   {%- endif -%}
                   <p class="izd__produit-prix">
                     {{ v.price | money }}
