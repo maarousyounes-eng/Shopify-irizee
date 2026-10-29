@@ -750,3 +750,39 @@ passer.
 **À retenir : après avoir ajouté un réglage de bloc, vérifier sur la boutique
 que les gabarits le portent vraiment — et les renvoyer sinon.** Vaut pour
 `theme dev` comme pour la synchronisation GitHub.
+
+---
+
+## 29/10/2026 (fin) — Les animations, et un piège de synchronisation
+
+Quatre mouvements, tous décoratifs : la page dit la même chose sans eux, et
+une seule règle `prefers-reduced-motion` les coupe tous.
+
+1. **Le balayage pendant l'analyse.** Sept à huit secondes d'attente ne
+   montraient qu'une photo qui changeait d'opacité. Une bande parcourt
+   maintenant l'image, et le texte annonce ce qui est regardé — lumière,
+   grain, taches, synthèse — dans l'ordre où la consigne le demande au
+   modèle. Ce ne sont pas des étapes inventées pour faire patienter.
+2. **Les écrans entrent** en fondu montant, et chaque question aussi.
+3. **Les constats arrivent en cascade**, 90 ms d'écart.
+4. **Les jauges partent de zéro.**
+
+### Piège — `requestAnimationFrame` ne se déclenche pas dans un onglet caché
+
+Première version des jauges : largeur à zéro, puis `requestAnimationFrame`
+imbriqué pour poser la largeur finale une image plus tard et déclencher la
+transition CSS. C'est la recette habituelle, et elle a échoué au test : les
+barres restaient à zéro.
+
+**Un onglet en arrière-plan ne reçoit aucune image, donc aucun rAF.** Le
+navigateur de test n'en émettait pas ; un visiteur qui change d'onglet
+pendant que le résultat se construit aurait eu le même résultat — des barres
+vides, définitivement.
+
+La largeur est maintenant portée par une variable CSS `--izd-largeur`, et
+c'est une `@keyframes` qui va de `0` à cette variable. L'animation démarre à
+l'insertion de l'élément, sans minutage en JavaScript, et la largeur reste
+juste même quand l'animation ne joue pas.
+
+**À retenir : ne jamais faire dépendre un état final de rAF.** L'état final
+se déclare en CSS ; l'animation ne fait que le rejoindre.
