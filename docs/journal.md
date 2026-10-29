@@ -711,3 +711,42 @@ garde du diagnostic est unique et vit près des cadres ; elle couvre désormais
   est en brouillon et qu'on ne peut pas attacher `page.diagnostic`. Sans
   dommage : la section ne rend rien hors de sa page (garde `handle_page`).
   À reprendre à la publication.
+
+---
+
+## 29/10/2026 (suite) — L'analyse approfondie, et un piège d'ordre d'envoi
+
+### Ce que le résultat montre désormais
+
+- **Deux constats au lieu d'un.** Ce qu'on observe sur la peau et ce qui
+  l'entoure ne se lisent pas pareil : le sommeil ou le soleil expliquent un
+  terrain, ils ne se constatent pas sur un visage. Chaque question porte une
+  `famille` (`peau` / `vie`) et la synthèse tient deux blocs séparés.
+- **Trois champs de l'API enfin utilisés.** `zone`, `qualite` et
+  `taches_rousseur` étaient renvoyés depuis le début et jetés. On affiche
+  maintenant où ça se concentre, une réserve quand la photo était moyenne, et
+  la mention qui dit que des taches de rousseur sont un trait, pas un défaut.
+- **Tous les axes, même calmes.** Savoir qu'un axe a été regardé et jugé calme
+  fait partie de l'analyse ; les masquer donnait une liste d'alertes.
+- **Un conseil par résultat**, éditable, qui ferme l'analyse.
+
+La colonne de gauche — verdict, soin, bouton — est `position: sticky` au-delà
+de 990 px : elle reste sous les yeux pendant qu'on déroule la justification.
+C'est `align-items: start` sur la grille qui le rend possible ; sans lui la
+colonne ferait toute la hauteur et n'aurait pas de quoi glisser.
+
+### Piège — un gabarit JSON envoyé avant le schéma perd ses réglages
+
+J'ai ajouté `famille` au schéma du bloc Question et rempli les huit questions
+dans `templates/page.json`. Le gabarit local était juste, la page rendait
+`peau` partout.
+
+**Shopify valide les réglages d'un gabarit JSON contre le schéma de la section
+au moment de l'envoi, et jette en silence ceux qu'il ne connaît pas encore.**
+Si le gabarit monte avant le `.liquid` qui déclare le réglage, le réglage
+disparaît. Une seconde écriture du gabarit, le schéma étant en place, l'a fait
+passer.
+
+**À retenir : après avoir ajouté un réglage de bloc, vérifier sur la boutique
+que les gabarits le portent vraiment — et les renvoyer sinon.** Vaut pour
+`theme dev` comme pour la synchronisation GitHub.
