@@ -49,7 +49,7 @@
         "menu_text_transform": "none",
         "menu": "main-menu",
         "customer_account_menu": "customer-account-main-menu",
-        "pdp_override": true,
+        "pdp_override": false,
         "pdp_height": 80,
         "pdp_height_mobile": 64,
         "pdp_logo_width": 110,

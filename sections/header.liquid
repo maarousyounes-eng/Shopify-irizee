@@ -195,7 +195,7 @@
 
 {% endstyle %}
 
-<header class="header full-width header--survol-{{ section.settings.menu_hover_style }}{% if reglages_pdp %} header--pdp header--pdp-{{ couleur_texte }}{% endif %}{% if is_overlay %} header--overlay header--overlay-{{ couleur_texte }}{% if section.settings.enable_blur %} header--blur{% endif %}{% endif %}">
+<header class="header full-width header--survol-{{ section.settings.menu_hover_style }}{% if reglages_pdp %} header--pdp header--pdp-{{ couleur_texte }}{% endif %}{% unless is_overlay %} header--barre{% if section.settings.enable_blur %} header--barre-flou{% endif %}{% endunless %}{% if is_overlay %} header--overlay header--overlay-{{ couleur_texte }}{% if section.settings.enable_blur %} header--blur{% endif %}{% endif %}">
   <details class="header__mobile-nav">
     <summary class="header__hamburger" aria-label="Menu">
       <span></span>
@@ -407,6 +407,26 @@
   }
 
   .header--overlay.header--scrolled.header--blur {
+    backdrop-filter: blur(var(--header-blur));
+    -webkit-backdrop-filter: blur(var(--header-blur));
+  }
+
+  /* Les pages sans image de une n'ont pas d'état « au repos » à montrer :
+     elles portent d'emblée la barre que l'accueil prend une fois scrollé.
+     Mêmes valeurs, au mot près, pour qu'un menu soit un menu partout. */
+  .header--barre {
+    background: color-mix(in srgb, var(--color-background) 75%, transparent);
+    color: var(--color-foreground);
+    min-height: var(--header-scrolled-height, 64px);
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .header--barre .header__logo {
+    width: var(--header-scrolled-logo-width, 84px);
+  }
+
+  .header--barre-flou {
     backdrop-filter: blur(var(--header-blur));
     -webkit-backdrop-filter: blur(var(--header-blur));
   }
