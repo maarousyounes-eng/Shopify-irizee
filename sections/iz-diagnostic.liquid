@@ -490,6 +490,15 @@
                   {%- endif -%}
                 </div>
               {%- endif -%}
+
+              {%- if bloc.settings.conseil != blank -%}
+                <div class="izd__synthese">
+                  <p class="izd__synthese-titre">{{ section.settings.libelle_conseil }}</p>
+                  <div class="izd__synthese-corps">
+                    <p class="izd__moment-texte">{{ bloc.settings.conseil }}</p>
+                  </div>
+                </div>
+              {%- endif -%}
             </div>
           </div>
         {%- endfor -%}
@@ -2188,6 +2197,12 @@
     },
     {
       "type": "text",
+      "id": "libelle_conseil",
+      "label": "Titre : le conseil",
+      "default": "Le conseil"
+    },
+    {
+      "type": "text",
       "id": "libelle_soir",
       "label": "Libellé soir",
       "default": "Le soir"
@@ -2597,6 +2612,12 @@
           "id": "titre",
           "label": "Titre",
           "default": "Vos deux besoins arrivent ensemble"
+        },
+        {
+          "type": "textarea",
+          "id": "conseil",
+          "label": "Le conseil qui va avec",
+          "info": "S'affiche à la fin de l'analyse, après la routine."
         },
         {
           "type": "textarea",
