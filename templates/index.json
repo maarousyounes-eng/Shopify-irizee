@@ -18,9 +18,9 @@
         "position_horizontal": "left",
         "show_overlay": true,
         "overlay_opacity": 10,
-        "eyebrow": "",
-        "heading": "Routine anti-taches & éclat",
-        "button_label": "Découvrir",
+        "eyebrow": "Soins ciblés",
+        "heading": "Un teint plus net, en deux gestes par jour",
+        "button_label": "Découvrir nos soins",
         "button_link": "shopify://collections/les-soins",
         "button_custom": false,
         "button_radius": 100,
@@ -29,7 +29,7 @@
         "button_font_weight": 600,
         "button_letter_spacing": 1,
         "button_text_transform": "uppercase",
-        "text": "<p>Un masque une fois par semaine, quelques gouttes de sérum matin et soir : un teint plus uniforme et plus lumineux, sans empiler les flacons.</p>"
+        "text": "<p>Un soin par besoin, matin et soir. Pas une gamme entière à essayer.</p>"
       }
     },
     "reassurance_L9RciR": {
