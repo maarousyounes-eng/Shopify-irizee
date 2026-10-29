@@ -786,3 +786,56 @@ juste même quand l'animation ne joue pas.
 
 **À retenir : ne jamais faire dépendre un état final de rAF.** L'état final
 se déclare en CSS ; l'animation ne fait que le rejoindre.
+
+---
+
+## 29/10/2026 — Le menu, l'accueil, et l'espace client
+
+### Le menu ne revenait que sur l'accueil
+
+`position: sticky` était posé sur `.header`. Or **un élément collant colle à
+l'intérieur de son parent**, et le conteneur que Shopify met autour d'une
+section de groupe fait exactement la hauteur du menu : aucune course, donc
+aucun collage. Le menu partait avec la page et ne revenait jamais — sauf sur
+l'accueil, où la superposition le passe en `position: fixed`.
+
+C'est le conteneur `#shopify-section-{{ section.id }}` qui colle désormais, et
+seulement hors accueil : sur l'accueil, un conteneur collant réserverait une
+hauteur qui décollerait le hero du haut de page.
+
+**À retenir : vérifier la hauteur du parent avant de conclure qu'un sticky
+« ne marche pas ».**
+
+### Le navigateur de test ne rend pas d'images
+
+`document.visibilityState` vaut `hidden` dans le panneau, donc
+`requestAnimationFrame` ne se déclenche jamais. Toute vérification d'un état
+posé dans un rAF y échoue à tort — c'est ce qui m'a fait croire que le script
+du menu ne tournait pas. Mesurer la position, pas la classe.
+
+### L'espace client n'existait pas
+
+Aucun `templates/customers/`. Sept gabarits créés : connexion (avec la
+récupération de mot de passe sur la même page), inscription, compte,
+commande, adresses, nouveau mot de passe, activation. Styles partagés dans
+`snippets/compte.liquid` — un gabarit Liquid ne peut pas porter de
+`{% stylesheet %}`, réservé aux sections.
+
+Tous les formulaires partent en rechargement natif : la protection anti-spam
+de Shopify pose son jeton là, et un envoi AJAX se fait refuser avec
+« Missing CAPTCHA token ». Leçon déjà payée sur le diagnostic.
+
+**Bloqué côté boutique :** `/account/login` redirige vers l'accueil, donc les
+comptes clients sont désactivés dans les réglages. Ces gabarits ne serviront
+qu'une fois les comptes activés **en mode classique** : les « nouveaux
+comptes clients » sont hébergés par Shopify et ignorent le thème.
+
+### Divers
+
+- Les cartes produit n'affichaient pas `compare_at_price` : l'économie de la
+  routine ne se voyait nulle part.
+- L'accordéon livraison annonçait 49 € quand la jauge d'à côté disait 39 €,
+  sur la même page. Les défauts du schéma de `reassurance` disaient 49 aussi.
+- Un gabarit `product.routine` pour le pack : un pack n'a ni texture ni liste
+  d'actifs propres, ces sections restaient vides. **À attacher au produit
+  depuis l'admin.**
