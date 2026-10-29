@@ -1279,6 +1279,16 @@
     justify-items: center;
   }
 
+  /* `display: grid` sur une classe l'emporte sur le `display: none` que le
+     navigateur applique à [hidden] : sans cette règle, les deux cadres
+     s'affichent en permanence. Déjà rencontré sur les flèches de l'accueil. */
+  .izd__cadre[hidden],
+  .izd__synthese[hidden],
+  .izd__lecture[hidden],
+  .izd__photo-actions[hidden] {
+    display: none;
+  }
+
   .izd__cadre-media {
     width: 100%;
     max-width: 30rem;
