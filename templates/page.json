@@ -27,7 +27,8 @@
             "r3": "Les deux, selon les zones",
             "c3": "deux",
             "r4": "Ni l'un ni l'autre",
-            "c4": "aucun"
+            "c4": "aucun",
+            "famille": "peau"
           }
         },
         "question_Rq9CdU": {
@@ -41,7 +42,8 @@
             "r3": "Un teint inégal, qui manque d'uniformité",
             "c3": "serum",
             "r4": "Des imperfections qui reviennent",
-            "c4": "masque"
+            "c4": "masque",
+            "famille": "peau"
           }
         },
         "question_R4YQgx": {
@@ -55,7 +57,8 @@
             "r3": "Aucune",
             "c3": "aucun",
             "r4": "",
-            "c4": "aucun"
+            "c4": "aucun",
+            "famille": "peau"
           }
         },
         "question_PKxRmF": {
@@ -69,7 +72,8 @@
             "r3": "Sommeil variable d'une semaine à l'autre",
             "c3": "serum",
             "r4": "",
-            "c4": "aucun"
+            "c4": "aucun",
+            "famille": "vie"
           }
         },
         "question_DHqCFP": {
@@ -83,7 +87,8 @@
             "r3": "Protection solaire toute l'année",
             "c3": "aucun",
             "r4": "",
-            "c4": "aucun"
+            "c4": "aucun",
+            "famille": "vie"
           }
         },
         "question_VAWhW6": {
@@ -97,7 +102,8 @@
             "r3": "Alimentation variable selon les périodes",
             "c3": "masque",
             "r4": "",
-            "c4": "aucun"
+            "c4": "aucun",
+            "famille": "vie"
           }
         },
         "question_AQ69EL": {
@@ -111,7 +117,8 @@
             "r3": "J'utilise déjà un sérum",
             "c3": "masque",
             "r4": "J'utilise déjà un masque",
-            "c4": "serum"
+            "c4": "serum",
+            "famille": "vie"
           }
         },
         "question_Yrqw3Y": {
@@ -125,7 +132,8 @@
             "r3": "Du temps le matin comme le soir",
             "c3": "deux",
             "r4": "",
-            "c4": "aucun"
+            "c4": "aucun",
+            "famille": "vie"
           }
         },
         "resultat_fgdgCk": {
@@ -133,11 +141,11 @@
           "settings": {
             "cible": "masque",
             "titre": "Commencez par désencombrer votre peau",
-            "argument": "Le Masque Rituel Nila absorbe l'excès de sébum et les impuretés. L'huile d'argan et le beurre de karité gardent la peau souple pendant toute la pose.",
             "texte": "<p>Vos réponses décrivent une peau qui produit du sébum et dont le grain s'irrégularise : ce sont les impuretés et l'excès de sébum qu'il faut traiter en premier. Un sérum posé sur une peau encombrée travaille moins bien.</p>",
             "matin": "Nettoyant doux, puis votre crème habituelle.",
             "soir": "Une à deux fois par semaine, le masque pendant dix à quinze minutes, puis votre crème.",
-            "produit": ""
+            "produit": "",
+            "argument": "Le Masque Rituel Nila absorbe l'excès de sébum et les impuretés. L'huile d'argan et le beurre de karité gardent la peau souple pendant toute la pose."
           }
         },
         "resultat_EUafqy": {
@@ -145,11 +153,11 @@
           "settings": {
             "cible": "serum",
             "titre": "Commencez par unifier votre teint",
-            "argument": "Le Sérum Correcteur & Éclat associe la vitamine C, l'alpha-arbutine et l'acide hyaluronique : la luminosité, les taches et l'hydratation, dans la même formule.",
             "texte": "<p>Vos réponses décrivent des taches, des marques ou un teint qui manque d'uniformité. C'est un travail de fond, quotidien, qui demande des actifs appliqués tous les jours plutôt qu'un soin hebdomadaire.</p>",
             "matin": "Quelques gouttes sur peau propre, puis la crème et une protection solaire.",
             "soir": "Quelques gouttes sur peau propre, puis la crème.",
-            "produit": ""
+            "produit": "",
+            "argument": "Le Sérum Correcteur & Éclat associe la vitamine C, l'alpha-arbutine et l'acide hyaluronique : la luminosité, les taches et l'hydratation, dans la même formule."
           }
         },
         "resultat_baQixp": {
@@ -157,11 +165,11 @@
           "settings": {
             "cible": "routine",
             "titre": "Vos deux besoins arrivent ensemble",
-            "argument": "Le masque prépare la peau une à deux fois par semaine, le sérum prend le relais au quotidien.",
             "texte": "<p>Vos réponses pointent autant vers le sébum et les impuretés que vers les taches et le manque d'éclat. Les traiter l'un après l'autre ferait perdre des semaines : les deux soins ne jouent pas sur le même terrain et ne se gênent pas.</p>",
             "matin": "Le sérum sur peau propre, puis la crème et une protection solaire.",
             "soir": "Le sérum tous les soirs. Une à deux fois par semaine, le masque avant le sérum.",
-            "produit": ""
+            "produit": "",
+            "argument": "Le masque prépare la peau une à deux fois par semaine, le sérum prend le relais au quotidien."
           }
         }
       },
@@ -209,7 +217,6 @@
         "email_erreur": "L'envoi n'a pas abouti, mais votre résultat s'affiche quand même.",
         "email_mention": "<p>Votre adresse sert à vous envoyer ce résultat et nos nouveautés. Vous pouvez vous désabonner à tout moment.</p>",
         "resultat_eyebrow": "Votre résultat",
-        "libelle_vos_reponses": "Ce que vous observez",
         "libelle_matin": "Le matin",
         "libelle_soir": "Le soir",
         "libelle_achat": "Ajouter au panier",
@@ -236,7 +243,8 @@
         "taille_question": 26,
         "taille_question_m": 20,
         "taille_texte": 16,
-        "taille_texte_m": 15
+        "taille_texte_m": 15,
+        "libelle_vos_reponses": "Ce que vous observez"
       }
     }
   },
