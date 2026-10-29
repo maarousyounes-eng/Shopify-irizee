@@ -48,9 +48,9 @@
           "type": "question",
           "settings": {
             "libelle": "Des boutons passés vous ont-ils laissé des marques ?",
-            "r1": "Oui, plusieurs",
+            "r1": "Oui, plusieurs marques",
             "c1": "serum",
-            "r2": "Une ou deux",
+            "r2": "Oui, une ou deux marques",
             "c2": "serum",
             "r3": "Aucune",
             "c3": "aucun",
@@ -62,11 +62,11 @@
           "type": "question",
           "settings": {
             "libelle": "Et le sommeil, en ce moment ?",
-            "r1": "Court ou agité, moins de six heures",
+            "r1": "Sommeil court ou agité",
             "c1": "serum",
-            "r2": "Sept à huit heures, sans problème",
+            "r2": "Sommeil de sept à huit heures",
             "c2": "aucun",
-            "r3": "Variable d'une semaine à l'autre",
+            "r3": "Sommeil variable d'une semaine à l'autre",
             "c3": "serum",
             "r4": "",
             "c4": "aucun"
@@ -76,11 +76,11 @@
           "type": "question",
           "settings": {
             "libelle": "Mettez-vous une protection solaire ?",
-            "r1": "Rarement, ou jamais",
+            "r1": "Protection solaire rare ou absente",
             "c1": "serum",
-            "r2": "L'été, ou quand il fait beau",
+            "r2": "Protection solaire l'été seulement",
             "c2": "serum",
-            "r3": "Toute l'année, tous les jours",
+            "r3": "Protection solaire toute l'année",
             "c3": "aucun",
             "r4": "",
             "c4": "aucun"
@@ -92,9 +92,9 @@
             "libelle": "Comment mangez-vous ces temps-ci ?",
             "r1": "Beaucoup de sucre et de plats tout prêts",
             "c1": "masque",
-            "r2": "Plutôt équilibré",
+            "r2": "Alimentation plutôt équilibrée",
             "c2": "aucun",
-            "r3": "Ça dépend des périodes",
+            "r3": "Alimentation variable selon les périodes",
             "c3": "masque",
             "r4": "",
             "c4": "aucun"
@@ -104,7 +104,7 @@
           "type": "question",
           "settings": {
             "libelle": "Que comporte votre routine aujourd'hui ?",
-            "r1": "Rien, ou juste un nettoyant",
+            "r1": "Pas encore de routine, ou un nettoyant seul",
             "c1": "deux",
             "r2": "Un nettoyant et une crème",
             "c2": "deux",
@@ -122,7 +122,7 @@
             "c1": "serum",
             "r2": "Un vrai moment, une fois par semaine",
             "c2": "masque",
-            "r3": "Les deux me conviennent",
+            "r3": "Du temps le matin comme le soir",
             "c3": "deux",
             "r4": "",
             "c4": "aucun"
