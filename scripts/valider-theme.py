@@ -158,6 +158,42 @@ def controle_longueur_noms():
                 )
 
 
+# ------------------------- 3 ter. Valeurs par défaut vides
+def controle_default_vide():
+    """
+    Un `default` à la chaîne vide rend le schéma invalide et Shopify refuse le
+    fichier entier : « setting with id=... default ne peut pas être vide ».
+    Rencontré le 29/10/2026 sur iz-catalogue.liquid, qui ne montait plus sur la
+    boutique sans que rien ne le dise. Un réglage sans `default` est valide :
+    c'est la bonne façon d'avoir un champ vide au départ.
+    """
+    global controles
+    sources = list(fichiers_a_schema()) + [RACINE / "config" / "settings_schema.json"]
+    for chemin in sources:
+        if not chemin.exists():
+            continue
+        try:
+            if chemin.suffix == ".liquid":
+                schema, _ = schema_de(chemin)
+                if schema is None:
+                    continue
+            else:
+                schema = charger_json(chemin)
+        except Exception:
+            continue
+        for reglage in parcourir(schema):
+            if "default" not in reglage:
+                continue
+            controles += 1
+            if reglage["default"] == "":
+                erreurs.append(
+                    f"{chemin.relative_to(RACINE)} : le réglage "
+                    f"« {reglage.get('id')} » a un default vide. Shopify "
+                    f"rejettera le fichier entier : retirer la ligne default."
+                )
+
+
+
 # ------------------------------- 4. Réglages utilisés mais absents du schéma
 def controle_reglages_declares():
     global controles
@@ -255,6 +291,7 @@ def main():
         controle_schemas,
         controle_range,
         controle_longueur_noms,
+        controle_default_vide,
         controle_reglages_declares,
         controle_valeurs_templates,
         controle_doublons,
