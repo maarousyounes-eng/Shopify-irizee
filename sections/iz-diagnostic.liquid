@@ -1120,7 +1120,7 @@
 
   .izd__hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    grid-template-columns: minmax(0, 58rem) minmax(0, 1fr);
     column-gap: clamp(3rem, 6vw, 7rem);
     row-gap: clamp(2.4rem, 4vw, 3.6rem);
     align-items: start;
@@ -1183,9 +1183,13 @@
      grand que les titres d'étape, qui vivent au-dessus d'une liste. */
   .izd__hero .izd__titre {
     font-size: calc(var(--izd-titre) * 1.22);
-    max-width: 18ch;
+    max-width: 20ch;
     margin-bottom: 2rem;
   }
+
+  /* La colonne porte déjà la mesure : le texte la remplit au lieu de s'arrêter
+     avant son bord. */
+  .izd__hero-texte .izd__texte { max-width: 100%; }
 
   .izd__hero-media img {
     display: block;
