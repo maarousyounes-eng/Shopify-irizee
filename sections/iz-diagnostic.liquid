@@ -1682,6 +1682,10 @@
   @media (max-width: 989px) {
     .izd__hero { grid-template-columns: minmax(0, 1fr); }
     .izd__hero-media { order: -1; max-width: 42rem; }
+
+    /* Empilées, les étapes ne sont plus à côté du filet du surtitre : il leur
+       en faut un à elles, sinon la liste commence dans le vide. */
+    .izd__etapes { border-top: 1px solid color-mix(in srgb, var(--izd-encre) 16%, transparent); padding-top: 1.8rem; }
   }
 
   @media (max-width: 749px) {
