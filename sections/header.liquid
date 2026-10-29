@@ -412,10 +412,10 @@
   }
 
   /* Hors accueil, il n'y a pas d'image de une sous le menu : rien à laisser
-     transparaître, donc pas de fond translucide ni de flou. Un fond blanc
-     franc, et un filet pour le détacher du contenu qui passe dessous. */
+     transparaître, donc ni translucide ni flou. Le fond reste celui du site,
+     posé par `.header` ; on ajoute seulement le filet qui sépare le menu du
+     contenu qui passe dessous. */
   .header--barre {
-    background: #fff;
     color: var(--color-foreground);
     min-height: var(--header-scrolled-height, 64px);
     padding-top: 0;
