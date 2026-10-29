@@ -609,8 +609,15 @@
             media.getUserMedia({ video: { facingMode: 'user' }, audio: false })
               .then(function (f) {
                 flux = f;
-                if (video) video.srcObject = f;
                 if (zoneCamera) zoneCamera.hidden = false;
+                if (video) {
+                  video.srcObject = f;
+                  // `autoplay` ne suffit pas : l'élément était masqué quand le
+                  // flux lui a été donné, et il reste sur une image noire tant
+                  // qu'on ne lance pas la lecture à la main.
+                  var lecture = video.play();
+                  if (lecture && lecture.catch) lecture.catch(function () {});
+                }
               })
               .catch(function () {
                 dire(messages.cameraRefus);
