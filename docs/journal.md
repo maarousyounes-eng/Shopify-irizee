@@ -525,3 +525,31 @@ Reste à identifier *pourquoi* Shopify refuse. Piste à vérifier : dans
 l'aperçu de l'éditeur, la page vit sur un domaine `shopifypreview.com` et le
 formulaire client part en requête croisée. L'erreur pourrait n'exister que
 dans l'aperçu et pas sur la boutique. À confirmer en testant sur l'URL réelle.
+
+### Pourquoi Shopify refusait l'email : « Missing CAPTCHA token »
+
+Mesuré, pas supposé. En rejouant la requête du formulaire avec un `fetch`
+natif pris dans une iframe (pour contourner les enveloppes posées sur
+`window.fetch`), Shopify répond **400** et le titre de la page d'erreur dit
+`Missing CAPTCHA token`. Même en n'envoyant que l'adresse, sans étiquettes.
+
+La cause : **Préférences → Protection contre le courrier indésirable →
+« Activer sur les formulaires de contact et de commentaire » est actif.**
+Shopify attend alors un jeton hCaptcha que seul son propre script produit,
+au moment d'une soumission native. Un envoi en arrière-plan ne le porte
+jamais, donc il est rejeté — toujours, pas seulement de temps en temps.
+
+**Conséquence : tant que ce réglage est actif, aucun `{% form 'customer' %}`
+soumis en AJAX ne peut aboutir.** Trois sorties possibles :
+
+1. décocher le réglage (une case, mais la protection tombe aussi sur le
+   formulaire de contact) ;
+2. laisser le formulaire partir nativement et restaurer le résultat après le
+   rechargement, en gardant les réponses en `sessionStorage` ;
+3. envoyer l'adresse directement à Klaviyo, qui est de toute façon l'outil
+   d'emailing : la clé publique suffit côté navigateur, et le captcha de
+   Shopify n'entre plus en jeu.
+
+**Leçon de méthode : lire le corps de la réponse d'erreur avant d'échafauder
+des hypothèses.** Le titre HTML donnait la réponse en une ligne, après deux
+messages passés à supposer un problème de domaine d'aperçu.
