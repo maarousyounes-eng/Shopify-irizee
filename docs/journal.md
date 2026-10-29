@@ -553,3 +553,30 @@ soumis en AJAX ne peut aboutir.** Trois sorties possibles :
 **Leçon de méthode : lire le corps de la réponse d'erreur avant d'échafauder
 des hypothèses.** Le titre HTML donnait la réponse en une ligne, après deux
 messages passés à supposer un problème de domaine d'aperçu.
+
+### L'inscription passe par Klaviyo
+
+Suite de la panne ci-dessus. Tant que la protection anti-spam reste active,
+aucun `{% form 'customer' %}` soumis en AJAX ne peut aboutir. Plutôt que de
+décocher une protection ou d'imposer un rechargement, l'adresse va désormais
+là où vivent les envois.
+
+Le formulaire du diagnostic n'est plus un formulaire Shopify mais un
+formulaire ordinaire, entièrement traité en JavaScript. Deux conséquences :
+le captcha n'entre plus dans l'équation, et **plus aucune soumission native
+ne peut faire quitter la page** — ce qui écarte au passage le symptôme que je
+n'avais pas su reproduire.
+
+L'appel part sur `POST https://a.klaviyo.com/client/subscriptions/` avec la
+clé publique en `company_id`. La cible du diagnostic (`masque`, `serum`,
+`routine`) voyage en propriété de profil `Diagnostic`, pour qu'un flux
+Klaviyo envoie la bonne routine.
+
+**Deux réglages de section portent la configuration** : clé publique et
+identifiant de liste. Tant qu'ils sont vides, le diagnostic fonctionne et
+affiche son résultat, simplement rien n'est enregistré — un écran qui
+s'arrête vaut moins qu'une adresse perdue.
+
+Parcours vérifié de bout en bout sur `irizee.com` : huit questions, étape
+photo passée, adresse saisie, résultat affiché avec le produit et le bouton
+de précommande.
