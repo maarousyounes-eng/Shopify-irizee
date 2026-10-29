@@ -70,10 +70,16 @@
         {%- if collection.title != blank -%}{{ collection.title }}{%- else -%}{{ section.settings.titre }}{%- endif -%}
       </h1>
 
-      {%- if collection.description != blank -%}
-        <div class="izc__texte">{{ collection.description }}</div>
-      {%- elsif section.settings.intro != blank -%}
+      {%- comment -%}
+        Le réglage de la section passe devant la description de la collection.
+        L'inverse rendait le texte de ce haut de page impossible à tenir
+        depuis le thème : il repartait sur trois lignes à chaque fois.
+        La description reste le repli, et continue de servir au référencement.
+      {%- endcomment -%}
+      {%- if section.settings.intro != blank -%}
         <div class="izc__texte">{{ section.settings.intro }}</div>
+      {%- elsif collection.description != blank -%}
+        <div class="izc__texte">{{ collection.description }}</div>
       {%- endif -%}
 
     </header>

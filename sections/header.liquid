@@ -452,17 +452,20 @@
     transform: translateY(-0.56rem);
   }
 
-  /* Deux logos superposables (couleur "en haut" / couleur "scrollé") — un
-     seul visible à la fois, basculé par la classe .header--scrolled. */
+  /* Deux logos superposables (couleur "en haut" / couleur "scrollé"), un
+     seul visible à la fois. La bascule ne vaut que là où le second logo est
+     réellement rendu, c'est-à-dire sur l'accueil : ailleurs elle cachait le
+     seul logo de la page, et le menu se retrouvait sans marque au
+     défilement. */
   .header__logo--scrolled {
     display: none;
   }
 
-  .header--scrolled .header__logo--top {
+  .header--overlay.header--scrolled .header__logo--top {
     display: none;
   }
 
-  .header--scrolled .header__logo--scrolled {
+  .header--overlay.header--scrolled .header__logo--scrolled {
     display: block;
   }
 
