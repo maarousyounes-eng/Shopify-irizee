@@ -299,6 +299,7 @@
 
             {%- comment -%} Rempli par l'analyse photo, vide sans elle. {%- endcomment -%}
             <p class="izd__observation" data-izd-observation hidden></p>
+            <ul class="izd__lecture" data-izd-lecture hidden></ul>
 
             {%- if bloc.settings.texte != blank -%}
               <div class="izd__texte">{{ bloc.settings.texte }}</div>
@@ -399,6 +400,7 @@
       var historique = [];
       var index = 0;
       var observation = '';
+      var lecture = [];
 
       var afficher = function (nom) {
         Object.keys(ecrans).forEach(function (cle) {
@@ -464,6 +466,27 @@
             ligne.textContent = observation;
             ligne.hidden = false;
           }
+        }
+
+        // Ce que la photo a montré, axe par axe. On ne liste que ce qui est
+        // réellement visible : une ligne « rien à signaler » n'apprend rien.
+        var liste = trouve && trouve.querySelector('[data-izd-lecture]');
+        if (liste) {
+          liste.innerHTML = '';
+          var niveaux = ['', 'léger', 'modéré', 'marqué'];
+          lecture.forEach(function (axe) {
+            if (!axe.note) return;
+            var li = document.createElement('li');
+            li.className = 'izd__lecture-ligne';
+            li.innerHTML = '<span class="izd__lecture-nom"></span>' +
+                           '<span class="izd__lecture-jauge" aria-hidden="true">' +
+                           '<i style="width:' + (axe.note / 3 * 100) + '%"></i></span>' +
+                           '<span class="izd__lecture-niveau"></span>';
+            li.querySelector('.izd__lecture-nom').textContent = axe.nom;
+            li.querySelector('.izd__lecture-niveau').textContent = niveaux[axe.note];
+            liste.appendChild(li);
+          });
+          liste.hidden = liste.children.length === 0;
         }
 
         afficher('resultat');
@@ -562,11 +585,29 @@
                 champPhoto.value = '';
                 return;
               }
+              // Une photo au jugé ne doit pas peser autant qu'une photo nette :
+              // le modèle note lui-même la qualité de ce qu'il a pu voir.
+              var poids = a.qualite === 'faible' ? 0.5 : (a.qualite === 'moyenne' ? 0.75 : 1);
+              var n = function (v) { return Number(v) || 0; };
+
+              // Le masque s'adresse au sébum et au grain, le sérum aux taches,
+              // aux marques et au manque d'éclat.
+              var cotMasque = (n(a.brillance) + n(a.pores)) / 2;
+              var cotSerum = (n(a.taches_pigmentaires) + n(a.marques) + n(a.eclat)) / 3;
+
               // Trois points au maximum de chaque côté, contre huit pour les
               // réponses : la photo pèse sans jamais décider à leur place.
-              score.masque += Math.round(a.sebum || 0);
-              score.serum += Math.round(((a.taches || 0) + (a.eclat || 0)) / 2);
+              score.masque += Math.min(3, Math.round(cotMasque * poids));
+              score.serum += Math.min(3, Math.round(cotSerum * poids));
+
               observation = a.remarque || '';
+              lecture = [
+                { nom: 'Brillance', note: n(a.brillance) },
+                { nom: 'Grain de peau', note: n(a.pores) },
+                { nom: 'Taches', note: n(a.taches_pigmentaires) },
+                { nom: 'Marques', note: n(a.marques) },
+                { nom: 'Manque d\'éclat', note: n(a.eclat) }
+              ];
               apresPhoto();
             })
             .catch(function () {
@@ -1059,6 +1100,49 @@
     color: inherit;
     font-family: var(--izd-texte-famille);
     font-size: var(--izd-texte);
+  }
+
+  /* La lecture de la photo, axe par axe : un nom, une jauge, un niveau.
+     Seuls les axes réellement visibles sont rendus, la liste reste courte. */
+  .izd__lecture {
+    list-style: none;
+    margin: 1.6rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.8rem;
+    max-width: 42rem;
+  }
+
+  .izd__lecture-ligne {
+    display: grid;
+    grid-template-columns: minmax(9rem, auto) 1fr auto;
+    align-items: center;
+    gap: 1.2rem;
+    font-size: var(--izd-texte);
+  }
+
+  .izd__lecture-nom {
+    color: color-mix(in srgb, var(--izd-encre) 70%, transparent);
+  }
+
+  .izd__lecture-jauge {
+    height: 0.4rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--izd-encre) 12%, transparent);
+    overflow: hidden;
+  }
+
+  .izd__lecture-jauge i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--izd-accent);
+  }
+
+  .izd__lecture-niveau {
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.06em;
+    color: color-mix(in srgb, var(--izd-encre) 70%, transparent);
   }
 
   .izd__photo-actions {

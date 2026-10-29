@@ -6,8 +6,8 @@
  *
  * Ce qu'elle ne fait pas, volontairement :
  *   - elle n'écrit la photo nulle part, ni disque ni base ni journal ;
- *   - elle ne renvoie aucune description de la personne, seulement trois
- *     notes sur ce qui est visible ;
+ *   - elle ne renvoie aucune description de la personne, seulement des
+ *     notes sur ce qui est visible et une lecture en deux ou trois phrases ;
  *   - elle ne pose pas de diagnostic médical et le modèle a pour consigne
  *     de refuser si la demande glisse vers là.
  *
@@ -23,23 +23,53 @@ const TAILLE_MAX = 4 * 1024 * 1024; // 4 Mo une fois décodé
 
 const CONSIGNE = `Tu observes une photo de visage pour une boutique de cosmétiques.
 
-Tu ne poses aucun diagnostic médical et tu ne nommes aucune pathologie. Tu
-décris uniquement ce qui est visible à l'œil, comme le ferait un conseiller en
-boutique, et seulement sur trois axes.
+Tu ne poses aucun diagnostic médical, tu ne nommes aucune pathologie et tu ne
+donnes aucun conseil de santé. Tu décris ce qui se voit à l'œil, comme le
+ferait un conseiller en boutique attentif, et seulement sur les axes ci-dessous.
 
-Réponds par un objet JSON et rien d'autre, sans texte autour, de la forme :
+Réponds par un objet JSON et rien d'autre, sans texte autour :
 
-{"sebum": 0, "taches": 0, "eclat": 0, "utilisable": true, "remarque": ""}
+{
+  "utilisable": true,
+  "qualite": "bonne",
+  "brillance": 0,
+  "pores": 0,
+  "taches_pigmentaires": 0,
+  "marques": 0,
+  "eclat": 0,
+  "taches_rousseur": false,
+  "zone": "",
+  "remarque": ""
+}
 
-- sebum   : 0 à 3, brillances et pores visibles.
-- taches  : 0 à 3, taches, marques, irrégularités de pigmentation.
-- eclat   : 0 à 3, à quel point le teint paraît terne. 0 = teint lumineux.
-- utilisable : false si la photo est trop sombre, floue, trop loin, si le
-  visage n'est pas visible, ou si ce n'est pas un visage.
-- remarque : une phrase courte en français, ce que tu observes, sans jamais
-  juger la personne et sans aucun terme médical. Vide si utilisable est false.
+Chaque note va de 0 à 3. 0 = rien de visible, 3 = très marqué.
 
-Si tu hésites, baisse la note plutôt que de l'inventer.`;
+- brillance : reflets gras, aspect luisant. Ne confonds pas avec un reflet de
+  lumière sur la photo : une brillance de peau suit le relief du visage.
+- pores : pores dilatés, grain de peau irrégulier, aspect granuleux.
+- taches_pigmentaires : taches brunes, hyperpigmentation, zones plus foncées
+  que le reste du teint. **N'y compte jamais les taches de rousseur** : ce
+  sont des grains de beauté plans et naturels, répartis symétriquement sur le
+  nez et les pommettes, pas un défaut à corriger.
+- marques : marques laissées par d'anciens boutons, rougeurs résiduelles
+  localisées, cicatrices plates.
+- eclat : à quel point le teint paraît terne, gris, fatigué. 0 = lumineux.
+- taches_rousseur : true si tu en vois, pour qu'on évite d'en parler comme
+  d'un problème.
+- zone : où se concentre l'essentiel de ce que tu vois. Au choix exactement :
+  "zone T", "joues", "menton", "ensemble du visage", ou "" si rien ne domine.
+- qualite : "bonne", "moyenne" ou "faible", selon la lumière, la netteté et
+  la distance. Une photo au jugé mérite "faible".
+- utilisable : false si le visage n'est pas visible, si la photo est trop
+  sombre, trop floue, trop loin, ou si ce n'est pas un visage. Dans ce cas,
+  mets toutes les notes à 0 et laisse remarque vide.
+- remarque : deux à trois phrases en français, à la deuxième personne, qui
+  décrivent ce que tu observes et le relient aux axes notés. Jamais de
+  jugement sur la personne, jamais de terme médical, jamais de promesse de
+  résultat. Si tu vois des taches de rousseur, mentionne-les comme un trait
+  et non comme un défaut.
+
+Si tu hésites sur une note, baisse-la plutôt que de l'inventer.`;
 
 function definirCors(req, res, origines) {
   const origine = req.headers.origin;
@@ -162,12 +192,24 @@ export default async function handler(req, res) {
       return Math.max(0, Math.min(3, Math.round(n)));
     };
 
+    const ZONES = ['zone T', 'joues', 'menton', 'ensemble du visage'];
+    const QUALITES = ['bonne', 'moyenne', 'faible'];
+    const utilisable = brut.utilisable !== false;
+
     return res.status(200).json({
-      sebum: borne(brut.sebum),
-      taches: borne(brut.taches),
-      eclat: borne(brut.eclat),
-      utilisable: brut.utilisable !== false,
-      remarque: typeof brut.remarque === 'string' ? brut.remarque.slice(0, 300) : '',
+      utilisable,
+      qualite: QUALITES.includes(brut.qualite) ? brut.qualite : 'moyenne',
+      brillance: utilisable ? borne(brut.brillance) : 0,
+      pores: utilisable ? borne(brut.pores) : 0,
+      taches_pigmentaires: utilisable ? borne(brut.taches_pigmentaires) : 0,
+      marques: utilisable ? borne(brut.marques) : 0,
+      eclat: utilisable ? borne(brut.eclat) : 0,
+      taches_rousseur: brut.taches_rousseur === true,
+      zone: ZONES.includes(brut.zone) ? brut.zone : '',
+      remarque:
+        utilisable && typeof brut.remarque === 'string'
+          ? brut.remarque.slice(0, 500)
+          : '',
     });
   } catch (e) {
     console.error('Échec de l analyse', e && e.message);
