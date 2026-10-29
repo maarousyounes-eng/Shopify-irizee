@@ -1349,8 +1349,9 @@
   }
 
   /* `display: grid` sur une classe l'emporte sur le `display: none` que le
-     navigateur applique à [hidden] : sans cette règle, les deux cadres
-     s'affichent en permanence. Déjà rencontré sur les flèches de l'accueil. */
+  /* `display: grid` ou `flex` sur une classe l'emporte sur le `display: none`
+     que le navigateur applique à [hidden] : sans cette règle, l'accueil et les
+     cadres restent là pour toujours. Déjà rencontré sur les flèches de l'accueil. */
   .izd__cadre[hidden],
   .izd__synthese[hidden],
   .izd__lecture[hidden],
@@ -1437,16 +1438,6 @@
     margin: 0 0 clamp(2.4rem, 3.5vw, 3.6rem);
     background: none;
     border-radius: 0;
-  }
-
-  /* `display: grid` posé sur une classe l'emporte sur le `display: none` que
-     le navigateur applique à [hidden] : sans cette règle, les blocs vides
-     s'affichent en permanence. Déjà rencontré sur les flèches de l'accueil. */
-  .izd__cadre[hidden],
-  .izd__synthese[hidden],
-  .izd__lecture[hidden],
-  .izd__photo-actions[hidden] {
-    display: none;
   }
 
   .izd__synthese-titre,
