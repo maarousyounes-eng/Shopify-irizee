@@ -306,8 +306,21 @@
             <h3 class="izd__titre">{{ bloc.settings.titre }}</h3>
 
             {%- comment -%} Rempli par l'analyse photo, vide sans elle. {%- endcomment -%}
-            <p class="izd__observation" data-izd-observation hidden></p>
-            <ul class="izd__lecture" data-izd-lecture hidden></ul>
+            {%- comment -%}
+              Deux sources, deux blocs. Ce que la personne a décrit, puis ce
+              que la photo a montré. Les tenir séparés évite de faire passer
+              une lecture d'image pour une déclaration, et inversement.
+            {%- endcomment -%}
+            <div class="izd__synthese" data-izd-synthese hidden>
+              <p class="izd__synthese-titre">{{ section.settings.libelle_vos_reponses }}</p>
+              <ul class="izd__signaux" data-izd-signaux></ul>
+            </div>
+
+            <div class="izd__synthese" data-izd-bloc-photo hidden>
+              <p class="izd__synthese-titre">{{ section.settings.libelle_la_photo }}</p>
+              <p class="izd__observation" data-izd-observation hidden></p>
+              <ul class="izd__lecture" data-izd-lecture hidden></ul>
+            </div>
 
             {%- if bloc.settings.texte != blank -%}
               <div class="izd__texte">{{ bloc.settings.texte }}</div>
@@ -409,6 +422,7 @@
       var index = 0;
       var observation = '';
       var lecture = [];
+      var declare = [];
 
       var afficher = function (nom) {
         Object.keys(ecrans).forEach(function (cle) {
@@ -476,6 +490,22 @@
           }
         }
 
+        // Ce que la personne a décrit. On ne garde que les réponses qui ont
+        // pesé : « rien de particulier » n'a rien à faire dans une synthèse.
+        var signaux = trouve && trouve.querySelector('[data-izd-signaux]');
+        var blocSynthese = trouve && trouve.querySelector('[data-izd-synthese]');
+        if (signaux) {
+          signaux.innerHTML = '';
+          declare.forEach(function (r) {
+            if (!r.cible || r.cible === 'aucun' || !r.texte) return;
+            var li = document.createElement('li');
+            li.className = 'izd__signal';
+            li.textContent = r.texte;
+            signaux.appendChild(li);
+          });
+          if (blocSynthese) blocSynthese.hidden = signaux.children.length === 0;
+        }
+
         // Ce que la photo a montré, axe par axe. On ne liste que ce qui est
         // réellement visible : une ligne « rien à signaler » n'apprend rien.
         var liste = trouve && trouve.querySelector('[data-izd-lecture]');
@@ -495,6 +525,11 @@
             liste.appendChild(li);
           });
           liste.hidden = liste.children.length === 0;
+        }
+
+        var blocPhoto = trouve && trouve.querySelector('[data-izd-bloc-photo]');
+        if (blocPhoto) {
+          blocPhoto.hidden = !observation && (!liste || liste.children.length === 0);
         }
 
         afficher('resultat');
@@ -744,6 +779,11 @@
           compter(cible);
           historique.push(cible);
 
+          // On garde le libellé choisi : la synthèse rendra ses propres mots
+          // à la personne, pas une paraphrase écrite à l'avance.
+          var libelle = (bouton.querySelector('.izd__reponse-texte') || bouton).textContent.trim();
+          declare.push({ texte: libelle, cible: cible });
+
           if (index + 1 < questions.length) {
             index += 1;
             montrerQuestion();
@@ -759,6 +799,7 @@
         retour.addEventListener('click', function () {
           if (index === 0) return;
           decompter(historique.pop());
+          declare.pop();
           index -= 1;
           montrerQuestion();
         });
@@ -1278,6 +1319,57 @@
 
   /* ---------- Le résultat ---------- */
 
+  /* Les deux sources de la synthèse, traitées pareil pour qu'on les lise
+     comme deux colonnes d'un même constat. */
+  .izd__synthese {
+    margin: 0 0 2.4rem;
+    padding: 2rem 2.2rem;
+    border-radius: var(--izd-rayon);
+    background: color-mix(in srgb, var(--izd-encre) 4%, transparent);
+  }
+
+  .izd__synthese-titre {
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-eyebrow);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--izd-encre) 55%, transparent);
+    margin: 0 0 1.4rem;
+  }
+
+  .izd__signaux {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .izd__signal {
+    position: relative;
+    padding-left: 2.2rem;
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+    line-height: 1.5;
+  }
+
+  /* Une coche plutôt qu'une puce : ce sont des constats, pas une énumération. */
+  .izd__signal::before {
+    content: '';
+    position: absolute;
+    left: 0.2rem;
+    top: 0.62em;
+    width: 0.9rem;
+    height: 0.45rem;
+    border-left: 2px solid var(--izd-accent);
+    border-bottom: 2px solid var(--izd-accent);
+    transform: translateY(-50%) rotate(-45deg);
+  }
+
+  .izd__synthese .izd__observation { margin: 0; }
+  .izd__synthese .izd__lecture { margin-top: 1.4rem; }
+
   /* Le résultat n'est plus une suite de paragraphes : c'est un panneau
      posé sur le fond, qui se lit comme une fiche. */
   .izd__resultat {
@@ -1652,6 +1744,18 @@
       "id": "resultat_eyebrow",
       "label": "Surtitre",
       "default": "Votre résultat"
+    },
+    {
+      "type": "text",
+      "id": "libelle_vos_reponses",
+      "label": "Titre — vos réponses",
+      "default": "Ce que vous avez décrit"
+    },
+    {
+      "type": "text",
+      "id": "libelle_la_photo",
+      "label": "Titre — la photo",
+      "default": "Ce que la photo montre"
     },
     {
       "type": "text",

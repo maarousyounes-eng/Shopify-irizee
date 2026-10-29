@@ -15,26 +15,26 @@
         "question_G87e99": {
           "type": "question",
           "settings": {
-            "libelle": "En fin de journée, votre peau est plutôt...",
-            "r1": "Brillante sur le front et le nez",
+            "libelle": "En fin de journée, à quoi ressemble votre peau ?",
+            "r1": "Elle brille sur le front et le nez",
             "c1": "masque",
-            "r2": "Terne, sans éclat",
+            "r2": "Elle est terne, le teint s'est éteint",
             "c2": "serum",
             "r3": "Les deux, selon les zones",
             "c3": "deux",
-            "r4": "Ni l'une ni l'autre",
+            "r4": "Ni l'un ni l'autre",
             "c4": "aucun"
           }
         },
         "question_MdPneB": {
           "type": "question",
           "settings": {
-            "libelle": "Qu'est-ce qui vous gêne le plus aujourd'hui ?",
+            "libelle": "Qu'est-ce qui vous dérange le plus quand vous vous regardez ?",
             "r1": "Des pores visibles, un grain irrégulier",
             "c1": "masque",
-            "r2": "Des taches ou des marques qui restent",
+            "r2": "Des taches ou des marques qui s'installent",
             "c2": "serum",
-            "r3": "Un teint qui manque d'uniformité",
+            "r3": "Un teint inégal, qui manque d'uniformité",
             "c3": "serum",
             "r4": "Des imperfections qui reviennent",
             "c4": "masque"
@@ -43,7 +43,7 @@
         "question_YfCCqh": {
           "type": "question",
           "settings": {
-            "libelle": "Avez-vous des marques laissées par d'anciens boutons ?",
+            "libelle": "Des boutons passés vous ont-ils laissé des marques ?",
             "r1": "Oui, plusieurs",
             "c1": "serum",
             "r2": "Une ou deux",
@@ -57,12 +57,12 @@
         "question_LmFh63": {
           "type": "question",
           "settings": {
-            "libelle": "Comment dormez-vous en ce moment ?",
-            "r1": "Moins de six heures, ou mal",
+            "libelle": "Et le sommeil, en ce moment ?",
+            "r1": "Court ou agité, moins de six heures",
             "c1": "serum",
-            "r2": "Sept à huit heures, sans souci",
+            "r2": "Sept à huit heures, sans problème",
             "c2": "aucun",
-            "r3": "Ça dépend des semaines",
+            "r3": "Variable d'une semaine à l'autre",
             "c3": "serum",
             "r4": "",
             "c4": "aucun"
@@ -71,12 +71,12 @@
         "question_bhWYKE": {
           "type": "question",
           "settings": {
-            "libelle": "Votre peau voit-elle le soleil sans protection ?",
-            "r1": "Souvent, je n'en mets pas",
+            "libelle": "Mettez-vous une protection solaire ?",
+            "r1": "Rarement, ou jamais",
             "c1": "serum",
-            "r2": "L'été seulement",
+            "r2": "L'été, ou quand il fait beau",
             "c2": "serum",
-            "r3": "J'en mets toute l'année",
+            "r3": "Toute l'année, tous les jours",
             "c3": "aucun",
             "r4": "",
             "c4": "aucun"
@@ -85,10 +85,10 @@
         "question_PHPLxK": {
           "type": "question",
           "settings": {
-            "libelle": "Et votre alimentation, en ce moment ?",
+            "libelle": "Comment mangez-vous ces temps-ci ?",
             "r1": "Beaucoup de sucre et de plats tout prêts",
             "c1": "masque",
-            "r2": "Plutôt équilibrée",
+            "r2": "Plutôt équilibré",
             "c2": "aucun",
             "r3": "Ça dépend des périodes",
             "c3": "masque",
@@ -99,26 +99,26 @@
         "question_7Wyamc": {
           "type": "question",
           "settings": {
-            "libelle": "Aujourd'hui, votre routine comporte...",
+            "libelle": "Que comporte votre routine aujourd'hui ?",
             "r1": "Rien, ou juste un nettoyant",
             "c1": "deux",
             "r2": "Un nettoyant et une crème",
             "c2": "deux",
-            "r3": "Déjà un sérum",
+            "r3": "J'utilise déjà un sérum",
             "c3": "masque",
-            "r4": "Déjà un masque",
+            "r4": "J'utilise déjà un masque",
             "c4": "serum"
           }
         },
         "question_XULFmt": {
           "type": "question",
           "settings": {
-            "libelle": "Combien de temps pouvez-vous y consacrer ?",
+            "libelle": "Combien de temps pouvez-vous consacrer à votre routine ?",
             "r1": "Deux minutes, matin et soir",
             "c1": "serum",
             "r2": "Un vrai moment, une fois par semaine",
             "c2": "masque",
-            "r3": "Les deux me vont",
+            "r3": "Les deux me conviennent",
             "c3": "deux",
             "r4": "",
             "c4": "aucun"
@@ -175,7 +175,7 @@
       "settings": {
         "eyebrow": "Diagnostic de peau",
         "titre": "Quel soin pour votre peau ?",
-        "intro": "<p>Huit questions sur ce que vous voyez sur votre peau et sur vos habitudes : sommeil, soleil, alimentation. La peau ne réagit pas qu'aux soins qu'on lui applique.</p>",
+        "intro": "<p>Huit questions sur ce que vous voyez et sur vos habitudes : sommeil, soleil, alimentation. La peau ne réagit pas qu'aux soins qu'on lui applique.</p>",
         "mention_duree": "[n] questions, moins d'une minute.",
         "cta_demarrer": "Commencer",
         "afficher_progression": true,
