@@ -265,7 +265,14 @@
           </figure>
 
           <figure class="izd__cadre" data-izd-apercu hidden>
-            <img class="izd__cadre-media" data-izd-apercu-img alt="" width="600" height="800">
+            {%- comment -%}
+              Le balayage se superpose à la photo, pas au cadre : il faut un
+              conteneur qui coupe, sinon la bande déborde sur la page.
+            {%- endcomment -%}
+            <div class="izd__cadre-cache">
+              <img class="izd__cadre-media" data-izd-apercu-img alt="" width="600" height="800">
+              <span class="izd__scan" aria-hidden="true"></span>
+            </div>
             <figcaption class="izd__photo-etat" data-izd-photo-etat aria-live="polite"></figcaption>
           </figure>
 
@@ -538,10 +545,29 @@
       var rousseur = false;
       var declare = [];
 
+      // Qui a demandé moins d'animations n'en reçoit aucune. Une seule
+      // lecture, relue à chaque fois : le réglage peut changer en cours de
+      // route sur certains systèmes.
+      var sobre = function () {
+        return window.matchMedia &&
+               window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      };
+
+      // Rejouer une animation CSS demande de retirer la classe, de forcer un
+      // calcul de style, puis de la remettre. Sans le offsetWidth, le
+      // navigateur regroupe les deux et ne voit aucun changement.
+      var rejouer = function (el, classe) {
+        if (!el || sobre()) return;
+        el.classList.remove(classe);
+        void el.offsetWidth;
+        el.classList.add(classe);
+      };
+
       var afficher = function (nom) {
         Object.keys(ecrans).forEach(function (cle) {
           ecrans[cle].hidden = cle !== nom;
         });
+        rejouer(ecrans[nom], 'izd__ecran--entre');
       };
 
       var majProgression = function () {
@@ -556,6 +582,7 @@
 
       var montrerQuestion = function () {
         questions.forEach(function (q, i) { q.hidden = i !== index; });
+        rejouer(questions[index], 'izd__question--entre');
         majProgression();
       };
 
@@ -628,9 +655,13 @@
             });
           }
 
-          dits.slice(0, maximum).forEach(function (r) {
+          dits.slice(0, maximum).forEach(function (r, i) {
             var li = document.createElement('li');
             li.className = 'izd__signal';
+            if (!sobre()) {
+              li.classList.add('izd__signal--entre');
+              li.style.animationDelay = (i * 90) + 'ms';
+            }
             li.textContent = r.texte;
             liste.appendChild(li);
           });
@@ -648,17 +679,30 @@
           liste.innerHTML = '';
           var rienVu = {{ section.settings.libelle_rien_vu | json }};
           var niveaux = [rienVu, 'léger', 'modéré', 'marqué'];
-          lecture.forEach(function (axe) {
+          lecture.forEach(function (axe, i) {
             var li = document.createElement('li');
             li.className = 'izd__lecture-ligne';
             if (!axe.note) li.className += ' izd__lecture-ligne--calme';
+            var largeur = (axe.note / 3 * 100) + '%';
             li.innerHTML = '<span class="izd__lecture-nom"></span>' +
                            '<span class="izd__lecture-jauge" aria-hidden="true">' +
-                           '<i style="width:' + (axe.note / 3 * 100) + '%"></i></span>' +
+                           '<i></i></span>' +
                            '<span class="izd__lecture-niveau"></span>';
             li.querySelector('.izd__lecture-nom').textContent = axe.nom;
             li.querySelector('.izd__lecture-niveau').textContent = niveaux[axe.note];
+            var barre = li.querySelector('.izd__lecture-jauge i');
             liste.appendChild(li);
+
+            if (sobre()) {
+              barre.style.width = largeur;
+            } else {
+              barre.style.transitionDelay = (i * 110) + 'ms';
+              // Deux images d'écart : poser la largeur dans la même image que
+              // l'insertion ne déclencherait aucune transition.
+              requestAnimationFrame(function () {
+                requestAnimationFrame(function () { barre.style.width = largeur; });
+              });
+            }
           });
           liste.hidden = liste.children.length === 0;
         }
@@ -727,6 +771,34 @@
           illisible: {{ section.settings.photo_illisible | json }}
         };
 
+        // Sept à huit secondes sans rien, c'est long. On dit ce qu'on regarde,
+        // dans l'ordre où la consigne le demande au modèle : ce ne sont pas
+        // des étapes inventées pour faire patienter.
+        var etapes = {{ section.settings.photo_etapes | json }}
+          .split('\n')
+          .map(function (t) { return t.trim(); })
+          .filter(Boolean);
+        var minuterie = null;
+
+        var lancerAttente = function () {
+          if (apercu) apercu.classList.add('izd__cadre--analyse');
+          if (!etapes.length) { dire(messages.patience); return; }
+          var i = 0;
+          dire(etapes[0]);
+          minuterie = setInterval(function () {
+            // La dernière étape reste affichée : mieux vaut s'arrêter sur
+            // « Synthèse » que boucler comme si rien n'avançait.
+            if (i >= etapes.length - 1) { clearInterval(minuterie); minuterie = null; return; }
+            i += 1;
+            dire(etapes[i]);
+          }, 2200);
+        };
+
+        var arreterAttente = function () {
+          if (minuterie) { clearInterval(minuterie); minuterie = null; }
+          if (apercu) apercu.classList.remove('izd__cadre--analyse');
+        };
+
         if (passerPhoto) passerPhoto.addEventListener('click', apresPhoto);
 
         var dire = function (texte) {
@@ -775,12 +847,13 @@
         };
 
         var rendreLaMain = function () {
+          arreterAttente();
           if (apercu) apercu.hidden = true;
           if (choix) choix.hidden = false;
         };
 
         var analyser = function (base64) {
-          dire(messages.patience);
+          lancerAttente();
           champPhoto.disabled = true;
 
           Promise.resolve(base64)
@@ -796,6 +869,7 @@
               return r.json();
             })
             .then(function (a) {
+              arreterAttente();
               if (a.utilisable === false) {
                 dire(messages.illisible);
                 champPhoto.disabled = false;
@@ -833,6 +907,7 @@
             })
             .catch(function () {
               // Une analyse qui échoue ne doit pas retenir le diagnostic.
+              arreterAttente();
               dire(messages.erreur);
               setTimeout(apresPhoto, 1200);
             });
@@ -1502,6 +1577,8 @@
     background: var(--izd-accent);
   }
 
+  /* La jauge de progression des questions, elle, suivait déjà le pas. */
+
   .izd__lecture-niveau {
     font-variant-caps: all-small-caps;
     letter-spacing: 0.06em;
@@ -1577,20 +1654,59 @@
      sens de lecture. */
   .izd__cadre-media--miroir { transform: scaleX(-1); }
 
-  /* Pendant les quelques secondes d'analyse, la photo respire doucement :
-     c'est le seul signe qu'il se passe quelque chose. */
-  [data-izd-apercu]:not([hidden]) .izd__cadre-media {
-    animation: izd-respire 1.8s ease-in-out infinite;
+  /* ---------- Les animations ----------
+
+     Toutes sont décoratives : la page dit la même chose sans elles. Elles
+     sont donc toutes coupées par prefers-reduced-motion, d'un bloc, à la fin
+     de cette feuille. */
+
+  .izd__cadre-cache {
+    position: relative;
+    width: 100%;
+    max-width: 30rem;
+    border-radius: var(--izd-rayon);
+    overflow: hidden;
   }
 
-  @keyframes izd-respire {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.55; }
+  .izd__cadre-cache .izd__cadre-media { border-radius: 0; }
+
+  /* Le balayage ne tourne que pendant l'analyse : une bande qui court sur une
+     photo déjà analysée laisserait croire qu'on attend encore. */
+  .izd__scan {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 26%;
+    opacity: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      color-mix(in srgb, var(--izd-accent) 38%, transparent),
+      transparent
+    );
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    [data-izd-apercu]:not([hidden]) .izd__cadre-media { animation: none; }
+  .izd__cadre--analyse .izd__scan {
+    opacity: 1;
+    animation: izd-scan 2.4s ease-in-out infinite;
   }
+
+  @keyframes izd-scan {
+    0% { transform: translateY(-110%); }
+    100% { transform: translateY(385%); }
+  }
+
+  .izd__ecran--entre { animation: izd-entre 0.45s ease both; }
+  .izd__question--entre { animation: izd-entre 0.32s ease both; }
+  .izd__signal--entre { animation: izd-entre 0.4s ease both; }
+
+  @keyframes izd-entre {
+    from { opacity: 0; transform: translateY(0.9rem); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .izd__lecture-jauge i { width: 0; transition: width 0.9s cubic-bezier(0.2, 0.7, 0.2, 1); }
 
   .izd__erreur,
   .izd__mention {
@@ -1830,6 +1946,21 @@
     .izd__etapes { border-top: 1px solid color-mix(in srgb, var(--izd-encre) 16%, transparent); padding-top: 1.8rem; }
   }
 
+  /* Une seule coupure pour tout ce qui bouge. Rien ici ne porte de sens :
+     retirer le mouvement ne retire aucune information. */
+  @media (prefers-reduced-motion: reduce) {
+    .izd__ecran--entre,
+    .izd__question--entre,
+    .izd__signal--entre,
+    .izd__cadre--analyse .izd__scan {
+      animation: none;
+    }
+
+    .izd__cadre--analyse .izd__scan { opacity: 0; }
+    .izd__lecture-jauge i { transition: none; }
+    .izd__jauge-barre { transition: none; }
+  }
+
   @media (max-width: 749px) {
     /* Sur un écran étroit, le libellé passe au-dessus de son contenu : il
        reste un intertitre, le filet continue de découper la page. */
@@ -2023,6 +2154,13 @@
       "id": "photo_passer",
       "label": "Lien pour passer",
       "default": "Continuer sans photo"
+    },
+    {
+      "type": "text",
+      "id": "photo_etapes",
+      "label": "Étapes annoncées pendant l'analyse",
+      "info": "Une par ligne. Elles défilent tant que l'analyse tourne.",
+      "default": "Lecture de la lumière et de la netteté\nGrain de peau et brillance\nTaches, marques et éclat\nSynthèse"
     },
     {
       "type": "text",
