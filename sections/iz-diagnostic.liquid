@@ -90,7 +90,7 @@
       </noscript>
 
       {%- comment -%} ---------- Écran 1 : l'accueil ---------- {%- endcomment -%}
-      <div class="izd__ecran izd__hero{% if section.settings.image_intro == blank %} izd__hero--seul{% endif %}" data-izd-ecran="intro">
+      <div class="izd__ecran izd__hero" data-izd-ecran="intro">
         <div class="izd__hero-texte">
           {%- if section.settings.eyebrow != blank -%}
             <p class="izd__eyebrow">{{ section.settings.eyebrow }}</p>
@@ -112,10 +112,44 @@
           </div>
         </div>
 
+        {%- comment -%}
+          Sans image, la colonne de droite n'est pas laissée vide : elle dit ce
+          qui va se passer. C'est ce qu'on veut savoir avant de commencer un
+          questionnaire, et ça tient la page.
+        {%- endcomment -%}
         {%- if section.settings.image_intro != blank -%}
           <div class="izd__hero-media">
             {{ section.settings.image_intro | image_url: width: 900 | image_tag: loading: 'eager', widths: '400, 600, 900', alt: section.settings.image_intro.alt | default: section.settings.titre }}
           </div>
+        {%- else -%}
+          <ol class="izd__etapes">
+            {%- for i in (1..3) -%}
+              {%- liquid
+                case i
+                  when 1
+                    assign etape_titre = section.settings.etape_1_titre
+                    assign etape_texte = section.settings.etape_1_texte
+                  when 2
+                    assign etape_titre = section.settings.etape_2_titre
+                    assign etape_texte = section.settings.etape_2_texte
+                  else
+                    assign etape_titre = section.settings.etape_3_titre
+                    assign etape_texte = section.settings.etape_3_texte
+                endcase
+              -%}
+              {%- if etape_titre != blank -%}
+                <li class="izd__etape">
+                  <span class="izd__etape-rang" aria-hidden="true">{{ i }}</span>
+                  <div class="izd__etape-corps">
+                    <p class="izd__etape-titre">{{ etape_titre }}</p>
+                    {%- if etape_texte != blank -%}
+                      <p class="izd__etape-texte">{{ etape_texte }}</p>
+                    {%- endif -%}
+                  </div>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ol>
         {%- endif -%}
       </div>
 
@@ -1079,8 +1113,47 @@
     align-items: center;
   }
 
-  .izd__hero--seul { grid-template-columns: minmax(0, 1fr); }
-  .izd__hero--seul .izd__hero-texte { max-width: 44rem; }
+  .izd__etapes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+
+  .izd__etape {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr);
+    gap: 1.6rem;
+    align-items: baseline;
+    border-top: 1px solid color-mix(in srgb, var(--izd-encre) 16%, transparent);
+    padding: 1.8rem 0;
+  }
+
+  .izd__etape:last-child { border-bottom: 1px solid color-mix(in srgb, var(--izd-encre) 16%, transparent); }
+
+  .izd__etape-rang {
+    font-family: var(--izd-titre-famille);
+    font-size: calc(var(--izd-texte) * 0.82);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--izd-accent);
+  }
+
+  .izd__etape-titre {
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .izd__etape-texte {
+    font-family: var(--izd-texte-famille);
+    font-size: calc(var(--izd-texte) * 0.92);
+    line-height: 1.5;
+    margin: 0.4rem 0 0;
+    color: color-mix(in srgb, var(--izd-encre) 68%, transparent);
+  }
 
   /* Le titre d'accueil est le seul de la page : il a le droit d'être plus
      grand que les titres d'étape, qui vivent au-dessus d'une liste. */
@@ -1348,10 +1421,11 @@
     justify-items: center;
   }
 
-  /* `display: grid` sur une classe l'emporte sur le `display: none` que le
-  /* `display: grid` ou `flex` sur une classe l'emporte sur le `display: none`
-     que le navigateur applique à [hidden] : sans cette règle, l'accueil et les
-     cadres restent là pour toujours. Déjà rencontré sur les flèches de l'accueil. */
+  /* `display: grid` posé sur une classe l'emporte sur le `display: none` que
+     le navigateur applique à [hidden] : sans cette règle, l'accueil et les
+     cadres restent affichés pour toujours. Troisième fois sur ce thème, après
+     les flèches de l'accueil et les deux cadres photo. */
+  .izd__hero[hidden],
   .izd__cadre[hidden],
   .izd__synthese[hidden],
   .izd__lecture[hidden],
@@ -1631,6 +1705,42 @@
       "id": "image_intro",
       "label": "Image d'accueil",
       "info": "Facultative. Sans elle, l'accueil reste typographique sur une colonne."
+    },
+    {
+      "type": "text",
+      "id": "etape_1_titre",
+      "label": "Étape 1 — titre",
+      "default": "Huit questions"
+    },
+    {
+      "type": "text",
+      "id": "etape_1_texte",
+      "label": "Étape 1 — texte",
+      "default": "Ce que vous voyez sur votre peau, et comment vous vivez."
+    },
+    {
+      "type": "text",
+      "id": "etape_2_titre",
+      "label": "Étape 2 — titre",
+      "default": "Une photo, si vous voulez"
+    },
+    {
+      "type": "text",
+      "id": "etape_2_texte",
+      "label": "Étape 2 — texte",
+      "default": "Elle précise le résultat. Elle n'est jamais conservée."
+    },
+    {
+      "type": "text",
+      "id": "etape_3_titre",
+      "label": "Étape 3 — titre",
+      "default": "Votre routine"
+    },
+    {
+      "type": "text",
+      "id": "etape_3_texte",
+      "label": "Étape 3 — texte",
+      "default": "Un geste du matin, un geste du soir, et le soin qui va avec."
     },
     {
       "type": "text",
