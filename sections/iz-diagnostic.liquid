@@ -1182,7 +1182,7 @@
   /* Le titre d'accueil est le seul de la page : il a le droit d'être plus
      grand que les titres d'étape, qui vivent au-dessus d'une liste. */
   .izd__hero .izd__titre {
-    font-size: calc(var(--izd-titre) * 1.22);
+    font-size: clamp(calc(var(--izd-titre) * 1.1), 3.4vw, calc(var(--izd-titre) * 1.6));
     max-width: 20ch;
     margin-bottom: 2rem;
   }
@@ -1517,7 +1517,7 @@
   }
 
   .izd__resultat-tete .izd__titre {
-    font-size: calc(var(--izd-titre) * 1.22);
+    font-size: clamp(calc(var(--izd-titre) * 1.1), 3.4vw, calc(var(--izd-titre) * 1.6));
     max-width: 20ch;
     margin-bottom: 2rem;
   }
