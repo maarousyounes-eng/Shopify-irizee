@@ -580,3 +580,32 @@ s'arrête vaut moins qu'une adresse perdue.
 Parcours vérifié de bout en bout sur `irizee.com` : huit questions, étape
 photo passée, adresse saisie, résultat affiché avec le produit et le bouton
 de précommande.
+
+### Pas besoin de recopier la clé : l'application la pose déjà
+
+Question juste : pourquoi une clé en réglage si Klaviyo est installé ? Parce
+que **l'intégration « Klaviyo Onsite Javascript » était désactivée** sur le
+thème (Éditeur → Intégrations d'applications). Une fois activée, son script
+est sur chaque page et porte la clé de la boutique dans son adresse
+(`klaviyo.js?company_id=…`). Le diagnostic la lit plutôt que de la demander,
+et `window.klaviyo` expose `identify` et `track`.
+
+Trois chemins, du plus complet au plus simple :
+
+1. clé **et** liste renseignées → appel direct à `/client/subscriptions/` :
+   Klaviyo enregistre le **consentement**, ce qu'un simple profil ne fait pas ;
+2. script de l'application présent, pas de liste → `identify` + `track` : le
+   profil existe et un flux peut s'accrocher à l'événement ;
+3. ni l'un ni l'autre → le résultat s'affiche, rien n'est enregistré.
+
+### `identify` et `track` n'ont pas la même signature
+
+Les deux passaient par un appel générique `appeler(nom, charge)`. Le réseau
+l'a dit tout de suite : `/client/profiles/` répondait **202**, et
+`/client/events/` **400**. `identify` prend un objet, `track` prend un **nom
+puis ses propriétés**. Corrigé, les deux répondent 202.
+
+**Leçon : vérifier au réseau, pas en instrumentant l'objet.** Mon premier
+test enveloppait `klaviyo.identify` pour compter les appels ; le script de
+Klaviyo réécrit ses méthodes après coup et l'enveloppe avait disparu, ce qui
+m'a fait conclure à tort qu'aucun appel ne partait.
