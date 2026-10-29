@@ -90,24 +90,33 @@
       </noscript>
 
       {%- comment -%} ---------- Écran 1 : l'accueil ---------- {%- endcomment -%}
-      <div class="izd__ecran" data-izd-ecran="intro">
-        {%- if section.settings.eyebrow != blank -%}
-          <p class="izd__eyebrow">{{ section.settings.eyebrow }}</p>
-        {%- endif -%}
-        {%- if section.settings.titre != blank -%}
-          <h2 class="izd__titre">{{ section.settings.titre }}</h2>
-        {%- endif -%}
-        {%- if section.settings.intro != blank -%}
-          <div class="izd__texte">{{ section.settings.intro }}</div>
-        {%- endif -%}
+      <div class="izd__ecran izd__hero{% if section.settings.image_intro == blank %} izd__hero--seul{% endif %}" data-izd-ecran="intro">
+        <div class="izd__hero-texte">
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="izd__eyebrow">{{ section.settings.eyebrow }}</p>
+          {%- endif -%}
+          {%- if section.settings.titre != blank -%}
+            <h2 class="izd__titre">{{ section.settings.titre }}</h2>
+          {%- endif -%}
+          {%- if section.settings.intro != blank -%}
+            <div class="izd__texte">{{ section.settings.intro }}</div>
+          {%- endif -%}
 
-        <p class="izd__duree">
-          {{ section.settings.mention_duree | replace: '[n]', questions.size }}
-        </p>
+          <div class="izd__hero-actions">
+            <button type="button" class="iz-btn iz-btn--primary" data-izd-demarrer>
+              {{ section.settings.cta_demarrer }}
+            </button>
+            <p class="izd__duree">
+              {{ section.settings.mention_duree | replace: '[n]', questions.size }}
+            </p>
+          </div>
+        </div>
 
-        <button type="button" class="iz-btn iz-btn--primary" data-izd-demarrer>
-          {{ section.settings.cta_demarrer }}
-        </button>
+        {%- if section.settings.image_intro != blank -%}
+          <div class="izd__hero-media">
+            {{ section.settings.image_intro | image_url: width: 900 | image_tag: loading: 'eager', widths: '400, 600, 900', alt: section.settings.image_intro.alt | default: section.settings.titre }}
+          </div>
+        {%- endif -%}
       </div>
 
       {%- comment -%} ---------- Écran 2 : les questions ---------- {%- endcomment -%}
@@ -299,11 +308,17 @@
             endif
           -%}
           <div class="izd__resultat" data-izd-resultat="{{ bloc.settings.cible }}" hidden {{ bloc.shopify_attributes }}>
-            {%- if section.settings.resultat_eyebrow != blank -%}
-              <p class="izd__eyebrow">{{ section.settings.resultat_eyebrow }}</p>
-            {%- endif -%}
+            <header class="izd__resultat-tete">
+              {%- if section.settings.resultat_eyebrow != blank -%}
+                <p class="izd__eyebrow">{{ section.settings.resultat_eyebrow }}</p>
+              {%- endif -%}
 
-            <h3 class="izd__titre">{{ bloc.settings.titre }}</h3>
+              <h3 class="izd__titre">{{ bloc.settings.titre }}</h3>
+
+              {%- if bloc.settings.texte != blank -%}
+                <div class="izd__texte izd__texte--chapeau">{{ bloc.settings.texte }}</div>
+              {%- endif -%}
+            </header>
 
             {%- comment -%} Rempli par l'analyse photo, vide sans elle. {%- endcomment -%}
             {%- comment -%}
@@ -313,31 +328,35 @@
             {%- endcomment -%}
             <div class="izd__synthese" data-izd-synthese hidden>
               <p class="izd__synthese-titre">{{ section.settings.libelle_vos_reponses }}</p>
-              <ul class="izd__signaux" data-izd-signaux></ul>
+              <div class="izd__synthese-corps">
+                <ul class="izd__signaux" data-izd-signaux></ul>
+              </div>
             </div>
 
             <div class="izd__synthese" data-izd-bloc-photo hidden>
               <p class="izd__synthese-titre">{{ section.settings.libelle_la_photo }}</p>
-              <p class="izd__observation" data-izd-observation hidden></p>
-              <ul class="izd__lecture" data-izd-lecture hidden></ul>
+              <div class="izd__synthese-corps">
+                <p class="izd__observation" data-izd-observation hidden></p>
+                <ul class="izd__lecture" data-izd-lecture hidden></ul>
+              </div>
             </div>
-
-            {%- if bloc.settings.texte != blank -%}
-              <div class="izd__texte">{{ bloc.settings.texte }}</div>
-            {%- endif -%}
 
             {%- if bloc.settings.matin != blank or bloc.settings.soir != blank -%}
               <div class="izd__routine">
                 {%- if bloc.settings.matin != blank -%}
                   <div class="izd__moment">
                     <p class="izd__moment-titre">{{ section.settings.libelle_matin }}</p>
-                    <p class="izd__moment-texte">{{ bloc.settings.matin }}</p>
+                    <div class="izd__moment-corps">
+                      <p class="izd__moment-texte">{{ bloc.settings.matin }}</p>
+                    </div>
                   </div>
                 {%- endif -%}
                 {%- if bloc.settings.soir != blank -%}
                   <div class="izd__moment">
                     <p class="izd__moment-titre">{{ section.settings.libelle_soir }}</p>
-                    <p class="izd__moment-texte">{{ bloc.settings.soir }}</p>
+                    <div class="izd__moment-corps">
+                      <p class="izd__moment-texte">{{ bloc.settings.soir }}</p>
+                    </div>
                   </div>
                 {%- endif -%}
               </div>
@@ -350,14 +369,20 @@
             {%- if produit.id != blank -%}
               {%- assign v = produit.selected_or_first_available_variant -%}
               <div class="izd__produit">
-                {%- if produit.featured_image -%}
-                  <a class="izd__produit-media" href="{{ produit.url }}">
-                    {{ produit.featured_image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200, 300, 400', alt: produit.title }}
-                  </a>
-                {%- endif -%}
+                <p class="izd__synthese-titre">{{ section.settings.libelle_reco }}</p>
 
                 <div class="izd__produit-corps">
+                  {%- if produit.featured_image -%}
+                    <a class="izd__produit-media" href="{{ produit.url }}">
+                      {{ produit.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', alt: produit.title }}
+                    </a>
+                  {%- endif -%}
+
+                <div class="izd__produit-texte">
                   <a class="izd__produit-nom" href="{{ produit.url }}">{{ produit.title }}</a>
+                  {%- if produit.description != blank -%}
+                    <p class="izd__produit-resume">{{ produit.description | strip_html | truncatewords: 30 }}</p>
+                  {%- endif -%}
                   <p class="izd__produit-prix">
                     {{ v.price | money }}
                     {%- if v.compare_at_price > v.price -%}
@@ -384,6 +409,7 @@
                   {%- else -%}
                     <p class="izd__epuise">{{ section.settings.libelle_epuise }}</p>
                   {%- endif -%}
+                </div>
                 </div>
               </div>
             {%- endif -%}
@@ -1018,12 +1044,13 @@
 
   /* ---------- La tenue générale du parcours ----------
 
-     Deux régimes. Les écrans qui annoncent ou qui font patienter sont
-     centrés : rien à lire vite, tout à regarder. Les écrans où l'on répond
-     restent alignés à gauche sur une colonne étroite, parce qu'on y balaie
-     une liste et que l'œil a besoin d'un bord fixe. */
+     Trois régimes. L'accueil et le résultat prennent la page : ce sont des
+     pages web, avec un bord gauche, un titre qui porte et une image qui tient
+     le côté. Les écrans de manipulation — la photo, l'adresse — restent
+     centrés, parce qu'on y fait une seule chose. Les questions gardent leur
+     colonne étroite alignée à gauche : on y balaie une liste, l'œil a besoin
+     d'un bord fixe. */
 
-  [data-izd-ecran="intro"],
   [data-izd-ecran="photo"],
   [data-izd-ecran="email"] {
     text-align: center;
@@ -1031,7 +1058,6 @@
     margin: 0 auto;
   }
 
-  [data-izd-ecran="intro"] .izd__texte,
   [data-izd-ecran="photo"] .izd__texte,
   [data-izd-ecran="email"] .izd__texte,
   [data-izd-ecran="email"] .izd__mention,
@@ -1044,10 +1070,42 @@
     margin: 0 auto;
   }
 
-  [data-izd-ecran="resultat"] {
-    max-width: 62rem;
-    margin: 0 auto;
+  /* ---------- L'accueil ---------- */
+
+  .izd__hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(3rem, 6vw, 7rem);
+    align-items: center;
   }
+
+  .izd__hero--seul { grid-template-columns: minmax(0, 1fr); }
+  .izd__hero--seul .izd__hero-texte { max-width: 44rem; }
+
+  /* Le titre d'accueil est le seul de la page : il a le droit d'être plus
+     grand que les titres d'étape, qui vivent au-dessus d'une liste. */
+  .izd__hero .izd__titre {
+    font-size: calc(var(--izd-titre) * 1.22);
+    margin-bottom: 2rem;
+  }
+
+  .izd__hero-media img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--izd-rayon);
+  }
+
+  .izd__hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.6rem 2.4rem;
+    margin-top: 3.2rem;
+  }
+
+  .izd__hero-actions .izd__duree { margin: 0; }
 
   /* ---------- Les questions ---------- */
 
@@ -1338,25 +1396,74 @@
     max-width: 48rem;
   }
 
-  /* ---------- Le résultat ---------- */
+  /* ---------- Le résultat ----------
 
-  /* Les deux sources de la synthèse, traitées pareil pour qu'on les lise
-     comme deux colonnes d'un même constat. */
-  .izd__synthese {
-    margin: 0 0 2.4rem;
-    padding: 2rem 2.2rem;
-    border-radius: var(--izd-rayon);
-    background: color-mix(in srgb, var(--izd-encre) 4%, transparent);
+     Pas de panneau, pas de vignettes : une page. Chaque constat est un bloc
+     ouvert par un filet, son libellé à gauche, son contenu à droite. C'est la
+     mise en page d'un article, et elle tient la largeur du site au lieu de
+     flotter au milieu dans une carte. */
+
+  .izd__resultat {
+    max-width: 100%;
   }
 
-  .izd__synthese-titre {
+  .izd__resultat-tete {
+    max-width: 62rem;
+    margin-bottom: clamp(3.2rem, 5vw, 5.6rem);
+  }
+
+  .izd__resultat-tete .izd__titre {
+    font-size: calc(var(--izd-titre) * 1.22);
+    margin-bottom: 2rem;
+  }
+
+  .izd__texte--chapeau {
+    font-size: calc(var(--izd-texte) * 1.12);
+    line-height: 1.55;
+  }
+
+  /* Le bloc à filet, décliné trois fois : la synthèse, un moment de la
+     routine, la recommandation. Une seule forme, pour qu'on descende la page
+     sans jamais changer de grammaire. */
+  .izd__synthese,
+  .izd__moment,
+  .izd__produit {
+    display: grid;
+    grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+    gap: 1.2rem clamp(2.4rem, 4vw, 4rem);
+    align-items: start;
+    border-top: 1px solid color-mix(in srgb, var(--izd-encre) 16%, transparent);
+    padding: clamp(2rem, 3vw, 2.8rem) 0 0;
+    margin: 0 0 clamp(2.4rem, 3.5vw, 3.6rem);
+    background: none;
+    border-radius: 0;
+  }
+
+  /* `display: grid` posé sur une classe l'emporte sur le `display: none` que
+     le navigateur applique à [hidden] : sans cette règle, les blocs vides
+     s'affichent en permanence. Déjà rencontré sur les flèches de l'accueil. */
+  .izd__cadre[hidden],
+  .izd__synthese[hidden],
+  .izd__lecture[hidden],
+  .izd__photo-actions[hidden] {
+    display: none;
+  }
+
+  .izd__synthese-titre,
+  .izd__moment-titre {
     font-family: var(--izd-texte-famille);
     font-size: var(--izd-eyebrow);
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    line-height: 1.5;
     color: color-mix(in srgb, var(--izd-encre) 55%, transparent);
-    margin: 0 0 1.4rem;
+    margin: 0;
+  }
+
+  .izd__synthese-corps,
+  .izd__moment-corps {
+    min-width: 0;
   }
 
   .izd__signaux {
@@ -1364,7 +1471,7 @@
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 0.8rem;
+    gap: 0.9rem;
   }
 
   .izd__signal {
@@ -1391,93 +1498,72 @@
   .izd__synthese .izd__observation { margin: 0; }
   .izd__synthese .izd__lecture { margin-top: 1.4rem; }
 
-  /* Le résultat n'est plus une suite de paragraphes : c'est un panneau
-     posé sur le fond, qui se lit comme une fiche. */
-  .izd__resultat {
-    background: var(--izd-carte);
-    border: 1px solid color-mix(in srgb, var(--izd-encre) 10%, transparent);
-    border-radius: calc(var(--izd-rayon) * 1.6);
-    padding: clamp(2.4rem, 4vw, 4rem);
-  }
-
-  .izd__resultat > .izd__titre { margin-bottom: 2rem; }
-
-  .izd__routine {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
-    gap: 1.6rem;
-    margin: 3.2rem 0;
-  }
-
-  .izd__moment {
-    min-width: 0;
-    padding: 2rem;
-    border-radius: var(--izd-rayon);
-    background: var(--izd-carte);
-  }
-
-  .izd__moment-titre {
-    font-family: var(--izd-texte-famille);
-    font-size: calc(var(--izd-texte) * 0.78);
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--izd-encre) 60%, transparent);
-    margin-bottom: 0.8rem;
-  }
-
   .izd__moment-texte {
     font-family: var(--izd-texte-famille);
     font-size: var(--izd-texte);
-    line-height: 1.5;
+    line-height: 1.6;
+    max-width: 52ch;
   }
 
-  .izd__produit {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 2rem;
-    padding: 2rem;
-    border-radius: var(--izd-rayon);
-    background: var(--izd-carte);
+  .izd__routine { display: grid; }
+
+  /* ---------- La recommandation ----------
+
+     Le soin conseillé est l'aboutissement du parcours : il a droit à une
+     vraie image, pas à une pastille de 10 rem posée à côté d'un prix. */
+
+  .izd__produit-corps {
+    display: grid;
+    grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+    gap: clamp(2rem, 3.5vw, 3.6rem);
+    align-items: start;
+    min-width: 0;
   }
 
   .izd__produit-media {
-    flex: none;
-    width: 10rem;
-    aspect-ratio: 0.8;
-    border-radius: calc(var(--izd-rayon) * 0.6);
+    display: block;
+    min-width: 0;
+    border-radius: var(--izd-rayon);
     overflow: hidden;
-    background: var(--izd-fond);
+    background: var(--izd-carte);
   }
 
   .izd__produit-media img {
+    display: block;
     width: 100%;
-    height: 100%;
+    aspect-ratio: 4 / 5;
     object-fit: cover;
   }
 
-  .izd__produit-corps {
-    flex: 1 1 24rem;
-    min-width: 0;
-  }
+  .izd__produit-texte { min-width: 0; }
 
   .izd__produit-nom {
     display: block;
     font-family: var(--izd-titre-famille);
-    font-size: calc(var(--izd-texte) * 1.1);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.01em;
+    font-size: calc(var(--izd-texte) * 1.5);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
     color: inherit;
     text-decoration: none;
   }
 
-  .izd__produit-prix {
+  .izd__produit-nom:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+
+  .izd__produit-resume {
     font-family: var(--izd-texte-famille);
     font-size: var(--izd-texte);
+    line-height: 1.6;
+    max-width: 48ch;
+    margin: 1.2rem 0 0;
+    color: color-mix(in srgb, var(--izd-encre) 78%, transparent);
+  }
+
+  .izd__produit-prix {
+    font-family: var(--izd-texte-famille);
+    font-size: calc(var(--izd-texte) * 1.1);
     font-weight: 700;
-    margin: 0.4rem 0 1.6rem;
+    margin: 1.6rem 0 2rem;
   }
 
   .izd__produit-barre {
@@ -1499,8 +1585,24 @@
     color: color-mix(in srgb, var(--izd-encre) 60%, transparent);
   }
 
+  .izd__recommencer { margin-top: 1.6rem; }
+
+  @media (max-width: 989px) {
+    .izd__hero { grid-template-columns: minmax(0, 1fr); }
+    .izd__hero-media { order: -1; max-width: 42rem; }
+  }
+
   @media (max-width: 749px) {
-    .izd__produit-media { width: 8rem; }
+    /* Sur un écran étroit, le libellé passe au-dessus de son contenu : il
+       reste un intertitre, le filet continue de découper la page. */
+    .izd__synthese,
+    .izd__moment,
+    .izd__produit,
+    .izd__produit-corps {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .izd__produit-media { max-width: 26rem; }
     .izd__achat .iz-btn { width: 100%; }
   }
 {% endstylesheet %}
@@ -1532,6 +1634,12 @@
       "id": "intro",
       "label": "Introduction",
       "default": "<p>Huit questions sur ce que vous voyez sur votre peau et sur vos habitudes : sommeil, soleil, alimentation. La peau ne réagit pas qu'aux soins qu'on lui applique.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_intro",
+      "label": "Image d'accueil",
+      "info": "Facultative. Sans elle, l'accueil reste typographique sur une colonne."
     },
     {
       "type": "text",
@@ -1789,6 +1897,12 @@
       "id": "libelle_soir",
       "label": "Libellé soir",
       "default": "Le soir"
+    },
+    {
+      "type": "text",
+      "id": "libelle_reco",
+      "label": "Libellé de la recommandation",
+      "default": "Le soin conseillé"
     },
     {
       "type": "text",

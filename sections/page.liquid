@@ -1,13 +1,44 @@
 {% comment %}
-  This section is used in the page template to render store pages like About us
-  or Contact us.
+  Le corps d'une page classique : « Contact », « Mentions légales ».
+
+  Une page au corps vide n'est pas une page vide : c'est une page bâtie avec
+  des sections, qui portent déjà leur titre. Y imprimer en plus le titre
+  administratif donnait deux titres et un grand blanc au-dessus du contenu
+  réel — c'est ce qu'on voyait sur le diagnostic. On n'imprime donc l'en-tête
+  que lorsqu'il y a un texte à introduire.
 
   https://shopify.dev/docs/storefronts/themes/architecture/templates/page
 {% endcomment %}
 
-<h1>{{ page.title }}</h1>
+{%- if page.content != blank -%}
+  <div class="page-simple">
+    <h1 class="page-simple__titre">{{ page.title }}</h1>
+    <div class="page-simple__corps">{{ page.content }}</div>
+  </div>
+{%- endif -%}
 
-{{ page.content }}
+{% stylesheet %}
+  .page-simple {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: clamp(4rem, 8vw, 8rem) var(--page-margin);
+  }
+
+  .page-simple__titre {
+    font-size: clamp(3.2rem, 5vw, 5.2rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-wrap: balance;
+    margin: 0 0 3.2rem;
+  }
+
+  .page-simple__corps {
+    max-width: 68ch;
+    line-height: 1.7;
+  }
+
+  .page-simple__corps > * + * { margin-top: 1.6rem; }
+{% endstylesheet %}
 
 {% schema %}
 {
