@@ -63,10 +63,10 @@ Chaque note va de 0 à 3. 0 = rien de visible, 3 = très marqué.
 - utilisable : false si le visage n'est pas visible, si la photo est trop
   sombre, trop floue, trop loin, ou si ce n'est pas un visage. Dans ce cas,
   mets toutes les notes à 0 et laisse remarque vide.
-- remarque : deux à trois phrases en français, à la deuxième personne, qui
-  décrivent ce que tu observes et le relient aux axes notés. Jamais de
-  jugement sur la personne, jamais de terme médical, jamais de promesse de
-  résultat. Si tu vois des taches de rousseur, mentionne-les comme un trait
+- remarque : deux à trois phrases en français, en vouvoyant la personne, qui
+  décrivent ce que tu observes et le relient aux axes notés. Vouvoiement
+  obligatoire, le reste du site vouvoie. Jamais de jugement sur la personne,
+  jamais de terme médical, jamais de promesse de résultat. Si tu vois des taches de rousseur, mentionne-les comme un trait
   et non comme un défaut.
 
 Si tu hésites sur une note, baisse-la plutôt que de l'inventer.`;
