@@ -84,7 +84,16 @@
 
     <div class="product-card__row">
       <p class="product-card__title">{{ product.title }}</p>
-      <p class="product-card__price">{{ product.price | money }}</p>
+      {%- comment -%}
+        La routine coûte moins cher que les deux soins pris séparément. Sans
+        le prix barré, l'économie ne se voit nulle part sur la carte.
+      {%- endcomment -%}
+      <p class="product-card__price">
+        {{ product.price | money }}
+        {%- if product.compare_at_price > product.price -%}
+          <s class="product-card__price-barre">{{ product.compare_at_price | money }}</s>
+        {%- endif -%}
+      </p>
     </div>
 
     {% if accroche != blank %}
