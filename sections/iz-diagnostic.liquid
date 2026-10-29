@@ -71,6 +71,8 @@
     class="izd"
     data-izd
     data-izd-email="{{ section.settings.email_moment }}"
+    data-izd-klaviyo-cle="{{ section.settings.klaviyo_cle }}"
+    data-izd-klaviyo-liste="{{ section.settings.klaviyo_liste }}"
   >
     <div class="izd__inner">
 
@@ -226,18 +228,22 @@
         {%- endif -%}
 
         {%- comment -%}
-          Le formulaire client de Shopify, soumis en arrière-plan : une
-          soumission ordinaire rechargerait la page et perdrait les réponses.
-          Sans JavaScript l'écran n'est jamais atteint.
+          Un formulaire ordinaire, et non `{% form 'customer' %}`. Le
+          formulaire client de Shopify est protégé par un captcha dont le
+          jeton n'existe qu'au moment d'une soumission qui recharge la page :
+          envoyé en arrière-plan il était rejeté à tous les coups
+          (« Missing CAPTCHA token »). L'adresse part donc chez Klaviyo.
+
+          Pas d'`action` : tout est traité en JavaScript. Sans JavaScript,
+          cet écran n'est de toute façon jamais atteint.
         {%- endcomment -%}
-        {%- form 'customer', id: 'izd-email', class: 'izd__form' -%}
-          <input type="hidden" name="contact[tags]" value="diagnostic" data-izd-tags>
+        <form id="izd-email" class="izd__form" data-izd-form novalidate>
           <label class="izd__label" for="izd-email-champ">{{ section.settings.email_placeholder }}</label>
           <div class="izd__champ">
             <input
               id="izd-email-champ"
               type="email"
-              name="contact[email]"
+              name="email"
               placeholder="{{ section.settings.email_placeholder }}"
               autocomplete="email"
               required
@@ -247,7 +253,7 @@
             </button>
           </div>
           <p class="izd__erreur" data-izd-erreur hidden>{{ section.settings.email_erreur }}</p>
-        {%- endform -%}
+        </form>
 
         {%- if section.settings.email_moment == 'avant_facultatif' -%}
           <button type="button" class="izd__passer" data-izd-passer>
@@ -695,65 +701,91 @@
       var passer = racine.querySelector('[data-izd-passer]');
       if (passer) passer.addEventListener('click', montrerResultat);
 
-      // Le formulaire client part en arrière-plan : une soumission ordinaire
-      // rechargerait la page et effacerait les réponses.
-      var form = racine.querySelector('.izd__form');
+      // ---- L'adresse part chez Klaviyo ----
+      // Shopify refuse les formulaires client soumis en arrière-plan : son
+      // captcha attend un jeton qu'une requête AJAX ne porte pas. Klaviyo
+      // accepte un appel navigateur avec la seule clé publique, et c'est de
+      // toute façon là que vivent les envois.
+      var form = racine.querySelector('[data-izd-form]');
       var erreur = racine.querySelector('[data-izd-erreur]');
+      var cleKlaviyo = racine.getAttribute('data-izd-klaviyo-cle') || '';
+      var listeKlaviyo = racine.getAttribute('data-izd-klaviyo-liste') || '';
       var messagesEmail = {
         invalide: {{ section.settings.email_invalide | json }},
         panne: {{ section.settings.email_erreur | json }}
       };
 
+      var direErreur = function (texte) {
+        if (!erreur) return;
+        erreur.textContent = texte;
+        erreur.hidden = false;
+      };
+
+      var suiteEmail = function (bouton) {
+        // Quoi qu'il arrive, le résultat appartient à la visiteuse.
+        if (momentEmail === 'apres') { form.hidden = true; } else { montrerResultat(); }
+        if (bouton) bouton.disabled = false;
+      };
+
       if (form) {
         form.addEventListener('submit', function (e) {
           e.preventDefault();
+          var champ = form.querySelector('input[type="email"]');
+          var adresse = champ ? champ.value.trim() : '';
+          var arobase = adresse.indexOf('@');
+
+          // `novalidate` nous laisse la main : on vérifie nous-mêmes plutôt
+          // que de subir le message du navigateur par-dessus le nôtre.
+          if (arobase < 1 || adresse.indexOf('.', arobase) < arobase + 2) {
+            direErreur(messagesEmail.invalide);
+            if (champ) champ.focus();
+            return;
+          }
+
           var bouton = form.querySelector('button[type="submit"]');
           if (bouton) bouton.disabled = true;
           if (erreur) erreur.hidden = true;
 
-          // L'étiquette du résultat part avec l'inscription : un outil
-          // d'emailing peut alors envoyer la bonne routine, ce que Shopify
-          // seul ne sait pas faire.
-          var etiquettes = form.querySelector('[data-izd-tags]');
-          if (etiquettes) etiquettes.value = 'diagnostic,diagnostic-' + choisirCible();
+          // Sans identifiants renseignés, on ne retient personne : le
+          // résultat s'affiche, simplement rien n'est enregistré.
+          if (!cleKlaviyo || !listeKlaviyo) {
+            suiteEmail(bouton);
+            return;
+          }
 
-          fetch(form.action, {
+          var corps = {
+            data: {
+              type: 'subscription',
+              attributes: {
+                profile: {
+                  data: {
+                    type: 'profile',
+                    attributes: {
+                      email: adresse,
+                      // La cible permet à un flux Klaviyo d'envoyer la bonne
+                      // routine : Shopify seul ne savait pas la transmettre.
+                      properties: { Diagnostic: choisirCible() }
+                    }
+                  }
+                }
+              },
+              relationships: { list: { data: { type: 'list', id: listeKlaviyo } } }
+            }
+          };
+
+          fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + encodeURIComponent(cleKlaviyo), {
             method: 'POST',
-            body: new FormData(form),
-            headers: { 'Accept': 'text/html' }
+            headers: { 'Content-Type': 'application/json', revision: '2024-10-15' },
+            body: JSON.stringify(corps)
           })
             .then(function (r) {
-              // Shopify répond 400 sur une adresse invalide. Enchaîner quand
-              // même afficherait le résultat sans avoir rien enregistré.
-              // Shopify peut refuser l'inscription (adresse déjà connue,
-              // validation côté boutique). Le résultat du diagnostic ne lui
-              // appartient pas : il s'affiche quand même, et la cliente est
-              // prévenue que l'envoi, lui, n'a pas abouti.
-              if (!r.ok) {
-                if (erreur) {
-                  erreur.textContent = messagesEmail.invalide;
-                  erreur.hidden = false;
-                }
-                if (momentEmail !== 'apres') montrerResultat();
-                return;
-              }
-              if (momentEmail === 'apres') {
-                form.hidden = true;
-              } else {
-                montrerResultat();
-              }
+              // Klaviyo répond 202 : la demande est prise, elle sera traitée.
+              if (!r.ok) direErreur(messagesEmail.invalide);
             })
             .catch(function () {
-              // Une panne de notre côté ne doit pas retenir le résultat.
-              if (erreur) {
-                erreur.textContent = messagesEmail.panne;
-                erreur.hidden = false;
-              }
-              if (momentEmail !== 'apres') montrerResultat();
+              direErreur(messagesEmail.panne);
             })
-            .then(function () {
-              if (bouton) bouton.disabled = false;
-            });
+            .then(function () { suiteEmail(bouton); });
         });
       }
 
@@ -1297,6 +1329,22 @@
     {
       "type": "header",
       "content": "Email"
+    },
+    {
+      "type": "header",
+      "content": "Klaviyo"
+    },
+    {
+      "type": "text",
+      "id": "klaviyo_cle",
+      "label": "Clé publique",
+      "info": "Klaviyo, Settings puis API keys : la « Public API key / Site ID », six caractères. Elle est faite pour vivre dans la page, ce n'est pas un secret."
+    },
+    {
+      "type": "text",
+      "id": "klaviyo_liste",
+      "label": "Identifiant de la liste",
+      "info": "Klaviyo, Lists & segments, ouvrez la liste : l'identifiant est dans l'adresse. Sans ces deux champs le diagnostic fonctionne, mais aucune adresse n'est enregistrée."
     },
     {
       "type": "select",
