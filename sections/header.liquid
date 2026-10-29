@@ -86,7 +86,7 @@
     --header-padding-top-mobile: {{ section.settings.header_padding_top_mobile }}px;
     --header-padding-bottom-mobile: {{ section.settings.header_padding_bottom_mobile }}px;
     --header-barre-bordure: {{ section.settings.barre_bordure | default: '#e2e2df' }};
-    --header-barre-fond: {% if request.page_type == 'product' %}{{ section.settings.barre_fond_fiche | default: '#ffffff' }}{% else %}{{ settings.colors_background | default: '#fbfaf8' }}{% endif %};
+    --header-barre-fond: {{ section.settings.barre_fond | default: '#ffffff' }};
     --header-scrolled-height: {{ section.settings.scrolled_height }}px;
     --header-scrolled-logo-width: {{ section.settings.scrolled_logo_width }}px;
   }
@@ -418,7 +418,7 @@
      posé par `.header` ; on ajoute seulement le filet qui sépare le menu du
      contenu qui passe dessous. */
   .header--barre {
-    background: var(--header-barre-fond, var(--color-background));
+    background: var(--header-barre-fond, #fff);
     color: var(--color-foreground);
     min-height: var(--header-scrolled-height, 64px);
     padding-top: 0;
@@ -815,9 +815,8 @@
     },
     {
       "type": "color",
-      "id": "barre_fond_fiche",
-      "label": "Fond du menu sur les fiches produit",
-      "info": "Le bloc d'achat d'une fiche est sur fond blanc quand le reste du site est sur beige : le menu doit suivre, sinon il se voit comme une bande rapportée.",
+      "id": "barre_fond",
+      "label": "Fond du menu (hors accueil)",
       "default": "#FFFFFF"
     },
     {
