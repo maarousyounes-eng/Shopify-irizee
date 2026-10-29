@@ -657,3 +657,57 @@ l'endpoint après chaque déploiement, pas seulement l'état du build.
 Analyse réelle vérifiée sur photo : **200 en 7 à 8 secondes**. C'est long pour
 quelqu'un qui attend. Piste si besoin : réduire la photo à 768 px au lieu de
 1024.
+
+---
+
+## 29/10/2026 — Le diagnostic en page web, et deux pièges du thème
+
+### Ce qui a changé
+
+Le résultat était une pile de cartes : un panneau bordé, un encadré gris pour
+la synthèse, deux vignettes pour la routine, une carte à image de 10 rem pour
+le soin conseillé. Sur une page large, quatre boîtes flottant au milieu.
+
+Tout passe en **blocs à filet** : un libellé à gauche, son contenu à droite,
+un filet au-dessus. La grammaire d'un article, tenue de la synthèse jusqu'à la
+recommandation — qui gagne au passage une vraie image et un résumé.
+
+L'accueil devient un haut de page en deux colonnes : titre, chapeau, bouton et
+durée à gauche ; le déroulé du parcours en trois étapes à droite, remplacé par
+une image dès qu'on en règle une.
+
+### Piège 1 — `"default": ""` fait disparaître une section
+
+`shopify theme dev` a refusé de monter le thème :
+
+> `sections/iz-catalogue.liquid` — Invalid schema: setting with id="eyebrow"
+> default ne peut pas être vide
+
+Un `default` à la chaîne vide rend le schéma invalide, donc Shopify **refuse
+le fichier entier** — et ne le dit nulle part côté boutique. Un réglage sans
+ligne `default` est parfaitement valide : c'est la bonne façon d'avoir un
+champ vide au départ.
+
+`scripts/valider-theme.py` connaît maintenant la règle (665 contrôles de plus).
+
+**Leçon plus large : le serveur local dit ce que la boutique tait.** Quand un
+fichier semble ne pas arriver, `shopify theme dev` donne l'erreur de schéma en
+clair, là où la synchronisation GitHub échoue en silence.
+
+### Piège 2 — `display: grid` bat `[hidden]`, troisième fois
+
+Après les flèches de l'accueil et les deux cadres photo, je l'ai refait en
+posant `display: grid` sur `.izd__hero` : l'écran d'accueil ne se cachait plus
+quand les questions démarraient, et se superposait au résultat.
+
+La règle à retenir : **toute classe qui pose `display:` sur un élément
+susceptible d'être masqué doit être accompagnée de sa garde `[hidden]`.** La
+garde du diagnostic est unique et vit près des cadres ; elle couvre désormais
+`.izd__hero`.
+
+### Reste à faire
+
+- `templates/page.json` porte encore la section diagnostic, parce que le thème
+  est en brouillon et qu'on ne peut pas attacher `page.diagnostic`. Sans
+  dommage : la section ne rend rien hors de sa page (garde `handle_page`).
+  À reprendre à la publication.
