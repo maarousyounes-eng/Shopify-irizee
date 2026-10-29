@@ -1,0 +1,205 @@
+{% comment %}
+  Les adresses : la liste, l'ajout, la modification, la suppression.
+
+  Shopify attend une méthode « delete » sur le formulaire de suppression ;
+  elle passe par un bouton d'envoi, pas par un lien, pour qu'une adresse ne
+  disparaisse jamais sur un simple survol de robot d'indexation.
+{% endcomment %}
+
+{% render 'compte' %}
+
+<div class="compte compte--large">
+  <p class="compte__sur">Votre compte</p>
+  <h1 class="compte__titre">Vos adresses</h1>
+  <p class="compte__texte">
+    L'adresse par défaut est proposée en premier lors de vos commandes.
+  </p>
+
+  <section>
+    <p class="compte__bloc-titre">Ajouter une adresse</p>
+
+    {% form 'customer_address', customer.new_address, novalidate: 'novalidate' %}
+      {%- if form.errors -%}
+        <div class="compte__erreurs" role="alert">
+          <ul>
+            {%- for champ in form.errors -%}
+              <li>{{ form.errors.messages[champ] }}</li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      <div class="compte__form compte__form--large">
+        <div class="compte__duo">
+          <div class="compte__champ">
+            <label class="compte__label" for="adr-prenom">Prénom</label>
+            <input type="text" id="adr-prenom" name="address[first_name]" autocomplete="given-name">
+          </div>
+          <div class="compte__champ">
+            <label class="compte__label" for="adr-nom">Nom</label>
+            <input type="text" id="adr-nom" name="address[last_name]" autocomplete="family-name">
+          </div>
+        </div>
+
+        <div class="compte__champ">
+          <label class="compte__label" for="adr-societe">Société <span>(facultatif)</span></label>
+          <input type="text" id="adr-societe" name="address[company]" autocomplete="organization">
+        </div>
+
+        <div class="compte__champ">
+          <label class="compte__label" for="adr-rue1">Adresse</label>
+          <input type="text" id="adr-rue1" name="address[address1]" autocomplete="address-line1">
+        </div>
+
+        <div class="compte__champ">
+          <label class="compte__label" for="adr-rue2">Complément <span>(facultatif)</span></label>
+          <input type="text" id="adr-rue2" name="address[address2]" autocomplete="address-line2">
+        </div>
+
+        <div class="compte__duo">
+          <div class="compte__champ">
+            <label class="compte__label" for="adr-cp">Code postal</label>
+            <input type="text" id="adr-cp" name="address[zip]" autocomplete="postal-code">
+          </div>
+          <div class="compte__champ">
+            <label class="compte__label" for="adr-ville">Ville</label>
+            <input type="text" id="adr-ville" name="address[city]" autocomplete="address-level2">
+          </div>
+        </div>
+
+        <div class="compte__champ">
+          <label class="compte__label" for="adr-pays">Pays</label>
+          <select id="adr-pays" name="address[country]" autocomplete="country">
+            {{ all_country_option_tags }}
+          </select>
+        </div>
+
+        <div class="compte__champ">
+          <label class="compte__label" for="adr-tel">Téléphone <span>(facultatif)</span></label>
+          <input type="tel" id="adr-tel" name="address[phone]" autocomplete="tel">
+        </div>
+
+        <label class="compte__case">
+          {{ form.set_as_default_checkbox }}
+          <span>En faire mon adresse par défaut</span>
+        </label>
+
+        <div class="compte__actions">
+          <button type="submit" class="iz-btn iz-btn--primary">Enregistrer l'adresse</button>
+        </div>
+      </div>
+    {% endform %}
+  </section>
+
+  <section class="compte__bloc">
+    <p class="compte__bloc-titre">Adresses enregistrées</p>
+
+    {%- if customer.addresses.size > 0 -%}
+      <div class="compte__adresses">
+        {%- for adresse in customer.addresses -%}
+          <div class="compte__adresse">
+            {%- if adresse == customer.default_address -%}
+              <p class="compte__defaut">Adresse par défaut</p>
+            {%- endif -%}
+
+            {{ adresse | format_address }}
+
+            <div class="compte__actions">
+              <a class="compte__lien" href="{{ routes.account_addresses_url }}?edit={{ adresse.id }}">Modifier</a>
+
+              {% form 'customer_address', adresse %}
+                <input type="hidden" name="_method" value="delete">
+                <button type="submit" class="compte__lien" style="background: none; border: 0; cursor: pointer; padding: 0;">
+                  Supprimer
+                </button>
+              {% endform %}
+            </div>
+
+            {%- comment -%}
+              Le formulaire de modification n'apparaît que sur demande : vingt
+              champs ouverts par adresse rendraient la page illisible.
+            {%- endcomment -%}
+            {%- if request.query_string contains adresse.id -%}
+              {% form 'customer_address', adresse, novalidate: 'novalidate' %}
+                <div class="compte__form compte__form--large" style="margin-top: 2rem;">
+                  <div class="compte__duo">
+                    <div class="compte__champ">
+                      <label class="compte__label" for="edit-prenom-{{ adresse.id }}">Prénom</label>
+                      <input type="text" id="edit-prenom-{{ adresse.id }}" name="address[first_name]" value="{{ adresse.first_name }}">
+                    </div>
+                    <div class="compte__champ">
+                      <label class="compte__label" for="edit-nom-{{ adresse.id }}">Nom</label>
+                      <input type="text" id="edit-nom-{{ adresse.id }}" name="address[last_name]" value="{{ adresse.last_name }}">
+                    </div>
+                  </div>
+
+                  <div class="compte__champ">
+                    <label class="compte__label" for="edit-rue1-{{ adresse.id }}">Adresse</label>
+                    <input type="text" id="edit-rue1-{{ adresse.id }}" name="address[address1]" value="{{ adresse.address1 }}">
+                  </div>
+
+                  <div class="compte__champ">
+                    <label class="compte__label" for="edit-rue2-{{ adresse.id }}">Complément</label>
+                    <input type="text" id="edit-rue2-{{ adresse.id }}" name="address[address2]" value="{{ adresse.address2 }}">
+                  </div>
+
+                  <div class="compte__duo">
+                    <div class="compte__champ">
+                      <label class="compte__label" for="edit-cp-{{ adresse.id }}">Code postal</label>
+                      <input type="text" id="edit-cp-{{ adresse.id }}" name="address[zip]" value="{{ adresse.zip }}">
+                    </div>
+                    <div class="compte__champ">
+                      <label class="compte__label" for="edit-ville-{{ adresse.id }}">Ville</label>
+                      <input type="text" id="edit-ville-{{ adresse.id }}" name="address[city]" value="{{ adresse.city }}">
+                    </div>
+                  </div>
+
+                  <div class="compte__champ">
+                    <label class="compte__label" for="edit-pays-{{ adresse.id }}">Pays</label>
+                    <select id="edit-pays-{{ adresse.id }}" name="address[country]" data-pays="{{ adresse.country | escape }}">
+                      {{ all_country_option_tags }}
+                    </select>
+                  </div>
+
+                  <div class="compte__champ">
+                    <label class="compte__label" for="edit-tel-{{ adresse.id }}">Téléphone</label>
+                    <input type="tel" id="edit-tel-{{ adresse.id }}" name="address[phone]" value="{{ adresse.phone }}">
+                  </div>
+
+                  <label class="compte__case">
+                    {{ form.set_as_default_checkbox }}
+                    <span>En faire mon adresse par défaut</span>
+                  </label>
+
+                  <div class="compte__actions">
+                    <button type="submit" class="iz-btn iz-btn--primary">Mettre à jour</button>
+                    <a class="compte__lien" href="{{ routes.account_addresses_url }}">Annuler</a>
+                  </div>
+                </div>
+              {% endform %}
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <p class="compte__vide">Aucune adresse enregistrée pour le moment.</p>
+    {%- endif -%}
+  </section>
+
+  <section class="compte__bloc">
+    <div class="compte__actions">
+      <a class="compte__lien" href="{{ routes.account_url }}">Retour à mon compte</a>
+    </div>
+  </section>
+</div>
+
+<script>
+  // Le pays choisi doit présélectionner la bonne valeur à l'affichage :
+  // all_country_option_tags rend la liste complète sans sélection.
+  (function () {
+    document.querySelectorAll('select[name="address[country]"]').forEach(function (select) {
+      var choisi = select.getAttribute('data-pays');
+      if (choisi) select.value = choisi;
+    });
+  })();
+</script>

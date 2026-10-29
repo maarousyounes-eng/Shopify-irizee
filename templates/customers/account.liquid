@@ -1,0 +1,82 @@
+{% comment %}
+  Le compte : les commandes, l'adresse par défaut, la déconnexion.
+{% endcomment %}
+
+{% render 'compte' %}
+
+<div class="compte compte--large">
+  <p class="compte__sur">Votre compte</p>
+  <h1 class="compte__titre">
+    Bonjour{% if customer.first_name != blank %} {{ customer.first_name }}{% endif %}
+  </h1>
+  <p class="compte__texte">{{ customer.email }}</p>
+
+  <section>
+    <p class="compte__bloc-titre">Vos commandes</p>
+
+    {%- paginate customer.orders by 20 -%}
+      {%- if customer.orders.size > 0 -%}
+        <table class="compte__table">
+          <thead>
+            <tr>
+              <th scope="col">Commande</th>
+              <th scope="col">Date</th>
+              <th scope="col">Paiement</th>
+              <th scope="col">Expédition</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for commande in customer.orders -%}
+              <tr>
+                <td data-libelle="Commande">
+                  <a class="compte__lien" href="{{ commande.customer_url }}">{{ commande.name }}</a>
+                </td>
+                <td data-libelle="Date">{{ commande.created_at | date: '%d/%m/%Y' }}</td>
+                <td data-libelle="Paiement">{{ commande.financial_status_label }}</td>
+                <td data-libelle="Expédition">{{ commande.fulfillment_status_label }}</td>
+                <td data-libelle="Total">{{ commande.total_price | money }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="compte__pagination" aria-label="Pagination des commandes">
+            {%- if paginate.previous -%}
+              <a class="compte__lien" href="{{ paginate.previous.url }}">Page précédente</a>
+            {%- endif -%}
+            {%- if paginate.next -%}
+              <a class="compte__lien" href="{{ paginate.next.url }}">Page suivante</a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- else -%}
+        <p class="compte__vide">
+          Vous n'avez pas encore commandé.
+          <a class="compte__lien" href="{{ routes.all_products_collection_url }}">Découvrir nos soins</a>
+        </p>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </section>
+
+  <section class="compte__bloc">
+    <p class="compte__bloc-titre">Adresse par défaut</p>
+    {%- if customer.default_address -%}
+      <div class="compte__adresse" style="border-top: 0; padding-top: 0;">
+        {{ customer.default_address | format_address }}
+      </div>
+    {%- else -%}
+      <p class="compte__vide">Aucune adresse enregistrée pour le moment.</p>
+    {%- endif -%}
+    <div class="compte__actions">
+      <a class="iz-btn iz-btn--secondary" href="{{ routes.account_addresses_url }}">Gérer mes adresses</a>
+    </div>
+  </section>
+
+  <section class="compte__bloc">
+    <div class="compte__actions">
+      <a class="compte__lien" href="{{ routes.account_logout_url }}">Se déconnecter</a>
+    </div>
+  </section>
+</div>

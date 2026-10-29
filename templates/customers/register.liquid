@@ -1,0 +1,55 @@
+{% comment %}
+  Création de compte. Envoi natif, pour la même raison que la connexion.
+{% endcomment %}
+
+{% render 'compte' %}
+
+<div class="compte">
+  <p class="compte__sur">Votre compte</p>
+  <h1 class="compte__titre">Créer un compte</h1>
+  <p class="compte__texte">
+    Vos commandes et vos adresses au même endroit, et le suivi de vos
+    précommandes sans avoir à chercher un e-mail.
+  </p>
+
+  {% form 'create_customer', novalidate: 'novalidate' %}
+    {%- if form.errors -%}
+      <div class="compte__erreurs" role="alert">
+        <p>Le compte n'a pas pu être créé.</p>
+        <ul>
+          {%- for champ in form.errors -%}
+            <li>{{ form.errors.messages[champ] }}</li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    <div class="compte__form">
+      <div class="compte__duo">
+        <div class="compte__champ">
+          <label class="compte__label" for="inscription-prenom">Prénom</label>
+          <input type="text" id="inscription-prenom" name="customer[first_name]" autocomplete="given-name">
+        </div>
+        <div class="compte__champ">
+          <label class="compte__label" for="inscription-nom">Nom</label>
+          <input type="text" id="inscription-nom" name="customer[last_name]" autocomplete="family-name">
+        </div>
+      </div>
+
+      <div class="compte__champ">
+        <label class="compte__label" for="inscription-email">Adresse e-mail</label>
+        <input type="email" id="inscription-email" name="customer[email]" autocomplete="email" required>
+      </div>
+
+      <div class="compte__champ">
+        <label class="compte__label" for="inscription-mdp">Mot de passe</label>
+        <input type="password" id="inscription-mdp" name="customer[password]" autocomplete="new-password" required>
+      </div>
+
+      <div class="compte__actions">
+        <button type="submit" class="iz-btn iz-btn--primary">Créer mon compte</button>
+        <a class="compte__lien" href="{{ routes.account_login_url }}">J'ai déjà un compte</a>
+      </div>
+    </div>
+  {% endform %}
+</div>

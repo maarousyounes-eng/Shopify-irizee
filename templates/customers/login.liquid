@@ -1,0 +1,91 @@
+{% comment %}
+  Connexion, et récupération du mot de passe sur la même page.
+
+  Les deux formulaires partent en rechargement de page, jamais en AJAX :
+  la protection anti-spam de Shopify pose son jeton sur l'envoi natif, et un
+  envoi en arrière-plan se fait refuser avec « Missing CAPTCHA token ».
+{% endcomment %}
+
+{% render 'compte' %}
+
+<div class="compte">
+  <section id="connexion">
+    <p class="compte__sur">Votre compte</p>
+    <h1 class="compte__titre">Connexion</h1>
+    <p class="compte__texte">
+      Retrouvez vos commandes, vos adresses et l'état de vos précommandes.
+    </p>
+
+    {% form 'customer_login', novalidate: 'novalidate' %}
+      {%- if form.errors -%}
+        <div class="compte__erreurs" role="alert">
+          <p>Nous n'avons pas pu vous connecter.</p>
+          <ul>
+            {%- for champ in form.errors -%}
+              <li>{{ form.errors.messages[champ] }}</li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      <div class="compte__form">
+        <div class="compte__champ">
+          <label class="compte__label" for="connexion-email">Adresse e-mail</label>
+          <input type="email" id="connexion-email" name="customer[email]" autocomplete="email" required>
+        </div>
+
+        <div class="compte__champ">
+          <label class="compte__label" for="connexion-mdp">Mot de passe</label>
+          <input type="password" id="connexion-mdp" name="customer[password]" autocomplete="current-password" required>
+        </div>
+
+        <div class="compte__actions">
+          <button type="submit" class="iz-btn iz-btn--primary">Se connecter</button>
+          <a class="compte__lien" href="#recuperation">Mot de passe oublié ?</a>
+        </div>
+      </div>
+    {% endform %}
+
+    <div class="compte__bloc">
+      <p class="compte__bloc-titre">Première visite</p>
+      <p class="compte__texte">
+        Créer un compte prend une minute et vous évite de ressaisir vos
+        informations à chaque commande.
+      </p>
+      <a class="iz-btn iz-btn--secondary" href="{{ routes.account_register_url }}">Créer un compte</a>
+    </div>
+  </section>
+
+  <section class="compte__bloc" id="recuperation">
+    <p class="compte__bloc-titre">Mot de passe oublié</p>
+
+    {% form 'recover_customer_password', novalidate: 'novalidate' %}
+      {%- if form.posted_successfully? -%}
+        <p class="compte__succes" role="status">
+          Si un compte existe avec cette adresse, vous recevrez un lien pour
+          choisir un nouveau mot de passe.
+        </p>
+      {%- endif -%}
+
+      {%- if form.errors -%}
+        <div class="compte__erreurs" role="alert">
+          <ul>
+            {%- for champ in form.errors -%}
+              <li>{{ form.errors.messages[champ] }}</li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      <div class="compte__form">
+        <div class="compte__champ">
+          <label class="compte__label" for="recup-email">Adresse e-mail</label>
+          <input type="email" id="recup-email" name="email" autocomplete="email" required>
+        </div>
+        <div class="compte__actions">
+          <button type="submit" class="iz-btn iz-btn--secondary">Recevoir le lien</button>
+        </div>
+      </div>
+    {% endform %}
+  </section>
+</div>

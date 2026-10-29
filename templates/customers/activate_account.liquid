@@ -1,0 +1,42 @@
+{% comment %}
+  Activation d'un compte créé par la boutique, depuis le lien reçu.
+{% endcomment %}
+
+{% render 'compte' %}
+
+<div class="compte">
+  <p class="compte__sur">Votre compte</p>
+  <h1 class="compte__titre">Activer votre compte</h1>
+  <p class="compte__texte">
+    Choisissez un mot de passe pour accéder à vos commandes et à vos adresses.
+  </p>
+
+  {% form 'activate_customer_password', novalidate: 'novalidate' %}
+    {%- if form.errors -%}
+      <div class="compte__erreurs" role="alert">
+        <ul>
+          {%- for champ in form.errors -%}
+            <li>{{ form.errors.messages[champ] }}</li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    <div class="compte__form">
+      <div class="compte__champ">
+        <label class="compte__label" for="activation-mdp">Mot de passe</label>
+        <input type="password" id="activation-mdp" name="customer[password]" autocomplete="new-password" required>
+      </div>
+      <div class="compte__champ">
+        <label class="compte__label" for="activation-mdp-2">Confirmation</label>
+        <input type="password" id="activation-mdp-2" name="customer[password_confirmation]" autocomplete="new-password" required>
+      </div>
+      <div class="compte__actions">
+        <button type="submit" class="iz-btn iz-btn--primary">Activer mon compte</button>
+        <button type="submit" name="decline" class="compte__lien" style="background:none;border:0;cursor:pointer;padding:0;">
+          Refuser l'invitation
+        </button>
+      </div>
+    </div>
+  {% endform %}
+</div>

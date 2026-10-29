@@ -1,0 +1,107 @@
+{% comment %}
+  Le détail d'une commande.
+{% endcomment %}
+
+{% render 'compte' %}
+
+<div class="compte compte--large">
+  <p class="compte__sur">Commande {{ order.name }}</p>
+  <h1 class="compte__titre">Votre commande du {{ order.created_at | date: '%d %B %Y' }}</h1>
+
+  {%- if order.cancelled -%}
+    <div class="compte__erreurs" role="status">
+      <p>Commande annulée le {{ order.cancelled_at | date: '%d/%m/%Y' }}.</p>
+      {%- if order.cancel_reason -%}<p>{{ order.cancel_reason_label }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <p class="compte__texte">
+    Paiement : {{ order.financial_status_label }} &middot;
+    Expédition : {{ order.fulfillment_status_label }}
+  </p>
+
+  <section>
+    <p class="compte__bloc-titre">Articles</p>
+    <table class="compte__table">
+      <thead>
+        <tr>
+          <th scope="col">Soin</th>
+          <th scope="col">Prix</th>
+          <th scope="col">Quantité</th>
+          <th scope="col">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for ligne in order.line_items -%}
+          <tr>
+            <td data-libelle="Soin">
+              {%- if ligne.product.url -%}
+                <a class="compte__lien" href="{{ ligne.product.url }}">{{ ligne.title }}</a>
+              {%- else -%}
+                {{ ligne.title }}
+              {%- endif -%}
+            </td>
+            <td data-libelle="Prix">{{ ligne.price | money }}</td>
+            <td data-libelle="Quantité">{{ ligne.quantity }}</td>
+            <td data-libelle="Total">{{ ligne.line_price | money }}</td>
+          </tr>
+        {%- endfor -%}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td data-libelle="Sous-total" colspan="3">Sous-total</td>
+          <td data-libelle="Sous-total">{{ order.line_items_subtotal_price | money }}</td>
+        </tr>
+        {%- for remise in order.cart_level_discount_applications -%}
+          <tr>
+            <td data-libelle="Remise" colspan="3">Remise · {{ remise.title }}</td>
+            <td data-libelle="Remise">-{{ remise.total_allocated_amount | money }}</td>
+          </tr>
+        {%- endfor -%}
+        {%- for ligne in order.shipping_methods -%}
+          <tr>
+            <td data-libelle="Livraison" colspan="3">Livraison · {{ ligne.title }}</td>
+            <td data-libelle="Livraison">{{ ligne.price | money }}</td>
+          </tr>
+        {%- endfor -%}
+        {%- for taxe in order.tax_lines -%}
+          <tr>
+            <td data-libelle="TVA" colspan="3">{{ taxe.title }} {{ taxe.rate | times: 100 }} %</td>
+            <td data-libelle="TVA">{{ taxe.price | money }}</td>
+          </tr>
+        {%- endfor -%}
+        <tr class="compte__total">
+          <td data-libelle="Total" colspan="3">Total</td>
+          <td data-libelle="Total">{{ order.total_price | money }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+
+  <section class="compte__bloc">
+    <div class="compte__adresses">
+      <div class="compte__adresse">
+        <p class="compte__defaut">Adresse de livraison</p>
+        {%- if order.shipping_address -%}
+          {{ order.shipping_address | format_address }}
+        {%- else -%}
+          <p>Aucune adresse de livraison.</p>
+        {%- endif -%}
+      </div>
+      <div class="compte__adresse">
+        <p class="compte__defaut">Adresse de facturation</p>
+        {%- if order.billing_address -%}
+          {{ order.billing_address | format_address }}
+        {%- else -%}
+          <p>Aucune adresse de facturation.</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+
+  <section class="compte__bloc">
+    <div class="compte__actions">
+      <a class="compte__lien" href="{{ routes.account_url }}">Retour à mon compte</a>
+    </div>
+  </section>
+</div>
