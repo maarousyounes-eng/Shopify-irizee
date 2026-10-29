@@ -85,6 +85,7 @@
     --header-padding-bottom-desktop: {{ section.settings.header_padding_bottom_desktop }}px;
     --header-padding-top-mobile: {{ section.settings.header_padding_top_mobile }}px;
     --header-padding-bottom-mobile: {{ section.settings.header_padding_bottom_mobile }}px;
+    --header-barre-bordure: {{ section.settings.barre_bordure | default: '#e2e2df' }};
     --header-scrolled-height: {{ section.settings.scrolled_height }}px;
     --header-scrolled-logo-width: {{ section.settings.scrolled_logo_width }}px;
   }
@@ -420,7 +421,7 @@
     min-height: var(--header-scrolled-height, 64px);
     padding-top: 0;
     padding-bottom: 0;
-    border-bottom: 1px solid {{ section.settings.barre_bordure | default: '#e2e2df' }};
+    border-bottom: 1px solid var(--header-barre-bordure, #e2e2df);
   }
 
   /* Se cache en scrollant vers le bas, réapparaît dès qu'on remonte. */
