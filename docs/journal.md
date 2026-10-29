@@ -839,3 +839,41 @@ comptes clients » sont hébergés par Shopify et ignorent le thème.
 - Un gabarit `product.routine` pour le pack : un pack n'a ni texture ni liste
   d'actifs propres, ces sections restaient vides. **À attacher au produit
   depuis l'admin.**
+
+---
+
+## 29/10/2026 — `{% stylesheet %}` n'est pas interprété par Liquid
+
+J'ai écrit, dans le bloc `{% stylesheet %}` d'une section :
+
+```
+border-bottom: 1px solid {{ section.settings.barre_bordure }};
+```
+
+Aucun filet. Pas d'erreur, pas d'avertissement : la règle arrivait dans le
+navigateur **amputée de sa déclaration**.
+
+**Shopify extrait le contenu de `{% stylesheet %}` tel quel dans un fichier
+CSS groupé. Liquid n'y est pas rendu.** La valeur n'était donc jamais
+remplacée, `1px solid` sans couleur est invalide, et le navigateur jette la
+déclaration en silence.
+
+Le bloc `{% style %}` en tête de fichier, lui, est bien du Liquid : c'est là
+que vivent toutes les valeurs réglables de ce thème, sous forme de variables
+CSS. Le filet passe maintenant par `--header-barre-bordure`.
+
+**À retenir : dans `{% stylesheet %}`, pas de `{{ }}`. Une valeur réglable
+descend par une variable déclarée dans `{% style %}`.**
+
+J'ai perdu deux allers-retours à chercher la cause du côté de la
+synchronisation des gabarits, parce que j'avais rencontré ce piège-là juste
+avant. Lire les règles réellement appliquées dans le navigateur l'aurait dit
+tout de suite — c'est ce qui a fini par le montrer.
+
+### Le menu, enfin
+
+Hors accueil : le fond du site, inchangé, et un filet de séparation. Ni
+translucide ni flou — il n'y a pas d'image de une à laisser transparaître.
+Mesuré sur le panier, le catalogue et une fiche produit : même fond
+(#fbfaf8), même filet (1px #e2e2df), même hauteur (72 px). L'accueil garde
+sa superposition.
