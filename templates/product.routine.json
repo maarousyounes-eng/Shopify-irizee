@@ -348,14 +348,14 @@
         "soin_1": {
           "type": "product",
           "settings": {
-            "product": "la-routine-masque",
+            "product": "masque-rituel-nila",
             "category_label": "Une à deux fois par semaine"
           }
         },
         "soin_2": {
           "type": "product",
           "settings": {
-            "product": "la-routine-serum",
+            "product": "serum-correcteur-eclat",
             "category_label": "Matin et soir"
           }
         }
