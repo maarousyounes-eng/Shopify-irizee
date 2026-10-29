@@ -690,19 +690,15 @@
                            '<span class="izd__lecture-niveau"></span>';
             li.querySelector('.izd__lecture-nom').textContent = axe.nom;
             li.querySelector('.izd__lecture-niveau').textContent = niveaux[axe.note];
+            // La largeur est portée par une variable, et c'est une animation
+            // CSS qui part de zéro pour l'atteindre. Une transition aurait
+            // demandé de poser la largeur une image plus tard, donc
+            // requestAnimationFrame — qui ne se déclenche pas dans un onglet
+            // en arrière-plan : la barre y serait restée vide pour de bon.
             var barre = li.querySelector('.izd__lecture-jauge i');
+            barre.style.setProperty('--izd-largeur', largeur);
+            if (!sobre()) barre.style.animationDelay = (i * 110) + 'ms';
             liste.appendChild(li);
-
-            if (sobre()) {
-              barre.style.width = largeur;
-            } else {
-              barre.style.transitionDelay = (i * 110) + 'ms';
-              // Deux images d'écart : poser la largeur dans la même image que
-              // l'insertion ne déclencherait aucune transition.
-              requestAnimationFrame(function () {
-                requestAnimationFrame(function () { barre.style.width = largeur; });
-              });
-            }
           });
           liste.hidden = liste.children.length === 0;
         }
@@ -710,8 +706,16 @@
         // Où ça se concentre. L'API le disait depuis le début, on le jetait.
         var ligneZone = trouve && trouve.querySelector('[data-izd-zone]');
         if (ligneZone) {
+          // L'API renvoie la zone sans article : « sur joues » ne se dit pas.
+          var articles = {
+            'joues': 'les joues',
+            'zone T': 'la zone T',
+            'menton': 'le menton',
+            'ensemble du visage': "l'ensemble du visage"
+          };
           var libelleZone = {{ section.settings.libelle_zone | json }};
-          ligneZone.textContent = zonePhoto ? (libelleZone + ' ' + zonePhoto + '.') : '';
+          var zoneDite = articles[zonePhoto] || zonePhoto;
+          ligneZone.textContent = zonePhoto ? (libelleZone + ' ' + zoneDite + '.') : '';
           ligneZone.hidden = !zonePhoto;
         }
 
@@ -1706,7 +1710,15 @@
     to { opacity: 1; transform: none; }
   }
 
-  .izd__lecture-jauge i { width: 0; transition: width 0.9s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .izd__lecture-jauge i {
+    width: var(--izd-largeur, 0);
+    animation: izd-jauge 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  @keyframes izd-jauge {
+    from { width: 0; }
+    to { width: var(--izd-largeur, 0); }
+  }
 
   .izd__erreur,
   .izd__mention {
@@ -1957,7 +1969,9 @@
     }
 
     .izd__cadre--analyse .izd__scan { opacity: 0; }
-    .izd__lecture-jauge i { transition: none; }
+
+    /* La barre garde sa largeur, elle ne la joue plus. */
+    .izd__lecture-jauge i { animation: none; }
     .izd__jauge-barre { transition: none; }
   }
 
