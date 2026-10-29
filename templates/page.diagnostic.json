@@ -175,7 +175,7 @@
       "settings": {
         "eyebrow": "Diagnostic de peau",
         "titre": "Identifiez ce dont votre peau a besoin",
-        "intro": "<p>Brillance, marques d'anciens boutons, taches, tiraillements, teint terne : chaque peau a ses signes. Huit questions — et une photo, si vous le souhaitez — suffisent à déterminer lequel domine, et le soin qui lui répond.</p>",
+        "intro": "<p>Brillance, marques d'anciens boutons, taches, tiraillements, teint terne : chaque peau a ses signes. Huit questions, et une photo si vous le souhaitez, suffisent à déterminer lequel domine et le soin qui lui répond.</p>",
         "mention_duree": "[n] questions, moins d'une minute.",
         "cta_demarrer": "Commencer",
         "afficher_progression": true,

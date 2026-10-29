@@ -349,120 +349,128 @@
             endif
           -%}
           <div class="izd__resultat" data-izd-resultat="{{ bloc.settings.cible }}" hidden {{ bloc.shopify_attributes }}>
-            <header class="izd__resultat-tete">
-              {%- if section.settings.resultat_eyebrow != blank -%}
-                <p class="izd__eyebrow">{{ section.settings.resultat_eyebrow }}</p>
-              {%- endif -%}
+            {%- comment -%}
+              Même grille que l'accueil : un surtitre qui barre la page, puis
+              deux colonnes. À gauche ce qui décide — le verdict et le soin
+              qui va avec, bouton compris. À droite ce qui justifie : vos
+              réponses, la photo, la routine. Le soin n'attend plus la fin de
+              la page pour apparaître.
+            {%- endcomment -%}
+            {%- if section.settings.resultat_eyebrow != blank -%}
+              <p class="izd__eyebrow izd__hero-sur">{{ section.settings.resultat_eyebrow }}</p>
+            {%- endif -%}
 
+            <div class="izd__resultat-corps">
               <h3 class="izd__titre">{{ bloc.settings.titre }}</h3>
 
               {%- if bloc.settings.texte != blank -%}
                 <div class="izd__texte izd__texte--chapeau">{{ bloc.settings.texte }}</div>
               {%- endif -%}
-            </header>
 
-            {%- comment -%} Rempli par l'analyse photo, vide sans elle. {%- endcomment -%}
-            {%- comment -%}
-              Deux sources, deux blocs. Ce que la personne a décrit, puis ce
-              que la photo a montré. Les tenir séparés évite de faire passer
-              une lecture d'image pour une déclaration, et inversement.
-            {%- endcomment -%}
-            <div class="izd__synthese" data-izd-synthese hidden>
-              <p class="izd__synthese-titre">{{ section.settings.libelle_vos_reponses }}</p>
-              <div class="izd__synthese-corps">
-                <ul class="izd__signaux" data-izd-signaux></ul>
-              </div>
-            </div>
+              {%- comment -%}
+                `produit.id` plutôt que `!= blank` : un réglage produit vide rend
+                nil, et comparer un drop à blank n'est pas fiable.
+              {%- endcomment -%}
+              {%- if produit.id != blank -%}
+                {%- assign v = produit.selected_or_first_available_variant -%}
+                <div class="izd__produit">
+                  <p class="izd__produit-sur">{{ section.settings.libelle_reco }}</p>
 
-            <div class="izd__synthese" data-izd-bloc-photo hidden>
-              <p class="izd__synthese-titre">{{ section.settings.libelle_la_photo }}</p>
-              <div class="izd__synthese-corps">
-                <p class="izd__observation" data-izd-observation hidden></p>
-                <ul class="izd__lecture" data-izd-lecture hidden></ul>
-              </div>
-            </div>
-
-            {%- if bloc.settings.matin != blank or bloc.settings.soir != blank -%}
-              <div class="izd__routine">
-                {%- if bloc.settings.matin != blank -%}
-                  <div class="izd__moment">
-                    <p class="izd__moment-titre">{{ section.settings.libelle_matin }}</p>
-                    <div class="izd__moment-corps">
-                      <p class="izd__moment-texte">{{ bloc.settings.matin }}</p>
-                    </div>
-                  </div>
-                {%- endif -%}
-                {%- if bloc.settings.soir != blank -%}
-                  <div class="izd__moment">
-                    <p class="izd__moment-titre">{{ section.settings.libelle_soir }}</p>
-                    <div class="izd__moment-corps">
-                      <p class="izd__moment-texte">{{ bloc.settings.soir }}</p>
-                    </div>
-                  </div>
-                {%- endif -%}
-              </div>
-            {%- endif -%}
-
-            {%- comment -%}
-              `produit.id` plutôt que `!= blank` : un réglage produit vide rend
-              nil, et comparer un drop à blank n'est pas fiable.
-            {%- endcomment -%}
-            {%- if produit.id != blank -%}
-              {%- assign v = produit.selected_or_first_available_variant -%}
-              <div class="izd__produit">
-                <p class="izd__synthese-titre">{{ section.settings.libelle_reco }}</p>
-
-                <div class="izd__produit-corps">
-                  {%- if produit.featured_image -%}
-                    <a class="izd__produit-media" href="{{ produit.url }}">
-                      {{ produit.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', alt: produit.title }}
-                    </a>
-                  {%- endif -%}
-
-                <div class="izd__produit-texte">
-                  <a class="izd__produit-nom" href="{{ produit.url }}">{{ produit.title }}</a>
-                  {%- comment -%}
-                    Couper au mot laissait « La vitamine… » en suspens. On coupe
-                    à la phrase : la première suffit à dire ce que fait le soin.
-                  {%- endcomment -%}
-                  {%- if produit.description != blank -%}
-                    {%- assign phrases = produit.description | strip_html | strip_newlines | split: '. ' -%}
-                    <p class="izd__produit-resume">{{ phrases | first | strip | append: '.' | replace: '..', '.' }}</p>
-                  {%- endif -%}
-                  <p class="izd__produit-prix">
-                    {{ v.price | money }}
-                    {%- if v.compare_at_price > v.price -%}
-                      <s class="izd__produit-barre">{{ v.compare_at_price | money }}</s>
+                  <div class="izd__produit-corps">
+                    {%- if produit.featured_image -%}
+                      <a class="izd__produit-media" href="{{ produit.url }}">
+                        {{ produit.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', alt: produit.title }}
+                      </a>
                     {%- endif -%}
-                  </p>
 
-                  {%- if v.available -%}
-                    {%- capture precommande -%}{%- render 'iz-precommande', variante: v -%}{%- endcapture -%}
-                    <form method="post" action="{{ routes.cart_add_url }}" class="izd__achat">
-                      <input type="hidden" name="id" value="{{ v.id }}">
-                      <input type="hidden" name="quantity" value="1">
-                      <button type="submit" class="iz-btn iz-btn--primary">
-                        {%- if precommande != blank -%}
-                          {{- settings.precommande_libelle -}}
-                        {%- else -%}
-                          {{- section.settings.libelle_achat -}}
+                    <div class="izd__produit-texte">
+                      <a class="izd__produit-nom" href="{{ produit.url }}">{{ produit.title }}</a>
+                      {%- comment -%}
+                        Couper au mot laissait « La vitamine… » en suspens. On
+                        coupe à la phrase : la première dit ce que fait le soin.
+                      {%- endcomment -%}
+                      {%- if produit.description != blank -%}
+                        {%- assign phrases = produit.description | strip_html | strip_newlines | split: '. ' -%}
+                        <p class="izd__produit-resume">{{ phrases | first | strip | append: '.' | replace: '..', '.' }}</p>
+                      {%- endif -%}
+                      <p class="izd__produit-prix">
+                        {{ v.price | money }}
+                        {%- if v.compare_at_price > v.price -%}
+                          <s class="izd__produit-barre">{{ v.compare_at_price | money }}</s>
                         {%- endif -%}
-                      </button>
-                    </form>
-                    {%- if precommande != blank and settings.precommande_mention != blank -%}
-                      <p class="izd__precommande">{{ settings.precommande_mention }}</p>
-                    {%- endif -%}
-                  {%- else -%}
-                    <p class="izd__epuise">{{ section.settings.libelle_epuise }}</p>
-                  {%- endif -%}
+                      </p>
+
+                      {%- if v.available -%}
+                        {%- capture precommande -%}{%- render 'iz-precommande', variante: v -%}{%- endcapture -%}
+                        <form method="post" action="{{ routes.cart_add_url }}" class="izd__achat">
+                          <input type="hidden" name="id" value="{{ v.id }}">
+                          <input type="hidden" name="quantity" value="1">
+                          <button type="submit" class="iz-btn iz-btn--primary">
+                            {%- if precommande != blank -%}
+                              {{- settings.precommande_libelle -}}
+                            {%- else -%}
+                              {{- section.settings.libelle_achat -}}
+                            {%- endif -%}
+                          </button>
+                        </form>
+                        {%- if precommande != blank and settings.precommande_mention != blank -%}
+                          <p class="izd__precommande">{{ settings.precommande_mention }}</p>
+                        {%- endif -%}
+                      {%- else -%}
+                        <p class="izd__epuise">{{ section.settings.libelle_epuise }}</p>
+                      {%- endif -%}
+                    </div>
+                  </div>
                 </div>
+              {%- endif -%}
+
+              <button type="button" class="izd__recommencer" data-izd-recommencer>
+                {{ section.settings.libelle_recommencer }}
+              </button>
+            </div>
+
+            <div class="izd__resultat-notes">
+              {%- comment -%}
+                Deux sources, deux blocs. Ce que la personne a décrit, puis ce
+                que la photo a montré. Les tenir séparés évite de faire passer
+                une lecture d'image pour une déclaration, et inversement.
+              {%- endcomment -%}
+              <div class="izd__synthese" data-izd-synthese hidden>
+                <p class="izd__synthese-titre">{{ section.settings.libelle_vos_reponses }}</p>
+                <div class="izd__synthese-corps">
+                  <ul class="izd__signaux" data-izd-signaux></ul>
                 </div>
               </div>
-            {%- endif -%}
 
-            <button type="button" class="izd__recommencer" data-izd-recommencer>
-              {{ section.settings.libelle_recommencer }}
-            </button>
+              <div class="izd__synthese" data-izd-bloc-photo hidden>
+                <p class="izd__synthese-titre">{{ section.settings.libelle_la_photo }}</p>
+                <div class="izd__synthese-corps">
+                  <p class="izd__observation" data-izd-observation hidden></p>
+                  <ul class="izd__lecture" data-izd-lecture hidden></ul>
+                </div>
+              </div>
+
+              {%- if bloc.settings.matin != blank or bloc.settings.soir != blank -%}
+                <div class="izd__routine">
+                  {%- if bloc.settings.matin != blank -%}
+                    <div class="izd__moment">
+                      <p class="izd__moment-titre">{{ section.settings.libelle_matin }}</p>
+                      <div class="izd__moment-corps">
+                        <p class="izd__moment-texte">{{ bloc.settings.matin }}</p>
+                      </div>
+                    </div>
+                  {%- endif -%}
+                  {%- if bloc.settings.soir != blank -%}
+                    <div class="izd__moment">
+                      <p class="izd__moment-titre">{{ section.settings.libelle_soir }}</p>
+                      <div class="izd__moment-corps">
+                        <p class="izd__moment-texte">{{ bloc.settings.soir }}</p>
+                      </div>
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
           </div>
         {%- endfor -%}
       </div>
@@ -1455,6 +1463,7 @@
      cadres restent affichés pour toujours. Troisième fois sur ce thème, après
      les flèches de l'accueil et les deux cadres photo. */
   .izd__hero[hidden],
+  .izd__resultat[hidden],
   .izd__cadre[hidden],
   .izd__synthese[hidden],
   .izd__lecture[hidden],
@@ -1508,15 +1517,17 @@
      flotter au milieu dans une carte. */
 
   .izd__resultat {
-    max-width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 58rem) minmax(0, 1fr);
+    column-gap: clamp(3rem, 6vw, 7rem);
+    row-gap: clamp(2.4rem, 4vw, 3.6rem);
+    align-items: start;
   }
 
-  .izd__resultat-tete {
-    max-width: 62rem;
-    margin-bottom: clamp(3.2rem, 5vw, 5.6rem);
-  }
+  .izd__resultat-corps,
+  .izd__resultat-notes { min-width: 0; }
 
-  .izd__resultat-tete .izd__titre {
+  .izd__resultat-corps .izd__titre {
     font-size: clamp(calc(var(--izd-titre) * 1.1), 3.4vw, calc(var(--izd-titre) * 1.6));
     max-width: 20ch;
     margin-bottom: 2rem;
@@ -1525,24 +1536,26 @@
   .izd__texte--chapeau {
     font-size: calc(var(--izd-texte) * 1.12);
     line-height: 1.55;
+    max-width: 100%;
   }
 
   /* Le bloc à filet, décliné trois fois : la synthèse, un moment de la
      routine, la recommandation. Une seule forme, pour qu'on descende la page
      sans jamais changer de grammaire. */
   .izd__synthese,
-  .izd__moment,
-  .izd__produit {
+  .izd__moment {
     display: grid;
-    grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
-    gap: 1.2rem clamp(2.4rem, 4vw, 4rem);
+    grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+    gap: 1.2rem clamp(2rem, 3vw, 3.2rem);
     align-items: start;
     border-top: 1px solid color-mix(in srgb, var(--izd-encre) 16%, transparent);
-    padding: clamp(2rem, 3vw, 2.8rem) 0 0;
-    margin: 0 0 clamp(2.4rem, 3.5vw, 3.6rem);
+    padding: clamp(1.8rem, 2.5vw, 2.4rem) 0 0;
+    margin: 0 0 clamp(1.8rem, 2.5vw, 2.4rem);
     background: none;
     border-radius: 0;
   }
+
+  .izd__routine .izd__moment:last-child { margin-bottom: 0; }
 
   .izd__synthese-titre,
   .izd__moment-titre {
@@ -1608,10 +1621,26 @@
      Le soin conseillé est l'aboutissement du parcours : il a droit à une
      vraie image, pas à une pastille de 10 rem posée à côté d'un prix. */
 
+  .izd__produit {
+    border-top: 1px solid color-mix(in srgb, var(--izd-encre) 16%, transparent);
+    padding-top: clamp(2.4rem, 3vw, 3.2rem);
+    margin-top: clamp(2.8rem, 4vw, 4rem);
+  }
+
+  .izd__produit-sur {
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-eyebrow);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--izd-encre) 55%, transparent);
+    margin: 0 0 1.8rem;
+  }
+
   .izd__produit-corps {
     display: grid;
-    grid-template-columns: minmax(0, 34rem) minmax(0, 1fr);
-    gap: clamp(2rem, 3.5vw, 4.8rem);
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+    gap: clamp(1.8rem, 3vw, 3.2rem);
     align-items: start;
     min-width: 0;
   }
@@ -1636,7 +1665,7 @@
   .izd__produit-nom {
     display: block;
     font-family: var(--izd-titre-famille);
-    font-size: calc(var(--izd-texte) * 1.5);
+    font-size: calc(var(--izd-texte) * 1.35);
     font-weight: 800;
     letter-spacing: -0.01em;
     line-height: 1.2;
@@ -1684,7 +1713,8 @@
   .izd__recommencer { margin-top: 1.6rem; }
 
   @media (max-width: 989px) {
-    .izd__hero { grid-template-columns: minmax(0, 1fr); }
+    .izd__hero,
+    .izd__resultat { grid-template-columns: minmax(0, 1fr); }
     .izd__hero-media { order: -1; max-width: 42rem; }
 
     /* Empilées, les étapes ne sont plus à côté du filet du surtitre : il leur
@@ -1697,12 +1727,11 @@
        reste un intertitre, le filet continue de découper la page. */
     .izd__synthese,
     .izd__moment,
-    .izd__produit,
     .izd__produit-corps {
       grid-template-columns: minmax(0, 1fr);
     }
 
-    .izd__produit-media { max-width: 26rem; }
+    .izd__produit-media { max-width: 24rem; }
     .izd__achat .iz-btn { width: 100%; }
   }
 {% endstylesheet %}
@@ -1733,7 +1762,7 @@
       "type": "richtext",
       "id": "intro",
       "label": "Introduction",
-      "default": "<p>Brillance, marques d'anciens boutons, taches, tiraillements, teint terne : chaque peau a ses signes. Huit questions — et une photo, si vous le souhaitez — suffisent à déterminer lequel domine, et le soin qui lui répond.</p>"
+      "default": "<p>Brillance, marques d'anciens boutons, taches, tiraillements, teint terne : chaque peau a ses signes. Huit questions, et une photo si vous le souhaitez, suffisent à déterminer lequel domine et le soin qui lui répond.</p>"
     },
     {
       "type": "image_picker",
@@ -1744,37 +1773,37 @@
     {
       "type": "text",
       "id": "etape_1_titre",
-      "label": "Étape 1 — titre",
+      "label": "Étape 1 : titre",
       "default": "Huit questions"
     },
     {
       "type": "text",
       "id": "etape_1_texte",
-      "label": "Étape 1 — texte",
+      "label": "Étape 1 : texte",
       "default": "Ce que vous observez sur votre peau, et ce qui l'entoure : sommeil, exposition, alimentation."
     },
     {
       "type": "text",
       "id": "etape_2_titre",
-      "label": "Étape 2 — titre",
+      "label": "Étape 2 : titre",
       "default": "Une photo, si vous le souhaitez"
     },
     {
       "type": "text",
       "id": "etape_2_texte",
-      "label": "Étape 2 — texte",
+      "label": "Étape 2 : texte",
       "default": "Elle affine l'analyse. Elle n'est ni conservée ni transmise."
     },
     {
       "type": "text",
       "id": "etape_3_titre",
-      "label": "Étape 3 — titre",
+      "label": "Étape 3 : titre",
       "default": "Votre routine"
     },
     {
       "type": "text",
       "id": "etape_3_texte",
-      "label": "Étape 3 — texte",
+      "label": "Étape 3 : texte",
       "default": "Un geste le matin, un le soir, et le soin qui leur répond."
     },
     {
@@ -1853,13 +1882,13 @@
     {
       "type": "text",
       "id": "photo_bouton",
-      "label": "Bouton — caméra",
+      "label": "Bouton : caméra",
       "default": "Prendre une photo"
     },
     {
       "type": "text",
       "id": "photo_bouton_fichier",
-      "label": "Bouton — fichier",
+      "label": "Bouton : fichier",
       "default": "Choisir une photo"
     },
     {
@@ -2013,13 +2042,13 @@
     {
       "type": "text",
       "id": "libelle_vos_reponses",
-      "label": "Titre — vos réponses",
+      "label": "Titre : vos réponses",
       "default": "Ce que vous avez décrit"
     },
     {
       "type": "text",
       "id": "libelle_la_photo",
-      "label": "Titre — la photo",
+      "label": "Titre : la photo",
       "default": "Ce que la photo montre"
     },
     {
@@ -2061,20 +2090,20 @@
     {
       "type": "text",
       "id": "handle_masque",
-      "label": "Produit de repli — masque",
+      "label": "Produit de repli : masque",
       "info": "Identifiant d'URL du produit, utilisé quand le bloc Résultat n'a pas de produit choisi.",
       "default": "masque-rituel-nila"
     },
     {
       "type": "text",
       "id": "handle_serum",
-      "label": "Produit de repli — sérum",
+      "label": "Produit de repli : sérum",
       "default": "serum-correcteur-eclat"
     },
     {
       "type": "text",
       "id": "handle_routine",
-      "label": "Produit de repli — routine",
+      "label": "Produit de repli : routine",
       "default": "la-routine"
     },
     {
@@ -2134,7 +2163,7 @@
     {
       "type": "range",
       "id": "marge_verticale",
-      "label": "Marge — ordinateur",
+      "label": "Marge : ordinateur",
       "min": 32,
       "max": 160,
       "step": 4,
@@ -2144,7 +2173,7 @@
     {
       "type": "range",
       "id": "marge_verticale_m",
-      "label": "Marge — mobile",
+      "label": "Marge : mobile",
       "min": 24,
       "max": 120,
       "step": 4,
@@ -2170,7 +2199,7 @@
     {
       "type": "range",
       "id": "taille_eyebrow",
-      "label": "Surtitre — ordinateur",
+      "label": "Surtitre : ordinateur",
       "min": 9,
       "max": 20,
       "step": 1,
@@ -2180,7 +2209,7 @@
     {
       "type": "range",
       "id": "taille_eyebrow_m",
-      "label": "Surtitre — mobile",
+      "label": "Surtitre : mobile",
       "min": 9,
       "max": 18,
       "step": 1,
@@ -2190,7 +2219,7 @@
     {
       "type": "range",
       "id": "taille_titre",
-      "label": "Titre — ordinateur",
+      "label": "Titre : ordinateur",
       "min": 20,
       "max": 64,
       "step": 1,
@@ -2200,7 +2229,7 @@
     {
       "type": "range",
       "id": "taille_titre_m",
-      "label": "Titre — mobile",
+      "label": "Titre : mobile",
       "min": 18,
       "max": 44,
       "step": 1,
@@ -2210,7 +2239,7 @@
     {
       "type": "range",
       "id": "taille_question",
-      "label": "Question — ordinateur",
+      "label": "Question : ordinateur",
       "min": 16,
       "max": 44,
       "step": 1,
@@ -2220,7 +2249,7 @@
     {
       "type": "range",
       "id": "taille_question_m",
-      "label": "Question — mobile",
+      "label": "Question : mobile",
       "min": 15,
       "max": 32,
       "step": 1,
@@ -2230,7 +2259,7 @@
     {
       "type": "range",
       "id": "taille_texte",
-      "label": "Texte — ordinateur",
+      "label": "Texte : ordinateur",
       "min": 12,
       "max": 24,
       "step": 1,
@@ -2240,7 +2269,7 @@
     {
       "type": "range",
       "id": "taille_texte_m",
-      "label": "Texte — mobile",
+      "label": "Texte : mobile",
       "min": 12,
       "max": 20,
       "step": 1,
