@@ -197,7 +197,7 @@
 
 {% endstyle %}
 
-<header class="header full-width header--survol-{{ section.settings.menu_hover_style }}{% if reglages_pdp %} header--pdp header--pdp-{{ couleur_texte }}{% endif %}{% unless is_overlay %} header--barre{% endunless %}{% if is_overlay %} header--overlay header--overlay-{{ couleur_texte }}{% if section.settings.enable_blur %} header--blur{% endif %}{% endif %}">
+<header class="header full-width header--logo-{{ section.settings.logo_position | default: 'centre' }} header--survol-{{ section.settings.menu_hover_style }}{% if reglages_pdp %} header--pdp header--pdp-{{ couleur_texte }}{% endif %}{% unless is_overlay %} header--barre{% endunless %}{% if is_overlay %} header--overlay header--overlay-{{ couleur_texte }}{% if section.settings.enable_blur %} header--blur{% endif %}{% endif %}">
   <details class="header__mobile-nav">
     <summary class="header__hamburger" aria-label="Menu">
       <span></span>
@@ -417,6 +417,23 @@
      transparaître, donc ni translucide ni flou. Le fond reste celui du site,
      posé par `.header` ; on ajoute seulement le filet qui sépare le menu du
      contenu qui passe dessous. */
+  /* Le logo à gauche ne vaut que sur ordinateur : sur mobile, le menu
+     déroulant occupe déjà le bord gauche et le logo reste au centre. */
+  @media (min-width: 750px) {
+    .header--logo-gauche {
+      grid-template-columns: auto 1fr auto;
+    }
+
+    .header--logo-gauche .header__logo-link {
+      order: -1;
+      justify-self: start;
+    }
+
+    .header--logo-gauche .header__menu--left {
+      justify-self: start;
+    }
+  }
+
   .header--barre {
     background: var(--header-barre-fond, #fff);
     color: var(--color-foreground);
@@ -812,6 +829,17 @@
       "id": "enable_blur",
       "label": "Effet de flou (verre dépoli) une fois scrollé",
       "default": true
+    },
+    {
+      "type": "select",
+      "id": "logo_position",
+      "label": "Position du logo",
+      "info": "Sur mobile, le logo reste au centre : le menu déroulant occupe le bord gauche.",
+      "options": [
+        { "value": "centre", "label": "Au centre" },
+        { "value": "gauche", "label": "À gauche" }
+      ],
+      "default": "centre"
     },
     {
       "type": "color",

@@ -59,7 +59,8 @@
         "pdp_border": true,
         "pdp_border_color": "#e2e2df",
         "barre_bordure": "#e2e2df",
-        "barre_fond": "#ffffff"
+        "barre_fond": "#ffffff",
+        "logo_position": "gauche"
       }
     }
   },
@@ -67,3 +68,4 @@
     "header"
   ]
 }
+
