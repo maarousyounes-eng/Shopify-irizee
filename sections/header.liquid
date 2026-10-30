@@ -325,6 +325,40 @@
 </header>
 
 {%- comment -%}
+  Le tiroir se ferme par sa croix, par le voile et par Échap. Sans ces trois
+  sorties, `<details>` n'en offre qu'une : rappuyer sur le burger, qui est
+  justement passé sous le voile.
+{%- endcomment -%}
+<script>
+  (function () {
+    var menu = document.querySelector('[data-iz-menu]');
+    if (!menu) return;
+
+    var fermer = function () {
+      menu.removeAttribute('open');
+    };
+
+    var voile = menu.querySelector('[data-iz-menu-voile]');
+    if (voile) voile.addEventListener('click', fermer);
+
+    var croix = menu.querySelector('[data-iz-menu-fermer]');
+    if (croix) croix.addEventListener('click', fermer);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && menu.hasAttribute('open')) fermer();
+    });
+
+    /* La page qui défile sous un tiroir ouvert donne l'impression que le
+       tiroir dérive. On la fige le temps de l'ouverture. */
+    if (window.MutationObserver) {
+      new MutationObserver(function () {
+        document.body.style.overflow = menu.hasAttribute('open') ? 'hidden' : '';
+      }).observe(menu, { attributes: true, attributeFilter: ['open'] });
+    }
+  })();
+</script>
+
+{%- comment -%}
   Le comportement au défilement (barre compacte, masquage vers le bas) vaut
   sur toutes les pages. Il était enfermé dans la condition de superposition,
   qui elle ne concerne que l'accueil : le menu perdait donc son état scrollé
@@ -735,23 +769,117 @@
     background: currentColor;
   }
 
-  .header__mobile-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.6rem;
-    padding: 2.4rem var(--page-margin) 3.2rem;
-    background: var(--color-background);
-    color: var(--color-foreground);
-    border-top: 1px solid color-mix(in srgb, var(--color-foreground) 10%, transparent);
+  /* Tiroir latéral.
+
+     `<details>` masque son contenu tant qu'il est fermé, et un panneau
+     absent du rendu ne peut pas glisser : on annule cette règle pour que le
+     tiroir existe en permanence, et c'est `transform` qui le sort. */
+  .header__mobile-nav > .header__voile,
+  .header__mobile-nav > .header__mobile-menu {
+    display: block;
   }
 
-  .header__mobile-menu a {
-    font-size: 1.6rem;
+  .header__voile {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(20, 20, 20, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .header__mobile-nav[open] > .header__voile {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .header__mobile-menu {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 41;
+    width: min(86vw, 32rem);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 1.6rem 2.4rem 3.2rem;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    overflow-y: auto;
+    transform: translateX(-100%);
+    visibility: hidden;
+    box-shadow: 0.8rem 0 3.2rem rgba(0, 0, 0, 0.18);
+    transition: transform 0.32s ease, visibility 0.32s ease;
+  }
+
+  .header__mobile-nav[open] > .header__mobile-menu {
+    transform: none;
+    visibility: visible;
+  }
+
+  .header__mobile-entete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 4.4rem;
+  }
+
+  .header__mobile-logo {
+    height: 2.2rem;
+    width: auto;
+  }
+
+  .header__mobile-fermer {
+    width: 4.4rem;
+    height: 4.4rem;
+    margin-right: -1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .header__mobile-liens {
+    margin-top: 2.4rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header__mobile-liens a {
+    font-size: 2rem;
+    font-weight: 600;
     justify-content: flex-start;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-foreground) 10%, transparent);
+  }
+
+  .header__mobile-cta {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 5rem;
+    border-radius: 999px;
+    background: var(--color-foreground);
+    color: var(--color-background);
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .header__voile,
+    .header__mobile-menu {
+      transition: none;
+    }
   }
 
   @media (max-width: 749px) {
