@@ -1029,3 +1029,30 @@ désactivée.
   entrées par défaut.
 - L'apparence des pages de compte se règle dans **Paramètres → Comptes
   client → Configurations → Personnaliser**, pas dans le thème.
+
+---
+
+## 30/10/2026 — « 0,00 € » dans le panier : un ordre de filtres
+
+La jauge de livraison offerte affichait **0,00 €** au lieu du montant
+restant. Le code :
+
+```liquid
+{{ section.settings.texte_restant | replace: '[montant]', restant | money }}
+```
+
+Les filtres Liquid s'enchaînent de gauche à droite. `replace` posait donc le
+montant **en centimes bruts** dans la phrase, puis `money` s'appliquait à la
+phrase entière — une chaîne, pas un nombre — et rendait « 0,00 € ».
+
+```liquid
+{%- assign restant_affiche = restant | money -%}
+{{ section.settings.texte_restant | replace: '[montant]', restant_affiche }}
+```
+
+Vérifié avec un article à 26,90 € dans le panier : « Plus que 12,10 € pour la
+livraison offerte ».
+
+**À retenir : mettre en forme avant de substituer.** Un filtre de formatage
+placé après un `replace` s'applique au texte entier, pas à la valeur qu'on
+vient d'y insérer.
