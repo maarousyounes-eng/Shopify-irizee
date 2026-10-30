@@ -28,12 +28,20 @@
       endfor
     endif
     if concerne and section.settings.pack_composants != blank
-      assign repris = '' | split: ''
+      comment
+        `concat` sur un tableau vide issu de `split` ne renvoie rien : on
+        part donc de la première liste trouvée, puis on y ajoute les suivantes.
+      endcomment
+      assign repris = nil
       assign sources = section.settings.pack_composants | replace: ' ', '' | split: ','
       for h in sources
         assign siens = all_products[h].metafields.custom.actifs.value
         if siens.size > 0
-          assign repris = repris | concat: siens
+          if repris
+            assign repris = repris | concat: siens
+          else
+            assign repris = siens
+          endif
         endif
       endfor
       if repris.size > 0
