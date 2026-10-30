@@ -1,0 +1,104 @@
+{% comment %}
+  Apparition progressive des images différées.
+
+  Le thème n'avait aucune animation au défilement : ce qu'on voyait, c'était
+  du `loading="lazy"` sans repli. L'emplacement de l'image était déjà dessiné
+  et vide, puis l'image surgissait d'un coup. Sur mobile, où l'on fait défiler
+  à la main, le surgissement arrive pile dans le champ de vision.
+
+  Le principe : poser une version minuscule de la même image en fond de la
+  balise `<img>`, floutée, le temps que la vraie arrive. L'image et son fond
+  occupent exactement la même boîte, donc le recadrage coïncide au pixel —
+  pas besoin de toucher au balisage des sections, ni d'envelopper quoi que ce
+  soit.
+
+  La miniature est obtenue en réécrivant le `width=` de l'URL Shopify : aucun
+  fichier à produire, aucun réglage à tenir à jour.
+
+  Rendu une seule fois, depuis layout/theme.liquid.
+{% endcomment %}
+
+{% style %}
+  /* Le flou ne porte que sur le fond tant que l'image n'est pas décodée :
+     une `<img>` sans bitmap ne peint que son fond. Quand elle arrive, le
+     flou se résorbe et l'on voit la photo se préciser. */
+  img[data-iz-lqip] {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: filter 0.55s ease, transform 0.55s ease;
+  }
+
+  img[data-iz-lqip]:not([data-iz-net]) {
+    filter: blur(14px);
+    transform: scale(1.04);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    img[data-iz-lqip] {
+      transition: none;
+    }
+
+    img[data-iz-lqip]:not([data-iz-net]) {
+      filter: none;
+      transform: none;
+    }
+  }
+{% endstyle %}
+
+<script>
+  (function () {
+    /* Une image déjà en cache est `complete` dès le départ : la flouter puis
+       la révéler ajouterait un clignotement là où il n'y avait aucun défaut. */
+    var estDejaLa = function (img) {
+      return img.complete && img.naturalWidth > 0;
+    };
+
+    var miniature = function (src) {
+      return src.replace(/([?&])width=\d+/, '$1width=24');
+    };
+
+    var preparer = function (img) {
+      if (img.hasAttribute('data-iz-lqip')) return;
+
+      var src = img.getAttribute('src') || '';
+      /* On ne touche qu'aux images servies par le CDN Shopify avec une
+         largeur dans l'URL : ailleurs, il n'y a pas de miniature à dériver. */
+      if (src.indexOf('/cdn/shop/') === -1) return;
+      if (!/[?&]width=\d+/.test(src)) return;
+      if (estDejaLa(img)) return;
+
+      img.setAttribute('data-iz-lqip', '');
+      img.style.backgroundImage = 'url("' + miniature(src) + '")';
+
+      var finir = function () {
+        img.setAttribute('data-iz-net', '');
+        /* Le fond ne sert plus une fois la photo peinte par-dessus ; on le
+           retire après la transition pour ne pas garder un calque inutile. */
+        setTimeout(function () {
+          img.style.backgroundImage = '';
+        }, 700);
+      };
+
+      img.addEventListener('load', finir, { once: true });
+      img.addEventListener('error', finir, { once: true });
+    };
+
+    var balayer = function (racine) {
+      var images = (racine || document).querySelectorAll('img[loading="lazy"]');
+      for (var i = 0; i < images.length; i++) preparer(images[i]);
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { balayer(); });
+    } else {
+      balayer();
+    }
+
+    /* Les sections rechargées par l'éditeur de thème, et les cartes ajoutées
+       par un carrousel, arrivent après coup. */
+    document.addEventListener('shopify:section:load', function (e) {
+      balayer(e.target);
+    });
+  })();
+</script>
