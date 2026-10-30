@@ -23,7 +23,7 @@
     {{
       section.settings.image
       | image_url: width: 2000
-      | image_tag: class: 'hero__image', loading: 'eager', sizes: '100vw', widths: '750, 1100, 1500, 2000', alt: alt_hero
+      | image_tag: class: 'hero__image', loading: 'eager', fetchpriority: 'high', decoding: 'async', sizes: '100vw', widths: '750, 1100, 1500, 2000', alt: alt_hero
     }}
   {% endif %}
 
