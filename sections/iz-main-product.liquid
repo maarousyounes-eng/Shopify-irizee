@@ -137,7 +137,7 @@
           Le bloc « Contenu du pack » est la source : il sait déjà de quoi le
           pack est fait, et il porte le filtre de produits.
         endcomment
-        assign composants = '' | split: ''
+        assign liste_composants = ''
         for b in section.blocks
           if b.type != 'contenu_routine'
             continue
@@ -165,11 +165,17 @@
                   assign c = b.settings.soin_4
               endcase
               if c.id != blank
-                assign composants = composants | concat: c.handle | split: '§'
+                assign liste_composants = liste_composants | append: ',' | append: c.handle
               endif
             endfor
           endif
         endfor
+
+        comment
+          Liquid n'ajoute pas à un tableau : on accumule dans une chaîne,
+          puis on la découpe une fois.
+        endcomment
+        assign composants = liste_composants | remove_first: ',' | split: ','
       -%}
 
       {%- comment -%} ---------- Bloc d'achat ---------- {%- endcomment -%}
@@ -178,7 +184,41 @@
           {%- case block.type -%}
 
             {%- when 'entete' -%}
-              {%- assign format = block.settings.texte | default: p.metafields.custom.format -%}
+              {%- liquid
+                assign format = block.settings.texte | default: p.metafields.custom.format
+
+                comment
+                  Un pack annonçait « Routine · Masque + Sérum » sans dire
+                  combien il y en a. On reconstruit les contenances depuis
+                  les soins qu'il contient : « Routine · Masque 75 ml +
+                  Sérum 30 ml ».
+                endcomment
+                if composants.size > 0
+                  assign detail = ''
+                  for h in composants
+                    assign soin = all_products[h]
+                    assign f = soin.metafields.custom.format
+                    if f == blank
+                      continue
+                    endif
+                    assign nom_court = f | split: '·' | first | strip | split: ' ' | first
+                    assign volume = f | split: '·' | last | strip
+                    if volume == nom_court
+                      assign volume = ''
+                    endif
+                    assign morceau = nom_court
+                    if volume != blank
+                      assign morceau = nom_court | append: ' ' | append: volume
+                    endif
+                    assign detail = detail | append: ' + ' | append: morceau
+                  endfor
+                  assign detail = detail | remove_first: ' + '
+                  if detail != blank
+                    assign tete = format | split: '·' | first | strip
+                    assign format = tete | append: ' · ' | append: detail
+                  endif
+                endif
+              -%}
               {%- assign note = p.metafields.reviews.rating.value -%}
               {%- assign nb = p.metafields.reviews.rating_count | plus: 0 -%}
               <div class="iz-pdp__head" {{ block.shopify_attributes }}>
@@ -210,7 +250,44 @@
                 Trois ou quatre mots, pas des phrases : ce que le soin fait,
                 lisible en une seconde avant même la description.
               {%- endcomment -%}
-              {%- assign puces = p.metafields.custom.puces.value -%}
+              {%- liquid
+                assign puces = p.metafields.custom.puces.value
+
+                comment
+                  Un pack n'a pas de pastilles à lui. On prend d'abord la
+                  première de chaque soin, pour que les deux soient
+                  représentés, puis on complète avec les suivantes sans
+                  répéter. Quatre au maximum : au-delà elles ne se lisent
+                  plus d'un coup d'œil.
+                endcomment
+                if puces == blank or puces.size == 0
+                  if composants.size > 0
+                    assign reprises = ''
+                    for tour in (1..4)
+                      for h in composants
+                        assign soin = all_products[h]
+                        assign siennes = soin.metafields.custom.puces.value
+                        if siennes == blank
+                          continue
+                        endif
+                        assign idx = tour | minus: 1
+                        assign candidate = siennes[idx]
+                        if candidate == blank
+                          continue
+                        endif
+                        assign deja = reprises | append: '|'
+                        assign cible = '|' | append: candidate | append: '|'
+                        assign test = deja | prepend: '|'
+                        unless test contains cible
+                          assign reprises = reprises | append: '|' | append: candidate
+                        endunless
+                      endfor
+                    endfor
+                    assign puces = reprises | remove_first: '|' | split: '|'
+                    assign puces = puces | slice: 0, 4
+                  endif
+                endif
+              -%}
               {%- if puces != blank and puces.size > 0 -%}
                 <ul class="iz-pills" role="list" {{ block.shopify_attributes }}>
                   {%- for puce in puces -%}
