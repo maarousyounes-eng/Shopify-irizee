@@ -946,3 +946,51 @@ et sur `masque-rituel-nila`.
 JSON monté avant que le schéma ne déclare un réglage perd ce réglage en
 silence. Le filtre ne mordait pas tant que `templates/product.json` n'avait
 pas été renvoyé.
+
+---
+
+## 30/10/2026 — Une fiche de pack se dérive de ses soins
+
+La fiche de la Routine était **plus pauvre que celle d'un seul soin**, alors
+que c'est le produit le plus cher. Relevé en comparant les deux rendus :
+
+| | Sérum | Routine |
+|---|---|---|
+| Pastilles bénéfices | 3 | aucune |
+| Contenance au surtitre | 30 ml | absente |
+| Section Actifs | 527 px | 0 |
+| Section Texture | 826 px | 0 |
+
+La cause est la même partout : ces métachamps ne sont remplis que sur les
+soins. Plutôt que de les faire ressaisir sur chaque pack, le thème les dérive
+des soins contenus. Le bloc « Contenu du pack » est la source unique.
+
+- **Surtitre** : « Routine · Masque 75 ml + Sérum 30 ml », reconstruit depuis
+  le `format` de chaque soin.
+- **Pastilles** : la première de chaque soin d'abord, pour que les deux soient
+  représentés, puis les suivantes sans répéter, quatre au maximum.
+  Résultat : « Purifie · Unifie · Apaise · Hydrate ».
+- **Actifs** : les huit actifs des deux soins, sans doublon.
+- **Texture** : laissée masquée. Un pack n'a pas *une* texture, et en
+  afficher deux ajouterait 1 600 px de page pour peu de bénéfice.
+
+### Piège — `concat` ne fonctionne pas sur des listes de métaobjets
+
+Pour fusionner les actifs des deux soins :
+
+```liquid
+assign fusion = a1 | concat: a2
+```
+
+`a1.size` vaut 4, `a2.size` vaut 4, **`fusion.size` est vide**. Pas d'erreur,
+pas d'avertissement. Vérifié par une sonde dans le rendu.
+
+Deux variantes échouent aussi : partir de `'' | split: ''` comme tableau vide,
+et passer par une variable intermédiaire.
+
+**Solution : ne pas fusionner.** On retient les poignées des soins source et
+on parcourt leurs listes l'une après l'autre au rendu. Deux boucles
+imbriquées, aucun tableau à construire.
+
+**À retenir : en Liquid, une liste de métaobjets se parcourt, elle ne se
+recompose pas.**
