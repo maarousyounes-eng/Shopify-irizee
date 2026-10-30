@@ -39,13 +39,29 @@
 
       <div class="izr__grille">
         {%- for bloc in soins -%}
-          {%- assign soin = bloc.settings.produit -%}
+          {%- liquid
+            assign soin = bloc.settings.produit
+
+            comment
+              Même règle que les cartes du catalogue : le packshot du
+              métachamp s'il existe, l'image principale sinon. Sans ça les
+              tuiles montraient les photos de mise en scène, qui se lisent
+              mal recadrées en carré.
+            endcomment
+            assign visuel = soin.featured_image
+            if soin.metafields.custom.carte_photo.value != blank
+              assign visuel = soin.metafields.custom.carte_photo.value
+            endif
+            if bloc.settings.image != blank
+              assign visuel = bloc.settings.image
+            endif
+          -%}
           {%- if soin.id != blank -%}
             <a class="izr__tuile" href="{{ soin.url }}" {{ bloc.shopify_attributes }}>
               <span class="izr__cadre">
-                {%- if soin.featured_image -%}
+                {%- if visuel != blank -%}
                   {{
-                    soin.featured_image
+                    visuel
                     | image_url: width: 600
                     | image_tag: loading: 'lazy', widths: '200, 300, 450, 600', alt: soin.title, class: 'izr__media'
                   }}
@@ -220,6 +236,12 @@
           "type": "product",
           "id": "produit",
           "label": "Le soin"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Visuel",
+          "info": "Facultatif. Sans lui, le packshot du catalogue est repris."
         },
         {
           "type": "text",
