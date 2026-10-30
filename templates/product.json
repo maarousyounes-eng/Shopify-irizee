@@ -479,7 +479,8 @@
       ],
       "settings": {
         "titre": "Dans cette routine",
-        "colonnes": 3
+        "colonnes": 3,
+        "handles": "la-routine"
       }
     }
   },
@@ -498,3 +499,4 @@
     "newsletter_UgMPLK"
   ]
 }
+
