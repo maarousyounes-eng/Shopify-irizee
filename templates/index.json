@@ -305,8 +305,8 @@
       "name": "Marque et engagements",
       "settings": {
         "eyebrow": "Notre marque",
-        "heading": "Ce que nous mettons, et ce que nous ne mettons pas",
-        "text": "<p>Un besoin, un soin. Chaque formule vise un problème précis, avec les actifs qui le traitent et rien d'autre : si nous ne savons pas dire pourquoi un ingrédient est là, il n'y entre pas.</p><p>Nous annonçons ce que chaque actif fait et à quel rythme. Une peau ne change pas en une semaine, et le dire fait partie du soin.</p>",
+        "heading": "Un besoin, un soin",
+        "text": "<p>Brillance, grain irrégulier, marques, teint terne : chaque problème a sa réponse, et ce n'est pas la même pour tout le monde.</p><p>Nous formulons un soin par besoin, et nous le disons quand un besoin n'est pas le vôtre.</p>",
         "button_label": "",
         "button_link": "",
         "media_position": "left",
