@@ -23,7 +23,9 @@
         "line_color": "#E2E2DF",
         "show_payment_icons": true,
         "padding_top": 72,
-        "padding_top_mobile": 48
+        "padding_top_mobile": 48,
+        "logo_width": 50,
+        "logo_width_mobile": 80
       },
       "blocks": {
         "marque": {
