@@ -877,3 +877,41 @@ translucide ni flou — il n'y a pas d'image de une à laisser transparaître.
 Mesuré sur le panier, le catalogue et une fiche produit : même fond
 (#fbfaf8), même filet (1px #e2e2df), même hauteur (72 px). L'accueil garde
 sa superposition.
+
+---
+
+## 30/10/2026 — Le diagnostic donnait le sérum deux fois sur trois
+
+### La mesure
+
+Le barème comparait deux totaux bruts. Il supposait donc que les deux cibles
+pouvaient marquer autant de points. Ce n'était pas le cas :
+
+- onze réponses pointaient vers le sérum, sept vers le masque ;
+- trois questions entières (marques, sommeil, protection solaire) n'offraient
+  **aucune** réponse pointant vers le masque.
+
+Sur les 15 552 parcours possibles : **sérum 66,8 %**, masque 16,9 %,
+routine 16,3 %. Le « c'est toujours le même résultat » n'était pas une
+impression.
+
+### Le correctif
+
+Chaque score est ramené à ce qu'il pouvait atteindre au maximum, calculé en
+JavaScript à l'initialisation en parcourant les réponses de chaque question.
+On compare des proportions, plus des totaux.
+
+Une bande d'égalité de 12 points remplace l'égalité stricte : en deçà, les
+deux besoins sont réellement présents et c'est la routine.
+
+Nouvelle répartition : **masque 33,2 %, routine 33,7 %, sérum 33,1 %.**
+
+**Leçon : un barème qui additionne des points doit d'abord vérifier que
+chaque option peut en marquer autant.** Sinon il mesure la composition du
+questionnaire, pas la personne qui y répond.
+
+### Le soin complémentaire
+
+Le résultat ne montrait qu'un produit. Il rappelle maintenant l'autre soin en
+une ligne, déduit de la cible : masque → sérum, sérum → masque, et rien pour
+la routine qui contient déjà les deux.
