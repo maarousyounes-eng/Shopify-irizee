@@ -310,7 +310,7 @@
         "email_placeholder": "Votre adresse e-mail",
         "button_label": "Je m'inscris",
         "success_message": "Merci, votre inscription est confirmée.",
-        "require_consent": true,
+        "require_consent": false,
         "consent_text": "J'accepte de recevoir les e-mails d'Irizée et je peux me désinscrire à tout moment.",
         "legal_text": "<p>Vos données sont utilisées uniquement pour vous envoyer nos e-mails. Consultez notre politique de confidentialité.</p>",
         "layout": "centered",

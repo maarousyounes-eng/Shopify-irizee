@@ -374,48 +374,64 @@
     "iz_faq_XEeggT": {
       "type": "iz-faq",
       "blocks": {
-        "question_jMWqiw": {
-          "type": "question",
-          "settings": {
-            "question": "Quand ma commande sera-t-elle expédiée ?",
-            "reponse": "<p>Les soins sont en précommande : la production arrive et les premières expéditions partent à partir de décembre 2026. Vous recevez un email avec le numéro de suivi le jour où votre colis part.</p>"
-          }
-        },
-        "question_jxhTdA": {
-          "type": "question",
-          "settings": {
-            "question": "Pourquoi précommander plutôt qu'attendre ?",
-            "reponse": "<p>La première série est produite en quantité limitée. Précommander réserve la vôtre et vous place en tête des expéditions, au prix de lancement.</p>"
-          }
-        },
-        "question_gGNj3Y": {
+        "q1": {
           "type": "question",
           "settings": {
             "question": "Comment savoir quel soin me convient ?",
-            "reponse": "<p>Le diagnostic en ligne pose huit questions sur votre peau et vos habitudes, puis vous dit par où commencer, et avec quel soin. Il prend moins d'une minute.</p>"
+            "reponse": "<p>Le diagnostic en ligne pose huit questions sur ce que vous observez et sur vos habitudes, puis indique le soin qui répond à votre besoin principal. Il prend moins d'une minute et peut conclure qu'un seul soin suffit.</p>"
           }
         },
-        "question_iLUMcX": {
+        "q2": {
           "type": "question",
           "settings": {
             "question": "Le masque et le sérum s'utilisent-ils ensemble ?",
-            "reponse": "<p>Oui, et ils ne se gênent pas : le masque purifie une à deux fois par semaine, le sérum s'applique matin et soir. L'un prépare la peau, l'autre prend le relais au quotidien.</p>"
+            "reponse": "<p>Oui, et ils n'ont pas le même rythme. Le masque se pose une à deux fois par semaine, puis se rince. Le sérum s'applique matin et soir sur peau propre. Les jours de masque, le sérum vient après le rinçage.</p>"
           }
         },
-        "question_bMeTBJ": {
+        "q3": {
           "type": "question",
           "settings": {
-            "question": "Et si ma peau est sensible ?",
-            "reponse": "<p>Les deux formules conviennent à toutes les peaux et sont sans parfum ajouté, avec un pH proche de celui de la peau. Comme pour tout nouveau soin, faites un essai au creux du coude avant la première application.</p>"
+            "question": "Les formules conviennent-elles à toutes les peaux ?",
+            "reponse": "<p>Les formules sont sans parfum ajouté et à un pH proche de celui de la peau. Elles conviennent à toutes les carnations. Si votre peau est réactive, espacez les poses de masque et commencez le sérum un soir sur deux.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "À partir de quel montant la livraison est-elle offerte ?",
+            "reponse": "<p>Dès 39 € d'achat en France. En dessous, les frais sont calculés au moment du paiement selon l'adresse de livraison.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Puis-je payer en plusieurs fois ?",
+            "reponse": "<p>Oui, en quatre fois sans frais avec PayPal, au moment du paiement.</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "Puis-je retourner un produit ?",
+            "reponse": "<p>Oui, sous quatorze jours, à condition que le produit n'ait pas été ouvert. Écrivez-nous et nous vous indiquons la marche à suivre.</p>"
+          }
+        },
+        "q7": {
+          "type": "question",
+          "settings": {
+            "question": "Vos produits sont-ils testés sur les animaux ?",
+            "reponse": "<p>Non. Aucune de nos formules n'est testée sur les animaux, et nous ne travaillons avec aucun fournisseur qui le ferait.</p>"
           }
         }
       },
       "block_order": [
-        "question_jMWqiw",
-        "question_jxhTdA",
-        "question_gGNj3Y",
-        "question_iLUMcX",
-        "question_bMeTBJ"
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7"
       ],
       "name": "FAQ boutique",
       "settings": {
@@ -449,7 +465,7 @@
         "email_placeholder": "Votre adresse e-mail",
         "button_label": "Je m'inscris",
         "success_message": "Merci, votre inscription est confirmée.",
-        "require_consent": true,
+        "require_consent": false,
         "consent_text": "J'accepte de recevoir les e-mails d'Irizée et je peux me désinscrire à tout moment.",
         "legal_text": "<p>Vos données sont utilisées uniquement pour vous envoyer nos e-mails. Consultez notre politique de confidentialité.</p>",
         "layout": "centered",

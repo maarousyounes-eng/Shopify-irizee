@@ -112,9 +112,16 @@
           {%- if section.settings.seuil_livraison > 0 -%}
             {%- assign seuil = section.settings.seuil_livraison | times: 100 -%}
             {%- if cart.total_price < seuil -%}
+              {%- comment -%}
+                Les filtres s'enchaînent de gauche à droite : `replace` posait
+                le montant en centimes bruts, puis `money` s'appliquait à la
+                phrase entière et rendait « 0,00 € ». On met en forme d'abord,
+                on remplace ensuite.
+              {%- endcomment -%}
               {%- assign restant = seuil | minus: cart.total_price -%}
+              {%- assign restant_affiche = restant | money -%}
               <p class="izp__jauge-texte">
-                {{ section.settings.texte_restant | replace: '[montant]', restant | money }}
+                {{ section.settings.texte_restant | replace: '[montant]', restant_affiche }}
               </p>
             {%- else -%}
               <p class="izp__jauge-texte izp__jauge-texte--atteint">{{ section.settings.texte_atteint }}</p>
