@@ -42,6 +42,20 @@
 
 <link rel="canonical" href="{{ canonical_url }}">
 
+{%- comment -%}
+  Le favicon. Le SVG d'abord : il reste net à toutes les tailles et suit le
+  thème sombre du navigateur. Le PNG dérivé du réglage sert de repli pour les
+  navigateurs qui ignorent le SVG, et pour l'icône d'écran d'accueil iOS, qui
+  n'accepte que du raster.
+{%- endcomment -%}
+<link rel="icon" href="{{ 'favicon.svg' | asset_url }}" type="image/svg+xml">
+{%- if settings.favicon != blank -%}
+  <link rel="alternate icon" href="{{ settings.favicon | image_url: width: 48, height: 48 }}" type="image/png">
+  <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+{%- else -%}
+  <link rel="alternate icon" href="{{ 'irizee-logo.png' | asset_url }}" type="image/png">
+{%- endif -%}
+
 <meta name="description" content="{{ og_description | strip_html | strip_newlines | truncate: 320 | escape }}">
 
 {%- if hors_index -%}
