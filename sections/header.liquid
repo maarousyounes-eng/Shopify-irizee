@@ -351,8 +351,11 @@
     /* La page qui défile sous un tiroir ouvert donne l'impression que le
        tiroir dérive. On la fige le temps de l'ouverture. */
     if (window.MutationObserver) {
+      var barre = document.querySelector('.header');
       new MutationObserver(function () {
-        document.body.style.overflow = menu.hasAttribute('open') ? 'hidden' : '';
+        var ouvert = menu.hasAttribute('open');
+        document.body.style.overflow = ouvert ? 'hidden' : '';
+        if (barre) barre.classList.toggle('header--menu-ouvert', ouvert);
       }).observe(menu, { attributes: true, attributeFilter: ['open'] });
     }
   })();
@@ -774,9 +777,24 @@
      `<details>` masque son contenu tant qu'il est fermé, et un panneau
      absent du rendu ne peut pas glisser : on annule cette règle pour que le
      tiroir existe en permanence, et c'est `transform` qui le sort. */
-  .header__mobile-nav > .header__voile,
-  .header__mobile-nav > .header__mobile-menu {
+  .header__mobile-nav > .header__voile {
     display: block;
+  }
+
+  /* Chaque sélecteur reprend la valeur voulue : un `display: block` commun
+     aux deux l'emporterait sur le `display: flex` déclaré plus bas, qui est
+     moins spécifique, et le bouton du bas perdrait son `margin-top: auto`. */
+  .header__mobile-nav > .header__mobile-menu {
+    display: flex;
+  }
+
+  /* `.header` est en `position: fixed` avec un `z-index` : il forme son
+     propre contexte d'empilement, et le `z-index` du tiroir n'y vaut que
+     par rapport à ses frères. Tant que le menu est ouvert, on remonte le
+     header lui-même, sinon n'importe quelle section posée plus haut passe
+     devant le voile. */
+  .header--menu-ouvert {
+    z-index: 60;
   }
 
   .header__voile {
