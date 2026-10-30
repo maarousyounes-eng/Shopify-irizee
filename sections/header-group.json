@@ -21,7 +21,7 @@
         "enable_blur": true,
         "blur_intensity": 12,
         "hide_on_scroll": true,
-        "menu_font": "work_sans_n7",
+        "menu_font": "poppins_n6",
         "menu_font_size": 15,
         "menu_font_size_mobile": 14,
         "menu_letter_spacing": 0,
