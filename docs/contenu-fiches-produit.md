@@ -372,3 +372,72 @@ Les deux soins réunis, moins chers qu'achetés séparément
 
 > L'économie annoncée est vérifiable : 25,00 € + 24,90 € = 49,90 €, contre
 > 45,00 € le lot. C'est le prix barré affiché sur la carte d'offre.
+
+---
+
+# À corriger sur la fiche Routine — 30/10/2026
+
+Relevé sur le rendu réel. Rien de tout cela ne se répare dans le thème : ce
+sont des métachamps du produit, à remplir dans l'admin.
+
+## 1. La FAQ est celle du sérum
+
+La fiche affiche aujourd'hui :
+
+> **Peut-on l'utiliser avec le Masque Rituel Nila ?**
+
+Sur un pack qui *contient* le masque, la question n'a pas de sens. Les trois
+entrées `faq` référencées par la Routine sont celles du sérum. À remplacer
+par trois questions propres au pack :
+
+**Faut-il utiliser les deux en même temps ?**
+> Non. Le masque se pose une à deux fois par semaine et se rince. Le sérum
+> s'applique matin et soir, sur peau propre. Les jours de masque, le sérum
+> vient après le rinçage.
+
+**Par lequel commencer ?**
+> Par le sérum, tous les jours, le temps qu'il devienne un réflexe. Ajoutez
+> le masque la deuxième semaine. Deux habitudes prises l'une après l'autre
+> tiennent mieux qu'un rituel complet abandonné au bout de dix jours.
+
+**Combien de temps dure la routine ?**
+> Le masque couvre environ deux mois à raison d'une pose par semaine, le
+> sérum environ un mois et demi à deux applications par jour.
+
+## 2. « Comment l'utiliser » ne parle que du sérum
+
+Le métachamp `utilisation` de la Routine reprend celui du sérum. Texte de
+remplacement :
+
+> **Le sérum**, matin et soir : quelques gouttes sur peau propre, avant la
+> crème. Le matin, terminez par une protection solaire.
+>
+> **Le masque**, une à deux fois par semaine : une couche fine sur peau
+> propre, quinze minutes de pose, puis on rince à l'eau tiède. Le sérum
+> s'applique ensuite.
+
+## 3. Trois métachamps vides
+
+| Métachamp | État | Ce qu'il faut |
+|---|---|---|
+| `actifs` | vide | Référencer les metaobjets `actif` **déjà créés** pour le masque et le sérum. Aucun contenu à écrire, juste la sélection. |
+| `texture_titre` / `texture_texte` / `texture_image` | vides | Un pack a deux textures. Soit on les décrit toutes les deux, soit on laisse la section masquée — c'est un choix, pas un oubli. |
+| `videos_ugc` | vide | Attend les vidéos. |
+
+`resultats` reste volontairement vide : pas d'étude d'usage, donc pas de
+chiffre. Décision déjà actée plus haut dans ce document.
+
+## 4. La même phrase trois fois
+
+La promesse, le troisième bénéfice et la description répètent tous que « le
+masque prépare la peau, le sérum prend le relais ». Lues à la suite dans la
+colonne d'achat, les trois se suivent à quelques centimètres.
+
+La promesse et les bénéfices gagnent à rester ; c'est la **description** qui
+peut changer d'angle, puisqu'elle est lue en dernier et dépliée :
+
+> Deux soins qui ne font pas le même travail. Le masque désencombre la peau
+> et resserre le grain, une à deux fois par semaine. Le sérum travaille
+> l'uniformité du teint au quotidien, et c'est la régularité qui compte.
+>
+> Achetés ensemble, ils reviennent à 45,00 € au lieu de 51,80 €.
