@@ -59,7 +59,9 @@
         "pdp_border": true,
         "pdp_border_color": "#e2e2df",
         "barre_bordure": "#e2e2df",
-        "barre_fond": "#ffffff"
+        "barre_fond": "#ffffff",
+        "tiroir_cta_label": "Faire le diagnostic",
+        "tiroir_cta_lien": "shopify://pages/diagnostic"
       }
     }
   },
