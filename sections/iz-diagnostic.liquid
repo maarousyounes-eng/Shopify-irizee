@@ -102,7 +102,12 @@
 
         <div class="izd__hero-texte">
           {%- if section.settings.titre != blank -%}
-            <h2 class="izd__titre">{{ section.settings.titre }}</h2>
+            {%- comment -%}
+              h1 et non h2 : cette section est le contenu principal de sa
+              page, et la page n'imprime plus de titre administratif. Sans
+              cela le diagnostic n'avait aucun h1.
+            {%- endcomment -%}
+            <h1 class="izd__titre">{{ section.settings.titre }}</h1>
           {%- endif -%}
           {%- if section.settings.intro != blank -%}
             <div class="izd__texte">{{ section.settings.intro }}</div>
