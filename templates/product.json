@@ -527,65 +527,6 @@
         "button_letter_spacing": 1,
         "button_text_transform": "uppercase"
       }
-    },
-    "pour_qui": {
-      "type": "iz-pour-qui",
-      "blocks": {
-        "oui_1": {
-          "type": "pour",
-          "settings": {
-            "texte": "Vous voyez des taches, des marques d'anciens boutons ou un teint qui s'est éteint."
-          }
-        },
-        "oui_2": {
-          "type": "pour",
-          "settings": {
-            "texte": "Votre peau brille ou son grain s'est irrégularisé."
-          }
-        },
-        "oui_3": {
-          "type": "pour",
-          "settings": {
-            "texte": "Vous voulez deux gestes qui tiennent, pas une étagère à gérer."
-          }
-        },
-        "oui_4": {
-          "type": "pour",
-          "settings": {
-            "texte": "Vous préférez des formules sans parfum ajouté."
-          }
-        },
-        "non_1": {
-          "type": "pas_pour",
-          "settings": {
-            "texte": "Vous cherchez un résultat en une semaine : ce n'est pas ce que fait un soin."
-          }
-        },
-        "non_2": {
-          "type": "pas_pour",
-          "settings": {
-            "texte": "Un seul des deux besoins vous concerne — prenez le soin correspondant, il coûte moins cher."
-          }
-        },
-        "non_3": {
-          "type": "pas_pour",
-          "settings": {
-            "texte": "Votre peau est très réactive en ce moment : commencez par le sérum seul."
-          }
-        }
-      },
-      "block_order": [
-        "oui_1",
-        "oui_2",
-        "oui_3",
-        "oui_4",
-        "non_1",
-        "non_2",
-        "non_3"
-      ],
-      "settings": {
-        "handles": "la-routine"
-      }
     }
   },
   "order": [
@@ -595,7 +536,6 @@
     "resultats",
     "ugc",
     "rituel",
-    "pour_qui",
     "marque",
     "actifs",
     "routine",
