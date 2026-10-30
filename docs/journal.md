@@ -915,3 +915,34 @@ questionnaire, pas la personne qui y répond.
 Le résultat ne montrait qu'un produit. Il rappelle maintenant l'autre soin en
 une ligne, déduit de la cible : masque → sérum, sérum → masque, et rien pour
 la routine qui contient déjà les deux.
+
+---
+
+## 30/10/2026 — Un gabarit de thème en brouillon ne peut pas être attaché
+
+J'avais créé `templates/product.routine.json` pour le pack, en disant qu'il
+suffirait de le sélectionner dans l'admin. C'est faux tant que le thème est
+en brouillon. La documentation Shopify est explicite :
+
+> The template options that display are based on the available templates
+> **only in your current live theme.**
+
+L'option n'apparaît donc pas dans la liste déroulante, et aucun accès
+administrateur n'y change quoi que ce soit : il n'y a rien à cliquer.
+
+**Contournement retenu :** la section « Dans cette routine » vit aussi dans
+le gabarit produit standard et se limite elle-même aux produits qu'on lui
+désigne, par un réglage de poignées séparées par des virgules — même
+mécanique que `handle_page` sur le diagnostic. Elle s'affiche donc sur le
+pack aujourd'hui, sans la moindre action dans l'admin.
+
+À la publication du thème, le gabarit dédié pourra prendre le relais et ce
+réglage sera vidé.
+
+**Vérifié :** visible sur `la-routine`, absente sur `serum-correcteur-eclat`
+et sur `masque-rituel-nila`.
+
+**Rappel du piège associé**, rencontré une troisième fois ici : un gabarit
+JSON monté avant que le schéma ne déclare un réglage perd ce réglage en
+silence. Le filtre ne mordait pas tant que `templates/product.json` n'avait
+pas été renvoyé.
