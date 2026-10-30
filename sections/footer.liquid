@@ -11,6 +11,17 @@
     --ft-columns: {{ section.settings.columns }};
     --ft-column-gap: {{ section.settings.column_gap }}px;
     --ft-logo-width: {{ section.settings.logo_width }}%;
+    {%- liquid
+      case section.settings.logo_align
+        when 'gauche'
+          assign marge_logo = '0 auto 0 0'
+        when 'droite'
+          assign marge_logo = '0 0 0 auto'
+        else
+          assign marge_logo = '0 auto'
+      endcase
+    -%}
+    --ft-logo-marge: {{ marge_logo }};
 
     --ft-heading-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
     --ft-heading-size: {{ section.settings.heading_size }}px;
@@ -304,7 +315,7 @@
     display: block;
     width: var(--ft-logo-width);
     height: auto;
-    margin: 0 auto;
+    margin: var(--ft-logo-marge, 0 auto);
   }
 
   .footer__legal {
@@ -376,6 +387,12 @@
     { "type": "header", "content": "Logo en signature" },
     { "type": "checkbox", "id": "show_logo", "label": "Afficher le logo en grand", "default": true },
     { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Laisser vide pour utiliser le logo du thème." },
+    { "type": "select", "id": "logo_align", "label": "Position du logo",
+      "options": [
+        { "value": "gauche", "label": "À gauche" },
+        { "value": "centre", "label": "Au centre" },
+        { "value": "droite", "label": "À droite" }
+      ], "default": "centre" },
     { "type": "range", "id": "logo_width", "label": "Largeur du logo — ordinateur", "min": 20, "max": 100, "step": 5, "unit": "%", "default": 100 },
     { "type": "range", "id": "logo_width_mobile", "label": "Largeur du logo — mobile", "min": 20, "max": 100, "step": 5, "unit": "%", "default": 100 },
 
