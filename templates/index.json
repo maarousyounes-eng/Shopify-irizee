@@ -19,7 +19,7 @@
         "show_overlay": true,
         "overlay_opacity": 10,
         "eyebrow": "Soins ciblés",
-        "heading": "Une peau plus nette, un teint plus uniforme",
+        "heading": "Routine anti-taches & éclat",
         "button_label": "Découvrir nos soins",
         "button_link": "shopify://collections/les-soins",
         "button_custom": false,
@@ -29,7 +29,7 @@
         "button_font_weight": 600,
         "button_letter_spacing": 1,
         "button_text_transform": "uppercase",
-        "text": "<p>Poudre de nila pour purifier, vitamine C pour unifier le teint.</p>"
+        "text": "<p>Un masque chaque semaine, quelques gouttes chaque jour, pour un teint plus net, plus uniforme et plus lumineux.</p>"
       }
     },
     "reassurance_L9RciR": {
