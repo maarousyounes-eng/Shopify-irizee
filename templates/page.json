@@ -249,10 +249,70 @@
         "taille_texte_m": 15,
         "libelle_vos_reponses": "Ce que vous observez"
       }
+    },
+    "iz_contact": {
+      "type": "iz-contact",
+      "blocks": {
+        "carte_delai": {
+          "type": "carte",
+          "settings": {
+            "titre": "Délai de réponse",
+            "texte": "<p>Nous répondons à chaque message sous deux jours ouvrés, du lundi au vendredi.</p>"
+          }
+        },
+        "carte_diagnostic": {
+          "type": "carte",
+          "settings": {
+            "titre": "Vous hésitez entre deux soins ?",
+            "texte": "<p>Huit questions suffisent à déterminer lequel répond à votre peau. C'est plus rapide que d'attendre notre réponse.</p>",
+            "lien_label": "Faire le diagnostic",
+            "lien_url": "shopify://pages/diagnostic"
+          }
+        },
+        "carte_livraison": {
+          "type": "carte",
+          "settings": {
+            "titre": "Commande et livraison",
+            "texte": "<p>Livraison offerte dès 39 € d'achat en France. Indiquez votre numéro de commande dans le formulaire, nous retrouverons votre dossier plus vite.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "carte_delai",
+        "carte_diagnostic",
+        "carte_livraison"
+      ],
+      "settings": {
+        "handle_page": "contact",
+        "eyebrow": "Contact",
+        "titre": "Une question sur votre peau ou votre commande ?",
+        "intro": "<p>Écrivez-nous : nous répondons à chaque message, sous deux jours ouvrés. Si votre question porte sur le soin qui vous convient, le diagnostic y répond souvent plus vite.</p>",
+        "label_nom": "Votre nom",
+        "label_email": "Votre adresse email",
+        "demander_commande": true,
+        "label_commande": "Numéro de commande (facultatif)",
+        "label_message": "Votre message",
+        "label_bouton": "Envoyer",
+        "mention": "<p>Votre adresse sert uniquement à vous répondre.</p>",
+        "message_succes": "Message reçu. Nous vous répondons sous deux jours ouvrés, à l'adresse que vous avez indiquée.",
+        "message_erreur": "Le message n'a pas pu être envoyé :",
+        "afficher_email": true,
+        "label_email_direct": "Ou directement :",
+        "largeur_aside": 320,
+        "couleur_fond": "#FBFAF8",
+        "marge_verticale": 72,
+        "marge_verticale_mobile": 48,
+        "gap": 40,
+        "taille_eyebrow": 12,
+        "taille_titre": 44,
+        "taille_titre_mobile": 30,
+        "taille_texte": 16
+      }
     }
   },
   "order": [
     "main",
+    "iz_contact",
     "iz_diagnostic_4yzr3c"
   ]
 }
