@@ -12,7 +12,7 @@
     "hero": {
       "type": "hero",
       "settings": {
-        "image": "shopify://shop_images/generated-image_4.png",
+        "image": "shopify://shop_images/Hero_1.png",
         "text_color": "black",
         "position_vertical": "bottom",
         "position_horizontal": "left",
@@ -20,7 +20,6 @@
         "overlay_opacity": 10,
         "eyebrow": "",
         "heading": "Routine anti-taches & éclat",
-        "text": "<p>Réduit l'apparence des taches, affine le grain, ravive l'éclat.</p>",
         "button_label": "Découvrir nos soins",
         "button_link": "shopify://products/la-routine",
         "button_custom": false,
@@ -29,7 +28,8 @@
         "button_padding_x": 18,
         "button_font_weight": 600,
         "button_letter_spacing": 1,
-        "button_text_transform": "uppercase"
+        "button_text_transform": "uppercase",
+        "text": "<p>Réduit l'apparence des taches, affine le grain, ravive l'éclat.</p>"
       }
     },
     "reassurance_L9RciR": {
@@ -87,10 +87,10 @@
         "column_gap_mobile": 16,
         "row_gap": 32,
         "row_gap_mobile": 24,
-        "margin_top": 12,
-        "margin_top_mobile": 12,
-        "margin_bottom": 4,
-        "margin_bottom_mobile": 12,
+        "margin_top": 64,
+        "margin_top_mobile": 40,
+        "margin_bottom": 64,
+        "margin_bottom_mobile": 40,
         "background_color": "#ffffff",
         "text_color": "#1a1a1a",
         "line_color": "#ddd9d7",
@@ -302,34 +302,6 @@
     },
     "brand_commitments_NCVAJB": {
       "type": "brand-commitments",
-      "blocks": {
-        "valeur_1": {
-          "type": "tag",
-          "settings": {
-            "label": "Formules courtes",
-            "link": ""
-          }
-        },
-        "valeur_2": {
-          "type": "tag",
-          "settings": {
-            "label": "Sans parfum ajouté",
-            "link": ""
-          }
-        },
-        "valeur_3": {
-          "type": "tag",
-          "settings": {
-            "label": "Convient à toutes les peaux",
-            "link": ""
-          }
-        }
-      },
-      "block_order": [
-        "valeur_1",
-        "valeur_2",
-        "valeur_3"
-      ],
       "name": "Marque et engagements",
       "settings": {
         "eyebrow": "Notre marque",
@@ -337,9 +309,6 @@
         "text": "<p>Brillance, grain irrégulier, marques, teint terne : chaque problème a sa réponse, et ce n'est pas la même pour tout le monde.</p><p>Nous formulons un soin par besoin, et nous le disons quand un besoin n'est pas le vôtre.</p>",
         "button_label": "",
         "button_link": "",
-        "image_main": "shopify://shop_images/irizee_masque-nila_4x5_635a3a.jpg",
-        "image_top": "shopify://shop_images/irizee_s-rum-correcteur-clat_4x5_c8a15d.jpg",
-        "image_bottom": "shopify://shop_images/irizee_masque-nila_4x5_efdb9f.jpg",
         "media_position": "left",
         "photo_row_height": 180,
         "photo_row_height_mobile": 120,
@@ -371,8 +340,36 @@
         "button_padding_x": 26,
         "button_font_weight": 700,
         "button_letter_spacing": 1,
-        "button_text_transform": "uppercase"
-      }
+        "button_text_transform": "uppercase",
+        "image_main": "shopify://shop_images/irizee_masque-nila_4x5_635a3a.jpg",
+        "image_top": "shopify://shop_images/irizee_s-rum-correcteur-clat_4x5_c8a15d.jpg",
+        "image_bottom": "shopify://shop_images/irizee_masque-nila_4x5_efdb9f.jpg"
+      },
+      "blocks": {
+        "valeur_1": {
+          "type": "tag",
+          "settings": {
+            "label": "Formules courtes"
+          }
+        },
+        "valeur_2": {
+          "type": "tag",
+          "settings": {
+            "label": "Sans parfum ajouté"
+          }
+        },
+        "valeur_3": {
+          "type": "tag",
+          "settings": {
+            "label": "Convient à toutes les peaux"
+          }
+        }
+      },
+      "block_order": [
+        "valeur_1",
+        "valeur_2",
+        "valeur_3"
+      ]
     },
     "iz_faq_XEeggT": {
       "type": "iz-faq",
