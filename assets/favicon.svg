@@ -1,16 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Irizée">
   <!--
-    Le « i » d'irizee-logo.png, relevé au pixel sur le canal alpha plutôt
-    que redessiné à vue : point de rayon 113 centré en x=133,5 ; fût de 208
-    de large ; attaque diagonale en haut à gauche qui part de x=29 à y=342
-    pour rejoindre x=228 à y=272 ; pied évasé sur les quarante derniers
-    pixels. Le glyphe source mesure 258 × 829, d'où l'échelle 0,41.
+    Reprise de l'icône officielle de la marque (dépôt irizee-brand,
+    src/app/icon.png) : le « i » noir sur fond blanc, sans cartouche.
 
-    Tracé en formes vectorielles et non en rognage du PNG : à 16 px, un
-    bout d'image se brouille, un contour reste net.
+    Le glyphe est tracé et non rogné dans le PNG, à partir d'un relevé au
+    pixel du canal alpha d'irizee-logo.png : point de rayon 113 centré en
+    x=133,5 ; fût de 208 de large ; attaque diagonale qui part de x=29 à
+    y=342 pour rejoindre x=228 à y=272 ; pied évasé sur les quarante
+    derniers pixels. Le glyphe source mesure 258 × 829, d'où l'échelle
+    0,41. À 16 px, un bout d'image se brouille, un contour reste net.
+
+    Fond blanc explicite et non transparent : dans un onglet sombre, un
+    glyphe noir détouré disparaîtrait.
   -->
-  <rect width="512" height="512" rx="112" fill="#1A1A1A"/>
-  <g transform="translate(203 86) scale(0.41)" fill="#FFFFFF">
+  <rect width="512" height="512" fill="#FFFFFF"/>
+  <g transform="translate(203 86) scale(0.41)" fill="#1A1A1A">
     <circle cx="133.5" cy="113" r="113"/>
     <path d="M228 272
              C235 273 237 278 237 285
