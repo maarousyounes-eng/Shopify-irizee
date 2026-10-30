@@ -201,12 +201,38 @@
   }
 
   @media (max-width: 749px) {
+    /* Sur mobile le texte passe SOUS l'image au lieu d'être posé dessus.
+       Le recadrage `cover` d'un visuel paysage dans un cadre portrait amène
+       le produit exactement là où le texte se pose : ici le tube argenté
+       sous le titre. Aucun voile ne rattrape ça — celui du desktop est à
+       10 % et s'éteint dès 60 % de la hauteur. Plutôt que de délaver la
+       photo pour sauver le texte, on les sépare. */
     .hero {
-      min-height: 70vh;
+      min-height: 0;
+      display: block;
+      margin: 0;
+      border-radius: 0;
+      overflow: visible;
+      background-color: transparent;
+    }
+
+    .hero__image {
+      position: relative;
+      inset: auto;
+      display: block;
+      width: calc(100% - 2.4rem);
+      height: 44rem;
+      margin: 1.2rem 1.2rem 0;
+      border-radius: 2.4rem;
+    }
+
+    /* Le voile n'a plus rien à protéger : le texte est sur le fond de page. */
+    .hero__overlay {
+      display: none;
     }
 
     .hero__content {
-      padding: 2.4rem 2rem 3.2rem;
+      padding: 2.8rem var(--page-margin) 0.8rem;
     }
 
     .hero__heading {
