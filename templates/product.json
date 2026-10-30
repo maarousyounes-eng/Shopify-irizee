@@ -456,11 +456,37 @@
         "button_letter_spacing": 1,
         "button_text_transform": "uppercase"
       }
+    },
+    "contenu_routine": {
+      "type": "iz-contenu-routine",
+      "blocks": {
+        "soin_1": {
+          "type": "soin",
+          "settings": {
+            "produit": "masque-rituel-nila"
+          }
+        },
+        "soin_2": {
+          "type": "soin",
+          "settings": {
+            "produit": "serum-correcteur-eclat"
+          }
+        }
+      },
+      "block_order": [
+        "soin_1",
+        "soin_2"
+      ],
+      "settings": {
+        "titre": "Dans cette routine",
+        "colonnes": 3
+      }
     }
   },
   "order": [
     "main",
     "engagements",
+    "contenu_routine",
     "texture",
     "resultats",
     "ugc",

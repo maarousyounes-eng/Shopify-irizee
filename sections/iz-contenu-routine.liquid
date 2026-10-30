@@ -28,9 +28,31 @@
   }
 {% endstyle %}
 
-{%- assign soins = section.blocks | where: 'type', 'soin' -%}
+{%- liquid
+  comment
+    Shopify n'affiche dans l'admin que les gabarits du thème EN LIGNE. Tant
+    que ce thème est en brouillon, « routine » ne peut pas être attaché à un
+    produit : l'option n'existe pas dans la liste. La section vit donc aussi
+    dans le gabarit produit standard, et se limite elle-même aux produits
+    qu'on lui désigne. À la publication du thème, le gabarit dédié prendra
+    le relais et ce réglage pourra être vidé.
+  endcomment
+  assign soins = section.blocks | where: 'type', 'soin'
 
-{%- if soins.size > 0 -%}
+  assign bon_produit = true
+  if section.settings.handles != blank
+    assign bon_produit = false
+    assign vises = section.settings.handles | replace: ' ', '' | split: ','
+    for h in vises
+      if h == product.handle
+        assign bon_produit = true
+        break
+      endif
+    endfor
+  endif
+-%}
+
+{%- if soins.size > 0 and bon_produit -%}
   <section class="izr">
     <div class="izr__inner">
       {%- if section.settings.titre != blank -%}
@@ -163,6 +185,12 @@
       "id": "titre",
       "label": "Titre",
       "default": "Dans cette routine"
+    },
+    {
+      "type": "text",
+      "id": "handles",
+      "label": "N'afficher que sur ces produits",
+      "info": "Identifiants de produits séparés par des virgules, par exemple la-routine. Laisser vide pour afficher partout où la section est posée."
     },
     {
       "type": "range",
