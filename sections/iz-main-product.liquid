@@ -189,6 +189,67 @@
                 </ul>
               {%- endif -%}
 
+            {%- when 'contenu_routine' -%}
+              {%- liquid
+                comment
+                  Ce que contient un pack, dans la colonne d'achat : on le lit
+                  avant de décider, pas après avoir fait défiler la page.
+
+                  Le gabarit produit est partagé par toutes les fiches, et un
+                  gabarit dédié ne peut pas être attaché tant que le thème est
+                  en brouillon. Le bloc se limite donc lui-même aux produits
+                  qu'on lui désigne.
+                endcomment
+                assign montrer_contenu = false
+                if block.settings.handles != blank
+                  assign vises = block.settings.handles | replace: ' ', '' | split: ','
+                  for h in vises
+                    if h == p.handle
+                      assign montrer_contenu = true
+                      break
+                    endif
+                  endfor
+                endif
+              -%}
+              {%- if montrer_contenu -%}
+                <div class="iz-pack" {{ block.shopify_attributes }}>
+                  {%- if block.settings.titre != blank -%}
+                    <p class="iz-pack__titre">{{ block.settings.titre }}</p>
+                  {%- endif -%}
+                  <div class="iz-pack__grille">
+                    {%- for i in (1..4) -%}
+                      {%- liquid
+                        case i
+                          when 1
+                            assign soin = block.settings.soin_1
+                          when 2
+                            assign soin = block.settings.soin_2
+                          when 3
+                            assign soin = block.settings.soin_3
+                          else
+                            assign soin = block.settings.soin_4
+                        endcase
+
+                        assign visuel = soin.featured_image
+                        if soin.metafields.custom.carte_photo.value != blank
+                          assign visuel = soin.metafields.custom.carte_photo.value
+                        endif
+                      -%}
+                      {%- if soin.id != blank -%}
+                        <a class="iz-pack__tuile" href="{{ soin.url }}">
+                          <span class="iz-pack__cadre">
+                            {%- if visuel != blank -%}
+                              {{ visuel | image_url: width: 320 | image_tag: loading: 'lazy', widths: '120, 200, 320', alt: soin.title, class: 'iz-pack__media' }}
+                            {%- endif -%}
+                          </span>
+                          <span class="iz-pack__nom">{{ soin.title }}</span>
+                        </a>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </div>
+                </div>
+              {%- endif -%}
+
             {%- when 'offres' -%}
               {%- if offres != blank and offres.size > 0 -%}
                 <div class="iz-offers{% unless block.settings.inclure_courant %} iz-offers--liens{% endunless %}" {{ block.shopify_attributes }}>
@@ -806,6 +867,61 @@
      dans les sections, jamais dans les snippets. */
   /* Sans le produit courant, la pastille n'a plus de sens : il n'y a rien à
      choisir, seulement une routine à ouvrir. */
+  /* Le contenu d'un pack, dans la colonne d'achat : des tuiles assez
+     petites pour ne pas repousser le bouton sous la ligne de flottaison. */
+  .iz-pack {
+    margin: 2rem 0 0;
+  }
+
+  .iz-pack__titre {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 1.2rem;
+  }
+
+  .iz-pack__grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1.2rem;
+  }
+
+  .iz-pack__tuile {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    min-width: 0;
+  }
+
+  .iz-pack__cadre {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: 0.8rem;
+    overflow: hidden;
+    background: var(--iz-surface, #f0eff2);
+  }
+
+  .iz-pack__media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .iz-pack__nom {
+    display: block;
+    margin-top: 0.8rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1.35;
+    color: color-mix(in srgb, currentColor 65%, transparent);
+  }
+
+  .iz-pack__tuile:hover .iz-pack__nom { color: inherit; }
+
   .iz-offers--liens .iz-offer__radio { display: none; }
 
   .iz-offers {
@@ -1762,6 +1878,29 @@
           "type": "paragraph",
           "content": "Alimentées par le metafield « puces ». Trois ou quatre mots, pas des phrases."
         }
+      ]
+    },
+    {
+      "type": "contenu_routine",
+      "name": "Contenu du pack",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "handles",
+          "label": "N'afficher que sur ces produits",
+          "info": "Identifiants séparés par des virgules, par exemple la-routine. Vide : le bloc ne s'affiche nulle part."
+        },
+        {
+          "type": "text",
+          "id": "titre",
+          "label": "Titre",
+          "default": "Dans cette routine :"
+        },
+        { "type": "product", "id": "soin_1", "label": "Soin 1" },
+        { "type": "product", "id": "soin_2", "label": "Soin 2" },
+        { "type": "product", "id": "soin_3", "label": "Soin 3" },
+        { "type": "product", "id": "soin_4", "label": "Soin 4" }
       ]
     },
     {

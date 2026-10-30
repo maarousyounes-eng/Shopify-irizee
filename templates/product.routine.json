@@ -82,6 +82,15 @@
             "metafield_4": "",
             "description_produit_4": false
           }
+        },
+        "contenu_routine": {
+          "type": "contenu_routine",
+          "settings": {
+            "handles": "la-routine",
+            "titre": "Dans cette routine :",
+            "soin_1": "masque-rituel-nila",
+            "soin_2": "serum-correcteur-eclat"
+          }
         }
       },
       "block_order": [
@@ -89,6 +98,7 @@
         "puces",
         "promesse",
         "benefices",
+        "contenu_routine",
         "offres",
         "achat",
         "jauge",
@@ -341,37 +351,11 @@
         "button_letter_spacing": 1,
         "button_text_transform": "uppercase"
       }
-    },
-    "contenu": {
-      "type": "iz-contenu-routine",
-      "blocks": {
-        "soin_1": {
-          "type": "soin",
-          "settings": {
-            "produit": "masque-rituel-nila"
-          }
-        },
-        "soin_2": {
-          "type": "soin",
-          "settings": {
-            "produit": "serum-correcteur-eclat"
-          }
-        }
-      },
-      "block_order": [
-        "soin_1",
-        "soin_2"
-      ],
-      "settings": {
-        "titre": "Dans cette routine",
-        "colonnes": 3
-      }
     }
   },
   "order": [
     "main",
     "engagements",
-    "contenu",
     "rituel",
     "marque",
     "faq",
