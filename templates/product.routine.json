@@ -1,6 +1,11 @@
 /*
- * Gabarit du pack : un pack n'a pas de texture ni de liste d'actifs
- * propres, mais il doit dire ce qu'il contient.
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
  */
 {
   "sections": {
@@ -139,8 +144,7 @@
         "taille_bouton_m": 13,
         "taille_jauge_m": 12,
         "taille_acc_titre_m": 14,
-        "taille_acc_texte_m": 14,
-        "titre_1": "Ce qu'il fait pour votre peau"
+        "taille_acc_texte_m": 14
       }
     },
     "engagements": {

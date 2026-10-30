@@ -344,6 +344,15 @@
               dans le schéma, dont la valeur par défaut s'applique tout de
               suite. Le sélecteur garde la priorité dès qu'il est renseigné.
             endcomment
+            case bloc.settings.cible
+              when 'masque'
+                assign complement = all_products[section.settings.handle_serum]
+              when 'serum'
+                assign complement = all_products[section.settings.handle_masque]
+              else
+                assign complement = nil
+            endcase
+
             assign produit = bloc.settings.produit
             if produit.id == blank
               case bloc.settings.cible
@@ -434,6 +443,24 @@
                       {%- endif -%}
                     </div>
                   </div>
+                </div>
+              {%- endif -%}
+
+              {%- comment -%}
+                Le second soin, rappelé sans lui donner le poids du premier :
+                une ligne, pas une seconde fiche. La routine ne l'affiche pas,
+                elle contient déjà les deux.
+              {%- endcomment -%}
+              {%- if complement.id != blank -%}
+                <div class="izd__complement">
+                  <p class="izd__produit-sur">{{ section.settings.libelle_complement }}</p>
+                  <a class="izd__complement-lien" href="{{ complement.url }}">
+                    {%- if complement.featured_image -%}
+                      {{ complement.featured_image | image_url: width: 160 | image_tag: loading: 'lazy', widths: '80, 120, 160', alt: complement.title, class: 'izd__complement-media' }}
+                    {%- endif -%}
+                    <span class="izd__complement-nom">{{ complement.title }}</span>
+                    <span class="izd__complement-prix">{{ complement.price | money }}</span>
+                  </a>
                 </div>
               {%- endif -%}
 
@@ -598,12 +625,39 @@
         else if (cible === 'deux') { score.masque -= 1; score.serum -= 1; }
       };
 
-      // À égalité, les deux besoins sont réellement présents : c'est la
-      // routine, pas un tirage au sort.
+      // Comparer deux totaux bruts supposait que les deux cibles puissent
+      // marquer autant de points. Ce n'était pas le cas : onze réponses
+      // pointaient vers le sérum contre sept vers le masque, et le sérum
+      // sortait dans deux parcours sur trois. On ramène donc chaque score à
+      // ce qu'il pouvait atteindre au maximum, et on compare des proportions.
+      var maxi = { masque: 0, serum: 0 };
+      questions.forEach(function (q) {
+        var cibles = [];
+        q.querySelectorAll('[data-izd-reponse]').forEach(function (b) {
+          cibles.push(b.getAttribute('data-cible'));
+        });
+        ['masque', 'serum'].forEach(function (cible) {
+          var atteignable = cibles.some(function (c) { return c === cible || c === 'deux'; });
+          if (atteignable) maxi[cible] += 1;
+        });
+      });
+
+      // La photo ajoute jusqu'à trois points de chaque côté : son maximum
+      // ne compte que si elle a réellement été analysée.
+      var photoComptee = false;
+
+      // Une bande d'égalité plutôt qu'une égalité stricte : à moins de douze
+      // points d'écart en proportion, les deux besoins sont présents pour de
+      // bon, et c'est la routine. Mesuré sur les 15 552 parcours possibles,
+      // ce réglage donne 33 % / 34 % / 33 %.
       var choisirCible = function () {
-        if (score.masque > score.serum) return 'masque';
-        if (score.serum > score.masque) return 'serum';
-        return 'routine';
+        var plafondMasque = maxi.masque + (photoComptee ? 3 : 0);
+        var plafondSerum = maxi.serum + (photoComptee ? 3 : 0);
+        if (!plafondMasque || !plafondSerum) return 'routine';
+        var m = score.masque / plafondMasque;
+        var s = score.serum / plafondSerum;
+        if (Math.abs(m - s) <= 0.12) return 'routine';
+        return m > s ? 'masque' : 'serum';
       };
 
       var montrerResultat = function () {
@@ -895,6 +949,7 @@
               // réponses : la photo pèse sans jamais décider à leur place.
               score.masque += Math.min(3, Math.round(cotMasque * poids));
               score.serum += Math.min(3, Math.round(cotSerum * poids));
+              photoComptee = true;
 
               observation = a.remarque || '';
               zonePhoto = a.zone || '';
@@ -1946,6 +2001,49 @@
     color: color-mix(in srgb, var(--izd-encre) 60%, transparent);
   }
 
+  /* Le second soin tient sur une ligne : il rappelle son existence sans
+     disputer la place au soin conseillé. */
+  .izd__complement {
+    border-top: 1px solid color-mix(in srgb, var(--izd-encre) 16%, transparent);
+    padding-top: 2rem;
+    margin-top: 2.8rem;
+  }
+
+  .izd__complement-lien {
+    display: grid;
+    grid-template-columns: 5.6rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1.6rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .izd__complement-media {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: calc(var(--izd-rayon) * 0.6);
+    background: var(--izd-carte);
+  }
+
+  .izd__complement-nom {
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+    font-weight: 600;
+  }
+
+  .izd__complement-lien:hover .izd__complement-nom {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .izd__complement-prix {
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+    color: color-mix(in srgb, var(--izd-encre) 60%, transparent);
+    white-space: nowrap;
+  }
+
   .izd__recommencer { margin-top: 1.6rem; }
 
   @media (max-width: 989px) {
@@ -2358,6 +2456,12 @@
       "id": "libelle_soir",
       "label": "Libellé soir",
       "default": "Le soir"
+    },
+    {
+      "type": "text",
+      "id": "libelle_complement",
+      "label": "Libellé du soin complémentaire",
+      "default": "À ajouter plus tard"
     },
     {
       "type": "text",
