@@ -226,7 +226,8 @@
       }}
     {% else %}
       <img
-        src="{{ top_logo_fallback | asset_url }}"
+        src="{{ top_logo_fallback | asset_img_url: '220x' }}"
+        srcset="{{ top_logo_fallback | asset_img_url: '220x' }} 1x, {{ top_logo_fallback | asset_img_url: '440x' }} 2x"
         alt="{{ shop.name }}"
         class="header__logo header__logo--top"
         width="110"
@@ -244,7 +245,8 @@
         }}
       {% else %}
         <img
-          src="{{ scrolled_logo_fallback | asset_url }}"
+          src="{{ scrolled_logo_fallback | asset_img_url: '220x' }}"
+          srcset="{{ scrolled_logo_fallback | asset_img_url: '220x' }} 1x, {{ scrolled_logo_fallback | asset_img_url: '440x' }} 2x"
           alt="{{ shop.name }}"
           class="header__logo header__logo--scrolled"
           width="110"
