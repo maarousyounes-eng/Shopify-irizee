@@ -1,0 +1,573 @@
+{% comment %}
+  Page contact.
+
+  Posée dans le template `page` par défaut et filtrée par handle, comme le
+  diagnostic : le menu déroulant des suffixes de template, dans l'admin, ne
+  liste que les templates du thème publié. Tant que ce thème est un
+  brouillon, un `page.contact.json` serait impossible à rattacher. Le
+  garde-fou par handle, lui, fonctionne immédiatement.
+
+  Le titre est en `h1` : la page n'a pas de contenu dans l'admin, donc
+  `sections/page.liquid` n'imprime pas d'en-tête et ne crée pas de doublon.
+{% endcomment %}
+
+{%- liquid
+  assign page_attendue = section.settings.handle_page | strip
+  assign bonne_page = true
+  if page_attendue != blank and page.handle != page_attendue
+    assign bonne_page = false
+  endif
+-%}
+
+{%- if bonne_page -%}
+  {% style %}
+    #shopify-section-{{ section.id }} {
+      --izc-fond: {{ section.settings.couleur_fond }};
+      --izc-marge: {{ section.settings.marge_verticale }}px;
+      --izc-gap: {{ section.settings.gap }}px;
+      --izc-eyebrow: {{ section.settings.taille_eyebrow }}px;
+      --izc-titre: {{ section.settings.taille_titre }}px;
+      --izc-texte: {{ section.settings.taille_texte }}px;
+      --izc-aside: {{ section.settings.largeur_aside }}px;
+    }
+
+    @media (max-width: 899px) {
+      #shopify-section-{{ section.id }} {
+        --izc-marge: {{ section.settings.marge_verticale_mobile }}px;
+        --izc-titre: {{ section.settings.taille_titre_mobile }}px;
+      }
+    }
+  {% endstyle %}
+
+  <section class="izc full-width">
+    <div class="izc__inner">
+
+      <header class="izc__entete">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="izc__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h1 class="izc__titre">{{ section.settings.titre }}</h1>
+        {%- if section.settings.intro != blank -%}
+          <div class="izc__intro">{{ section.settings.intro }}</div>
+        {%- endif -%}
+      </header>
+
+      <div class="izc__corps">
+        <div class="izc__form-col">
+          {%- form 'contact', id: 'iz-contact-form', class: 'izc__form' -%}
+
+            {%- if form.posted_successfully? -%}
+              {%- comment -%}
+                Le message de confirmation prend la place du formulaire : le
+                renvoyer vide sous un « message envoyé » invite à réécrire.
+              {%- endcomment -%}
+              <p class="izc__succes" role="status">{{ section.settings.message_succes }}</p>
+            {%- else -%}
+
+              {%- if form.errors -%}
+                <div class="izc__erreurs" role="alert">
+                  <p>{{ section.settings.message_erreur }}</p>
+                  <ul>
+                    {%- for champ in form.errors -%}
+                      <li>{{ form.errors.messages[champ] }}</li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              {%- endif -%}
+
+              <div class="izc__champs">
+                <p class="izc__champ">
+                  <label for="izc-nom">{{ section.settings.label_nom }}</label>
+                  <input type="text" id="izc-nom" name="contact[name]" autocomplete="name"
+                    value="{{ form.name }}" required>
+                </p>
+
+                <p class="izc__champ">
+                  <label for="izc-email">{{ section.settings.label_email }}</label>
+                  <input type="email" id="izc-email" name="contact[email]" autocomplete="email"
+                    spellcheck="false" autocapitalize="off" value="{{ form.email }}" required>
+                </p>
+
+                {%- if section.settings.demander_commande -%}
+                  <p class="izc__champ">
+                    <label for="izc-commande">{{ section.settings.label_commande }}</label>
+                    <input type="text" id="izc-commande" name="contact[Numéro de commande]">
+                  </p>
+                {%- endif -%}
+
+                <p class="izc__champ izc__champ--large">
+                  <label for="izc-message">{{ section.settings.label_message }}</label>
+                  <textarea id="izc-message" name="contact[body]" rows="6" required>{{ form.body }}</textarea>
+                </p>
+              </div>
+
+              <button type="submit" class="iz-btn iz-btn--primary izc__envoyer">
+                {{ section.settings.label_bouton }}
+              </button>
+
+              {%- if section.settings.mention != blank -%}
+                <div class="izc__mention">{{ section.settings.mention }}</div>
+              {%- endif -%}
+
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+
+        <aside class="izc__aside">
+          {%- for bloc in section.blocks -%}
+            <div class="izc__carte" {{ bloc.shopify_attributes }}>
+              {%- if bloc.settings.titre != blank -%}
+                <h2 class="izc__carte-titre">{{ bloc.settings.titre }}</h2>
+              {%- endif -%}
+              {%- if bloc.settings.texte != blank -%}
+                <div class="izc__carte-texte">{{ bloc.settings.texte }}</div>
+              {%- endif -%}
+              {%- if bloc.settings.lien_label != blank and bloc.settings.lien_url != blank -%}
+                <a class="izc__carte-lien" href="{{ bloc.settings.lien_url }}">{{ bloc.settings.lien_label }}</a>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+
+          {%- if section.settings.afficher_email and shop.email != blank -%}
+            <p class="izc__direct">
+              {{ section.settings.label_email_direct }}
+              <a href="mailto:{{ shop.email }}">{{ shop.email }}</a>
+            </p>
+          {%- endif -%}
+        </aside>
+      </div>
+
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .izc {
+    background: var(--izc-fond, #FBFAF8);
+  }
+
+  .izc__inner {
+    max-width: var(--iz-container, 1320px);
+    margin-inline: auto;
+    padding-inline: var(--iz-gutter, 32px);
+    padding-block: var(--izc-marge, 72px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--izc-gap, 40px);
+  }
+
+  .izc__entete {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 60ch;
+  }
+
+  .izc__eyebrow {
+    margin: 0;
+    font-size: var(--izc-eyebrow, 12px);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--iz-muted, #5C5C5C);
+  }
+
+  .izc__titre {
+    margin: 0;
+    font-size: var(--izc-titre, 44px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .izc__intro {
+    font-size: var(--izc-texte, 16px);
+    line-height: 1.55;
+    color: var(--iz-text-2, #3D3D3D);
+  }
+
+  .izc__intro p { margin: 0; }
+
+  .izc__corps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--izc-aside, 320px);
+    gap: var(--izc-gap, 40px);
+    align-items: start;
+  }
+
+  @media (max-width: 899px) {
+    .izc__corps { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  .izc__form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .izc__champs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  @media (max-width: 599px) {
+    .izc__champs { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  .izc__champ {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .izc__champ--large { grid-column: 1 / -1; }
+
+  .izc__champ label {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .izc__champ input,
+  .izc__champ textarea {
+    font: inherit;
+    font-size: var(--izc-texte, 16px);
+    color: inherit;
+    background: var(--iz-card, #FFFFFF);
+    border: 1px solid var(--iz-line, #E2E2DF);
+    border-radius: var(--iz-radius-inner, 12px);
+    padding: 12px 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .izc__champ textarea {
+    resize: vertical;
+    min-height: 140px;
+  }
+
+  .izc__champ input:focus-visible,
+  .izc__champ textarea:focus-visible {
+    outline: 2px solid var(--iz-ink, #1A1A1A);
+    outline-offset: 2px;
+  }
+
+  .izc__envoyer { align-self: flex-start; }
+
+  .izc__mention,
+  .izc__direct {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--iz-muted, #5C5C5C);
+  }
+
+  .izc__mention p { margin: 0; }
+
+  .izc__succes {
+    margin: 0;
+    background: var(--iz-card, #FFFFFF);
+    border: 1px solid var(--iz-line, #E2E2DF);
+    border-radius: var(--iz-radius, 16px);
+    padding: 24px;
+    font-size: var(--izc-texte, 16px);
+  }
+
+  .izc__erreurs {
+    background: #FDF2F2;
+    border: 1px solid #E9BDBD;
+    border-radius: var(--iz-radius-inner, 12px);
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+
+  .izc__erreurs p { margin: 0 0 6px; font-weight: 600; }
+  .izc__erreurs ul { margin: 0; padding-left: 18px; }
+
+  .izc__aside {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .izc__carte {
+    background: var(--iz-card, #FFFFFF);
+    border: 1px solid var(--iz-line, #E2E2DF);
+    border-radius: var(--iz-radius, 16px);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .izc__carte-titre {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  .izc__carte-texte {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--iz-text-2, #3D3D3D);
+  }
+
+  .izc__carte-texte p { margin: 0; }
+
+  .izc__carte-lien {
+    font-size: 15px;
+    font-weight: 600;
+    align-self: flex-start;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page contact",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Ne s'affiche que sur la page dont le handle est indiqué ci-dessous."
+    },
+    {
+      "type": "text",
+      "id": "handle_page",
+      "label": "Handle de la page",
+      "default": "contact",
+      "info": "Laissez vide pour afficher la section sur toutes les pages."
+    },
+    {
+      "type": "header",
+      "content": "En-tête"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Sur-titre",
+      "default": "Contact"
+    },
+    {
+      "type": "text",
+      "id": "titre",
+      "label": "Titre",
+      "default": "Une question sur votre peau ou votre commande ?"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "<p>Écrivez-nous : nous répondons à chaque message, sous deux jours ouvrés. Si votre question porte sur le soin qui vous convient, le diagnostic y répond souvent plus vite.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Formulaire"
+    },
+    {
+      "type": "text",
+      "id": "label_nom",
+      "label": "Libellé — nom",
+      "default": "Votre nom"
+    },
+    {
+      "type": "text",
+      "id": "label_email",
+      "label": "Libellé — email",
+      "default": "Votre adresse email"
+    },
+    {
+      "type": "checkbox",
+      "id": "demander_commande",
+      "label": "Demander le numéro de commande",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "label_commande",
+      "label": "Libellé — numéro de commande",
+      "default": "Numéro de commande (facultatif)"
+    },
+    {
+      "type": "text",
+      "id": "label_message",
+      "label": "Libellé — message",
+      "default": "Votre message"
+    },
+    {
+      "type": "text",
+      "id": "label_bouton",
+      "label": "Libellé du bouton",
+      "default": "Envoyer"
+    },
+    {
+      "type": "richtext",
+      "id": "mention",
+      "label": "Mention sous le formulaire",
+      "default": "<p>Votre adresse sert uniquement à vous répondre.</p>"
+    },
+    {
+      "type": "text",
+      "id": "message_succes",
+      "label": "Message de confirmation",
+      "default": "Message reçu. Nous vous répondons sous deux jours ouvrés, à l'adresse que vous avez indiquée."
+    },
+    {
+      "type": "text",
+      "id": "message_erreur",
+      "label": "Message d'erreur",
+      "default": "Le message n'a pas pu être envoyé :"
+    },
+    {
+      "type": "header",
+      "content": "Colonne de droite"
+    },
+    {
+      "type": "checkbox",
+      "id": "afficher_email",
+      "label": "Afficher l'adresse email de la boutique",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "label_email_direct",
+      "label": "Texte avant l'adresse",
+      "default": "Ou directement :"
+    },
+    {
+      "type": "range",
+      "id": "largeur_aside",
+      "label": "Largeur de la colonne de droite",
+      "min": 240,
+      "max": 440,
+      "step": 10,
+      "unit": "px",
+      "default": 320
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "color",
+      "id": "couleur_fond",
+      "label": "Fond de la section",
+      "default": "#FBFAF8"
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale",
+      "label": "Marge verticale — ordinateur",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale_mobile",
+      "label": "Marge verticale — mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Espace entre les blocs",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Typographie"
+    },
+    {
+      "type": "range",
+      "id": "taille_eyebrow",
+      "label": "Sur-titre",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "taille_titre",
+      "label": "Titre — ordinateur",
+      "min": 24,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "taille_titre_mobile",
+      "label": "Titre — mobile",
+      "min": 18,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "taille_texte",
+      "label": "Texte",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    }
+  ],
+  "blocks": [
+    {
+      "type": "carte",
+      "name": "Carte d'information",
+      "settings": [
+        {
+          "type": "text",
+          "id": "titre",
+          "label": "Titre",
+          "default": "Délai de réponse"
+        },
+        {
+          "type": "richtext",
+          "id": "texte",
+          "label": "Texte",
+          "default": "<p>Nous répondons sous deux jours ouvrés.</p>"
+        },
+        {
+          "type": "text",
+          "id": "lien_label",
+          "label": "Libellé du lien"
+        },
+        {
+          "type": "url",
+          "id": "lien_url",
+          "label": "Lien"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page contact",
+      "blocks": [
+        { "type": "carte" },
+        { "type": "carte" }
+      ]
+    }
+  ]
+}
+{% endschema %}
