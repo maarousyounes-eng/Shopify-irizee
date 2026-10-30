@@ -127,6 +127,51 @@
         {%- endif -%}
       </div>
 
+      {%- liquid
+        comment
+          Une fiche de pack était plus pauvre que celle d'un seul soin :
+          ni pastilles, ni contenances, parce que ces métachamps ne sont
+          remplis que sur les soins. Plutôt que de demander de les ressaisir
+          sur chaque pack, on les dérive des soins qu'il contient.
+
+          Le bloc « Contenu du pack » est la source : il sait déjà de quoi le
+          pack est fait, et il porte le filtre de produits.
+        endcomment
+        assign composants = '' | split: ''
+        for b in section.blocks
+          if b.type != 'contenu_routine'
+            continue
+          endif
+          assign concerne = false
+          if b.settings.handles != blank
+            assign vises = b.settings.handles | replace: ' ', '' | split: ','
+            for h in vises
+              if h == p.handle
+                assign concerne = true
+                break
+              endif
+            endfor
+          endif
+          if concerne
+            for i in (1..4)
+              case i
+                when 1
+                  assign c = b.settings.soin_1
+                when 2
+                  assign c = b.settings.soin_2
+                when 3
+                  assign c = b.settings.soin_3
+                else
+                  assign c = b.settings.soin_4
+              endcase
+              if c.id != blank
+                assign composants = composants | concat: c.handle | split: '§'
+              endif
+            endfor
+          endif
+        endfor
+      -%}
+
       {%- comment -%} ---------- Bloc d'achat ---------- {%- endcomment -%}
       <div class="iz-pdp__buybox">
         {%- for block in section.blocks -%}
