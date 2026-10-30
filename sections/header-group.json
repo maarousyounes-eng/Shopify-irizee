@@ -14,6 +14,8 @@
     "header": {
       "type": "header",
       "settings": {
+        "tiroir_cta_label": "Faire le diagnostic",
+        "tiroir_cta_lien": "shopify://pages/diagnostic",
         "overlay_on_image": true,
         "logo_color": "white",
         "scrolled_logo_color": "black",
@@ -59,9 +61,7 @@
         "pdp_border": true,
         "pdp_border_color": "#e2e2df",
         "barre_bordure": "#e2e2df",
-        "barre_fond": "#ffffff",
-        "tiroir_cta_label": "Faire le diagnostic",
-        "tiroir_cta_lien": "shopify://pages/diagnostic"
+        "barre_fond": "#ffffff"
       }
     }
   },
