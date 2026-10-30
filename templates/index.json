@@ -349,7 +349,7 @@
         "valeur_1": {
           "type": "tag",
           "settings": {
-            "label": "Un besoin, un soin"
+            "label": "Formules courtes"
           }
         },
         "valeur_2": {
@@ -361,21 +361,14 @@
         "valeur_3": {
           "type": "tag",
           "settings": {
-            "label": "pH proche de la peau"
-          }
-        },
-        "valeur_4": {
-          "type": "tag",
-          "settings": {
-            "label": "Actifs dosés et annoncés"
+            "label": "Convient à toutes les peaux"
           }
         }
       },
       "block_order": [
         "valeur_1",
         "valeur_2",
-        "valeur_3",
-        "valeur_4"
+        "valeur_3"
       ]
     },
     "iz_faq_XEeggT": {
