@@ -31,9 +31,8 @@
       assign repris = '' | split: ''
       assign sources = section.settings.pack_composants | replace: ' ', '' | split: ','
       for h in sources
-        assign soin = all_products[h]
-        assign siens = soin.metafields.custom.actifs.value
-        if siens != blank and siens.size > 0
+        assign siens = all_products[h].metafields.custom.actifs.value
+        if siens.size > 0
           assign repris = repris | concat: siens
         endif
       endfor
