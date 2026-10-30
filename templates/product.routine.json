@@ -343,20 +343,18 @@
       }
     },
     "contenu": {
-      "type": "featured-products",
+      "type": "iz-contenu-routine",
       "blocks": {
         "soin_1": {
-          "type": "product",
+          "type": "soin",
           "settings": {
-            "product": "masque-rituel-nila",
-            "category_label": "Une à deux fois par semaine"
+            "produit": "masque-rituel-nila"
           }
         },
         "soin_2": {
-          "type": "product",
+          "type": "soin",
           "settings": {
-            "product": "serum-correcteur-eclat",
-            "category_label": "Matin et soir"
+            "produit": "serum-correcteur-eclat"
           }
         }
       },
@@ -365,10 +363,8 @@
         "soin_2"
       ],
       "settings": {
-        "heading": "Ce que contient la routine",
-        "source": "manual",
-        "buy_label": "Voir le soin",
-        "button_label": "Tout voir"
+        "titre": "Dans cette routine",
+        "colonnes": 3
       }
     }
   },

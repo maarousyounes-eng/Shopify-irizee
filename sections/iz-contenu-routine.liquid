@@ -1,0 +1,240 @@
+{% comment %}
+  Ce que contient une routine : une tuile par soin, image et nom.
+
+  Volontairement plus sobre qu'une carte produit : pas de prix, pas de
+  bouton d'achat. Sur la fiche d'un pack, afficher le prix de chaque soin à
+  côté du prix du pack invite à comparer au moment où l'on cherche à
+  rassurer. On dit ce qu'il y a dedans, le reste est déjà dans le bloc
+  d'achat au-dessus.
+
+  Les soins sont des blocs : le gabarit vaut pour les routines à venir sans
+  retouche, quel que soit leur nombre.
+{% endcomment %}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --izr-fond: {{ section.settings.couleur_fond }};
+    --izr-encre: {{ section.settings.couleur_encre }};
+    --izr-tuile: {{ section.settings.couleur_tuile }};
+    --izr-rayon: {{ section.settings.rayon }}px;
+    --izr-marge: {{ section.settings.marge_verticale }}px;
+    --izr-colonnes: {{ section.settings.colonnes }};
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --izr-marge: {{ section.settings.marge_verticale_m }}px;
+    }
+  }
+{% endstyle %}
+
+{%- assign soins = section.blocks | where: 'type', 'soin' -%}
+
+{%- if soins.size > 0 -%}
+  <section class="izr">
+    <div class="izr__inner">
+      {%- if section.settings.titre != blank -%}
+        <p class="izr__titre">{{ section.settings.titre }}</p>
+      {%- endif -%}
+
+      <div class="izr__grille">
+        {%- for bloc in soins -%}
+          {%- assign soin = bloc.settings.produit -%}
+          {%- if soin.id != blank -%}
+            <a class="izr__tuile" href="{{ soin.url }}" {{ bloc.shopify_attributes }}>
+              <span class="izr__cadre">
+                {%- if soin.featured_image -%}
+                  {{
+                    soin.featured_image
+                    | image_url: width: 600
+                    | image_tag: loading: 'lazy', widths: '200, 300, 450, 600', alt: soin.title, class: 'izr__media'
+                  }}
+                {%- endif -%}
+              </span>
+              <p class="izr__nom">{{ bloc.settings.nom | default: soin.title }}</p>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .izr {
+    background: var(--izr-fond);
+    color: var(--izr-encre);
+    padding: var(--izr-marge) var(--page-margin);
+  }
+
+  .izr__inner {
+    max-width: var(--page-width, 140rem);
+    margin: 0 auto;
+  }
+
+  .izr__titre {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0 0 2rem;
+  }
+
+  .izr__grille {
+    display: grid;
+    grid-template-columns: repeat(var(--izr-colonnes), minmax(0, 1fr));
+    gap: 1.8rem;
+  }
+
+  .izr__tuile {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    min-width: 0;
+  }
+
+  /* Le cadre porte le fond et la coupe : l'image peut ainsi être au format
+     du catalogue sans imposer sa hauteur à la tuile. */
+  .izr__cadre {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: var(--izr-rayon);
+    overflow: hidden;
+    background: var(--izr-tuile);
+  }
+
+  .izr__media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .izr__tuile:hover .izr__media { transform: scale(1.03); }
+
+  .izr__nom {
+    margin: 1.2rem 0 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  .izr__tuile:hover .izr__nom {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .izr__media { transition: none; }
+    .izr__tuile:hover .izr__media { transform: none; }
+  }
+
+  @media (max-width: 749px) {
+    .izr__grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contenu de la routine",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "titre",
+      "label": "Titre",
+      "default": "Dans cette routine"
+    },
+    {
+      "type": "range",
+      "id": "colonnes",
+      "label": "Colonnes",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "type": "color",
+      "id": "couleur_fond",
+      "label": "Fond de la section",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "couleur_encre",
+      "label": "Texte",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "couleur_tuile",
+      "label": "Fond des tuiles",
+      "default": "#F0EFF2"
+    },
+    {
+      "type": "range",
+      "id": "rayon",
+      "label": "Arrondi des tuiles",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale",
+      "label": "Marge verticale — ordinateur",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "marge_verticale_m",
+      "label": "Marge verticale — mobile",
+      "min": 0,
+      "max": 96,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    }
+  ],
+  "blocks": [
+    {
+      "type": "soin",
+      "name": "Soin",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "product",
+          "id": "produit",
+          "label": "Le soin"
+        },
+        {
+          "type": "text",
+          "id": "nom",
+          "label": "Nom affiché",
+          "info": "Laisser vide pour reprendre le nom du produit."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contenu de la routine",
+      "blocks": [{ "type": "soin" }, { "type": "soin" }]
+    }
+  ]
+}
+{% endschema %}
