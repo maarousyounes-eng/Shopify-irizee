@@ -1,4 +1,4 @@
-# Boutique Shopify — Atelier Irizée
+# Boutique Shopify — Irizée
 
 ## Objectif
 
