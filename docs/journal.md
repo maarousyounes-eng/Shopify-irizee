@@ -994,3 +994,38 @@ imbriquées, aucun tableau à construire.
 
 **À retenir : en Liquid, une liste de métaobjets se parcourt, elle ne se
 recompose pas.**
+
+---
+
+## 30/10/2026 — Les comptes clients : sept pages écrites pour rien
+
+J'avais créé `templates/customers/` — connexion, inscription, compte,
+commande, adresses, mot de passe, activation — en concluant d'un
+`/account/login` qui redirigeait vers l'accueil que les comptes étaient
+**désactivés**. C'était faux : la redirection venait de la protection par
+mot de passe de la boutique.
+
+La boutique est en réalité sur les **nouveaux comptes clients**, hébergés
+par Shopify. Le réglage le montre sans ambiguïté :
+
+> URL — `https://account.irizee.com`
+
+Dans ce système, Shopify n'utilise aucun gabarit du thème pour les pages de
+compte. Les sept fichiers étaient du code mort.
+
+Et le thème était déjà correctement câblé : l'en-tête utilise le composant
+`<shopify-account>`, prévu pour ce système, avec un lien de repli sur mobile.
+
+**Leçon : avant d'écrire des gabarits de compte, lire le réglage, pas le
+comportement d'une URL.** Une boutique protégée par mot de passe redirige
+tout vers l'accueil, ce qui ressemble à s'y méprendre à une fonctionnalité
+désactivée.
+
+### Ce qui reste à faire, côté admin
+
+- Le menu `customer-account-main-menu` référencé par l'en-tête **n'existe
+  pas** : la console le signale à chaque page. Soit on le crée dans
+  Navigation, soit on vide le réglage pour laisser Shopify mettre ses
+  entrées par défaut.
+- L'apparence des pages de compte se règle dans **Paramètres → Comptes
+  client → Configurations → Personnaliser**, pas dans le thème.
