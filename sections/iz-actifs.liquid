@@ -10,11 +10,16 @@
 
 {%- liquid
   assign actifs = product.metafields.custom.actifs.value
+  assign sources_pack = nil
 
   comment
-    Un pack n'a pas d'actifs à lui : ses actifs sont ceux des soins qu'il
-    contient. Sans cette reprise, la section sortait vide sur la fiche la
-    plus chère du catalogue. Les metaobjets sont les mêmes, rien à saisir.
+    Un pack n'a pas d'actifs à lui : ce sont ceux des soins qu'il contient.
+    Sans cette reprise, la section sortait vide sur la fiche la plus chère
+    du catalogue.
+
+    On ne fusionne pas les listes : `concat` renvoie vide sur des listes de
+    métaobjets, vérifié ici même. On retient donc les soins source et on
+    parcourt leurs listes l'une après l'autre au rendu.
   endcomment
   if actifs == blank or actifs.size == 0
     assign concerne = false
@@ -28,40 +33,11 @@
       endfor
     endif
     if concerne and section.settings.pack_composants != blank
-      comment
-        `concat` sur un tableau vide issu de `split` ne renvoie rien : on
-        part donc de la première liste trouvée, puis on y ajoute les suivantes.
-      endcomment
-      assign repris = nil
-      assign sources = section.settings.pack_composants | replace: ' ', '' | split: ','
-      for h in sources
-        assign siens = all_products[h].metafields.custom.actifs.value
-        if siens.size > 0
-          if repris
-            assign repris = repris | concat: siens
-          else
-            assign repris = siens
-          endif
-        endif
-      endfor
-      if repris.size > 0
-        assign actifs = repris
-      endif
+      assign sources_pack = section.settings.pack_composants | replace: ' ', '' | split: ','
     endif
   endif
 -%}
 
-<!-- IZDEBUG concerne={{ concerne }} repris={{ repris.size }}
-{%- assign t2 = section.settings.pack_composants | replace: ' ', '' | split: ',' -%}
-{%- assign a1 = all_products[t2[0]].metafields.custom.actifs.value -%}
-{%- assign a2 = all_products[t2[1]].metafields.custom.actifs.value -%}
-{%- assign fusion = a1 | concat: a2 -%}
- | a1={{ a1.size }} a2={{ a2.size }} fusion={{ fusion.size }}
-{%- assign t = section.settings.pack_composants | replace: ' ', '' | split: ',' -%}
-{%- for h in t -%}
- | h={{ h }} titre={{ all_products[h].title }} actifs={{ all_products[h].metafields.custom.actifs.value.size }}
-{%- endfor -%}
--->
 {% style %}
   #shopify-section-{{ section.id }} {
     --iza-marge: {{ section.settings.marge_verticale }}px;
@@ -96,6 +72,7 @@
 
 {%- assign a_des_actifs = false -%}
 {%- if actifs != blank and actifs.size > 0 -%}{%- assign a_des_actifs = true -%}
+{%- elsif sources_pack != blank -%}{%- assign a_des_actifs = true -%}
 {%- elsif section.blocks.size > 0 -%}{%- assign a_des_actifs = true -%}{%- endif -%}
 
 {%- if a_des_actifs -%}
@@ -118,6 +95,15 @@
               <span class="iz-actifs__nom">{{ a.nom }}</span>
               {%- if a.description != blank -%}<span class="iz-actifs__texte">{{ a.description }}</span>{%- endif -%}
             </div>
+          {%- endfor -%}
+        {%- elsif sources_pack != blank -%}
+          {%- for h in sources_pack -%}
+            {%- for a in all_products[h].metafields.custom.actifs.value -%}
+              <div class="iz-actifs__carte">
+                <span class="iz-actifs__nom">{{ a.nom }}</span>
+                {%- if a.description != blank -%}<span class="iz-actifs__texte">{{ a.description }}</span>{%- endif -%}
+              </div>
+            {%- endfor -%}
           {%- endfor -%}
         {%- else -%}
           {%- for block in section.blocks -%}
