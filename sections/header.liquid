@@ -264,7 +264,14 @@
     </a>
 
     {% if shop.customer_accounts_enabled %}
-      <shopify-account class="header__account-native" menu="{{ section.settings.customer_account_menu }}">
+      {%- comment -%}
+        L'attribut `menu` ne sert qu'à nommer un menu existant. Référencer un
+        menu absent faisait écrire à la console, à chaque page : « Menu
+        "customer-account-main-menu" not found in Storefront API ». On ne pose
+        l'attribut que si le réglage est rempli ; sinon Shopify met ses
+        entrées par défaut, qui conviennent.
+      {%- endcomment -%}
+      <shopify-account class="header__account-native"{% if section.settings.customer_account_menu != blank %} menu="{{ section.settings.customer_account_menu }}"{% endif %}>
         {{ 'icon-account.svg' | inline_asset_content }}
       </shopify-account>
       <a href="{{ routes.account_url }}" class="header__account-mobile" aria-label="Compte">

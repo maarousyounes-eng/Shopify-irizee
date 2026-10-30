@@ -48,7 +48,7 @@
         "scrolled_logo_width_mobile": 68,
         "menu_text_transform": "none",
         "menu": "main-menu",
-        "customer_account_menu": "customer-account-main-menu",
+        "customer_account_menu": "",
         "pdp_override": false,
         "pdp_height": 80,
         "pdp_height_mobile": 64,
