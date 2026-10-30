@@ -52,6 +52,11 @@
 -%}
 
 <!-- IZDEBUG concerne={{ concerne }} repris={{ repris.size }}
+{%- assign t2 = section.settings.pack_composants | replace: ' ', '' | split: ',' -%}
+{%- assign a1 = all_products[t2[0]].metafields.custom.actifs.value -%}
+{%- assign a2 = all_products[t2[1]].metafields.custom.actifs.value -%}
+{%- assign fusion = a1 | concat: a2 -%}
+ | a1={{ a1.size }} a2={{ a2.size }} fusion={{ fusion.size }}
 {%- assign t = section.settings.pack_composants | replace: ' ', '' | split: ',' -%}
 {%- for h in t -%}
  | h={{ h }} titre={{ all_products[h].title }} actifs={{ all_products[h].metafields.custom.actifs.value.size }}
