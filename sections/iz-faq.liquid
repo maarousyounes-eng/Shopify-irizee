@@ -8,13 +8,32 @@
   Sans question d'aucun côté, la section ne s'affiche pas.
 {% endcomment %}
 
-{%- assign faq = product.metafields.custom.faq.value -%}
-{%- assign a_du_contenu = false -%}
-{%- if faq != blank and faq.size > 0 -%}
-  {%- assign a_du_contenu = true -%}
-{%- elsif section.blocks.size > 0 -%}
-  {%- assign a_du_contenu = true -%}
-{%- endif -%}
+{%- liquid
+  assign faq = product.metafields.custom.faq.value
+
+  comment
+    Sur certains produits, les questions du métachamp sont celles d'un autre
+    soin — un pack héritait de la FAQ de son sérum, avec « Peut-on l'utiliser
+    avec le Masque Rituel Nila ? » alors qu'il le contient. Pour ces
+    produits-là, les blocs de la section passent devant.
+  endcomment
+  if section.settings.handles_blocs != blank
+    assign vises = section.settings.handles_blocs | replace: ' ', '' | split: ','
+    for h in vises
+      if h == product.handle
+        assign faq = nil
+        break
+      endif
+    endfor
+  endif
+
+  assign a_du_contenu = false
+  if faq != blank and faq.size > 0
+    assign a_du_contenu = true
+  elsif section.blocks.size > 0
+    assign a_du_contenu = true
+  endif
+-%}
 
 {% style %}
   #shopify-section-{{ section.id }} {
@@ -276,6 +295,12 @@
       "step": 4,
       "unit": "px",
       "default": 24
+    },
+    {
+      "type": "text",
+      "id": "handles_blocs",
+      "label": "Produits qui utilisent les questions ci-dessous",
+      "info": "Identifiants séparés par des virgules. Ces produits ignorent leur métachamp FAQ et reprennent les blocs de cette section."
     },
     {
       "type": "range",

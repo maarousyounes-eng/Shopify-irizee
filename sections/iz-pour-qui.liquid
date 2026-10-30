@@ -1,0 +1,221 @@
+{% comment %}
+  « C'est pour vous si… / Ce n'est pas pour vous si… »
+
+  Une fiche de pack n'a ni avis ni étude : il reste à qualifier honnêtement.
+  Dire à qui le soin ne convient pas coûte quelques visiteurs et en rassure
+  beaucoup d'autres — et évite des retours.
+
+  Le gabarit produit est partagé par toutes les fiches : la section se limite
+  elle-même aux produits qu'on lui désigne.
+{% endcomment %}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --izq-fond: {{ section.settings.couleur_fond }};
+    --izq-encre: {{ section.settings.couleur_encre }};
+    --izq-filet: {{ section.settings.couleur_filet }};
+    --izq-marge: {{ section.settings.marge_verticale }}px;
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} {
+      --izq-marge: {{ section.settings.marge_verticale_m }}px;
+    }
+  }
+{% endstyle %}
+
+{%- liquid
+  assign bon_produit = false
+  if section.settings.handles != blank
+    assign vises = section.settings.handles | replace: ' ', '' | split: ','
+    for h in vises
+      if h == product.handle
+        assign bon_produit = true
+        break
+      endif
+    endfor
+  endif
+
+  assign pour = section.blocks | where: 'type', 'pour'
+  assign pas_pour = section.blocks | where: 'type', 'pas_pour'
+-%}
+
+{%- if bon_produit and pour.size > 0 -%}
+  <section class="izq">
+    <div class="izq__inner">
+      <div class="izq__entete">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="izq__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.titre != blank -%}
+          <h2 class="izq__titre">{{ section.settings.titre }}</h2>
+        {%- endif -%}
+      </div>
+
+      <div class="izq__colonnes">
+        <div class="izq__colonne">
+          <p class="izq__libelle">{{ section.settings.libelle_pour }}</p>
+          <ul class="izq__liste izq__liste--oui" role="list">
+            {%- for bloc in pour -%}
+              <li {{ bloc.shopify_attributes }}>{{ bloc.settings.texte }}</li>
+            {%- endfor -%}
+          </ul>
+        </div>
+
+        {%- if pas_pour.size > 0 -%}
+          <div class="izq__colonne">
+            <p class="izq__libelle">{{ section.settings.libelle_pas_pour }}</p>
+            <ul class="izq__liste izq__liste--non" role="list">
+              {%- for bloc in pas_pour -%}
+                <li {{ bloc.shopify_attributes }}>{{ bloc.settings.texte }}</li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .izq {
+    background: var(--izq-fond);
+    color: var(--izq-encre);
+    padding: var(--izq-marge) var(--page-margin);
+  }
+
+  .izq__inner {
+    max-width: var(--page-width, 140rem);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 32rem) minmax(0, 1fr);
+    gap: clamp(2.4rem, 5vw, 7rem);
+    align-items: start;
+  }
+
+  .izq__eyebrow {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, currentColor 55%, transparent);
+    margin: 0 0 1.2rem;
+  }
+
+  .izq__titre {
+    font-size: clamp(2.6rem, 3.4vw, 4rem);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .izq__colonnes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(26rem, 1fr));
+    gap: clamp(2.4rem, 4vw, 4.8rem);
+  }
+
+  .izq__libelle {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, currentColor 55%, transparent);
+    border-top: 1px solid var(--izq-filet);
+    padding-top: 1.8rem;
+    margin: 0 0 1.6rem;
+  }
+
+  .izq__liste {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.2rem;
+  }
+
+  .izq__liste li {
+    position: relative;
+    padding-left: 2.6rem;
+    font-size: 1.6rem;
+    line-height: 1.5;
+  }
+
+  /* Une coche et une barre plutôt que deux puces : la différence se lit
+     avant même qu'on ait lu le libellé de la colonne. */
+  .izq__liste--oui li::before,
+  .izq__liste--non li::before {
+    content: '';
+    position: absolute;
+    left: 0.2rem;
+    top: 0.72em;
+  }
+
+  .izq__liste--oui li::before {
+    width: 1rem;
+    height: 0.5rem;
+    border-left: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-50%) rotate(-45deg);
+  }
+
+  .izq__liste--non li::before {
+    width: 1.1rem;
+    height: 2px;
+    background: currentColor;
+    opacity: 0.45;
+    transform: translateY(-50%);
+  }
+
+  .izq__liste--non li { color: color-mix(in srgb, currentColor 70%, transparent); }
+
+  @media (max-width: 989px) {
+    .izq__inner { grid-template-columns: minmax(0, 1fr); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Pour qui",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "handles",
+      "label": "N'afficher que sur ces produits",
+      "info": "Identifiants séparés par des virgules. Vide : la section ne s'affiche nulle part."
+    },
+    { "type": "text", "id": "eyebrow", "label": "Surtitre", "default": "Avant d'acheter" },
+    { "type": "text", "id": "titre", "label": "Titre", "default": "Est-ce que c'est pour vous ?" },
+    { "type": "text", "id": "libelle_pour", "label": "Colonne de gauche", "default": "Oui, si" },
+    { "type": "text", "id": "libelle_pas_pour", "label": "Colonne de droite", "default": "Moins, si" },
+    { "type": "header", "content": "Apparence" },
+    { "type": "color", "id": "couleur_fond", "label": "Fond", "default": "#FFFFFF" },
+    { "type": "color", "id": "couleur_encre", "label": "Texte", "default": "#1A1A1A" },
+    { "type": "color", "id": "couleur_filet", "label": "Filet", "default": "#E2E2DF" },
+    { "type": "range", "id": "marge_verticale", "label": "Marge verticale — ordinateur", "min": 0, "max": 140, "step": 4, "unit": "px", "default": 88 },
+    { "type": "range", "id": "marge_verticale_m", "label": "Marge verticale — mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 56 }
+  ],
+  "blocks": [
+    {
+      "type": "pour",
+      "name": "Oui si",
+      "limit": 6,
+      "settings": [{ "type": "text", "id": "texte", "label": "Ligne" }]
+    },
+    {
+      "type": "pas_pour",
+      "name": "Moins si",
+      "limit": 6,
+      "settings": [{ "type": "text", "id": "texte", "label": "Ligne" }]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pour qui",
+      "blocks": [{ "type": "pour" }, { "type": "pour" }, { "type": "pas_pour" }]
+    }
+  ]
+}
+{% endschema %}

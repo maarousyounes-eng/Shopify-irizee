@@ -367,9 +367,7 @@
         "taille_titre": 40,
         "taille_titre_mobile": 28,
         "taille_nom": 17,
-        "taille_texte": 15,
-        "pack_handles": "la-routine",
-        "pack_composants": "masque-rituel-nila, serum-correcteur-eclat"
+        "taille_texte": 15
       }
     },
     "routine": {
@@ -411,8 +409,69 @@
         "taille_titre": 40,
         "taille_titre_mobile": 28,
         "taille_question": 16,
-        "taille_reponse": 15
-      }
+        "taille_reponse": 15,
+        "handles_blocs": "la-routine"
+      },
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Faut-il utiliser les deux en même temps ?",
+            "reponse": "<p>Non. Le masque se pose une à deux fois par semaine, puis se rince. Le sérum s'applique matin et soir sur peau propre. Les jours de masque, le sérum vient après le rinçage.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Par lequel commencer ?",
+            "reponse": "<p>Par le sérum, tous les jours, le temps qu'il devienne un réflexe. Ajoutez le masque la deuxième semaine. Deux habitudes prises l'une après l'autre tiennent mieux qu'un rituel complet abandonné au bout de dix jours.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Combien de temps dure la routine ?",
+            "reponse": "<p>Le masque couvre environ deux mois à raison d'une pose par semaine. Le sérum, environ un mois et demi à deux applications par jour.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Est-ce que ça convient à ma peau ?",
+            "reponse": "<p>Les deux formules sont sans parfum ajouté et à un pH proche de celui de la peau. Elles conviennent à toutes les carnations. En cas de peau réactive, espacez les poses de masque et commencez le sérum un soir sur deux.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Puis-je acheter les deux soins séparément ?",
+            "reponse": "<p>Oui, chacun a sa fiche. Ensemble ils reviennent à 45,00 € au lieu de 51,80 €.</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "Que faire si un seul des deux me convient ?",
+            "reponse": "<p>Écrivez-nous. Notre diagnostic peut aussi conclure qu'un seul soin suffit, et nous préférons le dire.</p>"
+          }
+        },
+        "q7": {
+          "type": "question",
+          "settings": {
+            "question": "Quand ma commande sera-t-elle expédiée ?",
+            "reponse": "<p>Les précommandes partent à partir de décembre 2026. Le paiement est encaissé à la commande et vous êtes prévenu par e-mail dès l'expédition.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7"
+      ]
     },
     "newsletter_UgMPLK": {
       "type": "newsletter",
@@ -468,6 +527,65 @@
         "button_letter_spacing": 1,
         "button_text_transform": "uppercase"
       }
+    },
+    "pour_qui": {
+      "type": "iz-pour-qui",
+      "blocks": {
+        "oui_1": {
+          "type": "pour",
+          "settings": {
+            "texte": "Vous voyez des taches, des marques d'anciens boutons ou un teint qui s'est éteint."
+          }
+        },
+        "oui_2": {
+          "type": "pour",
+          "settings": {
+            "texte": "Votre peau brille ou son grain s'est irrégularisé."
+          }
+        },
+        "oui_3": {
+          "type": "pour",
+          "settings": {
+            "texte": "Vous voulez deux gestes qui tiennent, pas une étagère à gérer."
+          }
+        },
+        "oui_4": {
+          "type": "pour",
+          "settings": {
+            "texte": "Vous préférez des formules sans parfum ajouté."
+          }
+        },
+        "non_1": {
+          "type": "pas_pour",
+          "settings": {
+            "texte": "Vous cherchez un résultat en une semaine : ce n'est pas ce que fait un soin."
+          }
+        },
+        "non_2": {
+          "type": "pas_pour",
+          "settings": {
+            "texte": "Un seul des deux besoins vous concerne — prenez le soin correspondant, il coûte moins cher."
+          }
+        },
+        "non_3": {
+          "type": "pas_pour",
+          "settings": {
+            "texte": "Votre peau est très réactive en ce moment : commencez par le sérum seul."
+          }
+        }
+      },
+      "block_order": [
+        "oui_1",
+        "oui_2",
+        "oui_3",
+        "oui_4",
+        "non_1",
+        "non_2",
+        "non_3"
+      ],
+      "settings": {
+        "handles": "la-routine"
+      }
     }
   },
   "order": [
@@ -477,6 +595,7 @@
     "resultats",
     "ugc",
     "rituel",
+    "pour_qui",
     "marque",
     "actifs",
     "routine",
