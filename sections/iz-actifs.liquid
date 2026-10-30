@@ -8,7 +8,41 @@
   Sans actif, la section ne s'affiche pas.
 {% endcomment %}
 
-{%- assign actifs = product.metafields.custom.actifs.value -%}
+{%- liquid
+  assign actifs = product.metafields.custom.actifs.value
+
+  comment
+    Un pack n'a pas d'actifs à lui : ses actifs sont ceux des soins qu'il
+    contient. Sans cette reprise, la section sortait vide sur la fiche la
+    plus chère du catalogue. Les metaobjets sont les mêmes, rien à saisir.
+  endcomment
+  if actifs == blank or actifs.size == 0
+    assign concerne = false
+    if section.settings.pack_handles != blank
+      assign vises = section.settings.pack_handles | replace: ' ', '' | split: ','
+      for h in vises
+        if h == product.handle
+          assign concerne = true
+          break
+        endif
+      endfor
+    endif
+    if concerne and section.settings.pack_composants != blank
+      assign repris = '' | split: ''
+      assign sources = section.settings.pack_composants | replace: ' ', '' | split: ','
+      for h in sources
+        assign soin = all_products[h]
+        assign siens = soin.metafields.custom.actifs.value
+        if siens != blank and siens.size > 0
+          assign repris = repris | concat: siens
+        endif
+      endfor
+      if repris.size > 0
+        assign actifs = repris
+      endif
+    endif
+  endif
+-%}
 
 {% style %}
   #shopify-section-{{ section.id }} {
@@ -247,6 +281,18 @@
       "step": 2,
       "unit": "px",
       "default": 28
+    },
+    {
+      "type": "text",
+      "id": "pack_handles",
+      "label": "Packs concernés",
+      "info": "Identifiants des produits sans actifs propres, séparés par des virgules."
+    },
+    {
+      "type": "text",
+      "id": "pack_composants",
+      "label": "Reprendre les actifs de",
+      "info": "Identifiants des soins qui composent ces packs, séparés par des virgules."
     },
     {
       "type": "range",

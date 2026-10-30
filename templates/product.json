@@ -367,7 +367,9 @@
         "taille_titre": 40,
         "taille_titre_mobile": 28,
         "taille_nom": 17,
-        "taille_texte": 15
+        "taille_texte": 15,
+        "pack_handles": "la-routine",
+        "pack_composants": "masque-rituel-nila, serum-correcteur-eclat"
       }
     },
     "routine": {
@@ -482,3 +484,4 @@
     "newsletter_UgMPLK"
   ]
 }
+
