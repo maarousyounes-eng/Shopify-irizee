@@ -209,15 +209,17 @@
                   endcase
                 -%}
                 {%- if texte != blank -%}
+                  {%- comment -%}
+                    `data-profil` dit ce que la réponse apprend sur la peau,
+                    axe par axe : « sebum:3, eclat:1 ». C'est ce qui remplit le
+                    profil. Le commentaire se tient hors de la balise : entre
+                    deux attributs, Theme Check perd l'appariement des `if`.
+                  {%- endcomment -%}
                   <button
                     type="button"
                     class="izd__reponse"
                     data-izd-reponse
                     data-cible="{{ cible }}"
-                    {%- comment -%}
-                      Ce que la réponse apprend sur la peau, axe par axe :
-                      « sebum:3, eclat:1 ». C'est ce qui remplit le profil.
-                    {%- endcomment -%}
                     data-profil="{{ profil }}"
                   >
                     <span class="izd__puce" aria-hidden="true"></span>
