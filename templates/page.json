@@ -19,6 +19,10 @@
         "question_N9Kfja": {
           "type": "question",
           "settings": {
+            "p1": "sebum:3",
+            "p2": "eclat:3",
+            "p3": "sebum:2, eclat:2",
+            "p4": "",
             "libelle": "En fin de journée, à quoi ressemble votre peau ?",
             "r1": "Elle brille sur le front et le nez",
             "c1": "masque",
@@ -34,6 +38,10 @@
         "question_Rq9CdU": {
           "type": "question",
           "settings": {
+            "p1": "grain:3",
+            "p2": "taches:3",
+            "p3": "taches:2, eclat:2",
+            "p4": "sebum:2, grain:2",
             "libelle": "Qu'est-ce qui vous dérange le plus quand vous vous regardez ?",
             "r1": "Des pores visibles, un grain irrégulier",
             "c1": "masque",
@@ -49,6 +57,9 @@
         "question_R4YQgx": {
           "type": "question",
           "settings": {
+            "p1": "taches:3",
+            "p2": "taches:2",
+            "p3": "",
             "libelle": "Des boutons passés vous ont-ils laissé des marques ?",
             "r1": "Oui, plusieurs marques",
             "c1": "serum",
@@ -64,6 +75,9 @@
         "question_PKxRmF": {
           "type": "question",
           "settings": {
+            "p1": "eclat:2",
+            "p2": "",
+            "p3": "eclat:1",
             "libelle": "Et le sommeil, en ce moment ?",
             "r1": "Sommeil court ou agité",
             "c1": "serum",
@@ -79,6 +93,9 @@
         "question_DHqCFP": {
           "type": "question",
           "settings": {
+            "p1": "taches:3",
+            "p2": "taches:2",
+            "p3": "",
             "libelle": "Mettez-vous une protection solaire ?",
             "r1": "Protection solaire rare ou absente",
             "c1": "serum",
@@ -94,6 +111,9 @@
         "question_VAWhW6": {
           "type": "question",
           "settings": {
+            "p1": "sebum:2, eclat:1",
+            "p2": "",
+            "p3": "sebum:1",
             "libelle": "Comment mangez-vous ces temps-ci ?",
             "r1": "Beaucoup de sucre et de plats tout prêts",
             "c1": "masque",
@@ -109,6 +129,10 @@
         "question_AQ69EL": {
           "type": "question",
           "settings": {
+            "p1": "hydratation:2",
+            "p2": "",
+            "p3": "",
+            "p4": "",
             "libelle": "Que comporte votre routine aujourd'hui ?",
             "r1": "Pas encore de routine, ou un nettoyant seul",
             "c1": "deux",
@@ -124,6 +148,9 @@
         "question_Yrqw3Y": {
           "type": "question",
           "settings": {
+            "p1": "",
+            "p2": "",
+            "p3": "",
             "libelle": "Combien de temps pouvez-vous consacrer à votre routine ?",
             "r1": "Deux minutes, matin et soir",
             "c1": "serum",
@@ -174,12 +201,46 @@
             "argument": "Le masque prépare la peau une à deux fois par semaine, le sérum prend le relais au quotidien.",
             "conseil": "Prenez les deux habitudes l'une après l'autre. Le sérum d'abord, tous les jours, le temps qu'il devienne un réflexe. Le masque ensuite, une à deux fois par semaine. Deux gestes installés tiennent mieux qu'un rituel complet abandonné au bout de dix jours."
           }
+        },
+        "question_izhydra": {
+          "type": "question",
+          "settings": {
+            "p1": "hydratation:3",
+            "p2": "hydratation:2",
+            "p3": "",
+            "libelle": "Après le nettoyage, votre peau tiraille-t-elle ?",
+            "famille": "peau",
+            "r1": "Oui, elle tiraille souvent",
+            "c1": "aucun",
+            "r2": "Parfois, surtout en hiver",
+            "c2": "aucun",
+            "r3": "Non, jamais",
+            "c3": "aucun"
+          }
+        },
+        "question_izsensi": {
+          "type": "question",
+          "settings": {
+            "p1": "sensibilite:3",
+            "p2": "sensibilite:2",
+            "p3": "",
+            "libelle": "Votre peau réagit-elle facilement — rougeurs, picotements ?",
+            "famille": "peau",
+            "r1": "Oui, rougeurs ou picotements fréquents",
+            "c1": "aucun",
+            "r2": "De temps en temps",
+            "c2": "aucun",
+            "r3": "Non, elle tolère bien",
+            "c3": "aucun"
+          }
         }
       },
       "block_order": [
         "question_N9Kfja",
         "question_Rq9CdU",
         "question_R4YQgx",
+        "question_izhydra",
+        "question_izsensi",
         "question_PKxRmF",
         "question_DHqCFP",
         "question_VAWhW6",
