@@ -480,6 +480,23 @@
                 que la photo a montré. Les tenir séparés évite de faire passer
                 une lecture d'image pour une déclaration, et inversement.
               {%- endcomment -%}
+              {%- comment -%}
+                Le profil : six axes, et le niveau atteint sur chacun. Il se
+                nourrit des réponses ET de la photo, et retient le plus marqué
+                des deux. Qui saute la photo a donc quand même son profil, ce
+                que la lecture d'image seule ne donnait pas : sans photo, le
+                résultat n'avait aucune mesure à montrer.
+              {%- endcomment -%}
+              <div class="izd__synthese" data-izd-bloc-profil hidden>
+                <p class="izd__synthese-titre">{{ section.settings.libelle_profil }}</p>
+                <div class="izd__synthese-corps">
+                  <ul class="izd__lecture" data-izd-profil></ul>
+                  {%- if section.settings.profil_note != blank -%}
+                    <p class="izd__profil-note">{{ section.settings.profil_note }}</p>
+                  {%- endif -%}
+                </div>
+              </div>
+
               <div class="izd__synthese" data-izd-synthese hidden>
                 <p class="izd__synthese-titre">{{ section.settings.libelle_vos_reponses }}</p>
                 <div class="izd__synthese-corps">
@@ -527,6 +544,103 @@
                       </div>
                     </div>
                   {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              {%- liquid
+                comment
+                  Trois contenus de plus, écrits par résultat : ce qu'on peut
+                  attendre et quand, un plan sur quatre semaines, et ce qu'il
+                  vaut mieux éviter en attendant. Le réglage du bloc gagne
+                  s'il est renseigné ; sinon on prend celui de la section, qui
+                  vit dans le schéma et s'applique sans attendre qu'un gabarit
+                  JSON soit repris — même raison que les identifiants de repli
+                  plus haut.
+                endcomment
+                case bloc.settings.cible
+                  when 'masque'
+                    assign chrono_defaut = section.settings.chrono_masque
+                    assign plan_defaut = section.settings.plan_masque
+                    assign eviter_defaut = section.settings.eviter_masque
+                  when 'serum'
+                    assign chrono_defaut = section.settings.chrono_serum
+                    assign plan_defaut = section.settings.plan_serum
+                    assign eviter_defaut = section.settings.eviter_serum
+                  else
+                    assign chrono_defaut = section.settings.chrono_routine
+                    assign plan_defaut = section.settings.plan_routine
+                    assign eviter_defaut = section.settings.eviter_routine
+                endcase
+                assign chrono = bloc.settings.chrono | default: chrono_defaut
+                assign plan = bloc.settings.plan | default: plan_defaut
+                assign eviter = bloc.settings.eviter | default: eviter_defaut
+              -%}
+
+              {%- comment -%}
+                Une ligne par jalon, « moment|ce qui se passe ». Liquid ne sait
+                pas découper sur un retour à la ligne : `newline_to_br` le
+                rend visible, et c'est sur lui qu'on découpe.
+              {%- endcomment -%}
+              {%- if chrono != blank -%}
+                <div class="izd__synthese">
+                  <p class="izd__synthese-titre">{{ section.settings.libelle_chrono }}</p>
+                  <div class="izd__synthese-corps">
+                    <ol class="izd__jalons">
+                      {%- assign lignes_chrono = chrono | newline_to_br | split: '<br />' -%}
+                      {%- for ligne in lignes_chrono -%}
+                        {%- assign l = ligne | strip -%}
+                        {%- if l != blank -%}
+                          {%- assign duo = l | split: '|' -%}
+                          <li class="izd__jalon">
+                            <span class="izd__jalon-quand">{{ duo[0] | strip }}</span>
+                            {%- if duo[1] -%}
+                              <span class="izd__jalon-quoi">{{ duo[1] | strip }}</span>
+                            {%- endif -%}
+                          </li>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </ol>
+                  </div>
+                </div>
+              {%- endif -%}
+
+              {%- if plan != blank -%}
+                <div class="izd__synthese">
+                  <p class="izd__synthese-titre">{{ section.settings.libelle_plan }}</p>
+                  <div class="izd__synthese-corps">
+                    <ol class="izd__jalons">
+                      {%- assign lignes_plan = plan | newline_to_br | split: '<br />' -%}
+                      {%- for ligne in lignes_plan -%}
+                        {%- assign l = ligne | strip -%}
+                        {%- if l != blank -%}
+                          {%- assign duo = l | split: '|' -%}
+                          <li class="izd__jalon">
+                            <span class="izd__jalon-quand">{{ duo[0] | strip }}</span>
+                            {%- if duo[1] -%}
+                              <span class="izd__jalon-quoi">{{ duo[1] | strip }}</span>
+                            {%- endif -%}
+                          </li>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </ol>
+                  </div>
+                </div>
+              {%- endif -%}
+
+              {%- if eviter != blank -%}
+                <div class="izd__synthese">
+                  <p class="izd__synthese-titre">{{ section.settings.libelle_eviter }}</p>
+                  <div class="izd__synthese-corps">
+                    <ul class="izd__eviter">
+                      {%- assign lignes_eviter = eviter | newline_to_br | split: '<br />' -%}
+                      {%- for ligne in lignes_eviter -%}
+                        {%- assign l = ligne | strip -%}
+                        {%- if l != blank -%}
+                          <li class="izd__eviter-ligne">{{ l }}</li>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </ul>
+                  </div>
                 </div>
               {%- endif -%}
 
