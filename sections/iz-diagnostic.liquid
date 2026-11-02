@@ -987,7 +987,12 @@
           liste.innerHTML = '';
 
           var dits = declare.filter(function (r) {
-            return r.texte && r.famille === famille && r.cible && r.cible !== 'aucun';
+            if (!r.texte || r.famille !== famille) return false;
+            // Soit la réponse oriente vers un soin, soit elle dit quelque
+            // chose de marqué sur la peau. Le seul filtre sur la cible
+            // écartait « ma peau tiraille souvent » : la question était posée
+            // et la réponse n'était jamais relue.
+            return (r.cible && r.cible !== 'aucun') || r.niveau >= 2;
           });
 
           // Dans la peau, ce qui fonde la recommandation passe devant : on
@@ -1016,34 +1021,33 @@
         remplirConstat('[data-izd-signaux]', '[data-izd-synthese]', 'peau', 3);
         remplirConstat('[data-izd-signaux-vie]', '[data-izd-bloc-vie]', 'vie', 4);
 
+        // Le profil : les six axes, tous, y compris ceux où il n'y a rien.
+        // Savoir qu'un axe a été regardé et jugé calme fait partie de
+        // l'analyse — n'afficher que les axes marqués donnerait une liste
+        // d'alertes, pas un profil. En revanche, si le parcours n'a rien
+        // appris du tout, le bloc ne s'affiche pas : six barres vides ne
+        // sont pas un profil.
+        var listeProfil = trouve && trouve.querySelector('[data-izd-profil]');
+        var blocProfil = trouve && trouve.querySelector('[data-izd-bloc-profil]');
+        if (listeProfil) {
+          listeProfil.innerHTML = '';
+          var marque = false;
+          AXES.forEach(function (axe, i) {
+            var note = Math.max(profilDit[axe.cle] || 0, profilPhoto[axe.cle] || 0);
+            if (note) marque = true;
+            listeProfil.appendChild(ligneAxe(axe.nom, note, i));
+          });
+          if (blocProfil) blocProfil.hidden = !marque;
+        }
+
         // Ce que la photo a montré, axe par axe. On les donne tous, y compris
         // ceux où il n'y a rien : savoir qu'un axe a été regardé et jugé calme
         // fait partie de l'analyse. Les cacher donnait une liste d'alertes.
         var liste = trouve && trouve.querySelector('[data-izd-lecture]');
         if (liste) {
           liste.innerHTML = '';
-          var rienVu = {{ section.settings.libelle_rien_vu | json }};
-          var niveaux = [rienVu, 'léger', 'modéré', 'marqué'];
           lecture.forEach(function (axe, i) {
-            var li = document.createElement('li');
-            li.className = 'izd__lecture-ligne';
-            if (!axe.note) li.className += ' izd__lecture-ligne--calme';
-            var largeur = (axe.note / 3 * 100) + '%';
-            li.innerHTML = '<span class="izd__lecture-nom"></span>' +
-                           '<span class="izd__lecture-jauge" aria-hidden="true">' +
-                           '<i></i></span>' +
-                           '<span class="izd__lecture-niveau"></span>';
-            li.querySelector('.izd__lecture-nom').textContent = axe.nom;
-            li.querySelector('.izd__lecture-niveau').textContent = niveaux[axe.note];
-            // La largeur est portée par une variable, et c'est une animation
-            // CSS qui part de zéro pour l'atteindre. Une transition aurait
-            // demandé de poser la largeur une image plus tard, donc
-            // requestAnimationFrame — qui ne se déclenche pas dans un onglet
-            // en arrière-plan : la barre y serait restée vide pour de bon.
-            var barre = li.querySelector('.izd__lecture-jauge i');
-            barre.style.setProperty('--izd-largeur', largeur);
-            if (!sobre()) barre.style.animationDelay = (i * 110) + 'ms';
-            liste.appendChild(li);
+            liste.appendChild(ligneAxe(axe.nom, axe.note, i));
           });
           liste.hidden = liste.children.length === 0;
         }
