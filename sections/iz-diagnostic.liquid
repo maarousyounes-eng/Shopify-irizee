@@ -963,9 +963,12 @@
         });
 
         // Un résultat peut manquer si l'éditeur n'a pas de bloc pour cette
-        // cible : on retombe sur le premier plutôt que sur un écran vide.
+        // cible : on retombe sur le premier plutôt que sur un écran vide. Et
+        // on le retient comme résultat affiché, sinon tout ce qui suit le
+        // laisse vide — le bloc apparaissait sans sa synthèse.
         if (!trouve && blocs.length) {
-          blocs[0].hidden = false;
+          trouve = blocs[0];
+          trouve.hidden = false;
         }
 
         if (trouve && observation) {
@@ -1084,6 +1087,34 @@
         var blocPhoto = trouve && trouve.querySelector('[data-izd-bloc-photo]');
         if (blocPhoto) {
           blocPhoto.hidden = !observation && (!liste || liste.children.length === 0);
+        }
+
+        // La barre d'achat de mobile : on montre celle du résultat affiché,
+        // qui n'est pas forcément celui qu'on visait si l'éditeur n'a pas de
+        // bloc pour cette cible.
+        var cibleAffichee = trouve ? trouve.getAttribute('data-izd-resultat') : '';
+        cacherBarres();
+        var barreVisible = cibleAffichee
+          ? racine.querySelector('[data-izd-barre="' + cibleAffichee + '"]')
+          : null;
+        if (barreVisible) barreVisible.hidden = false;
+
+        // Deux boutons d'achat l'un sur l'autre ne servent à rien : quand le
+        // bloc produit est à l'écran, la barre s'efface le temps qu'il passe.
+        // Sans IntersectionObserver elle reste simplement en place — c'est le
+        // comportement le moins surprenant des deux.
+        if (observateurBarre) {
+          observateurBarre.disconnect();
+          observateurBarre = null;
+        }
+        var achat = trouve && trouve.querySelector('.izd__achat');
+        if (barreVisible && achat && window.IntersectionObserver) {
+          observateurBarre = new IntersectionObserver(function (entrees) {
+            entrees.forEach(function (e) {
+              barreVisible.classList.toggle('izd__barre--efface', e.isIntersecting);
+            });
+          }, { threshold: 0.55 });
+          observateurBarre.observe(achat);
         }
 
         afficher('resultat');
@@ -2245,6 +2276,83 @@
 
   .izd__routine { display: grid; }
 
+  /* Le profil reprend les barres de la lecture photo : même grammaire, et le
+     lecteur n'a pas deux façons de lire un niveau sur la même page. */
+  .izd__profil-note {
+    font-family: var(--izd-texte-famille);
+    font-size: calc(var(--izd-texte) * 0.85);
+    line-height: 1.5;
+    margin: 1.4rem 0 0;
+    color: color-mix(in srgb, var(--izd-encre) 55%, transparent);
+  }
+
+  /* ---------- Ce qui vient ensuite ----------
+
+     Des jalons : le moment en surtitre, ce qui se passe en dessous. La
+     colonne de droite est déjà étroite — une seconde grille à deux colonnes
+     dedans aurait serré le texte à une dizaine de mots par ligne. */
+  .izd__jalons {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(1.4rem, 2vw, 1.8rem);
+  }
+
+  .izd__jalon-quand {
+    display: block;
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-eyebrow);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.4;
+    color: var(--izd-accent);
+  }
+
+  .izd__jalon-quoi {
+    display: block;
+    margin-top: 0.5rem;
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+    line-height: 1.6;
+    max-width: 52ch;
+    color: color-mix(in srgb, var(--izd-encre) 82%, transparent);
+  }
+
+  .izd__eviter {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.9rem;
+    max-width: 56ch;
+  }
+
+  .izd__eviter-ligne {
+    position: relative;
+    padding-left: 2.2rem;
+    font-family: var(--izd-texte-famille);
+    font-size: var(--izd-texte);
+    line-height: 1.5;
+  }
+
+  /* Une croix, pas la coche des constats : ces lignes disent de ne pas
+     faire. Une coche dirait l'inverse de ce qu'on lit juste à côté. */
+  .izd__eviter-ligne::before,
+  .izd__eviter-ligne::after {
+    content: '';
+    position: absolute;
+    left: 0.25rem;
+    top: 0.72em;
+    width: 1.1rem;
+    height: 2px;
+    background: color-mix(in srgb, var(--izd-encre) 42%, transparent);
+  }
+
+  .izd__eviter-ligne::before { transform: rotate(45deg); }
+  .izd__eviter-ligne::after { transform: rotate(-45deg); }
+
   /* ---------- La recommandation ----------
 
      Le soin conseillé est l'aboutissement du parcours : il a droit à une
@@ -2422,6 +2530,116 @@
 
     .izd__produit-media { max-width: 24rem; }
     .izd__achat .iz-btn { width: 100%; }
+
+    /* ---------- Le résultat, remonté pour le pouce ----------
+
+       Le bloc produit part à la fin de la synthèse : on lit l'analyse avant
+       de voir ce qu'on propose. Pour que ça tienne, les deux colonnes du
+       résultat deviennent transparentes à la mise en page — `display:
+       contents` — de sorte que tous leurs enfants soient des éléments de la
+       même grille et puissent être ordonnés entre eux. Sans ça, `order` ne
+       pourrait pas faire sortir le bloc produit de sa colonne.
+
+       Le pas vertical repasse à zéro : chaque bloc porte déjà sa marge et son
+       filet, les cumuler doublerait les blancs. */
+    .izd__resultat-corps,
+    .izd__resultat-notes { display: contents; }
+
+    .izd__resultat {
+      row-gap: 0;
+      /* De quoi dégager la barre d'achat du dernier bloc. */
+      padding-bottom: 10rem;
+    }
+
+    .izd__resultat > .izd__hero-sur { order: 1; }
+    .izd__resultat-corps > .izd__titre { order: 2; }
+
+    .izd__resultat-corps > .izd__texte--chapeau {
+      order: 3;
+      margin-bottom: clamp(2rem, 4vw, 2.8rem);
+    }
+
+    /* Toute la synthèse garde son ordre interne : un seul rang pour elle. */
+    .izd__resultat-notes > * { order: 4; }
+
+    .izd__resultat-corps > .izd__produit { order: 5; }
+    .izd__resultat-corps > .izd__complement { order: 6; }
+    .izd__resultat-corps > .izd__recommencer { order: 7; }
+  }
+
+  /* ---------- La barre d'achat ----------
+
+     Mobile seulement : sur desktop les deux colonnes gardent déjà le soin en
+     permanence sous les yeux, et une barre en bas d'écran n'y ajouterait
+     qu'un bandeau. */
+  .izd__barre { display: none; }
+
+  @media (max-width: 749px) {
+    .izd__barre {
+      display: block;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      /* Sous le tiroir du menu (41) et son en-tête ouvert (60), au-dessus de
+         la page. */
+      z-index: 30;
+      padding: 1rem 1.2rem calc(1rem + env(safe-area-inset-bottom));
+      background: color-mix(in srgb, var(--izd-fond) 93%, transparent);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid color-mix(in srgb, var(--izd-encre) 14%, transparent);
+      transition: transform 0.25s ease;
+    }
+
+    /* `display: block` ci-dessus l'emporterait sur le `hidden` de l'attribut :
+       il faut le redire avec au moins autant de poids. */
+    .izd__barre[hidden] { display: none; }
+
+    .izd__barre--efface { transform: translateY(115%); }
+
+    .izd__barre-corps {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 1.2rem;
+      align-items: center;
+    }
+
+    .izd__barre-media {
+      display: block;
+      width: 4.8rem;
+      height: 4.8rem;
+      object-fit: cover;
+      border-radius: 1rem;
+    }
+
+    .izd__barre-texte { min-width: 0; }
+
+    .izd__barre-nom {
+      font-family: var(--izd-texte-famille);
+      font-size: calc(var(--izd-texte) * 0.88);
+      font-weight: 700;
+      line-height: 1.3;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .izd__barre-prix {
+      font-family: var(--izd-texte-famille);
+      font-size: calc(var(--izd-texte) * 0.88);
+      margin: 0.2rem 0 0;
+      color: color-mix(in srgb, var(--izd-encre) 70%, transparent);
+    }
+
+    .izd__barre-achat { margin: 0; }
+    .izd__barre-achat .iz-btn { white-space: nowrap; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .izd__barre { transition: none; }
   }
 {% endstylesheet %}
 
