@@ -871,10 +871,20 @@
         el.classList.add(classe);
       };
 
+      var cacherBarres = function () {
+        racine.querySelectorAll('[data-izd-barre]').forEach(function (b) {
+          b.hidden = true;
+        });
+      };
+
       var afficher = function (nom) {
         Object.keys(ecrans).forEach(function (cle) {
           ecrans[cle].hidden = cle !== nom;
         });
+        // La barre d'achat vit hors des écrans : elle ne disparaît pas avec
+        // eux. `montrerResultat` montre la bonne juste avant d'appeler ici,
+        // donc on ne touche à rien sur l'écran du résultat.
+        if (nom !== 'resultat') cacherBarres();
         rejouer(ecrans[nom], 'izd__ecran--entre');
       };
 
@@ -1243,6 +1253,18 @@
                 { nom: 'Marques', note: n(a.marques) },
                 { nom: 'Manque d\'éclat', note: n(a.eclat) }
               ];
+
+              // Les mêmes mesures rejoignent le profil. « Taches » et
+              // « marques » décrivent la même chose à l'œil : on garde la plus
+              // marquée des deux plutôt que d'inventer un septième axe.
+              // L'hydratation et la sensibilité ne se voient pas sur une
+              // photo — elles restent au questionnaire.
+              profilPhoto = {
+                sebum: n(a.brillance),
+                grain: n(a.pores),
+                taches: Math.max(n(a.taches_pigmentaires), n(a.marques)),
+                eclat: n(a.eclat)
+              };
               apresPhoto();
             })
             .catch(function () {
@@ -1359,7 +1381,25 @@
           var libelle = (bouton.querySelector('.izd__reponse-texte') || bouton).textContent.trim();
           var fieldset = bouton.closest('[data-izd-question]');
           var famille = (fieldset && fieldset.getAttribute('data-famille')) || 'peau';
-          declare.push({ texte: libelle, cible: cible, famille: famille });
+
+          // Le niveau le plus marqué de la réponse sert au constat : une
+          // réponse qui n'oriente ni vers le masque ni vers le sérum peut
+          // quand même dire quelque chose de fort — « ma peau tiraille
+          // souvent » n'a pas de produit à désigner, et mérite d'être relue.
+          var profil = lireProfil(bouton.getAttribute('data-profil'));
+          var pic = 0;
+          Object.keys(profil).forEach(function (cle) {
+            if (profil[cle] > pic) pic = profil[cle];
+          });
+
+          declare.push({
+            texte: libelle,
+            cible: cible,
+            famille: famille,
+            profil: profil,
+            niveau: pic
+          });
+          recomposerProfil();
 
           if (index + 1 < questions.length) {
             index += 1;
@@ -1377,6 +1417,7 @@
           if (index === 0) return;
           decompter(historique.pop());
           declare.pop();
+          recomposerProfil();
           index -= 1;
           montrerQuestion();
         });
@@ -1384,8 +1425,20 @@
 
       racine.querySelectorAll('[data-izd-recommencer]').forEach(function (bouton) {
         bouton.addEventListener('click', function () {
+          // `declare` et la lecture photo n'étaient pas remis à zéro : un
+          // second diagnostic affichait la synthèse et la photo du premier,
+          // en plus des siennes.
           score = { masque: 0, serum: 0 };
           historique = [];
+          declare = [];
+          profilDit = {};
+          profilPhoto = {};
+          observation = '';
+          lecture = [];
+          zonePhoto = '';
+          qualitePhoto = '';
+          rousseur = false;
+          photoComptee = false;
           index = 0;
           montrerQuestion();
           afficher('intro');
