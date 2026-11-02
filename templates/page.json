@@ -28,7 +28,11 @@
             "c3": "deux",
             "r4": "Ni l'un ni l'autre",
             "c4": "aucun",
-            "famille": "peau"
+            "famille": "peau",
+            "p1": "sebum:3",
+            "p2": "eclat:3",
+            "p3": "sebum:2, eclat:2",
+            "p4": ""
           }
         },
         "question_Rq9CdU": {
@@ -43,7 +47,11 @@
             "c3": "serum",
             "r4": "Des imperfections qui reviennent",
             "c4": "masque",
-            "famille": "peau"
+            "famille": "peau",
+            "p1": "grain:3",
+            "p2": "taches:3",
+            "p3": "taches:2, eclat:2",
+            "p4": "sebum:2, grain:2"
           }
         },
         "question_R4YQgx": {
@@ -58,7 +66,10 @@
             "c3": "aucun",
             "r4": "",
             "c4": "aucun",
-            "famille": "peau"
+            "famille": "peau",
+            "p1": "taches:3",
+            "p2": "taches:2",
+            "p3": ""
           }
         },
         "question_PKxRmF": {
@@ -73,7 +84,10 @@
             "c3": "serum",
             "r4": "",
             "c4": "aucun",
-            "famille": "vie"
+            "famille": "vie",
+            "p1": "eclat:2",
+            "p2": "",
+            "p3": "eclat:1"
           }
         },
         "question_DHqCFP": {
@@ -88,7 +102,10 @@
             "c3": "aucun",
             "r4": "",
             "c4": "aucun",
-            "famille": "vie"
+            "famille": "vie",
+            "p1": "taches:3",
+            "p2": "taches:2",
+            "p3": ""
           }
         },
         "question_VAWhW6": {
@@ -103,7 +120,10 @@
             "c3": "masque",
             "r4": "",
             "c4": "aucun",
-            "famille": "vie"
+            "famille": "vie",
+            "p1": "sebum:2, eclat:1",
+            "p2": "",
+            "p3": "sebum:1"
           }
         },
         "question_AQ69EL": {
@@ -118,7 +138,11 @@
             "c3": "masque",
             "r4": "J'utilise déjà un masque",
             "c4": "serum",
-            "famille": "vie"
+            "famille": "vie",
+            "p1": "hydratation:2",
+            "p2": "",
+            "p3": "",
+            "p4": ""
           }
         },
         "question_Yrqw3Y": {
@@ -133,7 +157,10 @@
             "c3": "deux",
             "r4": "",
             "c4": "aucun",
-            "famille": "vie"
+            "famille": "vie",
+            "p1": "",
+            "p2": "",
+            "p3": ""
           }
         },
         "resultat_fgdgCk": {
@@ -174,12 +201,46 @@
             "argument": "Le masque prépare la peau une à deux fois par semaine, le sérum prend le relais au quotidien.",
             "conseil": "Prenez les deux habitudes l'une après l'autre. Le sérum d'abord, tous les jours, le temps qu'il devienne un réflexe. Le masque ensuite, une à deux fois par semaine. Deux gestes installés tiennent mieux qu'un rituel complet abandonné au bout de dix jours."
           }
+        },
+        "question_izhydra": {
+          "type": "question",
+          "settings": {
+            "libelle": "Après le nettoyage, votre peau tiraille-t-elle ?",
+            "famille": "peau",
+            "r1": "Oui, elle tiraille souvent",
+            "c1": "aucun",
+            "p1": "hydratation:3",
+            "r2": "Parfois, surtout en hiver",
+            "c2": "aucun",
+            "p2": "hydratation:2",
+            "r3": "Non, jamais",
+            "c3": "aucun",
+            "p3": ""
+          }
+        },
+        "question_izsensi": {
+          "type": "question",
+          "settings": {
+            "libelle": "Votre peau réagit-elle facilement — rougeurs, picotements ?",
+            "famille": "peau",
+            "r1": "Oui, rougeurs ou picotements fréquents",
+            "c1": "aucun",
+            "p1": "sensibilite:3",
+            "r2": "De temps en temps",
+            "c2": "aucun",
+            "p2": "sensibilite:2",
+            "r3": "Non, elle tolère bien",
+            "c3": "aucun",
+            "p3": ""
+          }
         }
       },
       "block_order": [
         "question_N9Kfja",
         "question_Rq9CdU",
         "question_R4YQgx",
+        "question_izhydra",
+        "question_izsensi",
         "question_PKxRmF",
         "question_DHqCFP",
         "question_VAWhW6",
