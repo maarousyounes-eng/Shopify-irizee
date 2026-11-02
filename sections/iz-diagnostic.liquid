@@ -193,15 +193,19 @@
                     when 1
                       assign texte = bloc.settings.r1
                       assign cible = bloc.settings.c1
+                      assign profil = bloc.settings.p1
                     when 2
                       assign texte = bloc.settings.r2
                       assign cible = bloc.settings.c2
+                      assign profil = bloc.settings.p2
                     when 3
                       assign texte = bloc.settings.r3
                       assign cible = bloc.settings.c3
+                      assign profil = bloc.settings.p3
                     when 4
                       assign texte = bloc.settings.r4
                       assign cible = bloc.settings.c4
+                      assign profil = bloc.settings.p4
                   endcase
                 -%}
                 {%- if texte != blank -%}
@@ -210,6 +214,11 @@
                     class="izd__reponse"
                     data-izd-reponse
                     data-cible="{{ cible }}"
+                    {%- comment -%}
+                      Ce que la réponse apprend sur la peau, axe par axe :
+                      « sebum:3, eclat:1 ». C'est ce qui remplit le profil.
+                    {%- endcomment -%}
+                    data-profil="{{ profil }}"
                   >
                     <span class="izd__puce" aria-hidden="true"></span>
                     <span class="izd__reponse-texte">{{ texte }}</span>
@@ -657,6 +666,72 @@
         {%- endfor -%}
       </div>
 
+      {%- comment -%}
+        ---------- La barre d'achat (mobile) ----------
+
+        Sur mobile le bloc produit part à la fin de la synthèse : on lit
+        l'analyse avant de voir ce qu'on propose. La barre est ce qui rend ce
+        choix tenable — le soin reste à portée de pouce pendant toute la
+        lecture.
+
+        Elle vit HORS des écrans, et c'est volontaire : un `position: fixed`
+        placé dans l'écran serait rattaché à lui, dont l'animation d'entrée
+        anime `transform`. La barre partirait avec. Conséquence : rien ne la
+        cache quand on change d'écran, c'est au script de le faire.
+
+        Une barre par résultat, remplie en Liquid : le prix et la variante
+        restent calculés par le thème, le script ne fait que montrer la bonne.
+      {%- endcomment -%}
+      {%- for bloc in resultats -%}
+        {%- liquid
+          assign produit_barre = bloc.settings.produit
+          if produit_barre.id == blank
+            case bloc.settings.cible
+              when 'masque'
+                assign produit_barre = all_products[section.settings.handle_masque]
+              when 'serum'
+                assign produit_barre = all_products[section.settings.handle_serum]
+              else
+                assign produit_barre = all_products[section.settings.handle_routine]
+            endcase
+          endif
+        -%}
+        {%- if produit_barre.id != blank -%}
+          {%- assign vb = produit_barre.selected_or_first_available_variant -%}
+          {%- if vb.available -%}
+            {%- capture precommande_barre -%}{%- render 'iz-precommande', variante: vb -%}{%- endcapture -%}
+            <div class="izd__barre" data-izd-barre="{{ bloc.settings.cible }}" hidden>
+              <div class="izd__barre-corps">
+                {%- comment -%}
+                  La vignette ne dit rien que le nom juste à côté ne dise
+                  déjà : son alternative reste vide, exprès.
+                {%- endcomment -%}
+                {%- if produit_barre.featured_image -%}
+                  {{ produit_barre.featured_image | image_url: width: 160 | image_tag: loading: 'lazy', widths: '96, 128, 160', alt: '', class: 'izd__barre-media' }}
+                {%- endif -%}
+
+                <div class="izd__barre-texte">
+                  <p class="izd__barre-nom">{{ produit_barre.title }}</p>
+                  <p class="izd__barre-prix">{{ vb.price | money }}</p>
+                </div>
+
+                <form method="post" action="{{ routes.cart_add_url }}" class="izd__barre-achat">
+                  <input type="hidden" name="id" value="{{ vb.id }}">
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" class="iz-btn iz-btn--primary">
+                    {%- if precommande_barre != blank -%}
+                      {{- settings.precommande_libelle -}}
+                    {%- else -%}
+                      {{- section.settings.libelle_achat -}}
+                    {%- endif -%}
+                  </button>
+                </form>
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+
     </div>
   </section>
 
@@ -690,6 +765,93 @@
       var qualitePhoto = '';
       var rousseur = false;
       var declare = [];
+
+      // ---- Le profil de peau ----
+      // Six axes, tous orientés dans le même sens : la barre mesure un
+      // besoin, pas une qualité. « Manque d'éclat » plutôt que « Éclat »,
+      // « Déshydratation » plutôt que « Hydratation » — sinon une barre
+      // pleine se lit à l'envers une fois sur deux.
+      var AXES = [
+        { cle: 'sebum', nom: 'Sébum' },
+        { cle: 'grain', nom: 'Grain irrégulier' },
+        { cle: 'taches', nom: 'Taches et marques' },
+        { cle: 'eclat', nom: 'Manque d\u2019éclat' },
+        { cle: 'hydratation', nom: 'Déshydratation' },
+        { cle: 'sensibilite', nom: 'Sensibilité' }
+      ];
+
+      // Ce que les réponses ont appris, et ce que la photo a vu. Tenus
+      // séparés pour la même raison que les deux constats : on ne mélange
+      // pas une déclaration et une mesure. Le profil affiche le plus marqué
+      // des deux.
+      var profilDit = {};
+      var profilPhoto = {};
+
+      var paliers = [
+        {{ section.settings.libelle_rien_vu | json }},
+        'léger',
+        'modéré',
+        'marqué'
+      ];
+
+      // « sebum:3, eclat:1 » → { sebum: 3, eclat: 1 }. Une clé inconnue ou un
+      // niveau hors bornes est ignoré : une faute de frappe dans l'éditeur ne
+      // doit pas vider le profil entier.
+      var lireProfil = function (brut) {
+        var sortie = {};
+        if (!brut) return sortie;
+        brut.split(',').forEach(function (morceau) {
+          var duo = morceau.split(':');
+          var cle = (duo[0] || '').trim().toLowerCase();
+          var niveau = parseInt(duo[1], 10);
+          var connu = AXES.some(function (a) { return a.cle === cle; });
+          if (!connu || !(niveau >= 1 && niveau <= 3)) return;
+          if (!sortie[cle] || niveau > sortie[cle]) sortie[cle] = niveau;
+        });
+        return sortie;
+      };
+
+      // Recomposé depuis `declare` plutôt que corrigé à la main : le retour
+      // en arrière retire une réponse, et retrancher un maximum n'a pas de
+      // sens — rien ne dit que la réponse retirée était celle qui le portait.
+      var recomposerProfil = function () {
+        profilDit = {};
+        declare.forEach(function (r) {
+          Object.keys(r.profil || {}).forEach(function (cle) {
+            if (!profilDit[cle] || r.profil[cle] > profilDit[cle]) {
+              profilDit[cle] = r.profil[cle];
+            }
+          });
+        });
+      };
+
+      // Une ligne de profil : un nom, une barre, un niveau. Le profil et la
+      // lecture photo s'en servent tous les deux — deux grammaires pour lire
+      // un même niveau, ce serait une de trop.
+      var ligneAxe = function (nom, note, rang) {
+        var li = document.createElement('li');
+        li.className = 'izd__lecture-ligne';
+        if (!note) li.className += ' izd__lecture-ligne--calme';
+        li.innerHTML = '<span class="izd__lecture-nom"></span>' +
+                       '<span class="izd__lecture-jauge" aria-hidden="true">' +
+                       '<i></i></span>' +
+                       '<span class="izd__lecture-niveau"></span>';
+        li.querySelector('.izd__lecture-nom').textContent = nom;
+        li.querySelector('.izd__lecture-niveau').textContent = paliers[note];
+        // La largeur est portée par une variable, et c'est une animation CSS
+        // qui part de zéro pour l'atteindre. Une transition aurait demandé de
+        // poser la largeur une image plus tard, donc requestAnimationFrame —
+        // qui ne se déclenche pas dans un onglet en arrière-plan : la barre y
+        // serait restée vide pour de bon.
+        var barre = li.querySelector('.izd__lecture-jauge i');
+        barre.style.setProperty('--izd-largeur', (note / 3 * 100) + '%');
+        if (!sobre()) barre.style.animationDelay = (rang * 110) + 'ms';
+        return li;
+      };
+
+      // L'observateur qui efface la barre d'achat quand le bloc produit est à
+      // l'écran. Gardé ici pour pouvoir le débrancher au résultat suivant.
+      var observateurBarre = null;
 
       // Qui a demandé moins d'animations n'en reçoit aucune. Une seule
       // lecture, relue à chaque fois : le réglage peut changer en cours de
