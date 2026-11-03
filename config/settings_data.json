@@ -21,7 +21,7 @@
       },
       "12412247409707363845": {
         "type": "shopify://apps/contentsquare-analytics/blocks/csq_tag_snippet_script/019a7cb2-3ace-7c1e-bb5d-112ee54f5310",
-        "disabled": false,
+        "disabled": true,
         "settings": {}
       }
     }
