@@ -149,6 +149,15 @@
     z-index: 1;
     width: 100%;
     padding: 3rem var(--page-margin) 4rem;
+    /* Ce bloc couvre toute la largeur du bas du hero. Sans ca, il avalerait
+       les clics sur cette bande d'image. On ne laisse ses enfants capter le
+       clic que la ou ils sont vraiment : le texte reste selectionnable, le
+       bouton cliquable, et tout le vide autour mene au lien de l'image. */
+    pointer-events: none;
+  }
+
+  .hero__content > * {
+    pointer-events: auto;
   }
 
   .hero__content--h-left {
