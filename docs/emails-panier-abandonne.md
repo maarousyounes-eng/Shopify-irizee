@@ -99,8 +99,18 @@ réserve pas de stock — on ne prétend donc pas qu'il « expire ».
 
 ## Comment c'est fabriqué
 
-Les trois e-mails sont des **modèles HTML** importés dans Klaviyo, pas des
-montages glisser-déposer. Les sources sont ici :
+Les trois e-mails reprennent les valeurs du thème, relevées dans
+`snippets/irizee-tokens.liquid` et sur les styles calculés de la fiche produit
+en ligne : Work Sans, fond `#FBFAF8`, encre `#1A1A1A`, surface `#EBEBEA`,
+trait `#E2E2DF`, rayons 16 / 12 / 100 px, titres en 800 à `-0.02em`, eyebrow
+12 px / 700 / `0.12em` en majuscules, bouton pilule noir de 56 px en 14 px /
+700 / 1 px de tracking. La bande de réassurance est celle de la page d'accueil.
+
+**Aucun tiret cadratin dans les textes**, y compris dans les noms des messages
+et des modèles : une incise entre tirets se réécrit en phrase simple.
+
+Ce sont des **modèles HTML** importés dans Klaviyo, pas des montages
+glisser-déposer. Les sources sont ici :
 
 - `docs/emails/generer-panier-abandonne.py` — le gabarit commun et les trois
   textes. C'est le seul fichier à modifier.
