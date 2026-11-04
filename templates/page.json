@@ -224,7 +224,7 @@
             "p1": "sensibilite:3",
             "p2": "sensibilite:2",
             "p3": "",
-            "libelle": "Votre peau réagit-elle facilement — rougeurs, picotements ?",
+            "libelle": "Votre peau réagit-elle facilement, avec des rougeurs ou des picotements ?",
             "famille": "peau",
             "r1": "Oui, rougeurs ou picotements fréquents",
             "c1": "aucun",
