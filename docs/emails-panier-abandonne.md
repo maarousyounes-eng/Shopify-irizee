@@ -159,23 +159,25 @@ thème est publié, l'identifiant change et le logo casse dans les e-mails. Le
 geste définitif serait de téléverser le logo dans la bibliothèque de médias de
 Klaviyo et de pointer dessus.
 
-## Ce qui reste à faire
+## État : en service depuis le 04/11/2026
 
-1. **Valider le rendu avec de vraies données.** Klaviyo répond « il n'y a aucun
-   événement à prévisualiser » : la boutique n'a pas encore de `Commande
-   Débutée` dans Klaviyo. Tant qu'un vrai panier abandonné n'a pas eu lieu, on
-   ne peut pas vérifier que les articles, les prix et le lien de paiement
-   s'affichent. Le moyen de le provoquer : ajouter un produit au panier sur
-   irizee.com, commencer le paiement en saisissant une adresse e-mail, puis
-   quitter la page.
-2. **Passer les trois messages de « Brouillon » à « Actif ».** Un message en
-   brouillon est ignoré même quand le scénario tourne.
-3. **Activer le scénario** (« Vérifier et activer »).
+Le scénario est **actif** et les trois messages sont en **« En cours »**. À
+partir de maintenant, un panier abandonné déclenche de vrais envois.
 
-Tant que 2 et 3 ne sont pas faits, aucun e-mail ne part — et comme la relance
-de Shopify est désactivée, **il n'y a aujourd'hui plus aucune relance de panier
-abandonné en service**. C'est l'état voulu le temps de la vérification, mais ce
-n'est pas un état où rester.
+Un message laissé en « Brouillon » est sauté sans bruit même quand le scénario
+tourne : c'est le piège à connaître si un e-mail ne part jamais.
+
+**Un point n'a pas pu être vérifié avant l'activation.** Klaviyo répondait « il
+n'y a aucun événement à prévisualiser » : la boutique n'avait encore aucune
+`Commande Débutée` enregistrée. Les vignettes, les prix et le lien de paiement
+reposent donc sur les noms de variables attendus pour l'intégration Shopify,
+sans avoir été vus sur un panier réel. Le premier e-mail parti est à regarder
+de près : il suffit d'ouvrir le message dans Klaviyo et de lire ce qui a été
+envoyé. En cas de champ vide, les variables à revoir sont listées plus haut.
+
+Pour provoquer un test sans attendre une cliente : ajouter un produit au panier
+sur irizee.com, commencer le paiement en saisissant une adresse e-mail, puis
+quitter la page. L'e-mail arrive quatre heures plus tard.
 
 ## Expéditeur
 
