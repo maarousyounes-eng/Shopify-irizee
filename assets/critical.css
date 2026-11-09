@@ -137,7 +137,7 @@ body {
   padding: clamp(4rem, 8vw, 8rem) var(--page-margin) clamp(6rem, 10vw, 10rem);
 }
 
-.shopify-policy__title {
+body .shopify-policy__title {
   text-align: left;
 }
 
