@@ -139,13 +139,19 @@
             | image_tag: loading: 'lazy', sizes: '100vw', widths: '800, 1400, 2000, 2600', class: 'footer__logo', alt: shop.name
           }}
         {% else %}
+          {% comment %}
+            Version haute définition (2642 × 844, dépôt irizee-brand,
+            public/logo-black.png). Le logo s'étale ici sur la moitié de la
+            page : irizee-logo.png (440 px) y était étiré plus de 3 fois sur
+            écran Retina et sortait flou.
+          {% endcomment %}
           <img
             class="footer__logo"
-            src="{{ 'irizee-logo.png' | asset_url }}"
+            src="{{ 'irizee-logo-hd.png' | asset_url }}"
             alt="{{ shop.name }}"
             loading="lazy"
-            width="440"
-            height="140"
+            width="2642"
+            height="844"
           >
         {% endif %}
       </div>
