@@ -119,3 +119,148 @@ body {
 .shopify-section > .full-width {
   grid-column: 1 / -1;
 }
+
+/** Pages de politiques Shopify (/policies/*) : CGV, mentions légales,
+ *  confidentialité, retours, expédition, coordonnées.
+ *
+ *  Leur contenu se saisit dans l'admin (Paramètres → Politiques) et Shopify
+ *  l'injecte dans un balisage fixe, sans aucune classe du thème :
+ *  .shopify-policy__container > .shopify-policy__title h1 + .shopify-policy__body .rte
+ *  Sans ces règles, le reset ci-dessus retire toutes les marges et les pages
+ *  sortent en un bloc compact, titre centré.
+ *  Même gabarit que .page-simple (sections/page.liquid) pour que Contact et
+ *  les politiques se ressemblent. */
+.shopify-policy__container {
+  width: 100%;
+  max-width: calc(72rem + var(--page-margin) * 2);
+  margin: 0 auto;
+  padding: clamp(4rem, 8vw, 8rem) var(--page-margin) clamp(6rem, 10vw, 10rem);
+}
+
+.shopify-policy__title {
+  text-align: left;
+}
+
+.shopify-policy__title h1 {
+  font-size: clamp(3.2rem, 5vw, 5.2rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-wrap: balance;
+  margin: 0 0 3.2rem;
+}
+
+.shopify-policy__body .rte {
+  max-width: 68ch;
+  font-size: 1.6rem;
+  line-height: 1.7;
+  color: var(--iz-text-2, currentcolor);
+}
+
+.shopify-policy__body .rte > * + * {
+  margin-top: 1.6rem;
+}
+
+.shopify-policy__body .rte h2 {
+  font-size: clamp(2.2rem, 2.6vw, 2.8rem);
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--color-foreground);
+  margin-top: 4.8rem;
+  padding-top: 3.2rem;
+  border-top: 1px solid var(--iz-line, rgba(0, 0, 0, 0.1));
+}
+
+.shopify-policy__body .rte h3 {
+  font-size: 1.8rem;
+  line-height: 1.35;
+  color: var(--color-foreground);
+  margin-top: 3.2rem;
+}
+
+.shopify-policy__body .rte h2 + *,
+.shopify-policy__body .rte h3 + * {
+  margin-top: 1.2rem;
+}
+
+/* La date de mise à jour, toujours en tête : discrète, pas en italique de corps. */
+.shopify-policy__body .rte > p:first-child em {
+  font-style: normal;
+  font-size: 1.4rem;
+  color: var(--iz-muted, currentcolor);
+}
+
+.shopify-policy__body .rte strong {
+  color: var(--color-foreground);
+}
+
+.shopify-policy__body .rte a {
+  color: var(--color-foreground);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+.shopify-policy__body .rte a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.shopify-policy__body .rte ul,
+.shopify-policy__body .rte ol {
+  padding-left: 2.2rem;
+}
+
+.shopify-policy__body .rte li + li {
+  margin-top: 0.8rem;
+}
+
+/* Tableaux (« Ce que nous collectons » dans la confidentialité). */
+.shopify-policy__body .rte table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.5rem;
+}
+
+.shopify-policy__body .rte th,
+.shopify-policy__body .rte td {
+  text-align: left;
+  vertical-align: top;
+  padding: 1.2rem 1.6rem 1.2rem 0;
+  border-bottom: 1px solid var(--iz-line, rgba(0, 0, 0, 0.1));
+}
+
+.shopify-policy__body .rte tr > :first-child {
+  width: 30%;
+  color: var(--color-foreground);
+  font-weight: 600;
+}
+
+@media (max-width: 749px) {
+  .shopify-policy__body .rte {
+    font-size: 1.5rem;
+  }
+
+  .shopify-policy__body .rte table,
+  .shopify-policy__body .rte tbody,
+  .shopify-policy__body .rte tr,
+  .shopify-policy__body .rte td,
+  .shopify-policy__body .rte th {
+    display: block;
+    width: 100%;
+  }
+
+  .shopify-policy__body .rte tr {
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--iz-line, rgba(0, 0, 0, 0.1));
+  }
+
+  .shopify-policy__body .rte th,
+  .shopify-policy__body .rte td {
+    padding: 0;
+    border: 0;
+  }
+
+  .shopify-policy__body .rte tr > :first-child {
+    width: 100%;
+    margin-bottom: 0.4rem;
+  }
+}
