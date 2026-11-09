@@ -36,6 +36,19 @@
   if pages_hors_index contains request.page_type
     assign hors_index = true
   endif
+
+  # Pages sans contenu propre, qui diluent le site aux yeux de Google :
+  # - la collection « Page d'accueil » (frontpage) : technique, sans texte,
+  #   doublon de /collections/les-soins ;
+  # - un blog tant qu'il n'a aucun article (/blogs/actualites).
+  # Shopify les met d'office dans le sitemap ; on les garde hors index
+  # jusqu'à ce qu'elles aient un vrai contenu.
+  if request.page_type == 'collection' and collection.handle == 'frontpage'
+    assign hors_index = true
+  endif
+  if request.page_type == 'blog' and blog.articles_count == 0
+    assign hors_index = true
+  endif
 -%}
 
 <title>{{ og_title }}{% if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif %}{% if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %}{% unless og_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}</title>
