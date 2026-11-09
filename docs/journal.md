@@ -1056,3 +1056,41 @@ livraison offerte ».
 **À retenir : mettre en forme avant de substituer.** Un filtre de formatage
 placé après un `replace` s'applique au texte entier, pas à la valeur qu'on
 vient d'y insérer.
+
+---
+
+## 09/11/2026 — Mentions légales et CGV en ligne
+
+La société est immatriculée (Kbis du 06/11/2026) : Irizée SASU, capital
+500 €, siège 47 rue Vivienne 75002 Paris (domiciliation), RCS Paris
+132 493 388. Le site n'avait ni CGV ni mentions légales, toutes deux
+obligatoires.
+
+- **Mentions légales** publiées dans *Politiques → Mention légale*
+  (`/policies/legal-notice`), **CGV** dans *Politiques → Conditions de vente*
+  (`/policies/terms-of-sale`). Sources : `docs/legal/`. Les deux sont ajoutées
+  au menu « Aide » du pied de page.
+- Les CGV reprennent les chiffres des politiques déjà en ligne (7,99 €,
+  offerte dès 39 €, Express 10,99 €, précommande décembre 2026, produits
+  descellés non repris). **Si l'une change, changer l'autre.**
+- Politique de confidentialité : la phrase « l'identification figurera dès
+  l'immatriculation » remplacée par l'identité de la société.
+- Coordonnées : le renvoi vers la plateforme européenne de règlement des
+  litiges est retiré (fermée en juillet 2025), section « Qui sommes-nous »
+  ajoutée.
+- Adresse de la boutique (Paramètres → Général) passée du domicile du
+  président au siège. **Le domicile personnel et la date de naissance qui
+  figurent sur le Kbis ne doivent jamais être publiés.**
+
+### Reste à faire
+
+- **Médiateur de la consommation** : obligatoire, affiché « en cours de
+  désignation ». Adhérer à un médiateur puis remplacer la mention dans les
+  deux pages.
+- **Téléphone** : exigé dans les mentions légales, absent pour l'instant.
+- **TVA** : `FR75132493388` est calculé depuis le SIREN, à confirmer sur
+  impots.gouv.
+- **Informations sur l'entreprise** (Paramètres → Général) : toujours au nom
+  de Younes Maarous, à l'adresse personnelle. C'est l'entité liée à Shopify
+  Payments ; la passer à la SASU demande une vérification d'identité de la
+  société, à faire soi-même.
