@@ -129,8 +129,13 @@ body {
  *  Sans ces règles, le reset ci-dessus retire toutes les marges et les pages
  *  sortent en un bloc compact, titre centré.
  *  Même gabarit que .page-simple (sections/page.liquid) pour que Contact et
- *  les politiques se ressemblent. */
-.shopify-policy__container {
+ *  les politiques se ressemblent.
+ *
+ *  Shopify charge APRÈS ce fichier sa propre feuille (policy.css) :
+ *  max-width: 65ch, soit ~400 px avec la base de 10 px du thème, et titre
+ *  centré. D'où le préfixe « body » sur ces deux règles : à spécificité
+ *  égale, la feuille de Shopify gagnerait. */
+body .shopify-policy__container {
   width: 100%;
   max-width: calc(72rem + var(--page-margin) * 2);
   margin: 0 auto;
