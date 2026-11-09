@@ -137,7 +137,7 @@ body {
  *  égale, la feuille de Shopify gagnerait. */
 body .shopify-policy__container {
   width: 100%;
-  max-width: calc(72rem + var(--page-margin) * 2);
+  max-width: calc(80rem + var(--page-margin) * 2);
   margin: 0 auto;
   padding: clamp(4rem, 8vw, 8rem) var(--page-margin) clamp(6rem, 10vw, 10rem);
 }
@@ -155,7 +155,7 @@ body .shopify-policy__title {
 }
 
 .shopify-policy__body .rte {
-  max-width: 68ch;
+  max-width: 76rem;
   font-size: 1.6rem;
   line-height: 1.7;
   color: var(--iz-text-2, currentcolor);
