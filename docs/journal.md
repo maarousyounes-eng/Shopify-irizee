@@ -1129,3 +1129,10 @@ chargé sur chaque page (intégration « Klaviyo Onsite Javascript »).
   Ne jamais citer `{% … %}` dans un commentaire d'un modèle.
 - **Adresse de l'organisation Klaviyo** (pied de tous les e-mails, relances
   de panier comprises) : c'était le domicile du président. Passée au siège.
+- **Piège (publié puis corrigé le jour même)** : le formulaire ordinateur
+  avait hérité d'un teaser « afficher avant le formulaire » limité au mobile.
+  Sur ordinateur, Klaviyo montait l'encart à opacité 0 en attendant un clic
+  sur un teaser jamais affiché : rien de visible. Teaser supprimé du
+  formulaire ordinateur ; seul le formulaire mobile en a un.
+- **Pour tester** : un navigateur déjà connu de Klaviyo (diagnostic, panier
+  de test) ne voit pas le pop-up, c'est voulu. Tester en navigation privée.
