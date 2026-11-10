@@ -1094,3 +1094,38 @@ obligatoires.
   de Younes Maarous, à l'adresse personnelle. C'est l'entité liée à Shopify
   Payments ; la passer à la SASU demande une vérification d'identité de la
   société, à faire soi-même.
+
+---
+
+## 10/11/2026 — Pop-up de bienvenue −10 % (Klaviyo)
+
+Tout vit dans Klaviyo, rien dans le thème : le script Klaviyo est déjà
+chargé sur chaque page (intégration « Klaviyo Onsite Javascript »).
+
+- **Code** `BIENVENUE10` (Codes de réduction) : unique par personne, préfixe
+  `BIENVENUE-`, −10 % sur toute la commande, expire 30 jours après l'envoi,
+  non cumulable. Klaviyo le crée dans Shopify au premier envoi.
+- **Deux formulaires**, parce que Klaviyo règle l'appareil pour tout le
+  formulaire :
+  - « Pop-up bienvenue -10 % » : ordinateur uniquement. Volant en bas à
+    droite, 450 px, après 12 s ou à l'intention de sortie ; réaffiché 30 jours
+    après une fermeture, jamais après inscription.
+  - « Pop-up bienvenue -10 % (mobile) » : mobile uniquement. Aucun
+    déclenchement automatique : seul le bandeau « −10 % sur votre 1re
+    commande » en bas de l'écran ouvre le formulaire.
+  - Les deux : jamais aux profils déjà connus de Klaviyo, ni sur `/cart`,
+    `/checkouts`, `/pages/diagnostic`, `/account`. Inscription dans
+    « Email List ». L'écran de réussite affiche le code et mène à
+    `/collections/les-soins`.
+- **Police** : Work Sans importée dans Klaviyo depuis `irizee.com/cdn/fonts`
+  (et non Google Fonts, pour ne pas transmettre l'IP des visiteuses à Google).
+  L'éditeur Klaviyo affiche le titre en graisse normale ; sur le site il est
+  bien gras. Se fier à l'aperçu sur site, pas au canevas.
+- **E-mail** : flux « Bienvenue — code -10 % », déclenché à l'ajout à
+  « Email List », sans réintégration. Modèle `docs/emails/bienvenue-1.html`,
+  importé tel quel. Le bouton passe par `/discount/<code>?redirect=` pour que
+  Shopify applique le code au panier.
+- **Piège** : Klaviyo interprète ses balises même dans un commentaire HTML.
+  Ne jamais citer `{% … %}` dans un commentaire d'un modèle.
+- **Adresse de l'organisation Klaviyo** (pied de tous les e-mails, relances
+  de panier comprises) : c'était le domicile du président. Passée au siège.
