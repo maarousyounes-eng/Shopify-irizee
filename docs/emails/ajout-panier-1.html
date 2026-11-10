@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="x-apple-disable-message-reformatting" />
+<title>Votre soin vous attend</title>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet" type="text/css" />
+<style type="text/css">
+  body { margin:0; padding:0; background-color:#FBFAF8; -webkit-font-smoothing:antialiased; }
+  img { border:0; outline:none; text-decoration:none; display:block; -ms-interpolation-mode:bicubic; }
+  table { border-collapse:collapse; mso-table-lspace:0; mso-table-rspace:0; }
+  a { color:#1A1A1A; }
+  .titre { font-size:44px; line-height:1.05; letter-spacing:-0.88px; }
+  @media only screen and (max-width:620px) {
+    .enveloppe { width:100% !important; }
+    .carte { border-radius:0 !important; }
+    .pad { padding-left:24px !important; padding-right:24px !important; }
+    .titre { font-size:30px !important; line-height:1.08 !important; letter-spacing:-0.6px !important; }
+    .vignette { width:72px !important; height:72px !important; }
+    .cta { display:block !important; width:auto !important; }
+    .rea td { display:block !important; width:100% !important; text-align:center !important; padding:5px 0 !important; }
+    .rea-sep { display:none !important; }
+  }
+</style>
+</head>
+<body style="margin:0; padding:0; background-color:#FBFAF8;">
+
+<!--
+  Relance « ajout au panier » : flux Klaviyo « Ajout au panier — relance »,
+  declenche par l'evenement Ajout au Panier (suivi comportemental de
+  l'integration Shopify). Ne concerne que les profils deja connus de Klaviyo
+  (pop-up -10 %, diagnostic, newsletter) : un panier anonyme n'a personne a
+  relancer.
+
+  Champs de l'evenement utilises : AddedItemProductName, AddedItemImageURL,
+  AddedItemPrice, AddedItemURL, CheckoutURL. Chacun a une valeur de repli
+  (filtre default) pour que l'e-mail reste correct si l'un manque. Ne jamais
+  citer une balise de gabarit dans ce commentaire : Klaviyo l'interpreterait.
+-->
+
+<div style="display:none; font-size:1px; color:#FBFAF8; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">Votre panier est toujours l&agrave;, pr&ecirc;t quand vous l&rsquo;&ecirc;tes.&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FBFAF8;">
+  <tr>
+    <td align="center" style="padding:36px 10px 48px;">
+
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" class="enveloppe" style="width:600px; max-width:600px;">
+
+        <!-- ================= logo ================= -->
+        <tr>
+          <td align="center" style="padding:0 0 30px;">
+            <a href="https://irizee.com" style="text-decoration:none;"><img src="https://irizee.com/cdn/shop/t/9/assets/irizee-logo.png" width="118" height="38" alt="Irizee" style="width:118px; height:38px;" /></a>
+          </td>
+        </tr>
+
+        <!-- ================= carte ================= -->
+        <tr>
+          <td class="carte" style="background-color:#FFFFFF; border-radius:16px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+
+              <tr>
+                <td class="pad" style="padding:44px 44px 0; font-family:'Work Sans','Helvetica Neue',Helvetica,Arial,sans-serif;">
+                  <p style="margin:0 0 14px; font-size:12px; font-weight:700; letter-spacing:1.44px; text-transform:uppercase; color:#5C5C5C;">Votre panier</p>
+                  <h1 class="titre" style="margin:0 0 22px; font-weight:800; color:#1A1A1A;">Votre soin vous attend</h1>
+                  <p style="margin:0 0 14px; font-family:'Work Sans','Helvetica Neue',Helvetica,Arial,sans-serif; font-size:16px; line-height:1.55; color:#3D3D3D;">Bonjour,</p>
+                  <p style="margin:0; font-family:'Work Sans','Helvetica Neue',Helvetica,Arial,sans-serif; font-size:16px; line-height:1.55; color:#3D3D3D;">Vous avez ajout&eacute; {{ event.AddedItemProductName|default:'un soin' }} &agrave; votre panier. Il vous attend, au m&ecirc;me prix, pr&ecirc;t quand vous l&rsquo;&ecirc;tes.</p>
+                </td>
+              </tr>
+
+              <!-- article -->
+              <tr>
+                <td class="pad" style="padding:26px 44px 0;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#EBEBEA; border-radius:12px;">
+                    <tr>
+                      <td style="padding:10px 16px;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                          <tr>
+                            {% if event.AddedItemImageURL %}
+                            <td width="88" valign="middle" style="padding:14px 16px 14px 0;">
+                              <a href="{{ event.AddedItemURL|default:'https://irizee.com/collections/les-soins' }}"><img class="vignette" src="{{ event.AddedItemImageURL }}" width="88" height="88" alt="" style="width:88px; height:88px; border-radius:8px; background-color:#FFFFFF;" /></a>
+                            </td>
+                            {% endif %}
+                            <td valign="middle" style="padding:14px 0; font-family:'Work Sans','Helvetica Neue',Helvetica,Arial,sans-serif;">
+                              <div style="font-size:16px; line-height:1.3; font-weight:700; color:#1A1A1A;">{{ event.AddedItemProductName|default:'Votre s&eacute;lection Iriz&eacute;e' }}</div>
+                              {% if event.AddedItemPrice %}<div style="font-size:14px; line-height:1.5; color:#5C5C5C; padding-top:4px;">{{ event.AddedItemPrice|floatformat:2 }}&nbsp;&euro;</div>{% endif %}
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- bouton -->
+              <tr>
+                <td class="pad" style="padding:30px 44px 0;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td align="center" bgcolor="#1A1A1A" style="border-radius:100px;">
+                        <a class="cta" href="{{ event.CheckoutURL|default:'https://irizee.com/cart' }}" style="display:block; padding:19px 28px; font-family:'Work Sans','Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; line-height:18px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#FBFAF8; text-decoration:none; border-radius:100px;">Retrouver mon panier</a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- precommande -->
+              <tr>
+                <td class="pad" style="padding:22px 44px 0; font-family:'Work Sans','Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; line-height:1.55; color:#5C5C5C; text-align:center;">
+                  Commande r&eacute;serv&eacute;e d&egrave;s maintenant, exp&eacute;dition &agrave; partir de d&eacute;cembre, dans l&rsquo;ordre des commandes.
+                </td>
+              </tr>
+
+              <!-- reassurance -->
+              <tr>
+                <td class="pad" style="padding:26px 44px 0;">
+                  <table role="presentation" class="rea" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:'Work Sans','Helvetica Neue',Helvetica,Arial,sans-serif; font-size:11px; font-weight:700; letter-spacing:0.9px; text-transform:uppercase; color:#5C5C5C;">
+                    <tr>
+                      <td align="center" style="padding:0;">Livraison offerte d&egrave;s 39&nbsp;&euro;</td>
+                      <td class="rea-sep" width="28" align="center" style="color:#E2E2DF;">&bull;</td>
+                      <td align="center" style="padding:0;">Paiement s&eacute;curis&eacute;</td>
+                      <td class="rea-sep" width="28" align="center" style="color:#E2E2DF;">&bull;</td>
+                      <td align="center" style="padding:0;">Retours sous 14 jours</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- signature -->
+              <tr>
+                <td class="pad" style="padding:30px 44px 44px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr><td style="border-top:1px solid #E2E2DF; font-size:0; line-height:0;">&nbsp;</td></tr>
+                  </table>
+                  <p style="margin:26px 0 0; font-family:'Work Sans','Helvetica Neue',Helvetica,Arial,sans-serif; font-size:16px; line-height:1.55; color:#3D3D3D;">Un doute sur le soin qui vous convient&nbsp;? Le <a href="https://irizee.com/pages/diagnostic" style="color:#1A1A1A; font-weight:700;">diagnostic</a> r&eacute;pond en 3&nbsp;minutes, ou r&eacute;pondez simplement &agrave; cet e-mail.</p>
+                  <p style="margin:16px 0 0; font-family:'Work Sans','Helvetica Neue',Helvetica,Arial,sans-serif; font-size:16px; line-height:1.55; color:#1A1A1A; font-weight:600;">&Agrave; bient&ocirc;t,<br />Iriz&eacute;e</p>
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+
+        <!-- ================= pied ================= -->
+        <tr>
+          <td align="center" style="padding:26px 24px 0; font-family:'Work Sans','Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.75; color:#5C5C5C;">
+            Vous recevez cet e-mail parce que vous &ecirc;tes inscrit(e) aux e-mails d&rsquo;Iriz&eacute;e.<br />
+            <a href="{% unsubscribe %}" style="color:#5C5C5C; text-decoration:underline;">Se d&eacute;sabonner</a><br />
+            {{ organization.name }} &middot; {{ organization.full_address }}
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+</body>
+</html>

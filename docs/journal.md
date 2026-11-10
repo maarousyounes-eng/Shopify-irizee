@@ -1136,3 +1136,29 @@ chargé sur chaque page (intégration « Klaviyo Onsite Javascript »).
   formulaire ordinateur ; seul le formulaire mobile en a un.
 - **Pour tester** : un navigateur déjà connu de Klaviyo (diagnostic, panier
   de test) ne voit pas le pop-up, c'est voulu. Tester en navigation privée.
+
+---
+
+## 10/11/2026 — Relance « ajout au panier » (Klaviyo)
+
+**Constat** : un panier laissé sans passer au paiement n'apparaît jamais dans
+Shopify → Paniers abandonnés. Shopify ne crée un paiement abandonné que si la
+cliente ouvre le paiement **et saisit son e-mail**. Ce n'est pas une panne.
+
+**Ajout** : flux « Ajout au panier — relance », pour les profils déjà connus
+de Klaviyo (pop-up −10 %, diagnostic, newsletter), qui ajoutent un soin sans
+aller au paiement.
+
+- Déclencheur : événement « Ajout au Panier » (Added to Cart), remonté par le
+  suivi comportemental de l'intégration Shopify. Soumis au consentement
+  cookies : une visiteuse qui refuse le bandeau n'émet pas l'événement.
+- Filtres de profil : « Commande Débutée » zéro fois depuis le début du flux
+  (sinon la relance de paiement prend le relais), « Commande Passée » zéro
+  fois depuis le début du flux.
+- Réintégration : au plus une fois tous les 7 jours.
+- Délai 4 h, puis un e-mail : modèle `docs/emails/ajout-panier-1.html`.
+- Champs utilisés : `AddedItemProductName`, `AddedItemImageURL`,
+  `AddedItemPrice`, `AddedItemURL`, `CheckoutURL`, chacun avec une valeur de
+  repli. **Non vérifiés sur un vrai événement** (aucun « Ajout au Panier »
+  enregistré à ce jour) : regarder le premier e-mail parti, et corriger les
+  noms de champs si l'un sort vide.
