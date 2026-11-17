@@ -1209,3 +1209,10 @@ ouvert ; aucun code reçu (inscrite avant le flux « Diagnostic — code -10 % �
   d'une seule personne (une campagne ne peut viser qu'une liste ou un
   segment), Smart Sending désactivé. À supprimer, avec le segment, après
   l'envoi.
+- **Envoyée le 17/11 à 15:03** (statut « Envoyée »). Segment gardé à la
+  demande, pour pouvoir lui réécrire.
+- **Flux « Diagnostic — code -10 % » passé au nouveau design** (code en tête
+  dans la carte noire, photo, rangée « Nos soins » façon grille du site) :
+  `docs/emails/diagnostic-code-1.html`. Code BIENVENUE10, valable 30 jours,
+  accepté en flux. Le rappel détaillé du résultat n'y est pas : il part une
+  heure plus tôt.
