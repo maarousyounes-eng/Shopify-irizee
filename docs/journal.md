@@ -1216,3 +1216,8 @@ ouvert ; aucun code reçu (inscrite avant le flux « Diagnostic — code -10 % �
   `docs/emails/diagnostic-code-1.html`. Code BIENVENUE10, valable 30 jours,
   accepté en flux. Le rappel détaillé du résultat n'y est pas : il part une
   heure plus tôt.
+- **Flux « Bienvenue — code -10 % » (pop-up) au même design** :
+  `docs/emails/bienvenue-1.html`. Carte noire « Bienvenue chez Irizée » avec
+  le code, photo, rangée « Nos soins », puis un encart « Vous hésitez ? »
+  qui renvoie au diagnostic. Code BIENVENUE10 inchangé (le même que celui
+  affiché par le pop-up). Smart Sending laissé tel quel sur cet e-mail.
