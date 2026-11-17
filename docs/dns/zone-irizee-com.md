@@ -75,3 +75,8 @@ Les NS sont la raison du déménagement : Shopify ne les accepte pas.
   visible partout ; les serveurs Klaviyo répondent encore REFUSED pour
   `envoi.irizee.com` tant qu'ils n'ont pas monté la zone (quelques minutes à
   48 h selon Klaviyo).
+- **Zone `envoi.irizee.com` servie par Klaviyo le 17/11 à 19:44** (SOA
+  ns1.klaviyo.com). Domaine affiché **« Validé »** dans Klaviyo (Paramètres >
+  Domaines), type Marketing, routage dynamique, prêt à être activé. Pour
+  l'instant la zone ne contient que NS et SOA : Klaviyo publie le reste (SPF,
+  DKIM, MX de retour) lui-même dans sa zone, sans rien toucher chez Cloudflare.
