@@ -43,3 +43,19 @@ du DNS : chaque ligne doit exister à l'identique chez le nouvel hébergeur
 | TXT | @ | klaviyo-site-verification=RWDA3W |
 
 Les NS sont la raison du déménagement : Shopify ne les accepte pas.
+
+## Migration vers Cloudflare (17/11/2026)
+
+- Compte Cloudflare (offre Free), zone irizee.com créée. Serveurs de noms
+  attribués : `faye.ns.cloudflare.com`, `valentin.ns.cloudflare.com`.
+- Tous les enregistrements en **DNS only** (nuage gris) : Shopify refuse le
+  proxy Cloudflare devant la boutique. « Bot Preference Sync » désactivé (il
+  réécrirait le robots.txt).
+- Le scan automatique n'avait repris que 9 enregistrements sur 16 : les 6
+  CNAME d'e-mail Shopify et `_provider` ont été ajoutés par import d'un
+  fichier de zone, avec les 4 NS `envoi` et le TXT de vérification Klaviyo.
+- Contrôle `dig` sur `faye.ns.cloudflare.com` contre l'ancien serveur
+  Shopify : 15 réponses identiques ; seule différence, le TXT Klaviyo ajouté.
+  Pas de DNSSEC (aucun DS).
+- **Retour arrière** : dans Shopify, remettre les serveurs de noms par défaut
+  de Shopify. La zone Shopify n'est pas supprimée.
