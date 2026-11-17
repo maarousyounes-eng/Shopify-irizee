@@ -59,3 +59,12 @@ Les NS sont la raison du déménagement : Shopify ne les accepte pas.
   Pas de DNSSEC (aucun DS).
 - **Retour arrière** : dans Shopify, remettre les serveurs de noms par défaut
   de Shopify. La zone Shopify n'est pas supprimée.
+- **Bascule faite le 17/11/2026 vers 15:50** dans Shopify (serveurs de noms
+  personnalisés : faye / valentin.ns.cloudflare.com). Shopify annonce jusqu'à
+  24 h pour la prise en compte au registre. Bouton de retour arrière :
+  « Restaurer les serveurs de nom de Shopify » (Paramètres > Domaines >
+  irizee.com > Paramètres DNS).
+- Désormais, **toute modification DNS se fait dans Cloudflare**, plus dans
+  Shopify.
+- Reste à faire après propagation : valider `envoi.irizee.com` dans Klaviyo
+  (Paramètres > Domaines), puis l'utiliser comme domaine d'envoi.
