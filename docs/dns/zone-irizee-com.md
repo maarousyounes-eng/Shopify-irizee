@@ -80,3 +80,11 @@ Les NS sont la raison du déménagement : Shopify ne les accepte pas.
   Domaines), type Marketing, routage dynamique, prêt à être activé. Pour
   l'instant la zone ne contient que NS et SOA : Klaviyo publie le reste (SPF,
   DKIM, MX de retour) lui-même dans sa zone, sans rien toucher chez Cloudflare.
+- **Activé le 17/11/2026 vers 19:50** (statut « Actif » dans Klaviyo). Tous
+  les envois Klaviyo (flux et campagnes) partent désormais de
+  `envoi.irizee.com`. Klaviyo publie lui-même les DKIM `s1._domainkey.envoi`
+  et `s2._domainkey.envoi` (CNAME vers l'infrastructure SendGrid de Klaviyo).
+  Domaine neuf : monter les volumes progressivement, pas de gros envoi
+  d'un coup les premières semaines.
+- Étape suivante possible : durcir le DMARC (`p=none` → `quarantine`) une
+  fois quelques semaines de rapports propres.
