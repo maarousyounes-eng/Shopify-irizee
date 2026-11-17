@@ -1189,3 +1189,23 @@ aucun code : le −10 % ne partait qu'aux inscrites du pop-up (« Email List »)
 - Le modèle « Bienvenue — code -10 % » de la bibliothèque Klaviyo contient
   encore une balise dans son commentaire ; corrigée dans chaque e-mail qui
   l'utilise, pas dans le modèle lui-même.
+
+---
+
+## 17/11/2026 — Rattrapage d'une inscrite du diagnostic : code + rappel du résultat
+
+**Constat** : résultat « Routine » livré le 13/11 à 13:47 (Gmail), jamais
+ouvert ; aucun code reçu (inscrite avant le flux « Diagnostic — code -10 % »).
+
+- **E-mail** `docs/emails/diagnostic-rappel-code.html` : code en tête (carte
+  noire), photo, rappel des deux besoins et de la routine matin/soir, fiche
+  Routine à 40,50 € avec le code. DA calquée sur irizee.com.
+  `docs/emails/diagnostic-code-1.html` : la variante du flux diagnostic.
+- **Code** `DIAGNOSTIC10` (Klaviyo → Shopify) : mêmes réglages que
+  BIENVENUE10 (−10 % sur la commande, sans minimum, non cumulable), mais
+  **expiration fixe au 17/12/2026**. Klaviyo refuse en campagne les codes
+  qui expirent « N jours après attribution ». 5 codes demandés.
+- **Campagne** « Code -10 % diagnostic - envoi ponctuel Nadia », segment
+  d'une seule personne (une campagne ne peut viser qu'une liste ou un
+  segment), Smart Sending désactivé. À supprimer, avec le segment, après
+  l'envoi.
