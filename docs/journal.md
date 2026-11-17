@@ -1162,3 +1162,30 @@ aller au paiement.
   repli. **Non vérifiés sur un vrai événement** (aucun « Ajout au Panier »
   enregistré à ce jour) : regarder le premier e-mail parti, et corriger les
   noms de champs si l'un sort vide.
+
+---
+
+## 17/11/2026 — Le code −10 % aussi pour les inscrites du diagnostic
+
+**Constat** : une inscrite du 13/11 (diagnostic, mobile, depuis Instagram)
+avait bien reçu son résultat (« Routine ») côté Klaviyo, jamais ouvert, et
+aucun code : le −10 % ne partait qu'aux inscrites du pop-up (« Email List »).
+
+- **Nouveau flux** « Diagnostic — code -10 % » : déclenché à l'ajout à
+  « Diagnostic de peau — inscrits », sans réintégration ; filtre de profil
+  « n'est pas dans Email List » (pas de code en double avec le pop-up) ;
+  délai 1 h après le résultat ; e-mail « Votre code −10 % pour commencer
+  votre routine » (modèle de bienvenue, phrase d'accueil adaptée).
+- **Smart Sending désactivé sur cet e-mail** : sinon Klaviyo le saute, le
+  résultat du diagnostic étant parti moins de 16 h avant.
+- **Limites Klaviyo apprises** :
+  - « Ajouter des profils antérieurs » est refusé pour un flux à codes
+    uniques : les inscrites d'avant l'activation ne reçoivent rien.
+  - Ajouter un profil à une liste à la main **ne déclenche pas** les flux.
+- **Délivrabilité** : les e-mails partent du domaine d'envoi partagé de
+  Klaviyo ; Gmail les classe volontiers en Promotions ou indésirables. Un
+  domaine d'envoi dédié demande des NS que la zone DNS Shopify refuse :
+  il faudrait gérer le DNS d'irizee.com ailleurs (Cloudflare, par exemple).
+- Le modèle « Bienvenue — code -10 % » de la bibliothèque Klaviyo contient
+  encore une balise dans son commentaire ; corrigée dans chaque e-mail qui
+  l'utilise, pas dans le modèle lui-même.
