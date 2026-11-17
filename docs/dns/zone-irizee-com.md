@@ -1,0 +1,45 @@
+# Zone DNS d'irizee.com
+
+Relevé le 17/11/2026 dans Shopify (Paramètres > Domaines > irizee.com >
+Paramètres DNS), recoupé avec `dig`. C'est la référence pour toute migration
+du DNS : chaque ligne doit exister à l'identique chez le nouvel hébergeur
+**avant** de changer les serveurs de noms.
+
+- Domaine acheté via Shopify (registrar Tucows), créé le 24/08/2026,
+  renouvellement automatique le 10/08/2027 (17 USD).
+- Serveurs de noms actuels : ceux de Shopify (`ns-cloud-b1..b4.googledomains.com`).
+- Shopify accepte A, AAAA, CNAME, MX, TXT, SRV, **pas NS**. Les serveurs de
+  noms sont modifiables (bouton « Changer »), sans transfert du domaine.
+
+## Enregistrements
+
+| Type | Nom | Valeur | Rôle |
+|---|---|---|---|
+| A | @ | 23.227.38.67 | Boutique Shopify |
+| AAAA | @ | 2620:127:f00f:7:: | Boutique Shopify |
+| CNAME | www | shops.myshopify.com | Boutique Shopify |
+| CNAME | account | shops.myshopify.com | Compte client |
+| CNAME | mailersp2 | bd8a46abb529.p800.email.myshopify.com | E-mails Shopify (domaine d'envoi) |
+| CNAME | mailery9d | e5cb8d8b510.p798.email.myshopify.com | E-mails Shopify (domaine d'envoi) |
+| CNAME | pdk1._domainkey.mailersp2 | dkim3.bd8a46abb529.p800.email.myshopify.com | DKIM Shopify |
+| CNAME | pdk2._domainkey.mailersp2 | dkim4.bd8a46abb529.p800.email.myshopify.com | DKIM Shopify |
+| CNAME | y9d._domainkey | dkim1.e5cb8d8b510.p798.email.myshopify.com | DKIM Shopify |
+| CNAME | y9d2._domainkey | dkim2.e5cb8d8b510.p798.email.myshopify.com | DKIM Shopify |
+| MX | @ | smtp.google.com (priorité 1) | Boîte contact@ (Google Workspace) |
+| TXT | @ | google-site-verification=KMZEcxzuGdAMXcobfAPY8PFXNbJlVVR3FtCeh_HlBWo | Search Console / Workspace |
+| TXT | @ | v=spf1 include:_spf.google.com ~all | SPF Google |
+| TXT | _dmarc | v=DMARC1; p=none | DMARC |
+| TXT | _provider | shopify | Marqueur Shopify |
+| TXT | google._domainkey | v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPCMNlg5Pv7ttjMTeZdDpRbf/LInJZRvkCtxCo0ih2YLLzuNxg7Q5BCsUpO4YhSOfDgMBqg4yGPtokrW7ISJRciCG1f9F95aQD7t2OtkDjXA4cmffRodaFORwrTER4e6559tm4V49F81IwB+OfPL8S0Pg2zjAqERGH+sZQ1Z3eeQIDAQAB | DKIM Google |
+
+## À ajouter pour Klaviyo (domaine d'envoi dédié envoi.irizee.com)
+
+| Type | Nom | Valeur |
+|---|---|---|
+| NS | envoi | ns1.klaviyo.com |
+| NS | envoi | ns2.klaviyo.com |
+| NS | envoi | ns3.klaviyo.com |
+| NS | envoi | ns4.klaviyo.com |
+| TXT | @ | klaviyo-site-verification=RWDA3W |
+
+Les NS sont la raison du déménagement : Shopify ne les accepte pas.
