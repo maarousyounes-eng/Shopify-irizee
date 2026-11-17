@@ -68,3 +68,10 @@ Les NS sont la raison du déménagement : Shopify ne les accepte pas.
   Shopify.
 - Reste à faire après propagation : valider `envoi.irizee.com` dans Klaviyo
   (Paramètres > Domaines), puis l'utiliser comme domaine d'envoi.
+- **Registre .com à jour le 17/11 à 15:54** (faye / valentin.ns.cloudflare.com),
+  résolveurs publics 1.1.1.1 et 8.8.8.8 alignés ; site, MX, CNAME Shopify et
+  TXT vérifiés via résolveur public.
+- Vérification Klaviyo lancée à ~16:15 : TXT `klaviyo-site-verification`
+  visible partout ; les serveurs Klaviyo répondent encore REFUSED pour
+  `envoi.irizee.com` tant qu'ils n'ont pas monté la zone (quelques minutes à
+  48 h selon Klaviyo).
