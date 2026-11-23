@@ -718,7 +718,13 @@
           .then(function (res) {
             bouton.disabled = false;
             if (retour) retour.textContent = res.ok ? {{ section.settings.message_ajout | json }} : (res.d.description || {{ section.settings.message_erreur | json }});
-            if (res.ok) { majJauge(); majCompteur(); }
+            if (res.ok) {
+              majJauge();
+              majCompteur();
+              /* Panier latéral (section iz-tiroir-panier) : il montre l'ajout
+                 et la suite, valider ou continuer. */
+              if (window.izTiroir) window.izTiroir.ouvrir();
+            }
           })
           .catch(function () {
             bouton.disabled = false;
