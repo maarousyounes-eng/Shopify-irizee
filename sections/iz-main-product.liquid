@@ -711,14 +711,22 @@
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
             id: form.querySelector('[name="id"]').value,
-            quantity: parseInt(form.querySelector('[name="quantity"]').value, 10) || 1
+            quantity: parseInt(form.querySelector('[name="quantity"]').value, 10) || 1,
+            sections: 'iz-tiroir-panier',
+            sections_url: window.location.pathname
           })
         })
           .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
           .then(function (res) {
             bouton.disabled = false;
             if (retour) retour.textContent = res.ok ? {{ section.settings.message_ajout | json }} : (res.d.description || {{ section.settings.message_erreur | json }});
-            if (res.ok) { majJauge(); majCompteur(); }
+            if (res.ok) {
+              majJauge();
+              majCompteur();
+              /* Panier latéral (section iz-tiroir-panier) : il montre l'ajout
+                 et la suite, valider ou continuer. */
+              if (window.izTiroir) window.izTiroir.ouvrir(res.d.sections);
+            }
           })
           .catch(function () {
             bouton.disabled = false;

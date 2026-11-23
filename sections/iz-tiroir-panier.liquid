@@ -1,0 +1,398 @@
+{%- comment -%}
+  Panier latéral : il s'ouvre depuis la droite après un ajout au panier.
+
+  Tout le contenu est rendu ici, en Liquid, et rechargé par l'API de rendu
+  des sections après chaque changement. Prix, remises, images et mention de
+  précommande restent donc calculés par Shopify, comme sur la page panier,
+  sans les recopier en JavaScript.
+
+  Ouverture depuis un autre script : `window.izTiroir.ouvrir()`.
+{%- endcomment -%}
+
+{%- liquid
+  assign seuil = section.settings.seuil_livraison | times: 100
+  assign ids_panier = cart.items | map: 'product_id'
+-%}
+
+<div class="izt" data-iz-tiroir hidden>
+  <div class="izt__voile" data-iz-tiroir-fermer></div>
+
+  <aside
+    class="izt__panneau"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="izt-titre"
+    tabindex="-1"
+  >
+    <div class="izt__contenu" data-iz-tiroir-contenu data-count="{{ cart.item_count }}">
+      <header class="izt__entete">
+        <div>
+          <h2 class="izt__titre" id="izt-titre">
+            {{ section.settings.titre }} ({{ cart.item_count }})
+          </h2>
+          {%- if cart.item_count > 0 -%}
+            <p class="izt__total-haut">
+              {{ section.settings.libelle_total }} : <strong>{{ cart.total_price | money }}</strong>
+            </p>
+          {%- endif -%}
+        </div>
+        <button type="button" class="izt__fermer" data-iz-tiroir-fermer aria-label="{{ section.settings.libelle_fermer }}">
+          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+
+      <div class="izt__defile">
+        {%- if section.settings.seuil_livraison > 0 and cart.item_count > 0 -%}
+          <div class="izt__jauge-bloc">
+            {%- if cart.total_price < seuil -%}
+              {%- assign restant = seuil | minus: cart.total_price -%}
+              {%- assign restant_affiche = restant | money -%}
+              <p class="izt__jauge-texte">
+                {{ section.settings.texte_restant | replace: '[montant]', restant_affiche }}
+              </p>
+            {%- else -%}
+              <p class="izt__jauge-texte izt__jauge-texte--atteint">{{ section.settings.texte_atteint }}</p>
+            {%- endif -%}
+            {%- assign pourcent = cart.total_price | times: 100 | divided_by: seuil -%}
+            {%- if pourcent > 100 -%}{%- assign pourcent = 100 -%}{%- endif -%}
+            <div class="izt__jauge"><span style="width: {{ pourcent }}%"></span></div>
+          </div>
+        {%- endif -%}
+
+        {%- if cart.item_count == 0 -%}
+          <p class="izt__vide">{{ section.settings.texte_vide }}</p>
+        {%- else -%}
+          <ul class="izt__lignes">
+            {%- for item in cart.items -%}
+              {%- capture precommande -%}
+                {%- render 'iz-precommande', variante: item.variant -%}
+              {%- endcapture -%}
+              <li class="izt__ligne">
+                {%- if item.image -%}
+                  <a class="izt__media" href="{{ item.url }}">
+                    {{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title, class: 'izt__image' }}
+                  </a>
+                {%- endif -%}
+
+                <div class="izt__infos">
+                  <div class="izt__ligne-haut">
+                    <a class="izt__nom" href="{{ item.url }}">{{ item.product.title }}</a>
+                    <button type="button" class="izt__retirer" data-iz-ligne="{{ forloop.index }}" data-iz-qte="0" aria-label="{{ section.settings.libelle_retirer }} {{ item.product.title | escape }}">
+                      <svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M8 5V3h4v2M5 5l1 12h8l1-12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg>
+                    </button>
+                  </div>
+
+                  {%- unless item.product.has_only_default_variant -%}
+                    <p class="izt__variante">{{ item.variant.title }}</p>
+                  {%- endunless -%}
+
+                  {%- if precommande != blank and settings.precommande_mention != blank -%}
+                    <p class="izt__precommande">{{ settings.precommande_mention }}</p>
+                  {%- endif -%}
+
+                  <div class="izt__ligne-bas">
+                    <div class="izt__qty">
+                      <button type="button" data-iz-ligne="{{ forloop.index }}" data-iz-qte="{{ item.quantity | minus: 1 }}" aria-label="{{ section.settings.libelle_moins }}">−</button>
+                      <span>{{ item.quantity }}</span>
+                      <button type="button" data-iz-ligne="{{ forloop.index }}" data-iz-qte="{{ item.quantity | plus: 1 }}" aria-label="{{ section.settings.libelle_plus }}">+</button>
+                    </div>
+                    <p class="izt__prix">
+                      {%- if item.original_line_price > item.final_line_price -%}
+                        <s>{{ item.original_line_price | money }}</s>
+                      {%- endif -%}
+                      {{ item.final_line_price | money }}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- capture suggestions -%}
+          {%- assign nb = 0 -%}
+          {%- for produit in collections.all.products -%}
+            {%- if nb >= 4 -%}{%- break -%}{%- endif -%}
+            {%- if ids_panier contains produit.id or produit.available == false -%}{%- continue -%}{%- endif -%}
+            {%- assign nb = nb | plus: 1 -%}
+            <li class="izt__sugg">
+              <a class="izt__sugg-media" href="{{ produit.url }}">
+                {%- if produit.featured_image -%}
+                  {{ produit.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: produit.title, class: 'izt__image' }}
+                {%- endif -%}
+              </a>
+              <div class="izt__sugg-infos">
+                <a class="izt__nom" href="{{ produit.url }}">{{ produit.title }}</a>
+                <p class="izt__prix">
+                  {%- if produit.compare_at_price > produit.price -%}
+                    <s>{{ produit.compare_at_price | money }}</s>
+                  {%- endif -%}
+                  {{ produit.price | money }}
+                </p>
+              </div>
+              <button type="button" class="izt__ajouter" data-iz-ajouter="{{ produit.selected_or_first_available_variant.id }}" aria-label="{{ section.settings.libelle_ajouter }} {{ produit.title | escape }}">
+                <svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+              </button>
+            </li>
+          {%- endfor -%}
+        {%- endcapture -%}
+
+        {%- if suggestions != blank -%}
+          <div class="izt__suggestions">
+            <h3 class="izt__sous-titre">{{ section.settings.titre_suggestions }}</h3>
+            <ul>{{ suggestions }}</ul>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <footer class="izt__pied">
+        {%- if cart.item_count > 0 -%}
+          <form action="{{ routes.cart_url }}" method="post">
+            <button type="submit" name="checkout" class="iz-btn iz-btn--primary izt__valider">
+              {{ section.settings.libelle_valider }}
+            </button>
+          </form>
+        {%- endif -%}
+        <button type="button" class="izt__continuer" data-iz-tiroir-fermer>
+          {{ section.settings.libelle_continuer }}
+        </button>
+      </footer>
+    </div>
+  </aside>
+</div>
+
+{% style %}
+  .izt[hidden] { display: none; }
+  .izt { position: fixed; inset: 0; z-index: 1000; }
+  .izt__voile {
+    position: absolute; inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0; transition: opacity 0.3s ease;
+  }
+  .izt__panneau {
+    position: absolute; top: 0; right: 0; bottom: 0;
+    width: min(440px, 100%);
+    background: var(--iz-bg, #fff);
+    color: var(--iz-ink);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    outline: none;
+  }
+  .izt.is-ouvert .izt__voile { opacity: 1; }
+  .izt.is-ouvert .izt__panneau { transform: none; }
+
+  .izt__contenu { display: flex; flex-direction: column; height: 100%; }
+  .izt__contenu.is-charge { opacity: 0.6; pointer-events: none; }
+
+  .izt__entete {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--iz-line);
+  }
+  .izt__titre { margin: 0; font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .izt__total-haut { margin: 4px 0 0; font-size: 14px; color: var(--iz-muted); }
+  .izt__total-haut strong { color: var(--iz-ink); }
+  .izt__fermer { background: none; border: 0; padding: 4px; cursor: pointer; color: inherit; }
+
+  .izt__defile { flex: 1; overflow-y: auto; padding: 16px 20px; overscroll-behavior: contain; }
+
+  .izt__jauge-bloc { margin-bottom: 16px; }
+  .izt__jauge-texte { margin: 0 0 8px; font-size: 14px; }
+  .izt__jauge-texte--atteint { font-weight: 700; }
+  .izt__jauge { height: 6px; border-radius: 3px; background: var(--iz-line); overflow: hidden; }
+  .izt__jauge span { display: block; height: 100%; background: var(--iz-ink); }
+
+  .izt__vide { margin: 24px 0; text-align: center; color: var(--iz-muted); }
+
+  .izt__lignes, .izt__suggestions ul { list-style: none; margin: 0; padding: 0; }
+  .izt__ligne { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--iz-line); }
+  .izt__media, .izt__sugg-media {
+    flex: 0 0 84px; height: 84px;
+    border-radius: var(--iz-radius, 8px); overflow: hidden; background: var(--iz-card);
+  }
+  .izt__image { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .izt__infos { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .izt__ligne-haut { display: flex; justify-content: space-between; gap: 8px; }
+  .izt__nom { color: inherit; text-decoration: none; font-weight: 700; font-size: 14px; line-height: 1.3; }
+  .izt__variante, .izt__precommande { margin: 0; font-size: 12px; color: var(--iz-muted); }
+  .izt__retirer { background: none; border: 0; padding: 2px; cursor: pointer; color: var(--iz-muted); }
+  .izt__ligne-bas { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 6px; }
+  .izt__qty { display: inline-flex; align-items: center; border: 1px solid var(--iz-line); border-radius: var(--iz-radius-pill); }
+  .izt__qty button { width: 32px; height: 32px; background: none; border: 0; cursor: pointer; font-size: 16px; color: inherit; }
+  .izt__qty span { min-width: 20px; text-align: center; font-size: 14px; }
+  .izt__prix { margin: 0; font-size: 14px; font-weight: 700; white-space: nowrap; }
+  .izt__prix s { font-weight: 400; color: var(--iz-muted); margin-right: 6px; }
+
+  .izt__suggestions { margin-top: 24px; }
+  .izt__sous-titre { margin: 0 0 8px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .izt__sugg { display: flex; align-items: center; gap: 14px; padding: 10px 0; }
+  .izt__sugg-media { flex-basis: 64px; height: 64px; }
+  .izt__sugg-infos { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .izt__ajouter {
+    flex: 0 0 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--iz-ink); background: transparent; color: var(--iz-ink);
+    display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+
+  .izt__pied { padding: 16px 20px calc(16px + env(safe-area-inset-bottom)); border-top: 1px solid var(--iz-line); }
+  .izt__valider { width: 100%; }
+  .izt__continuer {
+    display: block; width: 100%; margin-top: 10px; padding: 8px;
+    background: none; border: 0; cursor: pointer; color: inherit;
+    font-size: 14px; text-decoration: underline;
+  }
+
+  body.izt-bloque { overflow: hidden; }
+
+  @media (hover: hover) {
+    .izt__ajouter:hover { background: var(--iz-ink); color: var(--iz-bg, #fff); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .izt__voile, .izt__panneau { transition: none; }
+  }
+{% endstyle %}
+
+<script>
+  (function () {
+    var tiroir = document.querySelector('[data-iz-tiroir]');
+    if (!tiroir || window.izTiroir) return;
+    var panneau = tiroir.querySelector('.izt__panneau');
+    var section = {{ section.id | json }};
+    var dernierFocus = null;
+
+    function contenu() { return tiroir.querySelector('[data-iz-tiroir-contenu]'); }
+
+    /* Le header ne rend le compteur que si le panier n'est pas vide au
+       chargement : on le crée au besoin. */
+    function majCompteur(nb) {
+      var lien = document.querySelector('.header__icons a[href*="/cart"]');
+      if (!lien) return;
+      var sup = lien.querySelector('sup');
+      if (!sup && nb > 0) { sup = document.createElement('sup'); lien.prepend(sup); }
+      if (sup) { sup.textContent = nb; sup.hidden = nb === 0; }
+    }
+
+    function remplacer(html) {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      var neuf = doc.querySelector('[data-iz-tiroir-contenu]');
+      if (!neuf) return;
+      contenu().replaceWith(neuf);
+      majCompteur(parseInt(neuf.dataset.count, 10) || 0);
+    }
+
+    function rafraichir() {
+      return fetch(window.location.pathname + '?sections=' + section, { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { if (d[section]) remplacer(d[section]); });
+    }
+
+    /* `sections` : la réponse de /cart/add.js demandée avec
+       `sections: 'iz-tiroir-panier'`. Relire le panier juste après un ajout
+       renvoie parfois l'état d'avant ; la réponse de l'ajout, elle, est à jour. */
+    function ouvrir(sections) {
+      dernierFocus = document.activeElement;
+      var pret = sections && sections[section]
+        ? Promise.resolve(remplacer(sections[section]))
+        : rafraichir();
+      return pret.catch(function () {}).then(function () {
+        tiroir.hidden = false;
+        document.body.classList.add('izt-bloque');
+        requestAnimationFrame(function () {
+          tiroir.classList.add('is-ouvert');
+          panneau.focus();
+        });
+      });
+    }
+
+    function fermer() {
+      tiroir.classList.remove('is-ouvert');
+      document.body.classList.remove('izt-bloque');
+      setTimeout(function () { tiroir.hidden = true; }, 300);
+      if (dernierFocus && dernierFocus.focus) dernierFocus.focus();
+    }
+
+    /* Une seule requête par action : l'API du panier renvoie aussi la section
+       recalculée quand on la lui demande. */
+    function envoyer(url, corps) {
+      var c = contenu();
+      c.classList.add('is-charge');
+      corps.sections = section;
+      corps.sections_url = window.location.pathname;
+      return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(corps)
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d.sections && d.sections[section]) remplacer(d.sections[section]);
+          else return rafraichir();
+        })
+        .catch(function () { return rafraichir(); })
+        .then(function () { contenu().classList.remove('is-charge'); });
+    }
+
+    tiroir.addEventListener('click', function (e) {
+      if (e.target.closest('[data-iz-tiroir-fermer]')) { fermer(); return; }
+      var ligne = e.target.closest('[data-iz-ligne]');
+      if (ligne) {
+        envoyer('/cart/change.js', {
+          line: parseInt(ligne.dataset.izLigne, 10),
+          quantity: Math.max(0, parseInt(ligne.dataset.izQte, 10) || 0)
+        });
+        return;
+      }
+      var ajout = e.target.closest('[data-iz-ajouter]');
+      if (ajout) {
+        envoyer('/cart/add.js', { id: parseInt(ajout.dataset.izAjouter, 10), quantity: 1 });
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !tiroir.hidden) fermer();
+    });
+
+    window.izTiroir = { ouvrir: ouvrir, fermer: fermer, rafraichir: rafraichir };
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Panier latéral",
+  "settings": [
+    { "type": "text", "id": "titre", "label": "Titre", "default": "Mon panier" },
+    { "type": "text", "id": "libelle_total", "label": "Total", "default": "Total" },
+    { "type": "text", "id": "texte_vide", "label": "Panier vide", "default": "Votre panier est vide." },
+    { "type": "header", "content": "Livraison offerte" },
+    {
+      "type": "range",
+      "id": "seuil_livraison",
+      "label": "Seuil",
+      "info": "0 pour masquer la jauge.",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "€",
+      "default": 39
+    },
+    {
+      "type": "text",
+      "id": "texte_restant",
+      "label": "Avant le seuil",
+      "info": "[montant] est remplacé par ce qu'il reste.",
+      "default": "Plus que [montant] pour la livraison offerte"
+    },
+    { "type": "text", "id": "texte_atteint", "label": "Seuil atteint", "default": "Livraison offerte" },
+    { "type": "header", "content": "Suggestions" },
+    { "type": "text", "id": "titre_suggestions", "label": "Titre", "default": "Vous aimerez aussi" },
+    { "type": "text", "id": "libelle_ajouter", "label": "Bouton +", "default": "Ajouter" },
+    { "type": "header", "content": "Boutons" },
+    { "type": "text", "id": "libelle_valider", "label": "Valider", "default": "Valider mon panier" },
+    { "type": "text", "id": "libelle_continuer", "label": "Poursuivre", "default": "Poursuivre la navigation" },
+    { "type": "text", "id": "libelle_fermer", "label": "Fermer", "default": "Fermer le panier" },
+    { "type": "text", "id": "libelle_retirer", "label": "Retirer", "default": "Retirer" },
+    { "type": "text", "id": "libelle_moins", "label": "Moins", "default": "Diminuer la quantité" },
+    { "type": "text", "id": "libelle_plus", "label": "Plus", "default": "Augmenter la quantité" }
+  ]
+}
+{% endschema %}
