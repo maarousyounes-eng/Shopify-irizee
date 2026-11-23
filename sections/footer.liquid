@@ -207,15 +207,15 @@
     <div class="footer__legal">
       <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
 
-      {% if section.settings.legal_menu != blank %}
-        <ul class="footer__legal-links">
+      <ul class="footer__legal-links">
+        {% if section.settings.legal_menu != blank %}
           {% for link in section.settings.legal_menu.links %}
             <li><a href="{{ link.url }}">{{ link.title }}</a></li>
           {% endfor %}
-          {%- comment -%} Obligatoire (CNIL) : pouvoir changer son choix de cookies à tout moment. Ouvre le bandeau iz-cookies. {%- endcomment -%}
-          <li><a href="#cookies" data-iz-cookies-ouvrir>Gérer mes cookies</a></li>
-        </ul>
-      {% endif %}
+        {% endif %}
+        {%- comment -%} Obligatoire (CNIL) : pouvoir changer son choix de cookies à tout moment. Ouvre le bandeau iz-cookies. {%- endcomment -%}
+        <li><a href="#cookies" data-iz-cookies-ouvrir>Gérer mes cookies</a></li>
+      </ul>
 
       {% if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 %}
         <ul class="footer__payments">
