@@ -212,6 +212,8 @@
           {% for link in section.settings.legal_menu.links %}
             <li><a href="{{ link.url }}">{{ link.title }}</a></li>
           {% endfor %}
+          {%- comment -%} Obligatoire (CNIL) : pouvoir changer son choix de cookies à tout moment. Ouvre le bandeau iz-cookies. {%- endcomment -%}
+          <li><a href="#cookies" data-iz-cookies-ouvrir>Gérer mes cookies</a></li>
         </ul>
       {% endif %}
 
