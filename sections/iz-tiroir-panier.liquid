@@ -24,7 +24,7 @@
     aria-labelledby="izt-titre"
     tabindex="-1"
   >
-    <div class="izt__contenu" data-iz-tiroir-contenu data-count="{{ cart.item_count }}">
+    <div class="izt__contenu" data-iz-tiroir-contenu data-count="{{ cart.item_count }}" data-total="{{ cart.total_price }}">
       <header class="izt__entete">
         <div>
           <h2 class="izt__titre" id="izt-titre">
@@ -278,6 +278,11 @@
       if (!neuf) return;
       contenu().replaceWith(neuf);
       majCompteur(parseInt(neuf.dataset.count, 10) || 0);
+      /* La fiche produit a sa propre jauge de livraison : on lui passe le
+         nouveau total pour qu'elle ne reste pas sur l'ancien panier. */
+      document.dispatchEvent(new CustomEvent('iz:panier', {
+        detail: { total: parseInt(neuf.dataset.total, 10) || 0 }
+      }));
     }
 
     function rafraichir() {
