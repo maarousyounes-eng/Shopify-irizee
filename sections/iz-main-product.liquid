@@ -444,12 +444,29 @@
                   </p>
                 {%- endif -%}
 
+                {%- comment -%}
+                  Réassurance au moment de payer : sur une précommande d'une
+                  marque nouvelle, c'est là que le doute se joue.
+                {%- endcomment -%}
+                {%- assign rassurances = block.settings.rassurance | split: '|' -%}
+                {%- if block.settings.rassurance != blank -%}
+                  <ul class="iz-cta__rassurance">
+                    {%- for r in rassurances -%}
+                      {%- assign r = r | strip -%}
+                      {%- if r != blank -%}
+                        <li><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ r }}</li>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+
                 <p class="iz-cta__feedback" data-iz-feedback role="status" aria-live="polite"></p>
               </div>
 
             {%- when 'jauge' -%}
               <div class="iz-gauge" data-iz-gauge
                 data-seuil="{{ block.settings.seuil | times: 100 }}"
+                data-prix="{{ variant.price }}"
                 data-restant="{{ block.settings.texte_restant | escape }}"
                 data-atteint="{{ block.settings.texte_atteint | escape }}"
                 {{ block.shopify_attributes }}>
@@ -493,6 +510,19 @@
       </div>
     </div>
   </div>
+
+  {%- comment -%}
+    Avis clients (Klaviyo Reviews). La zone n'apparaît qu'à partir du premier
+    avis publié, compté dans le metafield standard reviews.rating_count : une
+    zone vide « Soyez le premier à donner votre avis » rassure moins que rien.
+    C'est aussi la cible des étoiles du haut de fiche (#avis).
+  {%- endcomment -%}
+  {%- assign nb_avis = p.metafields.reviews.rating_count | plus: 0 -%}
+  {%- if nb_avis > 0 -%}
+    <div class="iz-pdp__avis page-width" id="avis">
+      <div id="klaviyo-reviews-all" data-id="{{ p.id }}"></div>
+    </div>
+  {%- endif -%}
 </section>
 
 {%- comment -%}
@@ -610,13 +640,18 @@
     /* Le calcul porte sur le panier réel, relu après chaque ajout : c'est son
        total qui déclenche la franchise, pas le prix affiché sur la page. */
     var jauge = root.querySelector('[data-iz-gauge]');
+    /* Avant l'ajout, la jauge compte déjà ce produit : sans cela, un soin qui
+       dépasse à lui seul le seuil affichait « Plus que 39 € pour la livraison
+       offerte » et laissait croire que la livraison était payante. Après
+       l'ajout, le panier réel le contient : on ne le compte plus deux fois. */
+    var dejaAjoute = false;
     function majJauge() {
       if (!jauge) return;
       fetch('/cart.js', { headers: { Accept: 'application/json' } })
         .then(function (r) { return r.json(); })
         .then(function (panier) {
           var seuil = parseInt(jauge.dataset.seuil, 10) || 0;
-          var total = panier.total_price || 0;
+          var total = (panier.total_price || 0) + (dejaAjoute ? 0 : (parseInt(jauge.dataset.prix, 10) || 0));
           var texte = jauge.querySelector('[data-iz-gauge-text]');
           var fill = jauge.querySelector('[data-iz-gauge-fill]');
           if (total >= seuil) {
@@ -693,6 +728,9 @@
       var boutonSticky = root.querySelector('[data-iz-sticky-btn]');
       if (boutonSticky) {
         boutonSticky.addEventListener('click', function () {
+          /* Après un ajout, la barre mène à la commande : sur mobile, le
+             message de confirmation s'affiche hors de l'écran, plus haut. */
+          if (boutonSticky.dataset.ajoute) { window.location.href = '/checkout'; return; }
           root.querySelector('[data-iz-form] [type="submit"]').click();
         });
       }
@@ -700,6 +738,32 @@
 
     var form = root.querySelector('[data-iz-form]');
     var retour = root.querySelector('[data-iz-feedback]');
+
+    /* Après l'ajout, le client voit la suite : un message seul en petit
+       laissait le visiteur sur la fiche sans chemin évident vers la commande. */
+    function afficherAjout() {
+      if (!retour) return;
+      retour.textContent = '';
+      var msg = document.createElement('span');
+      msg.textContent = {{ section.settings.message_ajout | json }};
+      var actions = document.createElement('span');
+      actions.className = 'iz-cta__suite';
+      var voir = document.createElement('a');
+      voir.href = '{{ routes.cart_url }}';
+      voir.className = 'iz-btn iz-btn--secondary';
+      voir.textContent = {{ section.settings.libelle_voir_panier | default: 'Voir le panier' | json }};
+      var commander = document.createElement('a');
+      commander.href = '/checkout';
+      commander.className = 'iz-btn iz-btn--primary';
+      commander.textContent = {{ section.settings.libelle_commander | default: 'Commander' | json }};
+      actions.append(voir, commander);
+      retour.append(msg, actions);
+      var barre = root.querySelector('[data-iz-sticky-btn]');
+      if (barre) {
+        barre.dataset.ajoute = '1';
+        barre.textContent = {{ section.settings.libelle_commander | default: 'Commander' | json }} + ' →';
+      }
+    }
     if (form) {
       form.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -717,8 +781,13 @@
           .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
           .then(function (res) {
             bouton.disabled = false;
-            if (retour) retour.textContent = res.ok ? {{ section.settings.message_ajout | json }} : (res.d.description || {{ section.settings.message_erreur | json }});
-            if (res.ok) { majJauge(); majCompteur(); }
+            if (res.ok) {
+              dejaAjoute = true;
+              afficherAjout();
+              majJauge(); majCompteur();
+            } else if (retour) {
+              retour.textContent = res.d.description || {{ section.settings.message_erreur | json }};
+            }
           })
           .catch(function () {
             bouton.disabled = false;
@@ -1215,6 +1284,34 @@
 
   .iz-cta__feedback:empty { display: none; }
 
+  .iz-cta__suite {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .iz-cta__suite .iz-btn { flex: 1 1 140px; text-align: center; }
+
+  .iz-cta__rassurance {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    font-size: 13px;
+    color: var(--iz-muted);
+  }
+
+  .iz-cta__rassurance li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .iz-pdp__avis { margin-top: 48px; }
+
   /* ---------- Jauge ---------- */
   .iz-gauge {
     display: flex;
@@ -1666,6 +1763,18 @@
       "default": "L'ajout n'a pas abouti. Réessayez."
     },
     {
+      "type": "text",
+      "id": "libelle_voir_panier",
+      "label": "Après l'ajout : bouton panier",
+      "default": "Voir le panier"
+    },
+    {
+      "type": "text",
+      "id": "libelle_commander",
+      "label": "Après l'ajout : bouton commande",
+      "default": "Commander"
+    },
+    {
       "type": "header",
       "content": "Typographie — ordinateur"
     },
@@ -2102,6 +2211,13 @@
           "id": "libelle_plus",
           "label": "Bouton plus",
           "default": "Augmenter la quantité"
+        },
+        {
+          "type": "text",
+          "id": "rassurance",
+          "label": "Réassurance sous le bouton",
+          "info": "Séparer les engagements par une barre verticale |. Vide : rien ne s'affiche.",
+          "default": "Paiement sécurisé | Livraison offerte dès 39 € | Retours sous 14 jours"
         }
       ]
     },
