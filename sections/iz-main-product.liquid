@@ -614,21 +614,24 @@
       if (!jauge) return;
       fetch('/cart.js', { headers: { Accept: 'application/json' } })
         .then(function (r) { return r.json(); })
-        .then(function (panier) {
-          var seuil = parseInt(jauge.dataset.seuil, 10) || 0;
-          var total = panier.total_price || 0;
-          var texte = jauge.querySelector('[data-iz-gauge-text]');
-          var fill = jauge.querySelector('[data-iz-gauge-fill]');
-          if (total >= seuil) {
-            texte.textContent = jauge.dataset.atteint;
-            fill.style.width = '100%';
-          } else {
-            var reste = ((seuil - total) / 100).toFixed(2).replace('.', ',').replace(/,00$/, '');
-            texte.innerHTML = jauge.dataset.restant.replace('{montant}', '<strong>' + reste + ' €</strong>');
-            fill.style.width = Math.max(2, (total / seuil) * 100) + '%';
-          }
-        })
+        .then(function (panier) { afficherJauge(panier.total_price || 0); })
         .catch(function () {});
+    }
+    /* Le panier latéral annonce chaque changement avec le total recalculé. */
+    document.addEventListener('iz:panier', function (e) { afficherJauge(e.detail.total); });
+    function afficherJauge(total) {
+      if (!jauge) return;
+      var seuil = parseInt(jauge.dataset.seuil, 10) || 0;
+      var texte = jauge.querySelector('[data-iz-gauge-text]');
+      var fill = jauge.querySelector('[data-iz-gauge-fill]');
+      if (total >= seuil) {
+        texte.textContent = jauge.dataset.atteint;
+        fill.style.width = '100%';
+      } else {
+        var reste = ((seuil - total) / 100).toFixed(2).replace('.', ',').replace(/,00$/, '');
+        texte.innerHTML = jauge.dataset.restant.replace('{montant}', '<strong>' + reste + ' €</strong>');
+        fill.style.width = Math.max(2, (total / seuil) * 100) + '%';
+      }
     }
     majJauge();
 
@@ -721,11 +724,13 @@
             bouton.disabled = false;
             if (retour) retour.textContent = res.ok ? {{ section.settings.message_ajout | json }} : (res.d.description || {{ section.settings.message_erreur | json }});
             if (res.ok) {
-              majJauge();
               majCompteur();
               /* Panier latéral (section iz-tiroir-panier) : il montre l'ajout
-                 et la suite, valider ou continuer. */
+                 et la suite, valider ou continuer. Il met aussi la jauge à
+                 jour avec le total de la réponse ; relire /cart.js juste
+                 après l'ajout renvoie parfois l'ancien panier. */
               if (window.izTiroir) window.izTiroir.ouvrir(res.d.sections);
+              else majJauge();
             }
           })
           .catch(function () {
