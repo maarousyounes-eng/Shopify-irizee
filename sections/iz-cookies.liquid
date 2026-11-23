@@ -6,8 +6,9 @@
   (Shopify.customerPrivacy). Shopify, le pixel Meta et Klaviyo respectent donc
   ce choix exactement comme avec le bandeau d'origine.
 
-  Règles CNIL respectées : refuser est aussi simple qu'accepter (deux boutons
-  identiques, au même niveau), rien n'est coché par défaut dans le détail, et
+  Règles CNIL respectées : refuser est aussi simple qu'accepter (deux vrais
+  boutons de même taille, au même niveau ; accepter en noir, refuser en
+  contour), rien n'est coché par défaut dans le détail, et
   le choix se modifie à tout moment (lien « Gérer mes cookies » du pied de page).
 
   Ouverture depuis un autre script : `window.izCookies.ouvrir()`.
@@ -99,14 +100,16 @@
   .izc__texte a { color: inherit; text-decoration: underline; }
 
   .izc__boutons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  /* Les deux boutons sont volontairement identiques : refuser doit être aussi
-     simple et visible qu'accepter. */
+  /* Accepter est plein (noir), refuser est en contour : même taille, même
+     place, toujours un vrai bouton bien lisible. La CNIL demande que refuser
+     reste aussi simple qu'accepter : ne pas le réduire à un lien ou le griser. */
   .izc__btn {
     min-height: 44px; padding: 0 12px;
     border: 1px solid var(--iz-ink, #1a1a1a); border-radius: var(--iz-radius-pill, 999px);
     background: var(--iz-ink, #1a1a1a); color: var(--iz-bg, #fff);
     font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
   }
+  .izc__btn[data-izc="refuser"] { background: transparent; color: var(--iz-ink, #1a1a1a); }
   .izc__lien {
     display: block; margin: 10px auto 0; padding: 4px;
     background: none; border: 0; cursor: pointer; color: inherit;
