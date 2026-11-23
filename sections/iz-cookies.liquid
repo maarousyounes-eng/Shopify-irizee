@@ -1,0 +1,252 @@
+{%- comment -%}
+  Bandeau cookies Irizée.
+
+  Il remplace l'affichage du bandeau de Shopify (masqué plus bas) mais garde
+  son mécanisme : le choix est enregistré par l'API de consentement de Shopify
+  (Shopify.customerPrivacy). Shopify, le pixel Meta et Klaviyo respectent donc
+  ce choix exactement comme avec le bandeau d'origine.
+
+  Règles CNIL respectées : refuser est aussi simple qu'accepter (deux vrais
+  boutons de même taille, au même niveau ; accepter en noir, refuser en
+  contour), rien n'est coché par défaut dans le détail, et
+  le choix se modifie à tout moment (lien « Gérer mes cookies » du pied de page).
+
+  Ouverture depuis un autre script : `window.izCookies.ouvrir()`.
+{%- endcomment -%}
+
+<div class="izc" data-iz-cookies hidden>
+  <div class="izc__carte" role="dialog" aria-modal="false" aria-labelledby="izc-titre" aria-describedby="izc-texte">
+    <div class="izc__vue" data-izc-vue="bandeau">
+      <p class="izc__titre" id="izc-titre">{{ section.settings.titre }}</p>
+      <p class="izc__texte" id="izc-texte">
+        {{ section.settings.texte }}
+        <a href="{% if shop.privacy_policy %}{{ shop.privacy_policy.url }}{% else %}/policies/privacy-policy{% endif %}">{{ section.settings.libelle_politique }}</a>
+      </p>
+      <div class="izc__boutons">
+        <button type="button" class="izc__btn" data-izc="refuser">{{ section.settings.libelle_refuser }}</button>
+        <button type="button" class="izc__btn" data-izc="accepter">{{ section.settings.libelle_accepter }}</button>
+      </div>
+      <button type="button" class="izc__lien" data-izc="detail">{{ section.settings.libelle_personnaliser }}</button>
+    </div>
+
+    <div class="izc__vue" data-izc-vue="detail" hidden>
+      <p class="izc__titre">{{ section.settings.titre_detail }}</p>
+      <ul class="izc__options">
+        <li class="izc__option">
+          <div>
+            <p class="izc__option-nom">{{ section.settings.nom_necessaires }}</p>
+            <p class="izc__option-texte">{{ section.settings.texte_necessaires }}</p>
+          </div>
+          <span class="izc__toujours">{{ section.settings.libelle_toujours }}</span>
+        </li>
+        <li class="izc__option">
+          <label for="izc-mesure">
+            <span class="izc__option-nom">{{ section.settings.nom_mesure }}</span>
+            <span class="izc__option-texte">{{ section.settings.texte_mesure }}</span>
+          </label>
+          <input class="izc__switch" type="checkbox" id="izc-mesure" data-izc-choix="analytics">
+        </li>
+        <li class="izc__option">
+          <label for="izc-pub">
+            <span class="izc__option-nom">{{ section.settings.nom_pub }}</span>
+            <span class="izc__option-texte">{{ section.settings.texte_pub }}</span>
+          </label>
+          <input class="izc__switch" type="checkbox" id="izc-pub" data-izc-choix="marketing">
+        </li>
+        <li class="izc__option">
+          <label for="izc-pref">
+            <span class="izc__option-nom">{{ section.settings.nom_preferences }}</span>
+            <span class="izc__option-texte">{{ section.settings.texte_preferences }}</span>
+          </label>
+          <input class="izc__switch" type="checkbox" id="izc-pref" data-izc-choix="preferences">
+        </li>
+      </ul>
+      <div class="izc__boutons">
+        <button type="button" class="izc__btn" data-izc="refuser">{{ section.settings.libelle_refuser }}</button>
+        <button type="button" class="izc__btn" data-izc="enregistrer">{{ section.settings.libelle_enregistrer }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% style %}
+  /* Le bandeau de Shopify reste chargé (c'est lui qui fournit l'API de
+     consentement) mais n'est plus affiché : celui-ci le remplace. */
+  #shopify-pc__banner, #shopify-pc__prefs { display: none !important; }
+
+  .izc[hidden] { display: none; }
+  .izc {
+    position: fixed; z-index: 2147483000;
+    left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom));
+    display: flex; justify-content: flex-start;
+    pointer-events: none;
+  }
+  .izc__carte {
+    pointer-events: auto;
+    width: 100%; max-width: 400px;
+    max-height: calc(100vh - 32px); overflow-y: auto;
+    background: var(--iz-bg, #fbfaf8);
+    color: var(--iz-ink, #1a1a1a);
+    border: 1px solid var(--iz-line, #e5e2dc);
+    border-radius: var(--iz-radius, 14px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.14);
+    padding: 18px 18px 14px;
+    animation: izc-arrivee 0.35s ease both;
+  }
+  @keyframes izc-arrivee { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+  .izc__titre { margin: 0 0 6px; font-size: 15px; font-weight: 700; }
+  .izc__texte { margin: 0 0 14px; font-size: 13px; line-height: 1.45; color: var(--iz-muted, #6b6b6b); }
+  .izc__texte a { color: inherit; text-decoration: underline; }
+
+  .izc__boutons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  /* Accepter est plein (noir), refuser est en contour : même taille, même
+     place, toujours un vrai bouton bien lisible. La CNIL demande que refuser
+     reste aussi simple qu'accepter : ne pas le réduire à un lien ou le griser. */
+  .izc__btn {
+    min-height: 44px; padding: 0 12px;
+    border: 1px solid var(--iz-ink, #1a1a1a); border-radius: var(--iz-radius-pill, 999px);
+    background: var(--iz-ink, #1a1a1a); color: var(--iz-bg, #fff);
+    font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .izc__btn[data-izc="refuser"] { background: transparent; color: var(--iz-ink, #1a1a1a); }
+  .izc__lien {
+    display: block; margin: 10px auto 0; padding: 4px;
+    background: none; border: 0; cursor: pointer; color: inherit;
+    font: inherit; font-size: 12px; text-decoration: underline;
+  }
+
+  .izc__options { list-style: none; margin: 0 0 14px; padding: 0; }
+  .izc__option {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--iz-line, #e5e2dc);
+  }
+  .izc__option label { cursor: pointer; }
+  .izc__option-nom { display: block; margin: 0; font-size: 13px; font-weight: 700; }
+  .izc__option-texte { display: block; margin: 2px 0 0; font-size: 12px; line-height: 1.4; color: var(--iz-muted, #6b6b6b); }
+  .izc__toujours { font-size: 11px; color: var(--iz-muted, #6b6b6b); white-space: nowrap; }
+
+  .izc__switch {
+    appearance: none; -webkit-appearance: none; flex: 0 0 40px;
+    width: 40px; height: 24px; border-radius: 12px; margin: 0;
+    background: var(--iz-line, #d9d6d0); position: relative; cursor: pointer; transition: background 0.2s;
+  }
+  .izc__switch::after {
+    content: ""; position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.2s;
+  }
+  .izc__switch:checked { background: var(--iz-ink, #1a1a1a); }
+  .izc__switch:checked::after { transform: translateX(16px); }
+  .izc__switch:focus-visible, .izc__btn:focus-visible, .izc__lien:focus-visible { outline: 2px solid var(--iz-ink, #1a1a1a); outline-offset: 2px; }
+
+  @media (max-width: 749px) {
+    .izc { left: 0; right: 0; bottom: 0; }
+    .izc__carte {
+      max-width: none; border-radius: 16px 16px 0 0; border-bottom: 0;
+      padding: 16px 16px calc(12px + env(safe-area-inset-bottom));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) { .izc__carte { animation: none; } }
+{% endstyle %}
+
+<script>
+  (function () {
+    var racine = document.querySelector('[data-iz-cookies]');
+    if (!racine || window.izCookies) return;
+
+    function vue(nom) {
+      racine.querySelectorAll('[data-izc-vue]').forEach(function (v) { v.hidden = v.dataset.izcVue !== nom; });
+    }
+    function ouvrir(detail) {
+      var cp = window.Shopify && window.Shopify.customerPrivacy;
+      if (cp && cp.currentVisitorConsent) {
+        var c = cp.currentVisitorConsent();
+        racine.querySelectorAll('[data-izc-choix]').forEach(function (i) { i.checked = c[i.dataset.izcChoix] === 'yes'; });
+      }
+      vue(detail ? 'detail' : 'bandeau');
+      racine.hidden = false;
+    }
+    function fermer() { racine.hidden = true; }
+
+    function enregistrer(choix) {
+      var cp = window.Shopify && window.Shopify.customerPrivacy;
+      fermer();
+      if (!cp || !cp.setTrackingConsent) return;
+      cp.setTrackingConsent({
+        analytics: !!choix.analytics,
+        marketing: !!choix.marketing,
+        preferences: !!choix.preferences,
+        sale_of_data: !!choix.marketing
+      }, function () {});
+    }
+
+    racine.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-izc]');
+      if (!b) return;
+      var action = b.dataset.izc;
+      if (action === 'accepter') enregistrer({ analytics: true, marketing: true, preferences: true });
+      else if (action === 'refuser') enregistrer({});
+      else if (action === 'detail') ouvrir(true);
+      else if (action === 'enregistrer') {
+        var choix = {};
+        racine.querySelectorAll('[data-izc-choix]').forEach(function (i) { choix[i.dataset.izcChoix] = i.checked; });
+        enregistrer(choix);
+      }
+    });
+
+    // « Gérer mes cookies » (pied de page) rouvre le détail, avec les choix actuels.
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('[data-iz-cookies-ouvrir]')) { e.preventDefault(); ouvrir(true); }
+    });
+
+    /* Affichage automatique : même règle que le bandeau de Shopify, là où la
+       loi demande un accord et tant que le visiteur n'a rien choisi.
+       Attention : avant tout choix, currentVisitorConsent() répond déjà « no » ;
+       seul getTrackingConsent() distingue « pas encore choisi » (no_interaction). */
+    function demarrer() {
+      var cp = window.Shopify.customerPrivacy;
+      var afficher = cp.shouldShowGDPRBanner
+        ? cp.shouldShowGDPRBanner()
+        : (cp.shouldShowBanner && cp.shouldShowBanner() && cp.getTrackingConsent && cp.getTrackingConsent() === 'no_interaction');
+      if (afficher) ouvrir(false);
+    }
+    function attendre(essais) {
+      if (window.Shopify && window.Shopify.customerPrivacy) return demarrer();
+      if (window.Shopify && window.Shopify.loadFeatures && essais === 0) {
+        window.Shopify.loadFeatures([{ name: 'consent-tracking-api', version: '0.1' }], function (err) { if (!err) demarrer(); });
+        return;
+      }
+      if (essais < 40) setTimeout(function () { attendre(essais + 1); }, 150);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { attendre(1); });
+    else attendre(1);
+
+    window.izCookies = { ouvrir: ouvrir, fermer: fermer };
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Bandeau cookies",
+  "settings": [
+    { "type": "text", "id": "titre", "label": "Titre", "default": "Des cookies, seulement si vous le voulez" },
+    { "type": "textarea", "id": "texte", "label": "Texte", "default": "Avec votre accord, nous mesurons la fréquentation du site pour l'améliorer et vous montrons des publicités Irizée plus pertinentes. Vous pouvez changer d'avis à tout moment." },
+    { "type": "text", "id": "libelle_politique", "label": "Lien vers la politique", "default": "En savoir plus" },
+    { "type": "text", "id": "libelle_accepter", "label": "Accepter", "default": "Tout accepter" },
+    { "type": "text", "id": "libelle_refuser", "label": "Refuser", "default": "Tout refuser" },
+    { "type": "text", "id": "libelle_personnaliser", "label": "Personnaliser", "default": "Choisir en détail" },
+    { "type": "header", "content": "Détail" },
+    { "type": "text", "id": "titre_detail", "label": "Titre", "default": "Vos choix" },
+    { "type": "text", "id": "libelle_enregistrer", "label": "Enregistrer", "default": "Enregistrer mes choix" },
+    { "type": "text", "id": "libelle_toujours", "label": "Toujours actifs", "default": "Toujours actifs" },
+    { "type": "text", "id": "nom_necessaires", "label": "Nécessaires — nom", "default": "Nécessaires" },
+    { "type": "text", "id": "texte_necessaires", "label": "Nécessaires — texte", "default": "Panier, paiement et sécurité du site." },
+    { "type": "text", "id": "nom_mesure", "label": "Mesure — nom", "default": "Mesure d'audience" },
+    { "type": "text", "id": "texte_mesure", "label": "Mesure — texte", "default": "Compter les visites pour améliorer le site." },
+    { "type": "text", "id": "nom_pub", "label": "Publicité — nom", "default": "Publicité" },
+    { "type": "text", "id": "texte_pub", "label": "Publicité — texte", "default": "Mesurer nos publicités et vous en montrer de plus pertinentes." },
+    { "type": "text", "id": "nom_preferences", "label": "Préférences — nom", "default": "Préférences" },
+    { "type": "text", "id": "texte_preferences", "label": "Préférences — texte", "default": "Retenir vos réglages, comme la langue." }
+  ]
+}
+{% endschema %}
