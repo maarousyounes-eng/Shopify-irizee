@@ -286,9 +286,15 @@
         .then(function (d) { if (d[section]) remplacer(d[section]); });
     }
 
-    function ouvrir() {
+    /* `sections` : la réponse de /cart/add.js demandée avec
+       `sections: 'iz-tiroir-panier'`. Relire le panier juste après un ajout
+       renvoie parfois l'état d'avant ; la réponse de l'ajout, elle, est à jour. */
+    function ouvrir(sections) {
       dernierFocus = document.activeElement;
-      return rafraichir().catch(function () {}).then(function () {
+      var pret = sections && sections[section]
+        ? Promise.resolve(remplacer(sections[section]))
+        : rafraichir();
+      return pret.catch(function () {}).then(function () {
         tiroir.hidden = false;
         document.body.classList.add('izt-bloque');
         requestAnimationFrame(function () {
