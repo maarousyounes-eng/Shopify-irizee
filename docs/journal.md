@@ -1221,3 +1221,21 @@ ouvert ; aucun code reçu (inscrite avant le flux « Diagnostic — code -10 % �
   le code, photo, rangée « Nos soins », puis un encart « Vous hésitez ? »
   qui renvoie au diagnostic. Code BIENVENUE10 inchangé (le même que celui
   affiché par le pop-up). Smart Sending laissé tel quel sur cet e-mail.
+
+## 27/11/2026 — Expédition des précommandes repoussée à janvier 2027
+
+**Changement** : la production arrive en janvier, toutes les mentions
+« décembre 2026 » passent à « janvier 2027 ».
+
+- **Thème** (preprod b1b9b60, prod via PR #9) : défaut du réglage « Date
+  d'expédition » (sous le bouton d'achat, panier, diagnostic), FAQ produit,
+  bandeaux panier (« expédition en janvier »), FAQ générale.
+- **Admin Shopify** (en ligne immédiatement) : méta-description du site
+  (Préférences), politique d'expédition, politique de remboursement,
+  Conditions de vente (article 7).
+- **Klaviyo** : e-mail du flux « Ajout au panier — relance »
+  (`docs/emails/ajout-panier-1.html`).
+- Contrôle sur irizee.com : plus aucune « décembre 2026 » sur l'accueil, les
+  3 fiches, le diagnostic et les politiques.
+- Non fait : prévenir les clients ayant déjà précommandé avec l'annonce
+  « décembre ».
