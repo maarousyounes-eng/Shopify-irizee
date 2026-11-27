@@ -203,7 +203,7 @@
         "id": "precommande_mention",
         "label": "Date d'expédition",
         "info": "Mention obligatoire. Elle s'affiche sous le bouton d'achat et dans le panier.",
-        "default": "Expédition à partir de décembre 2026"
+        "default": "Expédition à partir de janvier 2027"
       },
       {
         "type": "text",
